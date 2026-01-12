@@ -1,0 +1,1 @@
+Establecer la paleta de colores (primarios, secundarios, semánticos), tipografías, espaciados y sombras.
