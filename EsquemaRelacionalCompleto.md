@@ -1,8 +1,7 @@
-
 erDiagram
-    %% ============================================
-    %% MÓDULO: USUARIOS Y AUTENTICACIÓN
-    %% ============================================
+%% ============================================
+%% MÓDULO: USUARIOS Y AUTENTICACIÓN
+%% ============================================
 
     USERS {
         uuid id PK
@@ -378,4 +377,5 @@ erDiagram
     ORDERS ||--o{ SUPPORT_TICKETS : references
 
     SUPPORT_TICKETS ||--o{ TICKET_MESSAGES : history
-    
+
+[Abrir en Mermaid Live Editor](https://mermaid.live/edit)
