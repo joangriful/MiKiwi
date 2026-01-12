@@ -378,4 +378,4 @@ erDiagram
 
     SUPPORT_TICKETS ||--o{ TICKET_MESSAGES : history
 
-[Abrir en Mermaid Live Editor](https://mermaid.live/edit)
+[Abrir en Mermaid Live Editor](https://mermaid.live/)
