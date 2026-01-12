@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA | Pure & Simple</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- VARIABLES DE LUJO SILENCIOSO --- */
+        :root {
+            --bg: #0b0b0b; /* Negro puro, pero suave */
+            --card-bg: #141414;
+            --text-main: #f4f4f4;
+            --text-muted: #8c8c8c;
+            --accent: #d4bda5; /* Tono piel / nude elegante */
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Lato', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            font-weight: 300;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s ease; }
+        
+        /* --- HEADER MINIMALISTA --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 25px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(11, 11, 11, 0.85);
+            backdrop-filter: blur(8px); /* Efecto cristal sutil */
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        nav ul { display: flex; gap: 40px; list-style: none; }
+        
+        nav a {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+        }
+
+        nav a:hover { color: var(--accent); }
+
+        /* --- HERO: MENOS ES MÁS --- */
+        .hero {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-family: var(--font-serif);
+            font-size: 5rem;
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            max-width: 900px;
+        }
+
+        .hero h1 i {
+            font-family: var(--font-serif);
+            color: var(--accent);
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 50px;
+            max-width: 500px;
+        }
+
+        .btn-minimal {
+            padding: 15px 40px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-minimal:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(212, 189, 165, 0.05);
+        }
+
+        /* --- COLECCIÓN --- */
+        .collection {
+            padding: 100px 8%;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        
+        .section-header h2 {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .grid-simple {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 60px; /* Mucho espacio entre productos */
+        }
+
+        .product-item {
+            group: cursor-pointer;
+        }
+
+        .image-container {
+            width: 100%;
+            height: 420px;
+            background-color: var(--card-bg);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Representación SUAVE del producto */
+        .soft-shape {
+            width: 100px;
+            height: 200px;
+            background: linear-gradient(to bottom right, #2a2a2a, #1a1a1a);
+            border-radius: 50px;
+            box-shadow: 20px 20px 60px rgba(0,0,0,0.5), -5px -5px 20px rgba(255,255,255,0.02);
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Variantes de forma */
+        .shape-round { width: 140px; height: 140px; border-radius: 50%; }
+        .shape-curved { border-radius: 60px 20px 60px 20px; }
+
+        .product-item:hover .soft-shape {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .info {
+            text-align: center;
+        }
+
+        .product-name {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+            color: var(--text-main);
+        }
+
+        .product-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .price {
+            font-size: 0.9rem;
+            color: var(--accent);
+            letter-spacing: 1px;
+        }
+
+        /* --- TRUST / VALORES --- */
+        .values-bar {
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 40px 0;
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 60px 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            nav { display: none; }
+            .values-bar { flex-direction: column; gap: 20px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Aura</div>
+        <nav>
+            <ul>
+                <li><a href="#">Tienda</a></li>
+                <li><a href="#">Concepto</a></li>
+                <li><a href="#">Diario</a></li>
+            </ul>
+        </nav>
+        <a href="#" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">Cesta (0)</a>
+    </header>
+
+    <section class="hero">
+        <h1>Diseño para la <br> <i>intimidad humana</i>.</h1>
+        <p>Una colección de objetos de placer esculpidos para el cuerpo y diseñados para el alma.</p>
+        <a href="#" class="btn-minimal">Ver la Colección</a>
+    </section>
+
+    <div class="values-bar">
+        <span>Envío Discreto</span>
+        <span>Silencio Absoluto</span>
+        <span>Silicona Premium</span>
+    </div>
+
+    <section class="collection">
+        <div class="section-header">
+            <h2>Esenciales</h2>
+        </div>
+
+        <div class="grid-simple">
+            <div class="product-item">
+                <div class="image-container">
+                    <div class="soft-shape"></div>
+                </div>
+                <div class="info">
+                    <div class="product-name">The Wand</div>
+                    <div class="product-desc">Masajeador corporal de precisión.</div>
+                    <div class="price">95.00 €</div>
+                </div>
+            </div>
+
+            <div class="product-item">
+                <div class="image-container">
+                    <div class="soft-shape shape-round"></div>
+                </div>
+                <div class="info">
+                    <div class="product-name">The Touch</div>
+                    <div class="product-desc">Estimulación sónica sin contacto.</div>
+                    <div class="price">65.00 €</div>
+                </div>
+            </div>
+
+            <div class="product-item">
+                <div class="image-container">
+                    <div class="soft-shape shape-curved"></div>
+                </div>
+                <div class="info">
+                    <div class="product-name">The Arc</div>
+                    <div class="product-desc">Diseño ergonómico interno.</div>
+                    <div class="price">80.00 €</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 AURA. Solo para adultos.</p>
+    </footer>
+
+</body>
+</html>

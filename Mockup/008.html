@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA | Ethereal Architecture</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@200;300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CONFIGURACIÓN DE ATMÓSFERA --- */
+        :root {
+            --bg: #050505;
+            --surface: #0f0f0f;
+            --text-pri: #e8e6e3;
+            --text-sec: #888;
+            --accent: #dcd0c0; /* Silk / Champagne */
+            --glow: rgba(255, 255, 255, 0.08);
+            --font-display: 'Italiana', serif;
+            --font-tech: 'Manrope', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-pri);
+            font-family: var(--font-tech);
+            overflow-x: hidden;
+            width: 100vw;
+        }
+
+        /* --- CURSOR SPOTLIGHT (LUZ VOLUMÉTRICA) --- */
+        .cursor-light {
+            position: fixed;
+            top: 0; left: 0;
+            width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 60%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 1;
+            mix-blend-mode: screen;
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .cursor-dot {
+            position: fixed; top: 0; left: 0;
+            width: 6px; height: 6px;
+            background: var(--text-pri);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+
+        /* --- TEXTURA DE GRANO (CINE) --- */
+        .noise-layer {
+            position: fixed; inset: 0;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 9000;
+        }
+
+        /* --- NAVEGACIÓN INVISIBLE --- */
+        header {
+            position: fixed; top: 0; width: 100%; padding: 40px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            z-index: 100;
+            mix-blend-mode: difference;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            line-height: 1;
+        }
+        .logo span { font-size: 0.6rem; font-family: var(--font-tech); display: block; letter-spacing: 3px; margin-top: 5px; opacity: 0.7;}
+
+        .menu-btn {
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px;
+            position: relative; padding-bottom: 5px;
+        }
+        .menu-btn::after {
+            content: ''; position: absolute; bottom: 0; right: 0; width: 30%; height: 1px; background: #fff;
+            transition: 0.4s ease;
+        }
+        .menu-btn:hover::after { width: 100%; }
+
+        /* --- HERO SECTION: EL MONOLITO --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content {
+            text-align: center;
+            position: relative;
+            z-index: 5;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: 8vw;
+            line-height: 0.9;
+            opacity: 0;
+            animation: emerge 2s ease-out forwards 0.5s;
+        }
+
+        .hero-title i { font-family: var(--font-display); font-weight: 400; color: var(--text-sec); }
+
+        .subtitle {
+            margin-top: 30px;
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-sec);
+            opacity: 0;
+            animation: emerge 2s ease-out forwards 1s;
+        }
+
+        @keyframes emerge { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- EL OBJETO (Simulación de Producto sin Foto) --- */
+        /* Esta es una escultura CSS que reacciona "respirando" */
+        .ethereal-object {
+            position: absolute;
+            width: 300px; height: 500px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+            border-radius: 150px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 
+                0 0 100px rgba(0,0,0,0.8),
+                inset 0 0 40px rgba(255,255,255,0.02);
+            z-index: 1;
+            animation: breathe 8s ease-in-out infinite;
+        }
+
+        /* El núcleo del objeto (la tecnología interna) */
+        .ethereal-core {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px; height: 100px;
+            background: var(--text-pri);
+            border-radius: 50px;
+            box-shadow: 0 0 60px rgba(255, 255, 255, 0.2);
+            opacity: 0.5;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.05); filter: brightness(1.2); }
+        }
+
+        /* --- SECCIÓN DE NARRATIVA (Scroll) --- */
+        .narrative {
+            padding: 150px 10vw;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: center;
+        }
+
+        .narrative-text p {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            color: var(--text-sec);
+            font-weight: 200;
+        }
+
+        .narrative-text span { color: var(--text-pri); }
+
+        .spec-list {
+            margin-top: 50px;
+            border-top: 1px solid var(--glow);
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--glow);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .spec-item:hover { padding-left: 20px; color: #fff; background: rgba(255,255,255,0.02); }
+
+        /* --- GALERÍA MINIMALISTA --- */
+        .gallery-title {
+            padding: 0 10vw;
+            font-family: var(--font-display);
+            font-size: 3rem;
+            margin-bottom: 50px;
+        }
+
+        .gallery-scroll {
+            display: flex;
+            gap: 2px;
+            padding-bottom: 100px;
+            overflow-x: auto;
+        }
+
+        .product-pedestal {
+            min-width: 400px;
+            height: 600px;
+            background: var(--surface);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 40px;
+            transition: 0.5s;
+            border-right: 1px solid var(--bg);
+        }
+
+        .product-pedestal:hover { background: #141414; }
+
+        /* Forma del juguete en galería */
+        .shape-display {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px; height: 250px;
+            background: radial-gradient(circle at 30% 30%, #333, #0a0a0a);
+            border-radius: 60px;
+            box-shadow: inset 5px 5px 20px rgba(255,255,255,0.05);
+            transition: 0.6s cubic-bezier(0.215, 0.610, 0.355, 1);
+        }
+
+        .product-pedestal:hover .shape-display {
+            transform: translate(-50%, -60%) scale(1.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .p-info h3 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 5px; }
+        .p-info span { font-size: 0.8rem; color: var(--text-sec); }
+        .p-price { position: absolute; top: 40px; right: 40px; font-family: var(--font-tech); font-size: 0.9rem; }
+
+        /* --- FOOTER STATEMENT --- */
+        footer {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-top: 1px solid var(--glow);
+            position: relative;
+        }
+
+        .footer-cta {
+            font-family: var(--font-display);
+            font-size: 5vw;
+            line-height: 1.1;
+            margin-bottom: 40px;
+            mix-blend-mode: exclusion;
+        }
+
+        .btn-outline {
+            padding: 20px 60px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 100px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            background: transparent;
+            color: #fff;
+            transition: 0.5s;
+        }
+
+        .btn-outline:hover {
+            background: #fff; color: #000; border-color: #fff;
+            box-shadow: 0 0 40px rgba(255,255,255,0.3);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media(max-width: 768px) {
+            .hero-title { font-size: 15vw; }
+            .narrative { grid-template-columns: 1fr; padding: 100px 5vw; }
+            .product-pedestal { min-width: 85vw; }
+            .cursor-light { display: none; } /* Desactivar luz en móvil para rendimiento */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="noise-layer"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-light"></div>
+
+    <header>
+        <div class="logo">
+            AURA
+            <span>ATELIER</span>
+        </div>
+        <div class="menu-btn">Menu</div>
+    </header>
+
+    <section class="hero">
+        <div class="ethereal-object">
+            <div class="ethereal-core"></div>
+        </div>
+
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Architecture <br> <i>of Desire</i>
+            </h1>
+            <div class="subtitle">Collection 2026 — Sensory Series</div>
+        </div>
+    </section>
+
+    <section class="narrative">
+        <div class="narrative-text">
+            <p>
+                El placer no es un destino, es una <span style="border-bottom: 1px solid #fff; padding-bottom: 3px;">frecuencia</span>. 
+                <br><br>
+                Hemos eliminado el plástico, los cables visibles y el ruido. Lo que queda es resonancia pura envuelta en silicona de grado médico, diseñada para fundirse con la anatomía humana.
+            </p>
+        </div>
+        <div class="spec-list">
+            <div class="spec-item">
+                <span>Material</span>
+                <span>Bio-Silicone Matte</span>
+            </div>
+            <div class="spec-item">
+                <span>Sound Level</span>
+                <span>&lt; 30db (Whisper)</span>
+            </div>
+            <div class="spec-item">
+                <span>Connectivity</span>
+                <span>Aura App / Bluetooth 5.2</span>
+            </div>
+            <div class="spec-item">
+                <span>Waterproof</span>
+                <span>IPX7 Certified</span>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="gallery-title">The Objects</div>
+        
+        <div class="gallery-scroll">
+            <div class="product-pedestal">
+                <div class="p-price">180 €</div>
+                <div class="shape-display" style="border-radius: 100px; width: 80px; height: 300px;"></div>
+                <div class="p-info">
+                    <h3>The Wand</h3>
+                    <span>Precisión Focalizada</span>
+                </div>
+            </div>
+
+            <div class="product-pedestal">
+                <div class="p-price">120 €</div>
+                <div class="shape-display" style="border-radius: 50%; width: 140px; height: 140px;"></div>
+                <div class="p-info">
+                    <h3>The Orb</h3>
+                    <span>Estimulación Sónica</span>
+                </div>
+            </div>
+
+            <div class="product-pedestal">
+                <div class="p-price">155 €</div>
+                <div class="shape-display" style="border-radius: 60px 20px 60px 20px;"></div>
+                <div class="p-info">
+                    <h3>The Curve</h3>
+                    <span>Ergonomía Interna</span>
+                </div>
+            </div>
+             <div class="product-pedestal">
+                <div class="p-price">90 €</div>
+                <div class="shape-display" style="border-radius: 30px; width: 60px; height: 100px;"></div>
+                <div class="p-info">
+                    <h3>The Drop</h3>
+                    <span>Viaje Discreto</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-cta">
+            Elevate your <br> <i>inner world.</i>
+        </div>
+        <a href="#" class="btn-outline">Enter the Shop</a>
+        
+        <div style="position: absolute; bottom: 40px; font-size: 0.7rem; color: #555; letter-spacing: 1px;">
+            AURA INC © 2026. PRIVACY & ART.
+        </div>
+    </footer>
+
+    <script>
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorLight = document.querySelector('.cursor-light');
+        const object = document.querySelector('.ethereal-object');
+
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+
+            // Mover el punto del cursor (rápido)
+            cursorDot.style.left = `${x}px`;
+            cursorDot.style.top = `${y}px`;
+
+            // Mover la luz ambiental (lento/suave)
+            cursorLight.animate({
+                left: `${x}px`,
+                top: `${y}px`
+            }, { duration: 800, fill: "forwards" });
+
+            // Efecto Parallax sutil en el objeto central
+            const moveX = (window.innerWidth / 2 - x) / 20;
+            const moveY = (window.innerHeight / 2 - y) / 20;
+            
+            if(object) {
+                object.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            }
+        });
+        
+        // Efecto hover en enlaces para agrandar la luz
+        document.querySelectorAll('a, .product-pedestal').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorLight.style.width = '900px';
+                cursorLight.style.height = '900px';
+                cursorLight.style.background = 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorLight.style.width = '800px';
+                cursorLight.style.height = '800px';
+                cursorLight.style.background = 'radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 60%)';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA | Bienestar Íntimo</title>
+    <style>
+        /* --- VARIABLES & RESET --- */
+        :root {
+            --bg-body: #0a0a0a;
+            --bg-card: #141414;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --accent: #bfaec9; /* Lila suave elegante */
+            --accent-hover: #dcd0e3;
+            --glass: rgba(20, 20, 20, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* --- HEADER (Glassmorphism) --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-main);
+        }
+
+        .logo span { color: var(--accent); }
+
+        nav ul {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        nav a:hover { color: var(--accent); }
+
+        .icons { display: flex; gap: 20px; font-size: 1.2rem; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at 50% 50%, #1a1520 0%, #0a0a0a 70%);
+            padding: 0 20px;
+            position: relative;
+        }
+
+        /* Abstract Shape Background */
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--accent);
+            filter: blur(150px);
+            opacity: 0.2;
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            font-style: italic;
+            font-family: 'Georgia', serif; /* Serif para toque elegante */
+            color: var(--accent);
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            max-width: 500px;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            padding: 15px 40px;
+            background-color: var(--text-main);
+            color: var(--bg-body);
+            border-radius: 50px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* --- FEATURES (Discreción) --- */
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            padding: 40px 5%;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .feature-item {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        /* --- PRODUCT GRID --- */
+        .shop-section {
+            padding: 80px 10%;
+        }
+
+        .section-title {
+            margin-bottom: 60px;
+            font-size: 2rem;
+            font-weight: 300;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: 0.4s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .img-placeholder {
+            height: 350px;
+            width: 100%;
+            background: #1f1f1f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Simulación de producto abstracto con CSS */
+        .shape-toy {
+            width: 80px;
+            height: 180px;
+            background: linear-gradient(135deg, #333, #111);
+            border-radius: 50px;
+            box-shadow: inset 5px 5px 15px rgba(255,255,255,0.05);
+        }
+        
+        .shape-toy.round { border-radius: 50%; height: 120px; width: 120px; }
+        .shape-toy.organic { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+
+        .tag-new {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--accent);
+            color: var(--bg-body);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .product-info {
+            padding: 25px;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .product-price {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 60px 5%;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Mobile adjustments */
+        @media(max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            nav { display: none; } /* Simplificado para el mockup */
+            .features { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">AURA<span>.</span></div>
+        <nav>
+            <ul>
+                <li><a href="#">Colecciones</a></li>
+                <li><a href="#">Bienestar</a></li>
+                <li><a href="#">Regalos</a></li>
+            </ul>
+        </nav>
+        <div class="icons">
+            <a href="#">&#128100;</a> <a href="#">&#128722;</a> </div>
+    </header>
+
+    <section class="hero">
+        <h1>Explora tu <br><span>placer sensorial</span>.</h1>
+        <p>Diseño ergonómico, tecnología silenciosa y materiales premium. <br>Redescubre la intimidad contigo o en pareja.</p>
+        <a href="#" class="btn-primary">Ver Colección</a>
+    </section>
+
+    <div class="features">
+        <div class="feature-item">📦 ENVÍO 100% DISCRETO</div>
+        <div class="feature-item">🔒 PAGO SEGURO Y ANÓNIMO</div>
+        <div class="feature-item">✨ GARANTÍA DE HIGIENE</div>
+    </div>
+
+    <section class="shop-section">
+        <h2 class="section-title">Nuestros Favoritos</h2>
+        
+        <div class="grid">
+            <div class="product-card">
+                <div class="img-placeholder">
+                    <div class="shape-toy"></div> <span class="tag-new">NUEVO</span>
+                </div>
+                <div class="product-info">
+                    <div class="product-name">Wand Minimalista</div>
+                    <div class="product-price">89,00 €</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="img-placeholder">
+                    <div class="shape-toy round"></div> </div>
+                <div class="product-info">
+                    <div class="product-name">Succionador Sónico</div>
+                    <div class="product-price">45,00 €</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="img-placeholder">
+                    <div class="shape-toy organic"></div> </div>
+                <div class="product-info">
+                    <div class="product-name">Aceite de Masaje Lunar</div>
+                    <div class="product-price">22,50 €</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 AURA STRORE. Solo para mayores de 18 años.</p>
+        <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.6;">Política de Privacidad | Términos de Uso</p>
+    </footer>
+
+</body>
+</html>

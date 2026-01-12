@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA | Sensory Experience</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Manrope:wght@200;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CONFIGURACIÓN BASE --- */
+        :root {
+            --bg: #050505;
+            --text-main: #f2f0e9;
+            --text-muted: #888;
+            --accent: #b69bd2; /* Lavanda Ahumado */
+            --gold: #d4af37;
+            --glass: rgba(20, 20, 20, 0.4);
+            --border-light: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Ocultamos cursor por defecto para poner uno custom */
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Manrope', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- CURSOR CUSTOM --- */
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--text-main);
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        /* Efecto hover en enlaces */
+        a:hover ~ .cursor-outline, 
+        button:hover ~ .cursor-outline {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255,255,255,0.1);
+            border-color: transparent;
+        }
+
+        /* --- TEXTURA CINEMATOGRÁFICA (NOISE) --- */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9000;
+            opacity: 0.05;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+        }
+
+        /* --- FONDO ANIMADO (AURORA) --- */
+        .ambient-light {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(100, 50, 160, 0.15), transparent 70%);
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: blur(80px);
+            animation: pulse 10s infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.8; }
+        }
+
+        /* --- HEADER --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 60px;
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+            mix-blend-mode: difference; /* Efecto interesante sobre fondos claros */
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: -1px;
+        }
+
+        nav ul { display: flex; gap: 40px; }
+        nav li { list-style: none; }
+        
+        nav a {
+            text-decoration: none;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0%;
+            height: 1px;
+            background: #fff;
+            transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        nav a:hover::after { width: 100%; }
+
+        .cart-btn { font-size: 0.9rem; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 6vw;
+            line-height: 0.9;
+            font-weight: 300;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #fff, #b69bd2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeUp 1.5s ease-out;
+        }
+
+        .hero h1 span {
+            display: block;
+            font-style: italic;
+            font-size: 0.5em;
+            letter-spacing: 5px;
+            margin-bottom: 10px;
+            font-family: 'Manrope', sans-serif;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            -webkit-text-fill-color: var(--text-muted);
+        }
+
+        .hero p {
+            max-width: 400px;
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 50px;
+            animation: fadeUp 1.5s ease-out 0.3s backwards;
+        }
+
+        .cta-btn {
+            padding: 18px 50px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            border-radius: 100px;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            transition: 0.5s;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp 1.5s ease-out 0.6s backwards;
+            text-decoration: none;
+        }
+
+        .cta-btn:hover {
+            background: var(--text-main);
+            color: #000;
+            border-color: var(--text-main);
+            box-shadow: 0 0 30px rgba(255,255,255,0.3);
+        }
+
+        /* --- MARQUEE INFINITO (Cinta de texto) --- */
+        .marquee-container {
+            width: 100%;
+            padding: 20px 0;
+            border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: scrollText 20s linear infinite;
+        }
+
+        .marquee-content span {
+            margin-right: 60px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+        }
+
+        @keyframes scrollText {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* --- PRODUCT SHOWCASE --- */
+        .showcase {
+            padding: 100px 5%;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 80px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .section-header h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            font-weight: 300;
+        }
+
+        .grid-artistic {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            position: relative;
+            height: 500px;
+            background: #0f0f0f;
+            overflow: hidden;
+            transition: 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid transparent;
+        }
+
+        .card:hover {
+            border-color: rgba(255,255,255,0.1);
+            transform: translateY(-5px);
+        }
+
+        /* Generación de Juguetes con CSS Puro (High Quality) */
+        .toy-visual {
+            width: 100px;
+            height: 220px;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            border-radius: 50px;
+            position: relative;
+            box-shadow: 
+                inset 10px 10px 20px rgba(255,255,255,0.05),
+                inset -10px -10px 20px rgba(0,0,0,0.8),
+                15px 15px 30px rgba(0,0,0,0.5);
+            transition: 0.5s;
+        }
+
+        /* Variantes de formas */
+        .v-1 { border-radius: 60px 60px 30px 30px; height: 180px; width: 110px; }
+        .v-2 { border-radius: 100px; height: 140px; width: 140px; } /* Succionador */
+        .v-3 { border-radius: 30px; height: 240px; width: 50px; } /* Wand slim */
+
+        .card:hover .toy-visual {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(182, 155, 210, 0.15); /* Glow sutil */
+        }
+
+        .card-details {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px;
+            background: linear-gradient(to top, #000 0%, transparent 100%);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: 0.4s;
+        }
+
+        .card:hover .card-details {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .product-cat {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .product-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .price { font-weight: 300; }
+
+        /* --- FOOTER MINIMALISTA --- */
+        footer {
+            padding: 80px 5%;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .discreet-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border: 1px solid var(--border-light);
+            border-radius: 50px;
+        }
+
+        .dot { width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; }
+
+        /* Animaciones */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive simple */
+        @media(max-width: 768px) {
+            .hero h1 { font-size: 3.5rem; }
+            .grid-artistic { grid-template-columns: 1fr; }
+            nav { display: none; }
+            header { padding: 20px; }
+            .cursor-dot, .cursor-outline { display: none; } /* Desactivar cursor custom en movil */
+            * { cursor: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+    <script>
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        window.addEventListener('mousemove', function(e) {
+            const posX = e.clientX;
+            const posY = e.clientY;
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+            // Animación suave para el borde
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+    </script>
+
+    <div class="noise-overlay"></div>
+    <div class="ambient-light"></div>
+
+    <header>
+        <div class="logo">AURA.</div>
+        <nav>
+            <ul>
+                <li><a href="#">The Collection</a></li>
+                <li><a href="#">Self-Care</a></li>
+                <li><a href="#">Journal</a></li>
+            </ul>
+        </nav>
+        <a href="#" class="cart-btn">Cesta (0)</a>
+    </header>
+
+    <section class="hero">
+        <h1>
+            <span>INTIMACY REDEFINED</span>
+            DISEÑO SENSORIAL
+        </h1>
+        <p>Una exploración del placer a través de la tecnología háptica, la estética minimalista y el tacto aterciopelado.</p>
+        <a href="#" class="cta-btn">Explorar Tienda</a>
+    </section>
+
+    <div class="marquee-container">
+        <div class="marquee-content">
+            <span>Envío 100% Discreto & Anónimo</span>
+            <span>✦</span>
+            <span>Materiales de Grado Médico</span>
+            <span>✦</span>
+            <span>Diseño Premiado 2024</span>
+            <span>✦</span>
+            <span>Tecnología Silenciosa</span>
+            <span>✦</span>
+            <span>Envío 100% Discreto & Anónimo</span>
+            <span>✦</span>
+            <span>Materiales de Grado Médico</span>
+            <span>✦</span>
+             <span>Diseño Premiado 2024</span>
+        </div>
+    </div>
+
+    <section class="showcase">
+        <div class="section-header">
+            <h2>Curated Objects</h2>
+            <a href="#" style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 1px;">VER TODO →</a>
+        </div>
+
+        <div class="grid-artistic">
+            <div class="card">
+                <div class="toy-visual v-1"></div>
+                <div class="card-details">
+                    <div class="product-cat">Estimulación Dual</div>
+                    <div class="product-title">The Poet</div>
+                    <div class="price">129.00 €</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="toy-visual v-2"></div>
+                <div class="card-details">
+                    <div class="product-cat">Ondas de Presión</div>
+                    <div class="product-title">The Moon</div>
+                    <div class="price">59.00 €</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="toy-visual v-3"></div>
+                <div class="card-details">
+                    <div class="product-cat">Masajeador Corporal</div>
+                    <div class="product-title">The Wand II</div>
+                    <div class="price">85.00 €</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="discreet-badge">
+            <span class="dot"></span> Envío Discreto Activo
+        </div>
+        <div>
+            &copy; 2025 AURA ATELIER. 18+
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA | Sensory Intelligence</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Inter:wght@200;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CORE VARIABLES --- */
+        :root {
+            --bg: #030304;
+            --surface: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-pri: #ececec;
+            --text-sec: #6f6f6f;
+            --accent: #b4a0e5; /* Lila digital */
+            --accent-glow: rgba(180, 160, 229, 0.25);
+            --success: #00ff9d; /* Verde datos */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-pri);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            font-size: 15px;
+        }
+
+        /* --- FONDO ATMOSFÉRICO (Living Background) --- */
+        .ambient-mesh {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(30, 30, 40, 0.4), transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(20, 20, 30, 0.4), transparent 50%);
+            filter: blur(60px);
+        }
+
+        /* --- HEADER TÉCNICO --- */
+        header {
+            position: fixed;
+            width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .brand {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand::before {
+            content: ''; width: 10px; height: 10px; background: var(--success);
+            border-radius: 50%; box-shadow: 0 0 10px var(--success);
+            animation: pulse 3s infinite;
+        }
+
+        nav { display: flex; gap: 30px; }
+        nav a { 
+            color: var(--text-sec); text-decoration: none; font-size: 0.85rem; 
+            text-transform: uppercase; transition: 0.3s;
+        }
+        nav a:hover { color: var(--text-pri); }
+
+        /* --- HERO: EL CEREBRO --- */
+        .hero {
+            min-height: 90vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            padding: 0 10%;
+        }
+
+        .hero-text h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 4.5rem;
+            line-height: 1;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+
+        .hero-text h1 span {
+            font-style: italic;
+            color: var(--accent);
+            position: relative;
+        }
+        
+        .hero-text h1 span::after {
+            content: '98% MATCH'; /* Dato inteligente */
+            position: absolute;
+            top: -10px; right: -40px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.6rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--success);
+            font-style: normal;
+        }
+
+        .hero-desc {
+            color: var(--text-sec);
+            max-width: 400px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        /* Selector Inteligente de Estado de Ánimo */
+        .mood-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .mood-btn {
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-sec);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .mood-btn:hover, .mood-btn.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--surface);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* Visualización Abstracta "Cerebro/Fluido" */
+        .visual-container {
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .fluid-shape {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            animation: morph 8s ease-in-out infinite;
+            backdrop-filter: blur(5px);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Anillos de datos orbitando */
+        .orbit {
+            position: absolute;
+            border: 1px dashed var(--border);
+            border-radius: 50%;
+            animation: spin 20s linear infinite;
+        }
+        .o1 { width: 500px; height: 500px; opacity: 0.3; }
+        .o2 { width: 350px; height: 350px; animation-direction: reverse; opacity: 0.5; border-color: var(--accent); }
+
+        @keyframes morph {
+            0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+            100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+        /* --- PRODUCT GRID INTELLIGENT --- */
+        .interface-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1px;
+            background: var(--border); /* Crea líneas finas entre celdas */
+            border-top: 1px solid var(--border);
+        }
+
+        .smart-card {
+            background: var(--bg);
+            padding: 40px;
+            position: relative;
+            transition: 0.4s;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .smart-card:hover {
+            background: #08080a;
+        }
+
+        /* Efecto de Escáner al hacer hover */
+        .smart-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 20px var(--accent), 0 0 10px #fff;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .smart-card:hover::after {
+            opacity: 1;
+            animation: scan 1.5s ease-in-out infinite;
+        }
+
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 0.7rem;
+            color: var(--text-sec);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Visualización del Juguete */
+        .device-visual {
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .device-shape {
+            background: linear-gradient(180deg, #1a1a1a, #000);
+            box-shadow: inset 2px 2px 5px rgba(255,255,255,0.1);
+            transition: 0.4s;
+        }
+
+        .smart-card:hover .device-shape {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(180, 160, 229, 0.15); /* Glow lila al escanear */
+        }
+
+        .d-wand { width: 50px; height: 180px; border-radius: 40px; }
+        .d-egg { width: 90px; height: 120px; border-radius: 50% 50% 40% 40%; }
+        .d-ring { width: 100px; height: 100px; border-radius: 50%; border: 20px solid #1a1a1a; background: transparent; }
+
+        .card-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        /* Barra de Datos (Inteligencia) */
+        .data-bar-container {
+            margin-top: auto;
+            display: flex;
+            gap: 15px;
+            font-size: 0.7rem;
+            color: var(--text-sec);
+        }
+
+        .data-point { display: flex; flex-direction: column; gap: 5px; width: 100%; }
+        
+        .bar {
+            width: 100%; height: 2px; background: rgba(255,255,255,0.1); position: relative;
+        }
+        .bar-fill {
+            height: 100%; background: var(--text-pri);
+        }
+
+        .btn-tech {
+            margin-top: 20px;
+            padding: 15px;
+            width: 100%;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-pri);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-tech:hover {
+            border-color: var(--accent);
+            background: rgba(180, 160, 229, 0.05);
+        }
+
+        /* --- FOOTER TIPO CONSOLA --- */
+        footer {
+            padding: 40px;
+            font-family: 'Inter', monospace;
+            font-size: 0.75rem;
+            color: #444;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--border);
+        }
+
+        @media(max-width: 900px) {
+            .hero { grid-template-columns: 1fr; text-align: center; padding-top: 100px;}
+            .visual-container { margin-top: 50px; }
+            .orbit { width: 300px; height: 300px; }
+            .interface-grid { grid-template-columns: 1fr; }
+            .mood-selector { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-mesh"></div>
+
+    <header>
+        <div class="brand">AURA_OS <span style="font-size: 0.6rem; opacity: 0.5;">v2.5</span></div>
+        <nav>
+            <a href="#">Analysis</a>
+            <a href="#">Laboratory</a>
+            <a href="#">Profile</a>
+        </nav>
+        <div>[ CART 0 ]</div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-text">
+            <div style="font-size: 0.8rem; color: var(--accent); margin-bottom: 15px; letter-spacing: 2px;">SYSTEM READY</div>
+            <h1>Tu placer,<br><span>decodificado</span>.</h1>
+            <p class="hero-desc">
+                Algoritmos hápticos y bio-retroalimentación. Deja de buscar productos y empieza a configurar sensaciones.
+            </p>
+            
+            <p style="font-size: 0.8rem; margin-bottom: 10px; color: var(--text-pri);">SELECCIONA OBJETIVO:</p>
+            <div class="mood-selector">
+                <button class="mood-btn active">Calma Profunda</button>
+                <button class="mood-btn">Pulsación</button>
+                <button class="mood-btn">Exploración</button>
+            </div>
+        </div>
+
+        <div class="visual-container">
+            <div class="orbit o1"></div>
+            <div class="orbit o2"></div>
+            <div class="fluid-shape">
+                <div style="width: 50px; height: 50px; background: #fff; border-radius: 50%; box-shadow: 0 0 40px var(--accent);"></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="interface-grid">
+        
+        <div class="smart-card">
+            <div class="card-header">
+                <span>ID: WND-01</span>
+                <span style="color: var(--success);">● EN STOCK</span>
+            </div>
+            
+            <div class="device-visual">
+                <div class="device-shape d-wand"></div>
+            </div>
+
+            <h3 class="card-title">Smart Wand Pro</h3>
+            <p style="color: #888; font-size: 0.9rem;">Tecnología SenseResponse™ que adapta la vibración a la presión ejercida.</p>
+            
+            <div class="data-bar-container">
+                <div class="data-point">
+                    <span>POTENCIA</span>
+                    <div class="bar"><div class="bar-fill" style="width: 90%;"></div></div>
+                </div>
+                <div class="data-point">
+                    <span>SILENCIO</span>
+                    <div class="bar"><div class="bar-fill" style="width: 60%;"></div></div>
+                </div>
+            </div>
+
+            <button class="btn-tech">
+                <span>CONFIGURAR</span>
+                <span>129 €</span>
+            </button>
+        </div>
+
+        <div class="smart-card">
+            <div class="card-header">
+                <span>ID: EGG-X</span>
+                <span>LIMITED ED.</span>
+            </div>
+            
+            <div class="device-visual">
+                <div class="device-shape d-egg"></div>
+            </div>
+
+            <h3 class="card-title">Sonic Egg</h3>
+            <p style="color: #888; font-size: 0.9rem;">Control mediante App. Sincronización con ritmos musicales y de voz.</p>
+            
+            <div class="data-bar-container">
+                <div class="data-point">
+                    <span>DISCRECIÓN</span>
+                    <div class="bar"><div class="bar-fill" style="width: 95%;"></div></div>
+                </div>
+                <div class="data-point">
+                    <span>BATERÍA</span>
+                    <div class="bar"><div class="bar-fill" style="width: 80%;"></div></div>
+                </div>
+            </div>
+
+            <button class="btn-tech">
+                <span>CONFIGURAR</span>
+                <span>89 €</span>
+            </button>
+        </div>
+
+        <div class="smart-card">
+            <div class="card-header">
+                <span>ID: RNG-04</span>
+                <span>DUAL MODE</span>
+            </div>
+            
+            <div class="device-visual">
+                <div class="device-shape d-ring"></div>
+            </div>
+
+            <h3 class="card-title">Haptic Ring</h3>
+            <p style="color: #888; font-size: 0.9rem;">Silicona conductiva térmica. Se calienta a 37.5°C para realismo total.</p>
+            
+            <div class="data-bar-container">
+                <div class="data-point">
+                    <span>TEMPERATURA</span>
+                    <div class="bar"><div class="bar-fill" style="width: 100%; background: #ffbd69;"></div></div>
+                </div>
+                <div class="data-point">
+                    <span>ERGONOMÍA</span>
+                    <div class="bar"><div class="bar-fill" style="width: 85%;"></div></div>
+                </div>
+            </div>
+
+            <button class="btn-tech">
+                <span>CONFIGURAR</span>
+                <span>65 €</span>
+            </button>
+        </div>
+
+    </div>
+
+    <footer>
+        <div>SECURE CONNECTION [TLS 1.3]</div>
+        <div>AURA LABS © 2025</div>
+        <div>DATA PRIVACY: ENCRYPTED</div>
+    </footer>
+
+</body>
+</html>

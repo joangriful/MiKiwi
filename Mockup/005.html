@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA | Avant-Garde</title>
+    <style>
+        /* --- FUENTES IMPORTADAS --- */
+        @import url('https://fonts.googleapis.com/css2?family=Italiana&family=Syncopate:wght@400;700&display=swap');
+
+        /* --- VARIABLES --- */
+        :root {
+            --bg: #080808;
+            --text: #e8e8e3;
+            --accent: #ff3c00; /* Rojo vibrante */
+            --glass: rgba(255, 255, 255, 0.03);
+            --font-display: 'Syncopate', sans-serif; /* Futurista ancha */
+            --font-serif: 'Italiana', serif; /* Elegante clásica */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* OCULTAMOS CURSOR NATIVO */
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            font-family: var(--font-display);
+        }
+
+        /* --- CURSOR PERSONALIZADO (CÍRCULO INVERSO) --- */
+        .cursor {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--text);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background 0.3s;
+            mix-blend-mode: difference;
+        }
+
+        .cursor.hovered {
+            width: 80px;
+            height: 80px;
+            background: var(--text);
+            opacity: 0.8;
+        }
+
+        /* --- NAV FLOTANTE DESESTRUCTURADO --- */
+        nav {
+            position: fixed;
+            top: 40px;
+            width: 100%;
+            padding: 0 5vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            mix-blend-mode: difference;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -2px;
+        }
+
+        .menu-btn {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* --- HERO: TIPOGRAFÍA CINÉTICA --- */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Texto gigante de fondo rotando */
+        .kinetic-bg {
+            position: absolute;
+            font-size: 20vw;
+            white-space: nowrap;
+            opacity: 0.05;
+            font-weight: 700;
+            animation: rotateText 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotateText {
+            0% { transform: rotate(0deg) scale(1.5); }
+            100% { transform: rotate(360deg) scale(1.5); }
+        }
+
+        /* Círculo central (Portal) */
+        .portal-wrapper {
+            position: relative;
+            width: 350px;
+            height: 450px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .portal {
+            width: 100%;
+            height: 100%;
+            border-radius: 150px; /* Forma de píldora */
+            background: radial-gradient(circle at 50% 50%, #222, #000);
+            position: absolute;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        /* Efecto líquido dentro del portal */
+        .portal::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, var(--glass), transparent);
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .hero-title {
+            position: absolute;
+            z-index: 10;
+            text-align: center;
+            mix-blend-mode: exclusion;
+        }
+
+        .hero-title h1 {
+            font-family: var(--font-serif);
+            font-size: 6rem;
+            line-height: 0.8;
+            font-style: italic;
+        }
+
+        .hero-title span {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            letter-spacing: 10px;
+            display: block;
+            margin-top: 20px;
+            color: var(--accent);
+        }
+
+        /* Interacción Hero */
+        .portal-wrapper:hover .portal {
+            transform: scale(1.1);
+            border-color: var(--accent);
+            box-shadow: 0 0 50px rgba(255, 60, 0, 0.2);
+        }
+
+        /* --- SCROLL HORIZONTAL DE PRODUCTOS (GALLERY STYLE) --- */
+        .gallery-section {
+            padding: 10vh 0;
+            position: relative;
+        }
+
+        .section-label {
+            position: absolute;
+            left: 5vw;
+            top: 0;
+            font-size: 10rem;
+            opacity: 0.05;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-weight: 700;
+        }
+
+        .gallery-container {
+            display: flex;
+            gap: 5vw;
+            padding-left: 15vw; /* Dejar espacio para el label */
+            overflow-x: auto;
+            padding-bottom: 50px;
+            scrollbar-width: none; /* Firefox */
+        }
+        .gallery-container::-webkit-scrollbar { display: none; }
+
+        .art-piece {
+            min-width: 300px;
+            position: relative;
+            transition: 0.5s;
+        }
+
+        .art-visual {
+            height: 450px;
+            background: #111;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Generación de Arte Abstracto con CSS (Simulando el Juguete) */
+        .abstract-shape {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 200px;
+            background: linear-gradient(45deg, #333, #000);
+            border-radius: 50px;
+            filter: blur(2px);
+            transition: 0.5s;
+        }
+        
+        .art-piece:hover .abstract-shape {
+            filter: blur(0px);
+            background: linear-gradient(45deg, var(--accent), #500);
+            width: 120px; 
+            transform: translate(-50%, -50%) rotate(5deg);
+        }
+
+        .art-piece:hover .art-visual {
+            transform: skewY(-2deg);
+        }
+
+        /* Overlay de Ruido en la imagen */
+        .noise-img {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.2;
+            mix-blend-mode: overlay;
+        }
+
+        .art-info {
+            border-top: 1px solid var(--text);
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+        }
+
+        .price-tag {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            color: var(--accent);
+        }
+
+        /* --- MANIFIESTO (Texto gigante) --- */
+        .manifesto {
+            padding: 15vh 5vw;
+            text-align: justify;
+        }
+
+        .manifesto p {
+            font-size: 2.5rem;
+            line-height: 1.4;
+            text-transform: uppercase;
+            font-family: var(--font-display);
+            color: #333;
+            transition: 0.5s;
+        }
+
+        .manifesto p:hover {
+            color: var(--text);
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+
+        .highlight { color: var(--accent); }
+
+        /* --- FOOTER ASIMÉTRICO --- */
+        footer {
+            background: var(--text);
+            color: var(--bg);
+            padding: 50px 5vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 100px;
+        }
+
+        .big-f {
+            font-size: 15vw;
+            line-height: 0.8;
+            font-weight: 700;
+            opacity: 0.1;
+        }
+
+        .links-f {
+            text-align: right;
+        }
+        .links-f a { display: block; font-size: 1.2rem; font-weight: 700; text-decoration: underline; }
+
+        @media(max-width: 768px) {
+            .hero-title h1 { font-size: 3rem; }
+            .section-label { display: none; }
+            .gallery-container { padding-left: 5vw; }
+            .manifesto p { font-size: 1.5rem; }
+            .kinetic-bg { display: none; } /* Ahorro de recursos en móvil */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor"></div>
+    <script>
+        const cursor = document.querySelector('.cursor');
+        document.addEventListener('mousemove', e => {
+            cursor.style.top = e.clientY + "px";
+            cursor.style.left = e.clientX + "px";
+        });
+        
+        // Efecto hover en enlaces
+        document.querySelectorAll('a, .art-piece, .portal-wrapper').forEach(item => {
+            item.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            item.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+    </script>
+
+    <nav>
+        <div class="brand">AURA <span style="color:var(--accent)">.RAW</span></div>
+        <div class="menu-btn">Menu ///</div>
+    </nav>
+
+    <section class="hero">
+        <div class="kinetic-bg">PLEASURE IS ART - PLEASURE IS ART - PLEASURE IS ART</div>
+        
+        <div class="portal-wrapper">
+            <div class="portal">
+                <div class="noise-img"></div>
+            </div>
+        </div>
+
+        <div class="hero-title">
+            <h1>Sensory<br>Object</h1>
+            <span>COLLECTION 01</span>
+        </div>
+    </section>
+
+    <section class="manifesto">
+        <p>
+            No vendemos juguetes. <br>
+            Diseñamos <span class="highlight">esculturas</span> que vibran. 
+            La intimidad no es un producto, es una <span class="highlight">performance</span> privada entre tú y la tecnología.
+        </p>
+    </section>
+
+    <section class="gallery-section">
+        <div class="section-label">OBJECTS</div>
+        
+        <div class="gallery-container">
+            
+            <div class="art-piece">
+                <div class="art-visual">
+                    <div class="noise-img"></div>
+                    <div class="abstract-shape" style="border-radius: 60px 60px 20px 20px;"></div>
+                </div>
+                <div class="art-info">
+                    <span>The Monolith</span>
+                    <span class="price-tag">€180</span>
+                </div>
+            </div>
+
+            <div class="art-piece">
+                <div class="art-visual">
+                    <div class="noise-img"></div>
+                    <div class="abstract-shape" style="width: 120px; height: 120px; border-radius: 50%;"></div>
+                </div>
+                <div class="art-info">
+                    <span>The Orb</span>
+                    <span class="price-tag">€95</span>
+                </div>
+            </div>
+
+            <div class="art-piece">
+                <div class="art-visual">
+                    <div class="noise-img"></div>
+                    <div class="abstract-shape" style="width: 60px; height: 180px; border-radius: 100px;"></div>
+                </div>
+                <div class="art-info">
+                    <span>The Serpent</span>
+                    <span class="price-tag">€110</span>
+                </div>
+            </div>
+
+            <div class="art-piece">
+                <div class="art-visual">
+                    <div class="noise-img"></div>
+                    <div class="abstract-shape" style="border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; width: 140px;"></div>
+                </div>
+                <div class="art-info">
+                    <span>The Abstract</span>
+                    <span class="price-tag">€150</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="big-f">18+</div>
+        <div class="links-f">
+            <a href="#">INSTAGRAM ↗</a>
+            <a href="#">TIKTOK ↗</a>
+            <a href="#">LEGAL</a>
+        </div>
+    </footer>
+
+</body>
+</html>

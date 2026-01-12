@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA | Future Intimacy</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- VARIABLES 2025 --- */
+        :root {
+            --bg: #030303;
+            --surface: #0e0e0e;
+            --text-pri: #e6e6e6;
+            --text-sec: #666;
+            --accent-glow: #7b2cbf; /* Ultra Violet */
+            --accent-light: #e0aaff;
+            --line: rgba(255, 255, 255, 0.08);
+            --font-display: 'Cinzel', serif;
+            --font-tech: 'Space Mono', monospace;
+        }
+
+        /* --- RESET & BASE --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text-pri);
+            font-family: var(--font-tech); /* Base tecnológica */
+            overflow-x: hidden;
+            font-size: 14px;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* --- EFECTO DE GRANO (TEXTURA) --- */
+        .noise {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.04;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+        }
+
+        /* --- CORNER NAVIGATION (Tendencia 2025) --- */
+        .nav-corner {
+            position: fixed;
+            z-index: 100;
+            padding: 2rem;
+            mix-blend-mode: difference;
+        }
+        
+        .top-left { top: 0; left: 0; }
+        .top-right { top: 0; right: 0; display: flex; gap: 20px;}
+        .btm-left { bottom: 0; left: 0; display: flex; align-items: center; gap: 10px;}
+        .btm-right { bottom: 0; right: 0; }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -1px;
+        }
+
+        .menu-link {
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            position: relative;
+        }
+        .menu-link::before {
+            content: '['; margin-right: 5px; opacity: 0; transition: 0.3s; color: var(--accent-light);
+        }
+        .menu-link::after {
+            content: ']'; margin-left: 5px; opacity: 0; transition: 0.3s; color: var(--accent-light);
+        }
+        .menu-link:hover::before, .menu-link:hover::after { opacity: 1; }
+
+        .status-dot {
+            width: 8px; height: 8px; background: #0f0; border-radius: 50%;
+            box-shadow: 0 0 10px #0f0; animation: blink 2s infinite;
+        }
+
+        @keyframes blink { 50% { opacity: 0.4; } }
+
+        /* --- HERO SECTION (TYPOGRAPHY LED) --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .hero-bg-glow {
+            position: absolute;
+            width: 40vw; height: 40vw;
+            background: radial-gradient(circle, rgba(123, 44, 191, 0.15), transparent 60%);
+            filter: blur(80px);
+            z-index: -1;
+            animation: moveGlow 10s infinite alternate;
+        }
+
+        @keyframes moveGlow { from {transform: translate(-10%, -10%);} to {transform: translate(10%, 10%);} }
+
+        .big-text {
+            font-family: var(--font-display);
+            font-size: 13vw;
+            line-height: 0.8;
+            text-align: center;
+            opacity: 0.9;
+            background: linear-gradient(to bottom, #fff, #666);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle-tech {
+            margin-top: 20px;
+            color: var(--text-sec);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.7rem;
+            border: 1px solid var(--line);
+            padding: 10px 20px;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+        }
+
+        /* --- STICKY SCROLL SECTION --- */
+        .split-section {
+            display: flex;
+            min-height: 150vh;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .sticky-col {
+            width: 40%;
+            padding: 4rem;
+            border-right: 1px solid var(--line);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .scroll-col {
+            width: 60%;
+            padding: 4rem;
+        }
+
+        h2 {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+        }
+
+        p.lead {
+            color: var(--text-sec);
+            line-height: 1.8;
+            font-size: 1rem;
+            max-width: 90%;
+        }
+
+        /* --- BENTO GRID SYSTEM (CORE 2025 TREND) --- */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .bento-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            padding: 30px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bento-card:hover {
+            border-color: var(--accent-light);
+            box-shadow: 0 0 30px rgba(123, 44, 191, 0.1);
+        }
+
+        .bento-card.tall { grid-row: span 2; min-height: 820px; }
+        .bento-card.wide { grid-column: span 2; min-height: 300px; flex-direction: row; align-items: center;}
+
+        /* Visualización Abstracta de Productos */
+        .product-shape {
+            width: 100%;
+            height: 200px;
+            background: radial-gradient(circle at 30% 30%, #333, #000);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: inset 2px 2px 5px rgba(255,255,255,0.05);
+            transition: 0.5s;
+        }
+
+        .bento-card:hover .product-shape { transform: scale(0.98); }
+
+        /* Formas específicas */
+        .shape-wand { width: 60px; height: 180px; margin: 0 auto; border-radius: 50px; background: linear-gradient(180deg, #222, #111); }
+        .shape-suction { width: 120px; height: 120px; margin: 0 auto; border-radius: 50%; background: linear-gradient(135deg, #2a2a2a, #0a0a0a); }
+        
+        /* Etiquetas técnicas */
+        .spec-tag {
+            font-size: 0.65rem;
+            color: var(--accent-light);
+            border: 1px solid var(--line);
+            padding: 4px 8px;
+            display: inline-block;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .card-price {
+            font-size: 1rem;
+            color: var(--text-sec);
+        }
+
+        .btn-add {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 1px solid var(--text-pri);
+            color: var(--text-pri);
+            font-family: var(--font-tech);
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-add:hover {
+            background: var(--text-pri);
+            color: var(--bg);
+        }
+
+        /* --- MARQUEE TECH --- */
+        .marquee {
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            padding: 1.5rem 0;
+            overflow: hidden;
+            white-space: nowrap;
+            background: #000;
+        }
+
+        .marquee-inner {
+            display: inline-block;
+            animation: scroll 15s linear infinite;
+        }
+
+        .marquee span {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            margin-right: 80px;
+            color: #333;
+            -webkit-text-stroke: 1px var(--text-sec); 
+        }
+
+        @keyframes scroll { to { transform: translateX(-50%); } }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .nav-corner { padding: 1rem; }
+            .top-right, .btm-left { display: none; }
+            .hero h1 { font-size: 18vw; }
+            .split-section { flex-direction: column; }
+            .sticky-col, .scroll-col { width: 100%; padding: 2rem; height: auto; position: relative; border-right: none;}
+            .bento-grid { grid-template-columns: 1fr; }
+            .bento-card.wide { flex-direction: column; align-items: flex-start; }
+            .bento-card.tall { grid-row: auto; min-height: 400px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="noise"></div>
+
+    <nav class="nav-corner top-left">
+        <div class="logo">AURA®</div>
+    </nav>
+    <nav class="nav-corner top-right">
+        <a href="#" class="menu-link">Shop</a>
+        <a href="#" class="menu-link">About</a>
+        <a href="#" class="menu-link">Journal</a>
+    </nav>
+    <nav class="nav-corner btm-left">
+        <div class="status-dot"></div>
+        <span style="font-size: 0.7rem; color: #666;">SYSTEM ONLINE</span>
+    </nav>
+    <nav class="nav-corner btm-right">
+        <a href="#" class="menu-link">Cart (0)</a>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-bg-glow"></div>
+        <div class="big-text">
+            SENSORY<br>ENGINEERING
+        </div>
+        <div class="subtitle-tech">
+            EST. 2025 — HAPTIC TECHNOLOGY
+        </div>
+    </section>
+
+    <div class="marquee">
+        <div class="marquee-inner">
+            <span>DISCREET SHIPPING</span>
+            <span>SONIC WAVES</span>
+            <span>MEDICAL SILICONE</span>
+            <span>DISCREET SHIPPING</span>
+            <span>SONIC WAVES</span>
+            <span>MEDICAL SILICONE</span>
+        </div>
+    </div>
+
+    <section class="split-section">
+        
+        <div class="sticky-col">
+            <span class="spec-tag">01 — CONCEPT</span>
+            <h2>Diseño para el placer moderno.</h2>
+            <p class="lead">
+                Nuestra colección abandona los clichés. Sin colores estridentes, sin formas agresivas. Solo escultura ergonómica, motores silenciosos de bajo decibelio y materiales que imitan la piel humana.
+            </p>
+            <br>
+            <p style="font-family: var(--font-tech); font-size: 0.8rem; color: var(--accent-light);">
+                > INITIATING PROTOCOL...<br>
+                > LOADING ASSETS...
+            </p>
+        </div>
+
+        <div class="scroll-col">
+            <div class="bento-grid">
+                
+                <div class="bento-card tall">
+                    <div>
+                        <span class="spec-tag">BEST SELLER</span>
+                        <div style="display: flex; justify-content: center; align-items: center; height: 300px;">
+                            <div class="shape-wand product-shape"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="card-title">The Architect</h3>
+                        <p class="card-price">120.00 EUR</p>
+                        <p style="font-size: 0.8rem; color: #666; margin-top: 10px;">Estimulador de punto G con arquitectura flexible y memoria de forma.</p>
+                        <button class="btn-add">Añadir al Carrito</button>
+                    </div>
+                </div>
+
+                <div class="bento-card">
+                    <span class="spec-tag">TECHNOLOGY</span>
+                    <h3 class="card-title">Sonic Air™</h3>
+                    <div style="display: flex; justify-content: center; align-items: center; flex-grow: 1;">
+                         <div class="shape-suction product-shape"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #666; border-top: 1px solid #333; padding-top: 10px;">
+                        <span>INTENSITY: 9/10</span>
+                        <span>BATTERY: 4H</span>
+                    </div>
+                </div>
+
+                <div class="bento-card" style="background: #1a1a1a; justify-content: center;">
+                    <h3 style="font-family: var(--font-display); text-align: center; font-style: italic; color: var(--text-sec);">
+                        "El lujo es privacidad."
+                    </h3>
+                </div>
+
+                <div class="bento-card wide">
+                    <div style="flex: 1; padding-right: 20px;">
+                        <span class="spec-tag">NEW DROP</span>
+                        <h3 class="card-title">Luna Oil</h3>
+                        <p class="lead" style="font-size: 0.9rem;">Lubricante a base de agua con partículas de CBD y aroma a madera de sándalo.</p>
+                        <button class="btn-add" style="width: auto; padding: 10px 30px; margin-top: 20px;">Ver Detalles</button>
+                    </div>
+                    <div style="flex: 1; display: flex; justify-content: center;">
+                         <div style="width: 100px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50px 50px 0 0; border: 1px solid #333;"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer style="padding: 50px; border-top: 1px solid var(--line); text-align: center;">
+        <h2 style="font-size: 10vw; opacity: 0.1;">AURA</h2>
+        <div style="display: flex; justify-content: space-between; margin-top: 20px; font-size: 0.8rem; color: #666;">
+            <span>© 2025 AURA INC.</span>
+            <span>PRIVACY POLICY</span>
+            <span>SECURE PAYMENT</span>
+        </div>
+    </footer>
+
+</body>
+</html>

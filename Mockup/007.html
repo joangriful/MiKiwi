@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA | Deep Immersion</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;600&family=Prata&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CORE SETTINGS --- */
+        :root {
+            --bg: #050505;
+            --text: #e0e0e0;
+            --text-dim: #666;
+            --gold: #cfaa76;
+            --purple-haze: rgba(86, 60, 120, 0.15);
+            --glass: rgba(20, 20, 20, 0.6);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Mulish', sans-serif;
+            overflow-x: hidden;
+            font-size: 16px;
+        }
+
+        /* --- LOADER CINEMÁTICO --- */
+        .loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeOut 1s ease-in-out 2.5s forwards;
+            pointer-events: none;
+        }
+
+        .loader-text {
+            font-family: 'Prata', serif;
+            font-size: 2rem;
+            letter-spacing: 5px;
+            color: transparent;
+            background: linear-gradient(90deg, #333 0%, #fff 50%, #333 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            animation: shimmer 2s linear infinite;
+        }
+
+        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+        @keyframes shimmer { to { background-position: 200% center; } }
+
+        /* --- TEXTURA Y AMBIENTE --- */
+        .noise {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.06; pointer-events: none; z-index: 9000;
+        }
+
+        .glow-orb {
+            position: fixed; width: 600px; height: 600px;
+            background: radial-gradient(circle, var(--purple-haze), transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            animation: floatOrb 15s infinite alternate;
+        }
+
+        @keyframes floatOrb { from { transform: translate(-20%, -20%); } to { transform: translate(20%, 20%); } }
+
+        /* --- NAVEGACIÓN VERTICAL --- */
+        nav {
+            position: fixed;
+            left: 0; top: 0;
+            height: 100vh;
+            width: 80px;
+            border-right: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 0;
+            z-index: 100;
+            background: var(--bg);
+        }
+
+        .nav-logo { writing-mode: vertical-rl; text-orientation: mixed; font-family: 'Prata', serif; font-size: 1.5rem; letter-spacing: 3px; transform: rotate(180deg); }
+        .nav-links { writing-mode: vertical-rl; display: flex; gap: 40px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); }
+        .menu-burger { width: 30px; height: 2px; background: #fff; position: relative; }
+        .menu-burger::after { content: ''; position: absolute; top: 8px; width: 20px; height: 2px; background: #fff; right: 0; }
+
+        /* --- HERO: ESCALERA TIPOGRÁFICA --- */
+        .hero {
+            height: 100vh;
+            padding-left: 80px; /* Offset del nav */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content { position: relative; z-index: 2; text-align: center; }
+
+        .hero-title {
+            font-family: 'Prata', serif;
+            font-size: 7vw;
+            line-height: 0.9;
+            mix-blend-mode: exclusion;
+        }
+
+        .hero-title span { display: block; opacity: 0; animation: slideUp 1s ease forwards; }
+        .hero-title span:nth-child(2) { animation-delay: 2.8s; margin-left: 100px; font-style: italic; color: var(--gold); }
+        .hero-title span:nth-child(3) { animation-delay: 3.1s; margin-right: 100px; }
+
+        .hero-subtitle {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            animation: fadeIn 1s ease 3.5s forwards; opacity: 0;
+        }
+
+        /* Abstract Shape Hero */
+        .shape-hero {
+            position: absolute;
+            width: 400px; height: 600px;
+            background: linear-gradient(45deg, #1a1a1a, #0a0a0a);
+            border-radius: 100px;
+            transform: rotate(-15deg);
+            z-index: 1;
+            box-shadow: 20px 20px 100px rgba(0,0,0,0.8), inset 5px 5px 20px rgba(255,255,255,0.05);
+            animation: floatHero 6s ease-in-out infinite;
+        }
+
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes floatHero { 0%, 100% { transform: rotate(-15deg) translateY(0); } 50% { transform: rotate(-15deg) translateY(-20px); } }
+
+        /* --- SCROLL NARRATIVO (Sticky Layout) --- */
+        .story-container {
+            display: flex;
+            padding-left: 80px;
+        }
+
+        /* Left side (Sticky Visual) */
+        .story-visual {
+            width: 50%;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #111 0%, #050505 70%);
+            border-right: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .product-sculpture {
+            width: 200px; height: 350px;
+            background: #151515;
+            border-radius: 100px 100px 40px 40px;
+            position: relative;
+            box-shadow: 
+                inset 10px 10px 30px rgba(255,255,255,0.05),
+                20px 20px 50px #000;
+            transition: 0.5s;
+        }
+
+        /* Simulación de textura de silicona */
+        .product-sculpture::after {
+            content: ''; position: absolute; inset: 0; border-radius: inherit;
+            background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.2) 10px, rgba(0,0,0,0.2) 20px);
+            opacity: 0.3;
+        }
+
+        /* Right side (Scrollable Content) */
+        .story-content {
+            width: 50%;
+            background: var(--bg);
+        }
+
+        .scroll-section {
+            min-height: 80vh;
+            padding: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .chapter-label { font-size: 0.7rem; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
+        .story-heading { font-family: 'Prata'; font-size: 3rem; margin-bottom: 30px; line-height: 1.1; }
+        .story-text { color: #999; line-height: 1.8; font-size: 1.1rem; max-width: 90%; }
+        
+        /* Interactive Tech Specs within text */
+        .tech-pill {
+            display: inline-block;
+            padding: 5px 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            margin: 5px 0;
+            font-size: 0.8rem;
+            transition: 0.3s;
+        }
+        .tech-pill:hover { background: #fff; color: #000; }
+
+        /* --- LAYOUT EDITORIAL (ASIMÉTRICO) --- */
+        .editorial-grid {
+            padding: 150px 80px 150px 160px; /* Adjust for nav */
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 100px;
+            position: relative;
+        }
+
+        .editorial-img {
+            height: 600px;
+            background: #111;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* CSS Generative Art (Abstract Photo) */
+        .art-gen {
+            width: 100%; height: 100%;
+            background: linear-gradient(120deg, #222, #000);
+            position: relative;
+        }
+        .art-gen::before {
+            content: ''; position: absolute; width: 150%; height: 150%;
+            background: radial-gradient(circle, rgba(207, 170, 118, 0.2), transparent 60%);
+            top: -20%; left: -20%;
+        }
+
+        .editorial-text {
+            padding-top: 100px;
+        }
+
+        .big-quote {
+            font-family: 'Prata';
+            font-size: 2.5rem;
+            line-height: 1.3;
+            margin-bottom: 40px;
+        }
+
+        .floating-card {
+            position: absolute;
+            bottom: 50px;
+            left: 50px; /* Overlap effect */
+            background: rgba(30,30,30,0.9);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            width: 300px;
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 10;
+        }
+
+        /* --- FOOTER MASIVO --- */
+        footer {
+            padding: 100px 100px 50px 180px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 80px;
+        }
+
+        .footer-logo { font-family: 'Prata'; font-size: 4rem; margin-bottom: 20px; }
+        .footer-desc { max-width: 300px; color: #666; line-height: 1.6; }
+
+        .footer-links h4 { margin-bottom: 20px; font-size: 0.9rem; color: #fff; }
+        .footer-links ul li { margin-bottom: 15px; color: #666; font-size: 0.9rem; transition: 0.3s; cursor: pointer;}
+        .footer-links ul li:hover { color: var(--gold); padding-left: 10px; }
+
+        .marquee-footer {
+            overflow: hidden;
+            white-space: nowrap;
+            opacity: 0.1;
+            font-size: 8rem;
+            font-family: 'Prata';
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="loader">
+        <div class="loader-text">AURA EXPERIENCE</div>
+    </div>
+    <div class="noise"></div>
+    <div class="glow-orb" style="top: 20%; left: 20%;"></div>
+    <div class="glow-orb" style="bottom: 20%; right: 20%; background: rgba(200, 150, 100, 0.1);"></div>
+
+    <nav>
+        <div class="menu-burger"></div>
+        <div class="nav-links">
+            <span>Colección</span>
+            <span>Journal</span>
+            <span>Cuenta</span>
+        </div>
+        <div class="nav-logo">AURA</div>
+    </nav>
+
+    <section class="hero">
+        <div class="shape-hero"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span>INTIMACY</span>
+                <span>REIMAGINED</span>
+                <span>FOR THE SOUL</span>
+            </h1>
+            <div class="hero-subtitle">Vol 01. The Beginning</div>
+        </div>
+    </section>
+
+    <div class="story-container">
+        
+        <div class="story-visual">
+            <div class="product-sculpture"></div>
+        </div>
+
+        <div class="story-content">
+            
+            <section class="scroll-section">
+                <span class="chapter-label">01 — La Forma</span>
+                <h2 class="story-heading">Esculpido, <br>no fabricado.</h2>
+                <p class="story-text">
+                    Olvidamos la ingeniería industrial para abrazar la escultura orgánica. Cada curva de "The Essence" ha sido diseñada siguiendo la proporción áurea del cuerpo humano.
+                    <br><br>
+                    <span class="tech-pill">Silicona Líquida</span>
+                    <span class="tech-pill">Acabado Mate</span>
+                    <span class="tech-pill">Hipoalergénico</span>
+                </p>
+            </section>
+
+            <section class="scroll-section">
+                <span class="chapter-label">02 — La Tecnología</span>
+                <h2 class="story-heading">Silencio <br>Arquitectónico.</h2>
+                <p class="story-text">
+                    La verdadera potencia no necesita hacer ruido. Hemos desarrollado un motor de levitación magnética que elimina la fricción interna, logrando una vibración profunda bajo los 40dB.
+                    <br><br>
+                    <span class="tech-pill">Motor MagLev™</span>
+                    <span class="tech-pill">&lt; 35 Decibelios</span>
+                    <span class="tech-pill">8 Modos</span>
+                </p>
+            </section>
+
+            <section class="scroll-section">
+                <span class="chapter-label">03 — La Conexión</span>
+                <h2 class="story-heading">Inteligencia <br>Táctil.</h2>
+                <p class="story-text">
+                    Sensores de presión que responden a tu tacto. Cuanto más fuerte aprietas el dispositivo, más intensa se vuelve la respuesta. Una conversación sin palabras.
+                </p>
+                <br>
+                <a href="#" style="font-family: 'Prata'; font-size: 1.2rem; border-bottom: 1px solid var(--gold); color: var(--gold); display: inline-block; padding-bottom: 5px;">Adquirir Edición Limitada (180€)</a>
+            </section>
+
+        </div>
+    </div>
+
+    <section class="editorial-grid">
+        <div class="editorial-img">
+            <div class="art-gen"></div> <div class="floating-card">
+                <h4 style="font-family: 'Prata'; margin-bottom: 10px; font-size: 1.5rem;">Rituales</h4>
+                <p style="font-size: 0.9rem; color: #999; line-height: 1.6;">
+                    Guía para crear un espacio seguro, iluminación tenue y aromaterapia para acompañar tu experiencia.
+                </p>
+                <div style="margin-top: 20px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;">Leer Artículo →</div>
+            </div>
+        </div>
+
+        <div class="editorial-text">
+            <blockquote class="big-quote">
+                "El lujo moderno no se trata de exceso, sino de la ausencia de vulgaridad."
+            </blockquote>
+            <p style="color: #666; line-height: 1.8;">
+                En Aura, creemos que el bienestar sexual es una extensión del cuidado personal, tan vital como el sueño, la nutrición o el mindfulness.
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div>
+                <div class="footer-logo">AURA.</div>
+                <p class="footer-desc">Diseñado en Copenhague. Fabricado con ética. Enfocado en el placer humano.</p>
+            </div>
+            <div class="footer-links">
+                <h4>SHOP</h4>
+                <ul>
+                    <li>The Collection</li>
+                    <li>Accessories</li>
+                    <li>Gift Sets</li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>LEGAL</h4>
+                <ul>
+                    <li>Privacy Policy</li>
+                    <li>Shipping & Returns</li>
+                    <li>Contact Support</li>
+                </ul>
+            </div>
+        </div>
+        <div class="marquee-footer">
+            PURE SENSORY EXPERIENCE — AURA 2025
+        </div>
+    </footer>
+
+</body>
+</html>
