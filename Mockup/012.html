@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wand Signature | Experience - AURA</title>
+    <style>
+        /* --- VARIABLES & RESET --- */
+        :root {
+            --bg-body: #050505;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --accent: #bfaec9;
+            --glass: rgba(10, 10, 10, 0.6);
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        .btn-reset {
+            border: none;
+            background: none;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* --- HEADER (Minimal) --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 30px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .menu-btn {
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        /* --- SECTIONS (Full Height) --- */
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 10%;
+            position: relative;
+        }
+
+        /* HERO */
+        .hero-immersive {
+            background: radial-gradient(circle at 30% 50%, #1a1520, #000);
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 5rem;
+            font-weight: 200;
+            line-height: 1;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #999);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 50px;
+        }
+
+        .hero-visual {
+            width: 300px;
+            height: 500px;
+            background: #111;
+            border-radius: 150px;
+            box-shadow: 0 0 100px rgba(191, 174, 201, 0.1);
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-visual::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 80%;
+            background: linear-gradient(#333, #000);
+            border-radius: 100px;
+        }
+
+        /* STORY SECTIONS (Zig Zag) */
+        .story-section {
+            flex-direction: row;
+            gap: 80px;
+            overflow: hidden;
+        }
+
+        .story-section.reverse {
+            flex-direction: row-reverse;
+        }
+
+        .story-text {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .story-text h2 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+
+        .story-text h2 span {
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .story-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+        }
+
+        .story-visual {
+            flex: 1;
+            height: 600px;
+            background: #111;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .story-img-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #151515, #0a0a0a);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            opacity: 0.5;
+        }
+
+        /* TECH SPECS (Grid) */
+        .tech-section {
+            background: #080808;
+            align-items: flex-start;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            width: 100%;
+            margin-top: 60px;
+        }
+
+        .tech-item {
+            padding: 30px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+
+        .tech-item:hover {
+            border-color: var(--accent);
+            background: rgba(191, 174, 201, 0.02);
+        }
+
+        .tech-icon {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .tech-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .tech-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* STICKY BUY BAR */
+        .buy-bar {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1000px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .bar-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bar-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .bar-price {
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .bar-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-buy {
+            background: var(--text-main);
+            color: var(--bg-body);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+            transition: 0.3s;
+        }
+
+        .btn-buy:hover {
+            background: var(--accent);
+            transform: scale(1.05);
+        }
+
+        @media(max-width: 900px) {
+            .hero-content h1 {
+                font-size: 3rem;
+            }
+
+            .story-section,
+            .story-section.reverse {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .buy-bar {
+                width: 95%;
+                flex-direction: column;
+                gap: 15px;
+                bottom: 10px;
+                border-radius: 20px;
+            }
+
+            .bar-actions {
+                width: 100%;
+            }
+
+            .btn-buy {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">AURA<span>.</span></div>
+        <div class="menu-btn">&#9776;</div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero-immersive">
+        <div class="hero-content">
+            <p>The Signature Collection</p>
+            <h1>Beyond <br>Sensation</h1>
+        </div>
+        <div class="hero-visual"></div>
+        <div style="position: absolute; bottom: 40px; opacity: 0.5; font-size: 0.8rem;">SCROLL TO DISCOVER</div>
+    </section>
+
+    <!-- SECTION 1: DESIGN -->
+    <section class="story-section">
+        <div class="story-text">
+            <h2>Diseño <span>Escultórico</span></h2>
+            <p>
+                Olvídate de lo convencional. Hemos creado una pieza que merece ser admirada.
+                Líneas fluidas que se adaptan a la anatomía humana, eliminando cualquier rastro de mecanicidad.
+                Es arte, hasta que lo tocas.
+            </p>
+        </div>
+        <div class="story-visual">
+            <div class="story-img-placeholder">&#10024;</div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: SILENCE -->
+    <section class="story-section reverse">
+        <div class="story-text">
+            <h2>Poder <span>Silencioso</span></h2>
+            <p>
+                Nuestra tecnología Whispr™ patentada asegura que lo único que oirás será tu propia respiración.
+                Vibraciones profundas, resonantes, pero increíblemente discretas.
+                La verdadera potencia no necesita hacer ruido.
+            </p>
+        </div>
+        <div class="story-visual">
+            <div class="story-img-placeholder">&#128263;</div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: TECH SPECS -->
+    <section class="tech-section">
+        <h2 style="font-size: 2.5rem; font-weight: 300;">Especificaciones Técnicas</h2>
+        <div class="tech-grid">
+            <div class="tech-item">
+                <div class="tech-icon">&#128267;</div>
+                <div class="tech-title">Batería de Larga Duración</div>
+                <div class="tech-desc">Hasta 4 horas de uso continuo con una sola carga. Carga magnética rápida.</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-icon">&#128167;</div>
+                <div class="tech-title">100% Sumergible</div>
+                <div class="tech-desc">Certificación IPX7. Perfecto para disfrutar en la ducha o la bañera sin
+                    preocupaciones.</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-icon">&#129302;</div>
+                <div class="tech-title">Silicona de Grado Médico</div>
+                <div class="tech-desc">Hipoalergénica, no porosa y extremadamente suave al tacto. Fácil de limpiar.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STICKY BUY BAR -->
+    <div class="buy-bar">
+        <div class="bar-info">
+            <div class="bar-name">Wand Signature Edition</div>
+            <div class="bar-price">89,00 €</div>
+        </div>
+        <div class="bar-actions">
+            <!-- Simulated Color Dots -->
+            <div style="display:flex; gap:5px; align-items:center;">
+                <div style="width:20px; height:20px; background:#111; border-radius:50%; border:1px solid #555;"></div>
+                <div style="width:20px; height:20px; background:#bfaec9; border-radius:50%;"></div>
+            </div>
+            <button class="btn-buy">Añadir al Carrito</button>
+        </div>
+    </div>
+
+</body>
+
+</html>
