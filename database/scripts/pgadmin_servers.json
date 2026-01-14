@@ -1,0 +1,14 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "MiKiwi PostgreSQL",
+            "Group": "Servers",
+            "Host": "postgres",
+            "Port": 5432,
+            "MaintenanceDB": "mikiwi",
+            "Username": "mikiwi_admin",
+            "SSLMode": "prefer",
+            "PassFile": "/pgadmin4/pgpass"
+        }
+    }
+}
