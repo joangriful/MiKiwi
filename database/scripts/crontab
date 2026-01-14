@@ -1,0 +1,12 @@
+# =============================================================================
+# MiKiwi - Crontab para Backup Automático
+# =============================================================================
+
+# Backup completo diario a las 02:00
+0 2 * * * /backup.sh full >> /var/log/backup.log 2>&1
+
+# Backup de esquema cada 6 horas (para versionado)
+0 */6 * * * /backup.sh schema >> /var/log/backup.log 2>&1
+
+# Limpieza semanal de backups antiguos (domingos a las 03:00)
+0 3 * * 0 /backup.sh cleanup >> /var/log/backup.log 2>&1

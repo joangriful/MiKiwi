@@ -1,0 +1,174 @@
+version: '3.8'
+
+# =============================================================================
+# MiKiwi - PostgreSQL Enterprise Setup
+# Incluye: PostgreSQL 16 + pgAdmin + Backup automático
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL 16 con extensiones
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: mikiwi_postgres
+    restart: unless-stopped
+    
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-mikiwi}
+      POSTGRES_USER: ${POSTGRES_USER:-mikiwi_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      # Clave de encriptación para pgcrypto
+      POSTGRES_INITDB_ARGS: >-
+        --encoding=UTF8
+        --locale=es_ES.UTF-8
+    
+    volumes:
+      # Datos persistentes
+      - postgres_data:/var/lib/postgresql/data
+      # Scripts de inicialización (se ejecutan en orden alfabético)
+      - ../:/docker-entrypoint-initdb.d/:ro
+      # Backups
+      - ./backups:/backups
+      # Configuración personalizada
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf:ro
+    
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    
+    command: >
+      postgres
+      -c max_connections=200
+      -c shared_buffers=256MB
+      -c effective_cache_size=768MB
+      -c maintenance_work_mem=128MB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+      -c min_wal_size=1GB
+      -c max_wal_size=4GB
+      -c statement_timeout=30s
+      -c idle_in_transaction_session_timeout=60s
+      -c log_min_duration_statement=1000
+      -c log_connections=on
+      -c log_disconnections=on
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mikiwi_admin} -d ${POSTGRES_DB:-mikiwi}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    
+    networks:
+      - mikiwi_network
+
+  # ---------------------------------------------------------------------------
+  # pgAdmin 4 - Interfaz web de administración
+  # ---------------------------------------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: mikiwi_pgadmin
+    restart: unless-stopped
+    
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@mikiwi.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:?PGADMIN_PASSWORD is required}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      # Configuración de servidores predefinidos
+      - ./pgadmin_servers.json:/pgadmin4/servers.json:ro
+    
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    
+    depends_on:
+      postgres:
+        condition: service_healthy
+    
+    networks:
+      - mikiwi_network
+
+  # ---------------------------------------------------------------------------
+  # Backup automático - Ejecuta backups programados
+  # ---------------------------------------------------------------------------
+  backup:
+    image: postgres:16-alpine
+    container_name: mikiwi_backup
+    restart: unless-stopped
+    
+    environment:
+      PGHOST: postgres
+      PGPORT: 5432
+      PGDATABASE: ${POSTGRES_DB:-mikiwi}
+      PGUSER: ${POSTGRES_USER:-mikiwi_admin}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-7}
+      BACKUP_RETENTION_WEEKS: ${BACKUP_RETENTION_WEEKS:-4}
+      BACKUP_RETENTION_MONTHS: ${BACKUP_RETENTION_MONTHS:-12}
+    
+    volumes:
+      - ./backups:/backups
+      - ./backup.sh:/backup.sh:ro
+      - ./crontab:/etc/crontabs/root:ro
+    
+    entrypoint: /bin/sh
+    command: >
+      -c "chmod +x /backup.sh && crond -f -l 2"
+    
+    depends_on:
+      postgres:
+        condition: service_healthy
+    
+    networks:
+      - mikiwi_network
+
+  # ---------------------------------------------------------------------------
+  # Refresher de vistas materializadas (opcional)
+  # ---------------------------------------------------------------------------
+  materialized_view_refresher:
+    image: postgres:16-alpine
+    container_name: mikiwi_mv_refresher
+    restart: unless-stopped
+    
+    environment:
+      PGHOST: postgres
+      PGPORT: 5432
+      PGDATABASE: ${POSTGRES_DB:-mikiwi}
+      PGUSER: ${POSTGRES_USER:-mikiwi_admin}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    
+    volumes:
+      - ./refresh_views.sh:/refresh_views.sh:ro
+      - ./crontab_views:/etc/crontabs/root:ro
+    
+    entrypoint: /bin/sh
+    command: >
+      -c "chmod +x /refresh_views.sh && crond -f -l 2"
+    
+    depends_on:
+      postgres:
+        condition: service_healthy
+    
+    networks:
+      - mikiwi_network
+
+# =============================================================================
+# Volúmenes persistentes
+# =============================================================================
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+# =============================================================================
+# Red interna
+# =============================================================================
+networks:
+  mikiwi_network:
+    driver: bridge
