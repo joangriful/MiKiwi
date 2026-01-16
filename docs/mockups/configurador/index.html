@@ -5,32 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configurador MI KIWI | Premium Experience</title>
+    <link rel="stylesheet" href="../minimal.css">
     <style>
-        /* --- VARIABLES & RESET --- */
+        /* --- THEME OVERRIDES --- */
         :root {
-            --bg-body: #050505;
-            --bg-panel: #0f0f0f;
-            --text-main: #ffffff;
-            --text-muted: #a0a0a0;
-            --accent: #d4c1ec;
-            /* Soft lavender/kiwi-ish pastel */
-            --accent-dark: #bfaec9;
-            --border: rgba(255, 255, 255, 0.08);
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --card-hover: rgba(212, 193, 236, 0.1);
+            --bg-body: var(--bg-main);
+            --bg-panel: var(--bg-surface);
+            --border: #e2e0db;
+            --accent: var(--color-primary);
+            --accent-dark: var(--color-primary-dark);
             --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
         body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
             height: 100vh;
             overflow: hidden;
             display: flex;
@@ -53,15 +40,15 @@
             padding: 0 40px;
             justify-content: space-between;
             z-index: 10;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
         }
 
         .w-logo {
             font-weight: 800;
             letter-spacing: 3px;
             font-size: 1.2rem;
-            background: linear-gradient(45deg, #fff, var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-main);
         }
 
         .w-close {
@@ -72,7 +59,7 @@
         }
 
         .w-close:hover {
-            color: #fff;
+            color: var(--text-main);
             transform: rotate(90deg);
         }
 
@@ -86,20 +73,20 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #222;
+            background: var(--border);
             transition: var(--transition);
         }
 
         .step-dot.active {
             background: var(--accent);
-            box-shadow: 0 0 15px var(--accent);
+            box-shadow: 0 0 15px rgba(153, 184, 73, 0.3);
             transform: scale(1.2);
         }
 
         .step-line {
             width: 30px;
             height: 2px;
-            background: #222;
+            background: var(--border);
             transition: var(--transition);
         }
 
@@ -117,7 +104,7 @@
         /* PREVIEW */
         .preview-pane {
             flex: 1.4;
-            background: radial-gradient(circle at 50% 40%, #1a1a2e, #050505);
+            background: radial-gradient(circle at 50% 40%, #ffffff, #f0f4e8);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -128,12 +115,13 @@
         .toy-model {
             width: 180px;
             height: 450px;
-            background: linear-gradient(135deg, #333, #111, #222);
+            background: linear-gradient(135deg, #e0e0e0, #ffffff, #f0f0f0);
             border-radius: 90px;
-            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.9);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.05), inset 0 0 20px rgba(0, 0, 0, 0.02);
             position: relative;
             transition: var(--transition);
             transform-style: preserve-3d;
+            border: 1px solid rgba(0, 0, 0, 0.03);
         }
 
         /* Model Elements */
@@ -144,9 +132,10 @@
             left: 15%;
             width: 8px;
             height: 90%;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 10px;
             filter: blur(3px);
+            opacity: 0.5;
         }
 
         /* Color overlays */
@@ -154,8 +143,8 @@
             position: absolute;
             inset: 0;
             border-radius: inherit;
-            opacity: 0.3;
-            mix-blend-mode: soft-light;
+            opacity: 0.4;
+            mix-blend-mode: multiply;
             transition: var(--transition);
         }
 
@@ -214,13 +203,14 @@
             color: var(--accent);
             margin-bottom: 8px;
             letter-spacing: 2px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .step-title-text {
             font-size: 2.2rem;
-            font-weight: 300;
+            font-weight: 600;
             letter-spacing: -1px;
+            color: var(--text-main);
         }
 
         .option-section {
@@ -233,6 +223,7 @@
             margin-bottom: 15px;
             letter-spacing: 1px;
             text-transform: uppercase;
+            font-weight: 600;
         }
 
         /* CARDS */
@@ -243,31 +234,33 @@
         }
 
         .option-card {
-            background: var(--card-bg);
+            background: #fff;
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 20px;
             cursor: pointer;
             transition: var(--transition);
             position: relative;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
         }
 
         .option-card:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent);
             transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
         }
 
         .option-card.selected {
-            background: var(--card-hover);
+            background: rgba(153, 184, 73, 0.05);
             border-color: var(--accent);
-            box-shadow: 0 0 20px rgba(212, 193, 236, 0.1);
+            box-shadow: 0 0 20px rgba(153, 184, 73, 0.1);
         }
 
         .card-name {
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 4px;
             font-size: 0.95rem;
+            color: var(--text-main);
         }
 
         .card-sub {
@@ -287,13 +280,14 @@
             height: 40px;
             border-radius: 50%;
             cursor: pointer;
-            border: 2px solid transparent;
+            border: 3px solid #fff;
             transition: var(--transition);
             position: relative;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .color-option.selected {
-            border-color: #fff;
+            box-shadow: 0 0 0 2px var(--accent);
             transform: scale(1.1);
         }
 
@@ -375,18 +369,19 @@
         }
 
         .btn-prev:hover {
-            color: #fff;
-            border-color: #fff;
+            color: var(--color-primary);
+            border-color: var(--color-primary);
         }
 
         .btn-next {
-            background: #fff;
-            color: #000;
+            background: var(--color-primary);
+            color: #fff;
         }
 
         .btn-next:hover {
-            background: var(--accent);
+            background: var(--color-primary-dark);
             transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(153, 184, 73, 0.3);
         }
 
         /* RESPONSIVE */
@@ -422,7 +417,7 @@
             <div class="step-line"></div>
             <div class="step-dot"></div>
         </div>
-        <div class="w-close" onclick="window.location.href='../013.html'">&#10005;</div>
+        <div class="w-close" onclick="window.location.href='entry.html'">&#10005;</div>
     </div>
 
     <div class="wizard-body">

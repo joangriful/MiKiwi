@@ -4,37 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AURA | Identity Calibration</title>
+    <title>MI KIWI | Identity Calibration</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
-        href="https://fonts.googleapis.com/css2?family=Italiana&family=Space+Grotesk:wght@300;400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Italiana&family=Montserrat:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="../minimal.css">
 
     <style>
         :root {
-            --bg: #050505;
-            --text: #f0f0f0;
-            --accent: #ff3333;
-            /* Signal Red */
-            --dim: #444;
+            --bg-quiz: var(--bg-main);
+            --text-quiz: var(--text-main);
+            --accent-quiz: var(--color-primary);
+            --dim-quiz: var(--text-muted);
             --font-display: 'Italiana', serif;
-            --font-ui: 'Space Grotesk', sans-serif;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            cursor: none;
-            /* Custom cursor */
+            --font-ui: 'Montserrat', sans-serif;
+            --card-bg-quiz: var(--bg-surface);
+            --border-quiz: var(--border);
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
+            background-color: var(--bg-quiz);
+            color: var(--text-quiz);
             font-family: var(--font-ui);
             overflow: hidden;
             height: 100vh;
@@ -52,42 +44,10 @@
             width: 100%;
             height: 100%;
             background: url('https://grainy-gradients.vercel.app/noise.svg');
-            opacity: 0.07;
+            opacity: 0.05;
             pointer-events: none;
             z-index: 0;
             mix-blend-mode: overlay;
-        }
-
-        /* --- CUSTOM CURSOR --- */
-        .cursor-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--text);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            mix-blend-mode: difference;
-        }
-
-        .cursor-ring {
-            width: 40px;
-            height: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9998;
-            transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s, background 0.3s;
-        }
-
-        .cursor-ring.active {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--accent);
         }
 
         /* --- LAYOUT --- */
@@ -95,7 +55,7 @@
             position: relative;
             z-index: 10;
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             height: 80vh;
             display: flex;
             flex-direction: column;
@@ -106,15 +66,17 @@
         /* --- PROGRESS BAR --- */
         .progress-container {
             position: absolute;
-            top: 20px;
-            width: 200px;
-            height: 2px;
-            background: var(--dim);
+            top: 40px;
+            width: 250px;
+            height: 3px;
+            background: var(--border-quiz);
+            border-radius: 10px;
+            overflow: hidden;
         }
 
         .progress-bar {
             height: 100%;
-            background: var(--text);
+            background: var(--accent-quiz);
             width: 0%;
             transition: width 0.5s ease;
         }
@@ -124,8 +86,8 @@
             width: 100%;
             text-align: center;
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(30px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
             position: absolute;
             pointer-events: none;
         }
@@ -138,69 +100,82 @@
 
         .step-container.exit {
             opacity: 0;
-            transform: translateY(-20px);
+            transform: translateY(-30px);
         }
 
         /* --- TYPOGRAPHY --- */
         .step-label {
             font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--dim);
-            margin-bottom: 20px;
+            letter-spacing: 5px;
+            color: var(--dim-quiz);
+            margin-bottom: 25px;
             display: block;
+            font-weight: 700;
         }
 
         h2 {
             font-family: var(--font-display);
-            font-size: 3.5rem;
+            font-size: 4rem;
             line-height: 1.1;
             margin-bottom: 50px;
             font-weight: 400;
+            color: var(--text-quiz);
+            letter-spacing: -1px;
         }
 
         /* --- OPTIONS GRID --- */
         .options-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            gap: 25px;
             width: 100%;
-            max-width: 700px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
         .option-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 40px 20px;
+            background: var(--card-bg-quiz);
+            border: 1px solid var(--border-quiz);
+            padding: 50px 30px;
             text-align: center;
-            transition: all 0.3s;
+            transition: var(--transition);
             position: relative;
             overflow: hidden;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-soft);
+            cursor: pointer;
         }
 
         .option-card:hover {
-            border-color: var(--text);
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-5px);
+            border-color: var(--accent-quiz);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-medium);
+            background: #fff;
         }
 
         .option-card.selected {
-            background: var(--text);
-            color: var(--bg);
-            border-color: var(--text);
+            background: var(--accent-quiz);
+            color: #fff;
+            border-color: var(--accent-quiz);
         }
 
         .option-icon {
-            font-size: 2rem;
+            font-size: 2.5rem;
             margin-bottom: 20px;
             display: block;
+            color: var(--accent-quiz);
+        }
+
+        .option-card.selected .option-icon {
+            color: #fff;
         }
 
         .option-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            font-weight: 700;
         }
 
         /* --- NAVIGATION --- */
@@ -211,41 +186,16 @@
             justify-content: center;
         }
 
-        .btn {
-            background: transparent;
-            border: 1px solid var(--text);
-            color: var(--text);
-            padding: 15px 40px;
-            font-family: var(--font-ui);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.8rem;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn:hover {
-            background: var(--text);
-            color: var(--bg);
-        }
-
-        .btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        /* --- DECORATIVE ELEMENTS --- */
+        /* DECORATIVE ELEMENTS */
         .scanner-line {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 2px;
-            background: var(--accent);
-            opacity: 0.5;
-            animation: scan 3s ease-in-out infinite;
+            height: 3px;
+            background: linear-gradient(to right, transparent, var(--accent-quiz), transparent);
+            opacity: 0.6;
+            animation: scan 2.5s ease-in-out infinite;
             display: none;
         }
 
@@ -278,30 +228,32 @@
         }
 
         .persona-badge {
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 5px 15px;
-            margin-bottom: 20px;
+            background: var(--color-secondary);
+            color: var(--text-quiz);
+            padding: 8px 18px;
+            margin-bottom: 25px;
             font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            font-weight: 700;
+            border-radius: 5px;
         }
 
         .persona-name {
-            font-size: 5rem;
+            font-size: 5.5rem;
             font-family: var(--font-display);
             margin-bottom: 30px;
-            background: linear-gradient(180deg, #fff, #666);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-quiz);
+            letter-spacing: -2px;
         }
 
         .persona-desc {
-            max-width: 500px;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: #999;
-            margin-bottom: 40px;
+            max-width: 550px;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--dim-quiz);
+            margin-bottom: 45px;
+            font-weight: 500;
         }
 
         /* Start Screen */
@@ -312,18 +264,50 @@
         }
 
         #start-btn {
-            padding: 20px 60px;
+            padding: 22px 70px;
             font-size: 1rem;
-            border-radius: 50px;
+            border-radius: 60px;
+            background: var(--accent-quiz);
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 2px;
+            border: none;
+            transition: var(--transition);
+            box-shadow: 0 10px 20px rgba(153, 184, 73, 0.2);
+            cursor: pointer;
+        }
+
+        #start-btn:hover {
+            background: var(--color-primary-dark);
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(153, 184, 73, 0.3);
+        }
+
+        .back-home {
+            position: fixed;
+            top: 40px;
+            left: 5%;
+            z-index: 100;
+            text-decoration: none;
+            color: var(--text-quiz);
+            font-weight: 700;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            transition: var(--transition);
+        }
+
+        .back-home:hover {
+            color: var(--accent-quiz);
         }
     </style>
 </head>
 
 <body>
 
+    <a href="entry.html" class="back-home">← Volver al Inicio</a>
+
     <div class="noise"></div>
-    <div class="cursor-dot"></div>
-    <div class="cursor-ring"></div>
 
     <div class="main-wrapper">
         <div class="progress-container">
@@ -332,73 +316,73 @@
 
         <!-- STEP 0: INTRO -->
         <div class="step-container active" id="step-0">
-            <span class="step-label">System Ready</span>
-            <h2>Identify your<br>Resonance.</h2>
+            <span class="step-label">Sistema Preparado</span>
+            <h2>Calibra tu<br>Resonancia.</h2>
             <div class="start-btn-container">
-                <button class="btn" id="start-btn">Initialize Sequence</button>
+                <button id="start-btn">INICIAR SECUENCIA</button>
             </div>
         </div>
 
         <!-- STEP 1: ATMOSPHERE -->
         <div class="step-container" id="step-1">
-            <span class="step-label">01 / Calibration</span>
-            <h2>Your preferred atmosphere?</h2>
+            <span class="step-label">01 / Calibración</span>
+            <h2>¿Atmósfera favorita?</h2>
             <div class="options-grid">
                 <div class="option-card" data-value="soft">
                     <span class="option-icon">☁</span>
-                    <span class="option-title">Ethereal & Soft</span>
+                    <span class="option-title">Etéreo y Suave</span>
                 </div>
                 <div class="option-card" data-value="intense">
                     <span class="option-icon">⚡</span>
-                    <span class="option-title">Intense & Raw</span>
+                    <span class="option-title">Intenso y Directo</span>
                 </div>
                 <div class="option-card" data-value="playful">
                     <span class="option-icon">✦</span>
-                    <span class="option-title">Playful & Curious</span>
+                    <span class="option-title">Curioso y Divertido</span>
                 </div>
                 <div class="option-card" data-value="ritual">
                     <span class="option-icon">∞</span>
-                    <span class="option-title">Ritualistic & Deep</span>
+                    <span class="option-title">Ritual y Profundo</span>
                 </div>
             </div>
         </div>
 
         <!-- STEP 2: DYNAMIC (Solo/Shared) -->
         <div class="step-container" id="step-2">
-            <span class="step-label">02 / Dynamic</span>
-            <h2>Who is in the room?</h2>
+            <span class="step-label">02 / Dinámica</span>
+            <h2>¿Quién más está en la sala?</h2>
             <div class="options-grid" style="grid-template-columns: 1fr 1fr;">
                 <div class="option-card" data-value="solo">
                     <span class="option-icon">●</span>
-                    <span class="option-title">Solo Journey</span>
+                    <span class="option-title">Viaje en Solitario</span>
                 </div>
                 <div class="option-card" data-value="duo">
                     <span class="option-icon">● ●</span>
-                    <span class="option-title">Shared Connection</span>
+                    <span class="option-title">Conexión Compartida</span>
                 </div>
             </div>
         </div>
 
         <!-- STEP 3: SENSATION -->
         <div class="step-container" id="step-3">
-            <span class="step-label">03 / Sensation</span>
-            <h2>What moves you?</h2>
+            <span class="step-label">03 / Sensación</span>
+            <h2>¿Qué te impulsa?</h2>
             <div class="options-grid">
                 <div class="option-card" data-value="vibration">
                     <span class="option-icon">〰</span>
-                    <span class="option-title">Vibration</span>
+                    <span class="option-title">Vibración</span>
                 </div>
                 <div class="option-card" data-value="suction">
                     <span class="option-icon">◎</span>
-                    <span class="option-title">Air/Pulse</span>
+                    <span class="option-title">Aire / Pulsos</span>
                 </div>
                 <div class="option-card" data-value="impact">
                     <span class="option-icon">✖</span>
-                    <span class="option-title">Impact</span>
+                    <span class="option-title">Impacto</span>
                 </div>
                 <div class="option-card" data-value="temp">
                     <span class="option-icon">♨</span>
-                    <span class="option-title">Temperature</span>
+                    <span class="option-title">Temperatura</span>
                 </div>
             </div>
         </div>
@@ -406,23 +390,24 @@
         <!-- STEP 4: PROCESSING -->
         <div class="step-container step-scanning" id="step-4">
             <div class="scanner-line"></div>
-            <span class="step-label">Processing Data</span>
-            <h2>Analyzing Resonance...</h2>
+            <span class="step-label">Procesando Datos</span>
+            <h2>Analizando Resonancia...</h2>
         </div>
 
         <!-- STEP 5: RESULT -->
         <div class="step-container" id="step-5">
             <div class="persona-result">
-                <div class="persona-badge">Profile Identified</div>
+                <div class="persona-badge">Perfil Identificado</div>
                 <h1 class="persona-name">The Architect</h1>
                 <p class="persona-desc">
-                    You seek precision and depth. Your pleasure is structured, intentional, and deeply resonant. You
-                    appreciate design, quality, and experiences that transcend the physical.
+                    Buscas precisión y profundidad. Tu placer es estructurado, intencional y profundamente resonante.
+                    Valoras el diseño, la calidad y las experiencias que trascienden lo físico.
                 </p>
                 <div class="nav-actions">
-                    <button class="btn">Enter The Collection</button>
-                    <button class="btn" style="border-color: #333; color: #666;" onclick="location.reload()">Reset
-                        Sequence</button>
+                    <a href="010.html" class="btn-minimal btn-primary" style="padding: 18px 45px;">Explorar
+                        Colección</a>
+                    <button class="btn-minimal btn-outline" style="padding: 18px 45px;"
+                        onclick="location.reload()">Reiniciar</button>
                 </div>
             </div>
         </div>
@@ -438,76 +423,46 @@
         // DOM
         const steps = document.querySelectorAll('.step-container');
         const progressBar = document.querySelector('.progress-bar');
-        const cursorDot = document.querySelector('.cursor-dot');
-        const cursorRing = document.querySelector('.cursor-ring');
-
-        // Cursor Logic
-        document.addEventListener('mousemove', (e) => {
-            cursorDot.style.left = e.clientX + 'px';
-            cursorDot.style.top = e.clientY + 'px';
-
-            // Add a little delay to ring for "organic" feel
-            setTimeout(() => {
-                cursorRing.style.left = e.clientX + 'px';
-                cursorRing.style.top = e.clientY + 'px';
-            }, 50);
-        });
-
-        // Hover Effects
-        document.querySelectorAll('button, .option-card').forEach(el => {
-            el.addEventListener('mouseenter', () => cursorRing.classList.add('active'));
-            el.addEventListener('mouseleave', () => cursorRing.classList.remove('active'));
-        });
 
         // Navigation Logic
         function goToStep(stepIndex) {
-            // Remove active from current
             steps[currentStep].classList.remove('active');
             steps[currentStep].classList.add('exit');
 
             setTimeout(() => {
-                steps[currentStep].classList.remove('exit'); // Clean up
+                steps[currentStep].classList.remove('exit');
                 currentStep = stepIndex;
-
-                // Add active to new
                 steps[currentStep].classList.add('active');
 
-                // Update Progress
                 let prog = (stepIndex / (totalSteps - 1)) * 100;
                 if (stepIndex === 0) prog = 0;
                 progressBar.style.width = `${prog}%`;
 
-                // If Step 4 (Processing), auto advance
                 if (currentStep === 4) {
                     setTimeout(() => goToStep(5), 2500);
                 }
 
-                // If Result step, generate persona name
                 if (currentStep === 5) {
                     generatePersona();
                 }
 
-            }, 600); // Wait for exit animation
+            }, 600);
         }
 
-        // Event Listeners for Steps
+        // Events
         document.getElementById('start-btn').addEventListener('click', () => {
             goToStep(1);
         });
 
         document.querySelectorAll('.option-card').forEach(card => {
             card.addEventListener('click', function () {
-                // Visual Selection
                 this.parentElement.querySelectorAll('.option-card').forEach(Sib => Sib.classList.remove('selected'));
                 this.classList.add('selected');
 
-                // Record Answer
                 const stepId = this.closest('.step-container').id;
                 answers[stepId] = this.dataset.value;
 
-                // Auto Advance after delay
                 setTimeout(() => {
-                    // Get current step index from ID
                     const currentIdx = parseInt(stepId.split('-')[1]);
                     goToStep(currentIdx + 1);
                 }, 400);

@@ -5,39 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Colecciones | AURA</title>
+    <link rel="stylesheet" href="../minimal.css">
     <style>
-        /* --- VARIABLES & RESET --- */
+        /* --- THEME OVERRIDES --- */
         :root {
-            --bg-body: #0a0a0a;
-            --bg-card: #141414;
-            --text-main: #ffffff;
-            --text-muted: #a0a0a0;
-            --accent: #bfaec9;
-            --accent-hover: #dcd0e3;
-            --glass: rgba(20, 20, 20, 0.8);
-            --border: rgba(255, 255, 255, 0.05);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --bg-body: var(--bg-main);
+            --bg-card: var(--bg-surface);
+            --border: #e2e0db;
+            --accent: var(--color-primary);
+            --accent-hover: var(--color-primary-dark);
         }
 
         body {
             background-color: var(--bg-body);
             color: var(--text-main);
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-            transition: 0.3s;
-        }
-
-        ul {
-            list-style: none;
         }
 
         /* --- HEADER --- */
@@ -50,15 +31,16 @@
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            background: var(--glass);
+            background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border);
         }
 
         .logo {
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: 2px;
+            color: var(--text-main);
         }
 
         .logo span {
@@ -75,6 +57,7 @@
             color: var(--text-muted);
             letter-spacing: 1px;
             text-transform: uppercase;
+            font-weight: 600;
         }
 
         nav a:hover {
@@ -85,6 +68,7 @@
             display: flex;
             gap: 20px;
             font-size: 1.2rem;
+            color: var(--text-main);
         }
 
         /* --- HERO HEADER --- */
@@ -93,18 +77,22 @@
             text-align: center;
             border-bottom: 1px solid var(--border);
             margin-bottom: 40px;
+            background: #fff;
         }
 
         .cat-header h1 {
             font-size: 3rem;
-            font-weight: 300;
+            font-weight: 600;
             margin-bottom: 10px;
+            color: var(--text-main);
+            letter-spacing: -1px;
         }
 
         .cat-header p {
             color: var(--text-muted);
             max-width: 600px;
             margin: 0 auto;
+            font-weight: 500;
         }
 
         /* --- LAYOUT --- */
@@ -127,11 +115,12 @@
         }
 
         .filter-title {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 20px;
-            font-weight: 600;
+            font-weight: 700;
+            color: var(--text-main);
         }
 
         .filter-list li {
@@ -143,6 +132,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            font-weight: 500;
         }
 
         .filter-list li:hover,
@@ -162,10 +152,12 @@
             border-radius: 50%;
             border: 1px solid var(--border);
             cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         .c-opt:hover {
-            border-color: var(--text-main);
+            border-color: var(--accent);
+            transform: scale(1.1);
         }
 
         /* GRID */
@@ -182,30 +174,32 @@
             overflow: hidden;
             transition: 0.4s;
             cursor: pointer;
-            border: 1px solid transparent;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
         }
 
         .card:hover {
             transform: translateY(-5px);
-            border-color: var(--border);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent);
+            box-shadow: var(--shadow-medium);
         }
 
         .card-img {
             height: 300px;
-            background: #111;
+            background: #fdfcf9;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
+            border-bottom: 1px solid var(--border);
         }
 
         .shape-mini {
             width: 60px;
             height: 140px;
-            background: linear-gradient(135deg, #333, #111);
+            background: linear-gradient(135deg, #e0e0e0, #ffffff);
             border-radius: 40px;
-            box-shadow: inset 5px 5px 15px rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.02), 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
         .shape-mini.round {
@@ -219,11 +213,12 @@
             top: 15px;
             left: 15px;
             background: var(--accent);
-            color: var(--bg-body);
-            padding: 4px 10px;
+            color: white;
+            padding: 4px 12px;
             font-size: 0.7rem;
-            font-weight: bold;
+            font-weight: 700;
             border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(153, 184, 73, 0.2);
         }
 
         .card-body {
@@ -231,14 +226,16 @@
         }
 
         .c-name {
-            font-size: 1rem;
+            font-size: 1.1rem;
             margin-bottom: 5px;
-            font-weight: 500;
+            font-weight: 600;
+            color: var(--text-main);
         }
 
         .c-price {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            font-weight: 500;
         }
 
         /* --- FOOTER --- */
@@ -248,6 +245,7 @@
             text-align: center;
             color: var(--text-muted);
             font-size: 0.9rem;
+            background: #fff;
         }
 
         @media(max-width: 768px) {
@@ -277,9 +275,9 @@
         <div class="logo">AURA<span>.</span></div>
         <nav>
             <ul>
-                <li><a href="#" style="color:var(--text-main)">Colecciones</a></li>
-                <li><a href="#">Bienestar</a></li>
-                <li><a href="#">Regalos</a></li>
+                <li><a href="010.html" style="color:var(--text-main)">Colecciones</a></li>
+                <li><a href="index.html">Configurador</a></li>
+                <li><a href="entry.html">Inicio</a></li>
             </ul>
         </nav>
         <div class="icons"><a href="#">&#128100;</a> <a href="#">&#128722;</a></div>
@@ -321,7 +319,7 @@
 
         <main class="grid">
             <!-- Product 1 -->
-            <a href="009.html" class="card">
+            <a href="011.html" class="card">
                 <div class="card-img">
                     <div class="shape-mini"></div>
                     <span class="badge">NUEVO</span>

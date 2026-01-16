@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MI KIWI | Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../minimal.css">
+    <style>
+        /* --- HOME SPECIFIC STYLES --- */
+        body {
+            overflow-x: hidden;
+            background-color: var(--bg-main);
+        }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-family: var(--font-head);
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: var(--text-main);
+        }
+
+        .logo span {
+            color: var(--color-primary);
+        }
+
+        nav ul {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        nav a {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            color: var(--color-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .search-icon,
+        .cart-icon {
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+
+        .search-icon:hover {
+            color: var(--color-primary);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            padding: 180px 5% 120px 5%;
+            text-align: center;
+            background: radial-gradient(circle at 50% 50%, #ffffff 0%, var(--bg-main) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            left: 50%;
+            width: 80%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(153, 184, 73, 0.05) 0%, transparent 60%);
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero h1 {
+            font-family: var(--font-head);
+            font-size: 4rem;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+            color: var(--text-main);
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 50px auto;
+            font-weight: 500;
+        }
+
+        /* SEARCH BAR */
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 22px 35px 22px 65px;
+            border-radius: 60px;
+            border: 1px solid var(--border);
+            background: var(--bg-surface);
+            font-size: 1.1rem;
+            color: var(--text-main);
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .search-bar:focus {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .search-btn-hero {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.4rem;
+            color: var(--text-muted);
+        }
+
+        .search-tags {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tag:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            background: #fff;
+        }
+
+        /* FEATURED SECTIONS */
+        section {
+            padding: 100px 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--text-main);
+        }
+
+        .section-title p {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* COLLECTIONS GRID */
+        .collections-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .col-card {
+            height: 450px;
+            position: relative;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            padding: 40px;
+            text-decoration: none;
+            color: #fff;
+            transition: var(--transition);
+        }
+
+        .col-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent 60%);
+            z-index: 1;
+        }
+
+        .col-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .col-card.col-1 {
+            background: #e2e0db;
+        }
+
+        .col-card.col-2 {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+        }
+
+        .col-card.col-3 {
+            background: #fdfcf9;
+            border: 1px solid var(--border);
+        }
+
+        .col-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .col-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .col-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .col-card.col-1 h3 {
+            color: #fff;
+        }
+
+        /* STORY SECTION */
+        .story-section {
+            background-color: var(--bg-surface);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 80px;
+        }
+
+        .story-img {
+            height: 600px;
+            background: #f8f5f0;
+            border-radius: var(--radius-lg);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .story-img .shape {
+            width: 200px;
+            height: 400px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            border-radius: 100px;
+            filter: blur(20px);
+            opacity: 0.15;
+            animation: slowFloat 10s infinite alternate;
+        }
+
+        @keyframes slowFloat {
+            from {
+                transform: translateY(0) scale(1);
+            }
+
+            to {
+                transform: translateY(-20px) scale(1.05);
+            }
+        }
+
+        .story-text h2 {
+            font-family: var(--font-head);
+            font-size: 3.5rem;
+            margin-bottom: 30px;
+            line-height: 1.1;
+        }
+
+        .story-text p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        /* CALIBRATION CTA */
+        .cta-section {
+            margin: 80px 5%;
+            padding: 80px;
+            background: var(--color-primary);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section h2 {
+            font-family: var(--font-head);
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 100px 5% 50px 5%;
+            background: #fff;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 60px;
+            margin-bottom: 80px;
+        }
+
+        .footer-logo {
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            margin-bottom: 25px;
+        }
+
+        .footer-col h4 {
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            color: var(--text-main);
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col li {
+            margin-bottom: 15px;
+        }
+
+        .footer-col a {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .footer-col a:hover {
+            color: var(--color-primary);
+        }
+
+        .copyright {
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 1024px) {
+            .collections-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .story-section {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .collections-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .cta-section {
+                padding: 40px;
+            }
+
+            header nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">MI<span>.</span>KIWI</div>
+        <nav>
+            <ul>
+                <li><a href="010.html">Colecciones</a></li>
+                <li><a href="index.html">Personalizar</a></li>
+                <li><a href="../mockupAlberto/001.html">Calibración</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <div class="search-icon">🔍</div>
+            <div class="cart-icon">🛒</div>
+            <a href="index.html" class="btn-minimal btn-primary" style="padding: 10px 22px;">Diseñar</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- IDENTITY CALIBRATION HERO -->
+        <section style="padding: 120px 5% 80px 5%; background: #fff;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 60px;">
+                <div class="story-text" style="text-align: left;">
+                    <span class="col-tag">Fase 01</span>
+                    <h2 style="font-size: 3.5rem;">Calibración de Identidad</h2>
+                    <p>Antes de diseñar tu dispositivo, debemos entender tu resonancia. Nuestro algoritmo de identidad
+                        analizará tus preferencias sensoriales para crear un perfil único.</p>
+                    <a href="personalidad.html" class="btn-minimal btn-primary"
+                        style="padding: 18px 45px; font-size: 1.1rem;">Comenzar Secuencia</a>
+                </div>
+                <div
+                    style="height: 400px; background: var(--bg-main); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; border: 1px solid var(--border);">
+                    <div
+                        style="width: 150px; height: 150px; border: 2px solid var(--color-primary); border-radius: 50%; animation: pulseRing 3s infinite;">
+                    </div>
+                    <div
+                        style="width: 100px; height: 100px; background: var(--color-primary); border-radius: 50%; opacity: 0.1; position: absolute;">
+                    </div>
+                    <div
+                        style="font-family: var(--font-head); font-size: 1.5rem; letter-spacing: 5px; color: var(--text-main); position: relative; z-index: 2;">
+                        AURA ID</div>
+                </div>
+            </div>
+            <style>
+                @keyframes pulseRing {
+                    0% {
+                        transform: scale(0.8);
+                        opacity: 0.5;
+                    }
+
+                    100% {
+                        transform: scale(1.5);
+                        opacity: 0;
+                    }
+                }
+            </style>
+        </section>
+
+        <!-- HERO SECTION -->
+        <section class="hero" style="padding-top: 80px;">
+            <div class="hero-content">
+                <h1 class="logo">ECLIPSE</h1>
+                <p>Bienvenido al futuro del bienestar sensorial. Redefiniendo los límites entre el objeto y la
+                    sensación.</p>
+
+                <div class="search-container">
+                    <span class="search-btn-hero">🔍</span>
+                    <input type="text" class="search-bar" placeholder="¿Qué sensación buscas hoy?">
+                    <div class="search-tags">
+                        <span class="tag">✦ Visual</span>
+                        <span class="tag">✦ Táctil</span>
+                        <span class="tag">✦ Rítmico</span>
+                        <span class="tag">✦ Profundo</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURED COLLECTIONS -->
+        <section>
+            <div class="section-title">
+                <h2>Colecciones</h2>
+                <p>Diseños exclusivos para cada estado mental.</p>
+            </div>
+
+            <div class="collections-grid">
+                <a href="010.html" class="col-card col-1" style="background: linear-gradient(45deg, #222, #444);">
+                    <div class="col-content">
+                        <span class="col-tag">Novedad</span>
+                        <h3 style="color:#fff">Shadow Series</h3>
+                        <p style="color:rgba(255,255,255,0.7)">Misterio en cada detalle.</p>
+                    </div>
+                </a>
+                <a href="010.html" class="col-card col-2">
+                    <div class="col-content">
+                        <span class="col-tag">Elegancia</span>
+                        <h3>Pearl Edition</h3>
+                        <p>Pureza y suavidad infinita.</p>
+                    </div>
+                </a>
+                <a href="011.html" class="col-card col-3">
+                    <div class="col-content">
+                        <span class="col-tag">Premium</span>
+                        <h3>The Signature</h3>
+                        <p>Nuestro modelo más avanzado.</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- BRAND STORY -->
+        <section class="story-section">
+            <div class="story-img">
+                <div class="shape"></div>
+                <div style="font-family: var(--font-head); font-size: 8rem; opacity: 0.05; position: absolute;">KIWI
+                </div>
+            </div>
+            <div class="story-text">
+                <h2>El Arte de la Resonancia</h2>
+                <p>En MI KIWI no creamos objetos, diseñamos puentes. Puentes entre tu cuerpo y tus deseos más profundos.
+                    Cada dispositivo Eclipse es una obra maestra de ingeniería ergonómica y estética minimalista.</p>
+                <a href="#" class="btn-minimal btn-outline">Nuestra Filosofía</a>
+            </div>
+        </section>
+
+        <!-- CTA CALIBRATION -->
+        <section>
+            <div class="cta-section">
+                <h2>Calibración Sensorial</h2>
+                <p>No elijas tú el producto. Deja que tus sentidos nos guíen hacia él.</p>
+                <a href="../mockupAlberto/001.html" class="btn-minimal btn-primary"
+                    style="background: #fff; color: var(--color-primary); font-size: 1.1rem; padding: 18px 45px;">Comenzar
+                    Test de Vibración</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-logo">MI KIWI</div>
+                <p style="color: var(--text-muted); line-height: 1.6;">Liderando la revolución del bienestar sensorial
+                    con tecnología propia y diseño suizo.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Explorar</h4>
+                <ul>
+                    <li><a href="010.html">Colecciones</a></li>
+                    <li><a href="index.html">Configurador</a></li>
+                    <li><a href="../mockupAlberto/001.html">Puntos de venta</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Soporte</h4>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Envíos</a></li>
+                    <li><a href="#">Garantía</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Únete a la élite
+                    sensorial.</p>
+                <div style="display:flex; gap: 10px;">
+                    <input type="email" placeholder="Email"
+                        style="padding: 12px 20px; border-radius: 30px; border: 1px solid var(--border); flex: 1; outline: none;">
+                    <button class="btn-minimal btn-primary" style="padding: 0 20px;">&rarr;</button>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2026 MI KIWI PROJECT • BEYOND THE PHYSICAL
+        </div>
+    </footer>
+
+</body>
+
+</html>

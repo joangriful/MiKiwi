@@ -5,46 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personalizar Wand | AURA</title>
+    <link rel="stylesheet" href="../minimal.css">
     <style>
-        /* --- VARIABLES & RESET (Copied from 009.html) --- */
+        /* --- THEME OVERRIDES --- */
         :root {
-            --bg-body: #0a0a0a;
-            --bg-card: #141414;
-            --text-main: #ffffff;
-            --text-muted: #a0a0a0;
-            --accent: #bfaec9;
-            --accent-hover: #dcd0e3;
-            --glass: rgba(20, 20, 20, 0.8);
-            --border: rgba(255, 255, 255, 0.05);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --bg-body: var(--bg-main);
+            --bg-card: var(--bg-surface);
+            --border: #e2e0db;
+            --accent: var(--color-primary);
+            --accent-hover: var(--color-primary-dark);
         }
 
         body {
             background-color: var(--bg-body);
             color: var(--text-main);
             overflow-x: hidden;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-            transition: 0.3s;
-        }
-
-        ul {
-            list-style: none;
-        }
-
-        button {
-            cursor: pointer;
-            border: none;
-            outline: none;
         }
 
         /* --- HEADER --- */
@@ -57,15 +32,16 @@
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            background: var(--glass);
+            background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border);
         }
 
         .logo {
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: 2px;
+            color: var(--text-main);
         }
 
         .logo span {
@@ -82,6 +58,7 @@
             color: var(--text-muted);
             letter-spacing: 1px;
             text-transform: uppercase;
+            font-weight: 600;
         }
 
         nav a:hover {
@@ -92,6 +69,7 @@
             display: flex;
             gap: 20px;
             font-size: 1.2rem;
+            color: var(--text-main);
         }
 
         /* --- PDP CONFIG LAYOUT --- */
@@ -110,23 +88,25 @@
             position: sticky;
             top: 120px;
             height: 600px;
-            background: var(--bg-card);
+            background: #fff;
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
         }
 
         .shape-toy-custom {
             width: 160px;
             height: 380px;
-            background: linear-gradient(135deg, #222, #000);
+            background: linear-gradient(135deg, #e0e0e0, #ffffff);
             border-radius: 80px;
-            box-shadow: inset 10px 10px 40px rgba(255, 255, 255, 0.05), 0 30px 60px rgba(0, 0, 0, 0.6);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.02), 0 20px 40px rgba(0, 0, 0, 0.05);
             transition: 0.5s ease;
             position: relative;
+            border: 1px solid rgba(0, 0, 0, 0.03);
         }
 
         /* Pseudo-element for texture simulation */
@@ -149,6 +129,7 @@
             margin-bottom: 20px;
             color: var(--text-muted);
             font-size: 0.85rem;
+            font-weight: 500;
         }
 
         .breadcrumb span {
@@ -157,14 +138,17 @@
 
         h1 {
             font-size: 2.5rem;
-            font-weight: 300;
+            font-weight: 600;
             margin-bottom: 10px;
+            color: var(--text-main);
+            letter-spacing: -1px;
         }
 
         .price {
             font-size: 2rem;
             color: var(--accent);
-            font-family: 'Georgia', serif;
+            font-family: 'Helvetica Neue', sans-serif;
+            font-weight: 700;
             margin-bottom: 30px;
         }
 
@@ -175,18 +159,19 @@
         }
 
         .config-title {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 15px;
             color: var(--text-muted);
             display: flex;
             justify-content: space-between;
+            font-weight: 700;
         }
 
         .config-title span {
             color: var(--text-main);
-            font-weight: 600;
+            font-weight: 700;
         }
 
         /* SIZE SELECTOR */
@@ -198,19 +183,20 @@
         .size-btn {
             flex: 1;
             padding: 15px;
-            background: var(--bg-card);
+            background: #fff;
             border: 1px solid var(--border);
             color: var(--text-muted);
             border-radius: 10px;
             font-size: 0.9rem;
             transition: 0.3s;
+            font-weight: 600;
         }
 
         .size-btn:hover,
         .size-btn.active {
             border-color: var(--accent);
-            color: var(--text-main);
-            background: rgba(191, 174, 201, 0.05);
+            color: var(--accent);
+            background: rgba(153, 184, 73, 0.05);
         }
 
         /* COLOR SELECTOR */
@@ -223,13 +209,14 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            border: 2px solid transparent;
+            border: 3px solid #fff;
             cursor: pointer;
             transition: 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .c-dot.active {
-            border-color: var(--text-main);
+            box-shadow: 0 0 0 2px var(--accent);
             transform: scale(1.1);
         }
 
@@ -243,7 +230,7 @@
 
         .mat-item {
             aspect-ratio: 1;
-            background: var(--bg-card);
+            background: #fff;
             border-radius: 10px;
             border: 1px solid var(--border);
             cursor: pointer;
@@ -255,13 +242,14 @@
         .mat-item:hover,
         .mat-item.active {
             border-color: var(--accent);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
 
         .mat-preview {
             width: 100%;
             height: 100%;
             background-size: cover;
-            opacity: 0.7;
+            opacity: 0.8;
         }
 
         /* Simulated textures */
@@ -300,24 +288,28 @@
             align-items: center;
             margin-bottom: 20px;
             font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-main);
         }
 
         .btn-add {
             width: 100%;
-            padding: 20px;
-            background-color: var(--text-main);
-            color: var(--bg-body);
+            padding: 18px;
+            background-color: var(--color-primary);
+            color: white;
             border-radius: 50px;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase;
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(153, 184, 73, 0.2);
         }
 
         .btn-add:hover {
-            background-color: var(--accent);
+            background-color: var(--color-primary-dark);
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(153, 184, 73, 0.3);
         }
 
         /* FOOTER */
@@ -351,9 +343,9 @@
         <div class="logo">AURA<span>.</span></div>
         <nav>
             <ul>
-                <li><a href="#">Colecciones</a></li>
-                <li><a href="#">Bienestar</a></li>
-                <li><a href="#">Regalos</a></li>
+                <li><a href="010.html">Colecciones</a></li>
+                <li><a href="index.html">Configurador</a></li>
+                <li><a href="entry.html">Inicio</a></li>
             </ul>
         </nav>
         <div class="icons"><a href="#">&#128100;</a> <a href="#">&#128722;</a></div>
@@ -368,7 +360,8 @@
 
         <!-- CONFIGURADOR -->
         <div class="config-panel">
-            <div class="breadcrumb">Inicio / Personalizar / <span>Wand Signature</span></div>
+            <div class="breadcrumb"><a href="entry.html">Inicio</a> / <a href="index.html">Personalizar</a> / <span>Wand
+                    Signature</span></div>
             <h1>Wand Signature</h1>
             <p style="color:var(--text-muted); margin-bottom: 20px; line-height: 1.5;">
                 Crea tu experiencia a medida. Selecciona el tamaño perfecto, tu color favorito y la textura que más te
