@@ -24,4 +24,24 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+Route::prefix('configurador')->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('Configurador/Home');
+    })->name('configurador.home');
+
+    Route::get('/wizard', function () {
+        return Inertia::render('Configurador/Index');
+    })->name('configurador.wizard');
+
+    Route::get('/collections', function () {
+        return Inertia::render('Configurador/Collections');
+    })->name('configurador.collections');
+
+    Route::get('/quiz', function () {
+        return Inertia::render('Configurador/Quiz');
+    })->name('configurador.quiz');
+});
+
 require __DIR__.'/auth.php';
+

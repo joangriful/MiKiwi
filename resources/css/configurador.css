@@ -1,0 +1,152 @@
+/* 
+   CONFIGURADOR THEME - MI KIWI
+   Extracted from minimal.css and mockup specific styles
+*/
+
+:root {
+    /* Brand Colors */
+    --color-primary: #99b849;
+    --color-primary-dark: #7a943a;
+    --color-secondary: #f8b7ea;
+    --color-secondary-dark: #d697c8;
+
+    /* Light Mode (Base) */
+    --bg-main: #f8f5f0;
+    --bg-surface: #ffffff;
+    --text-main: #222b24;
+    --text-muted: #66672a;
+    --border: #e2e0db;
+
+    /* Semantic & Utility */
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.04);
+    --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.08);
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+
+    /* Fonts */
+    --font-head: 'Cinzel', serif;
+    --font-body: 'Montserrat', sans-serif;
+}
+
+.configurador-wrapper {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.configurador-logo {
+    font-family: var(--font-head);
+    letter-spacing: 4px;
+    font-weight: 800;
+}
+
+.configurador-logo span {
+    color: var(--color-primary);
+}
+
+/* --- BUTTONS --- */
+.btn-minimal {
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(153, 184, 73, 0.3);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+}
+
+.btn-outline:hover {
+    background: var(--bg-surface);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+/* --- CARDS --- */
+.minimal-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+}
+
+.minimal-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
+    border-color: var(--color-primary);
+}
+
+/* --- ANIMATIONS --- */
+@keyframes pulseRing {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+@keyframes slowFloat {
+    from {
+        transform: translateY(0) scale(1);
+    }
+
+    to {
+        transform: translateY(-20px) scale(1.05);
+    }
+}
+
+@keyframes fadeInSlide {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.animate-pulse-ring {
+    animation: pulseRing 3s infinite;
+}
+
+.animate-slow-float {
+    animation: slowFloat 10s infinite alternate;
+}
+
+.animate-fade-in-slide {
+    animation: fadeInSlide 0.6s var(--transition-slow);
+}
