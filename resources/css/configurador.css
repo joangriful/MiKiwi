@@ -15,7 +15,11 @@
     --bg-surface: #ffffff;
     --text-main: #222b24;
     --text-muted: #66672a;
-    --border: #e2e0db;
+    --border: #eceae6;
+
+    /* Professional Palette */
+    --color-accent: #111;
+    --transition-premium: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 
     /* Semantic & Utility */
     --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.04);
@@ -29,6 +33,14 @@
     /* Fonts */
     --font-head: 'Cinzel', serif;
     --font-body: 'Montserrat', sans-serif;
+}
+
+.bg-radial-gradient {
+    background: radial-gradient(circle at center, var(--color-primary) 0%, transparent 70%);
+}
+
+.font-black {
+    font-weight: 800;
 }
 
 .configurador-wrapper {

@@ -3,34 +3,33 @@ import { Link } from '@inertiajs/react';
 
 export default function Header() {
     return (
-        <header className="fixed top-0 w-full px-[5%] py-[15px] flex justify-between items-center z-[1000] bg-white/85 backdrop-blur-[15px] border-b border-[var(--border)]">
-            <div className="configurador-logo text-[1.4rem] font-extrabold tracking-[4px] text-[var(--text-main)]">
+        <header className="fixed top-0 w-full px-[5%] py-[20px] flex justify-between items-center z-[1000] bg-white/90 backdrop-blur-[20px] border-b border-[var(--border)]">
+            <div className="configurador-logo text-[1.2rem] font-black tracking-[6px] text-[var(--text-main)] transition-opacity hover:opacity-70 cursor-default">
                 MI<span>.</span>KIWI
             </div>
-            <nav>
-                <ul className="flex gap-[30px] list-none">
+            <nav className="hidden md:block">
+                <ul className="flex gap-[40px] list-none">
                     <li>
-                        <Link href="/configurador/collections" className="text-[0.85rem] uppercase tracking-[1px] font-semibold text-[var(--text-muted)] hover:text-[var(--color-primary)] transition-all">
+                        <Link href="/configurador/collections" className="text-[0.75rem] uppercase tracking-[2px] font-bold text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors">
                             Colecciones
                         </Link>
                     </li>
                     <li>
-                        <Link href="/configurador/wizard" className="text-[0.85rem] uppercase tracking-[1px] font-semibold text-[var(--text-muted)] hover:text-[var(--color-primary)] transition-all">
-                            Personalizar
+                        <Link href="/configurador/wizard" className="text-[0.75rem] uppercase tracking-[2px] font-bold text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors">
+                            Configurador
                         </Link>
                     </li>
                     <li>
-                        <Link href="/calibracion" className="text-[0.85rem] uppercase tracking-[1px] font-semibold text-[var(--text-muted)] hover:text-[var(--color-primary)] transition-all">
-                            Calibración
+                        <Link href="/calibracion" className="text-[0.75rem] uppercase tracking-[2px] font-bold text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors">
+                            Resonancia
                         </Link>
                     </li>
                 </ul>
             </nav>
-            <div className="flex gap-[20px] items-center">
-                <div className="text-[1.2rem] cursor-pointer text-[var(--text-main)] hover:text-[var(--color-primary)] transition-all">🔍</div>
-                <div className="text-[1.2rem] cursor-pointer text-[var(--text-main)] hover:text-[var(--color-primary)] transition-all">🛒</div>
-                <Link href="/configurador/wizard" className="btn-minimal btn-primary px-[22px] py-[10px]">
-                    Diseñar
+            <div className="flex gap-[30px] items-center">
+                <span className="text-[0.7rem] uppercase tracking-[2px] font-bold text-[var(--text-muted)] cursor-pointer hover:text-[var(--text-main)] transition-all">Buscar</span>
+                <Link href="/configurador/wizard" className="text-[0.7rem] uppercase tracking-[2px] font-bold text-[var(--text-main)] border-b-2 border-[var(--color-primary)] pb-1 transition-all hover:border-[var(--text-main)]">
+                    Empezar
                 </Link>
             </div>
         </header>
