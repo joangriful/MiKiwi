@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MI.KIWI | Acceso</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Cinzel', 'serif'],
+                    },
+                    colors: {
+                        mikiwi: {
+                            dark: '#1a1a1a',
+                            lime: '#a3e635',
+                            cream: '#faf8f5',
+                            indigo: '#6366f1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #faf8f5;
+            color: #1a1a1a;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        /* =============== GLOWS ANIMADOS =============== */
+        .glow-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .glow-left {
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 50%;
+            height: 140%;
+            background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+            animation: floatGlow 25s ease-in-out infinite;
+        }
+
+        .glow-right {
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 50%;
+            height: 140%;
+            background: radial-gradient(ellipse at center, rgba(163, 230, 53, 0.10) 0%, transparent 70%);
+            animation: floatGlow 25s ease-in-out infinite reverse;
+            animation-delay: -12s;
+        }
+
+        @keyframes floatGlow {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.7;
+            }
+
+            50% {
+                transform: translateY(2%) scale(1.02);
+                opacity: 0.85;
+            }
+        }
+
+        /* =============== SPLIT PANE - ANIMACIÓN ULTRA SUAVE =============== */
+        .split-pane {
+            transition:
+                flex-grow 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 1s ease-out;
+            will-change: flex-grow;
+        }
+
+        /* =============== TIPOGRAFÍA CON EFECTO OUTLINE =============== */
+        .text-outline {
+            -webkit-text-stroke: 1.5px rgba(26, 26, 26, 0.25);
+            color: transparent;
+            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .group:hover .text-outline {
+            -webkit-text-stroke: 0px;
+            color: #1a1a1a;
+            transform: translateX(0);
+        }
+
+        .text-outline-login {
+            transform: translateX(-10px);
+        }
+
+        .text-outline-register {
+            transform: translateX(10px);
+        }
+
+        .group:hover .text-outline-login,
+        .group:hover .text-outline-register {
+            transform: translateX(0);
+        }
+
+        /* =============== AURORA EFFECTS =============== */
+        .aurora-login {
+            background:
+                radial-gradient(ellipse 80% 80% at 50% 50%, rgba(99, 102, 241, 0.08), transparent),
+                radial-gradient(ellipse 60% 60% at 30% 30%, rgba(139, 92, 246, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: auroraShift 20s ease-in-out infinite;
+        }
+
+        .aurora-register {
+            background:
+                radial-gradient(ellipse 80% 80% at 50% 50%, rgba(163, 230, 53, 0.1), transparent),
+                radial-gradient(ellipse 60% 60% at 70% 70%, rgba(132, 204, 22, 0.06), transparent);
+            opacity: 0;
+            transition: opacity 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: auroraShift 20s ease-in-out infinite reverse;
+        }
+
+        @keyframes auroraShift {
+
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                transform: scale(1.03) rotate(1deg);
+            }
+        }
+
+        .group:hover .aurora-login,
+        .group:hover .aurora-register {
+            opacity: 1;
+        }
+
+        /* =============== GRID TÉCNICO SUTIL =============== */
+        .tech-grid {
+            background-size: 60px 60px;
+            background-image:
+                linear-gradient(to right, rgba(26, 26, 26, 0.015) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(26, 26, 26, 0.015) 1px, transparent 1px);
+            opacity: 0.4;
+            transition: opacity 1.2s ease;
+        }
+
+        .group:hover .tech-grid {
+            opacity: 1;
+        }
+
+        /* =============== CONTENIDO EXPANDIBLE - SUPER SUAVE =============== */
+        .expandable-content {
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(15px);
+            transition:
+                max-height 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s,
+                transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
+            overflow: hidden;
+        }
+
+        .group:hover .expandable-content {
+            max-height: 800px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =============== SUBTÍTULO ANIMADO =============== */
+        .subtitle-animated {
+            opacity: 0;
+            transform: translateY(-8px);
+            transition:
+                opacity 1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .group:hover .subtitle-animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =============== INPUTS - PREMIUM STYLE =============== */
+        .input-field {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(26, 26, 26, 0.08);
+            border-radius: 12px;
+            transition:
+                border-color 0.4s ease,
+                box-shadow 0.4s ease,
+                background-color 0.4s ease,
+                transform 0.3s ease;
+        }
+
+        .input-field:hover {
+            border-color: rgba(26, 26, 26, 0.15);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .input-field:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+            background: white;
+            outline: none;
+            transform: translateY(-1px);
+        }
+
+        .input-field-lime:focus {
+            border-color: #a3e635;
+            box-shadow: 0 0 0 3px rgba(163, 230, 53, 0.1);
+        }
+
+        .input-field::placeholder {
+            color: rgba(26, 26, 26, 0.35);
+            transition: color 0.3s ease;
+        }
+
+        .input-field:focus::placeholder {
+            color: rgba(26, 26, 26, 0.2);
+        }
+
+        /* =============== LABELS PREMIUM =============== */
+        .label-premium {
+            font-size: 0.65rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(26, 26, 26, 0.5);
+            transition: color 0.3s ease;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* =============== BOTONES PREMIUM =============== */
+        .btn-primary {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+            color: white;
+            border-radius: 12px;
+            letter-spacing: 0.12em;
+            position: relative;
+            overflow: hidden;
+            transition:
+                transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.5s ease;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #333 0%, #4a4a4a 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(26, 26, 26, 0.2);
+        }
+
+        .btn-primary:hover::before {
+            opacity: 1;
+        }
+
+        .btn-primary span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-lime {
+            background: linear-gradient(135deg, #a3e635 0%, #84cc16 100%);
+            color: #1a1a1a;
+            border-radius: 12px;
+            letter-spacing: 0.12em;
+            position: relative;
+            overflow: hidden;
+            transition:
+                transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.5s ease;
+        }
+
+        .btn-lime:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(163, 230, 53, 0.25);
+        }
+
+        /* =============== BOTONES SOCIALES PREMIUM =============== */
+        .btn-social {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(26, 26, 26, 0.08);
+            border-radius: 12px;
+            transition:
+                transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                border-color 0.4s ease,
+                box-shadow 0.5s ease,
+                background-color 0.4s ease;
+        }
+
+        .btn-social:hover {
+            transform: translateY(-2px);
+            border-color: rgba(26, 26, 26, 0.15);
+            box-shadow: 0 10px 30px rgba(26, 26, 26, 0.1);
+            background: white;
+        }
+
+        .btn-social svg {
+            transition: transform 0.4s ease;
+        }
+
+        .btn-social:hover svg {
+            transform: scale(1.05);
+        }
+
+        /* =============== LINKS PREMIUM =============== */
+        .link-premium {
+            color: rgba(26, 26, 26, 0.6);
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .link-premium::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #6366f1, #a3e635);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .link-premium:hover {
+            color: #1a1a1a;
+        }
+
+        .link-premium:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* =============== DIVIDER ANIMADO =============== */
+        .divider-animated {
+            position: relative;
+        }
+
+        .divider-animated::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(26, 26, 26, 0.1), transparent);
+        }
+
+        .divider-animated span {
+            background: #faf8f5;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* =============== LÍNEA CENTRAL DIVISORIA =============== */
+        .center-divider {
+            width: 1px;
+            background: linear-gradient(to bottom,
+                    transparent 0%,
+                    rgba(26, 26, 26, 0.06) 20%,
+                    rgba(26, 26, 26, 0.1) 50%,
+                    rgba(26, 26, 26, 0.06) 80%,
+                    transparent 100%);
+            transition: background 0.6s ease;
+        }
+
+        /* =============== RESPONSIVE SCROLLABLE =============== */
+        @media (max-width: 768px) {
+            .split-pane {
+                overflow-y: auto;
+            }
+
+            .expandable-content {
+                max-height: none !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+
+            .subtitle-animated {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+
+            .text-outline {
+                -webkit-text-stroke: 0 !important;
+                color: #1a1a1a !important;
+                transform: none !important;
+            }
+
+            .aurora-login,
+            .aurora-register {
+                opacity: 0.5 !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased h-screen flex flex-col">
+
+    <!-- Glows animados de fondo -->
+    <div class="glow-container">
+        <div class="glow-left"></div>
+        <div class="glow-right"></div>
+    </div>
+
+    <!-- Header/Nav -->
+    <nav class="fixed top-0 w-full z-50 px-6 md:px-10 py-5 flex justify-between items-center">
+        <a href="/"
+            class="font-display text-lg tracking-wide text-mikiwi-dark hover:opacity-70 transition-opacity duration-300">MI.KIWI</a>
+        <div
+            class="hidden md:flex items-center gap-8 text-[11px] font-medium tracking-[0.2em] uppercase text-mikiwi-dark/50">
+            <span>Acceso</span>
+            <span class="opacity-30">•</span>
+            <span>Registro</span>
+        </div>
+        <a href="/"
+            class="text-[11px] uppercase tracking-[0.15em] font-medium text-mikiwi-dark/50 hover:text-mikiwi-dark transition-colors duration-300">
+            Volver al inicio
+        </a>
+    </nav>
+
+    <!-- Main Split Panes -->
+    <main class="flex-grow flex flex-col md:flex-row h-full relative pt-16">
+
+        <!-- ==================== PANEL LOGIN ==================== -->
+        <section
+            class="group split-pane relative flex-1 hover:flex-[2.5] flex flex-col justify-center items-center overflow-hidden cursor-pointer">
+
+            <!-- Fondo técnico -->
+            <div class="absolute inset-0 tech-grid"></div>
+
+            <!-- Aurora azul/índigo -->
+            <div class="aurora-login absolute inset-0 pointer-events-none"></div>
+
+            <div class="relative z-10 px-6 md:px-12 lg:px-16 w-full max-w-lg mx-auto py-8">
+
+                <!-- Subtítulo animado -->
+                <span
+                    class="subtitle-animated block text-[11px] font-semibold tracking-[0.25em] uppercase text-indigo-500 mb-5">
+                    01 — Acceso a tu cuenta
+                </span>
+
+                <!-- Título con outline effect -->
+                <h2 class="font-black text-4xl md:text-5xl lg:text-6xl uppercase leading-[0.9] mb-5 tracking-tight">
+                    <span class="text-outline text-outline-login block">Iniciar</span>
+                    <span class="text-mikiwi-dark block">Sesión.</span>
+                </h2>
+
+                <!-- Contenido expandible -->
+                <div class="expandable-content">
+                    <p class="text-gray-500 text-sm md:text-base leading-relaxed mb-8 max-w-sm">
+                        Accede a tu perfil sensorial personalizado y continúa tu experiencia MI.KIWI con total fluidez.
+                    </p>
+
+                    <!-- Formulario Login -->
+                    <form class="space-y-5 mb-6">
+                        <div>
+                            <label class="label-premium">Correo Electrónico</label>
+                            <input type="email" placeholder="tu@email.com"
+                                class="input-field w-full px-4 py-3.5 text-sm" required>
+                        </div>
+                        <div>
+                            <label class="label-premium">Contraseña</label>
+                            <input type="password" placeholder="••••••••••"
+                                class="input-field w-full px-4 py-3.5 text-sm" required>
+                        </div>
+
+                        <!-- Remember + Forgot -->
+                        <div class="flex items-center justify-between pt-1">
+                            <label class="flex items-center gap-2.5 cursor-pointer group/check">
+                                <input type="checkbox"
+                                    class="w-4 h-4 rounded border-gray-300 text-indigo-500 focus:ring-indigo-500 transition-all">
+                                <span
+                                    class="text-xs text-gray-500 group-hover/check:text-gray-700 transition-colors">Recordarme</span>
+                            </label>
+                            <a href="#" class="link-premium text-xs font-medium">¿Olvidaste tu contraseña?</a>
+                        </div>
+
+                        <button type="submit" class="btn-primary w-full py-4 text-xs uppercase font-semibold mt-2">
+                            <span>Acceder a MI.KIWI</span>
+                        </button>
+                    </form>
+
+                    <!-- Divider -->
+                    <div class="divider-animated flex items-center justify-center my-6">
+                        <span class="text-[10px] tracking-[0.2em] uppercase text-gray-400">o continúa con</span>
+                    </div>
+
+                    <!-- Social Login -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <button type="button" class="btn-social flex items-center justify-center gap-2.5 py-3.5 px-4">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24">
+                                <path fill="#4285F4"
+                                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                <path fill="#34A853"
+                                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                <path fill="#FBBC05"
+                                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                                <path fill="#EA4335"
+                                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                            </svg>
+                            <span class="text-xs font-medium text-gray-700">Google</span>
+                        </button>
+                        <button type="button" class="btn-social flex items-center justify-center gap-2.5 py-3.5 px-4">
+                            <svg class="w-5 h-5" fill="#1a1a1a" viewBox="0 0 24 24">
+                                <path
+                                    d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
+                            </svg>
+                            <span class="text-xs font-medium text-gray-700">Apple</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Línea divisoria central -->
+        <div class="center-divider hidden md:block"></div>
+
+        <!-- ==================== PANEL REGISTRO ==================== -->
+        <section
+            class="group split-pane relative flex-1 hover:flex-[2.5] flex flex-col justify-center items-center overflow-hidden cursor-pointer border-t md:border-t-0 border-black/5">
+
+            <!-- Fondo técnico -->
+            <div class="absolute inset-0 tech-grid"></div>
+
+            <!-- Aurora verde lima -->
+            <div class="aurora-register absolute inset-0 pointer-events-none"></div>
+
+            <div class="relative z-10 px-6 md:px-12 lg:px-16 w-full max-w-lg mx-auto py-8 md:text-right">
+
+                <!-- Subtítulo animado -->
+                <span
+                    class="subtitle-animated block text-[11px] font-semibold tracking-[0.25em] uppercase text-lime-600 mb-5">
+                    02 — Únete a nosotros
+                </span>
+
+                <!-- Título con outline effect -->
+                <h2 class="font-black text-4xl md:text-5xl lg:text-6xl uppercase leading-[0.9] mb-5 tracking-tight">
+                    <span class="text-mikiwi-dark block">Crear</span>
+                    <span class="text-outline text-outline-register block">Cuenta.</span>
+                </h2>
+
+                <!-- Contenido expandible -->
+                <div class="expandable-content">
+                    <p class="text-gray-500 text-sm md:text-base leading-relaxed mb-8 max-w-sm md:ml-auto">
+                        Descubre tu identidad sónica única y accede a colecciones exclusivas diseñadas para ti.
+                    </p>
+
+                    <!-- Formulario Registro -->
+                    <form class="space-y-5 mb-6">
+                        <div>
+                            <label class="label-premium md:text-right">Nombre Completo</label>
+                            <input type="text" placeholder="Tu nombre"
+                                class="input-field input-field-lime w-full px-4 py-3.5 text-sm md:text-right" required>
+                        </div>
+                        <div>
+                            <label class="label-premium md:text-right">Correo Electrónico</label>
+                            <input type="email" placeholder="tu@email.com"
+                                class="input-field input-field-lime w-full px-4 py-3.5 text-sm md:text-right" required>
+                        </div>
+                        <div>
+                            <label class="label-premium md:text-right">Contraseña</label>
+                            <input type="password" placeholder="Mínimo 8 caracteres"
+                                class="input-field input-field-lime w-full px-4 py-3.5 text-sm md:text-right" required>
+                        </div>
+
+                        <button type="submit" class="btn-lime w-full py-4 text-xs uppercase font-semibold mt-2">
+                            <span>Crear mi cuenta</span>
+                        </button>
+                    </form>
+
+                    <!-- Divider -->
+                    <div class="divider-animated flex items-center justify-center my-6">
+                        <span class="text-[10px] tracking-[0.2em] uppercase text-gray-400">o regístrate con</span>
+                    </div>
+
+                    <!-- Social Register -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <button type="button" class="btn-social flex items-center justify-center gap-2.5 py-3.5 px-4">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24">
+                                <path fill="#4285F4"
+                                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                <path fill="#34A853"
+                                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                <path fill="#FBBC05"
+                                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                                <path fill="#EA4335"
+                                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                            </svg>
+                            <span class="text-xs font-medium text-gray-700">Google</span>
+                        </button>
+                        <button type="button" class="btn-social flex items-center justify-center gap-2.5 py-3.5 px-4">
+                            <svg class="w-5 h-5" fill="#1a1a1a" viewBox="0 0 24 24">
+                                <path
+                                    d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
+                            </svg>
+                            <span class="text-xs font-medium text-gray-700">Apple</span>
+                        </button>
+                    </div>
+
+                    <!-- Terms -->
+                    <p class="text-[10px] text-gray-400 mt-6 leading-relaxed">
+                        Al registrarte, aceptas nuestros
+                        <a href="#" class="link-premium font-medium">Términos de Servicio</a>
+                        y
+                        <a href="#" class="link-premium font-medium">Política de Privacidad</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="fixed bottom-0 w-full z-40 px-6 md:px-10 py-4 flex justify-between items-end pointer-events-none">
+        <div
+            class="text-[9px] font-medium tracking-[0.15em] uppercase text-mikiwi-dark/30 max-w-[280px] leading-relaxed">
+            Pasa el ratón sobre el panel correspondiente para acceder o crear tu cuenta
+        </div>
+        <div class="hidden md:block text-[9px] font-medium tracking-[0.15em] uppercase text-mikiwi-dark/30">
+            MI.KIWI © 2026
+        </div>
+    </footer>
+
+</body>
+
+</html>
