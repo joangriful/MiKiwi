@@ -17,8 +17,8 @@ export default function Home() {
                     <span className="block text-[0.7rem] uppercase tracking-[8px] font-black text-[var(--text-muted)] mb-[30px] animate-fade-in-slide">
                         Próxima Generación
                     </span>
-                    <h1 className="text-[10vw] md:text-[8vw] font-['Cinzel'] font-black leading-none mb-[40px] tracking-[-0.05em] text-[var(--text-main)] animate-fade-in-slide">
-                        ECLIPSE
+                    <h1 className="text-[10vw] md:text-[8vw] font-sugo font-black leading-none mb-[40px] text-[var(--text-main)] animate-fade-in-slide">
+                        MIKIWI
                     </h1>
                     <p className="max-w-[600px] mx-auto text-[1.1rem] md:text-[1.4rem] text-[var(--text-muted)] font-medium leading-relaxed mb-[60px] animate-fade-in-slide">
                         Donde la tecnología de precisión se encuentra con la profundidad sensorial.
@@ -49,7 +49,7 @@ export default function Home() {
             <section className="px-[5%] py-[150px] bg-[#fdfdfd] border-y border-[var(--border)]">
                 <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-[100px] items-center">
                     <div>
-                        <h2 className="font-['Cinzel'] text-[3rem] md:text-[4.5rem] leading-[1.1] mb-[40px] font-black text-[var(--text-main)]">
+                        <h2 className="font-sugo text-[3rem] md:text-[4.5rem] leading-[1.1] mb-[40px] font-black text-[var(--text-main)]">
                             Identidad Sónica.
                         </h2>
                         <p className="text-[1.1rem] text-[var(--text-muted)] leading-[1.8] mb-[50px]">
@@ -59,7 +59,7 @@ export default function Home() {
                             href="/configurador/quiz"
                             className="inline-block text-[0.75rem] font-black uppercase tracking-[4px] border-b-2 border-[var(--color-primary)] pb-2 hover:border-[var(--text-main)] transition-all"
                         >
-                            Iniciar Calibración AURA ID
+                            Iniciar Calibración MIKIWI ID
                         </Link>
                     </div>
                     <div className="relative aspect-square flex items-center justify-center">
@@ -77,7 +77,7 @@ export default function Home() {
                 <div className="flex flex-col md:flex-row justify-between items-end mb-[100px] gap-[30px]">
                     <div className="max-w-[500px]">
                         <span className="text-[0.7rem] uppercase tracking-[4px] font-black text-[var(--color-primary)] mb-[20px] block">Curaduría</span>
-                        <h2 className="font-['Cinzel'] text-[3.5rem] leading-none mb-[20px] font-black">Colecciones.</h2>
+                        <h2 className="font-sugo text-[3.5rem] leading-none mb-[20px] font-black">Colecciones.</h2>
                     </div>
                     <div className="text-[0.75rem] font-black uppercase tracking-[2px] text-[var(--text-muted)] pb-1 border-b border-[var(--border)] cursor-pointer hover:border-[var(--text-main)] transition-all">
                         Ver todas
@@ -93,7 +93,7 @@ export default function Home() {
                         <div key={idx} className="group bg-white p-[60px] flex flex-col justify-between aspect-[4/5] hover:bg-[#fafafa] transition-colors relative">
                             <div>
                                 <span className="text-[0.6rem] uppercase tracking-[3px] font-bold text-[var(--text-muted)] mb-[10px] block">{item.type}</span>
-                                <h3 className="text-[1.8rem] font-['Cinzel'] font-black mb-[20px]">{item.title}</h3>
+                                <h3 className="text-[1.8rem] font-sugo font-black mb-[20px]">{item.title}</h3>
                                 <p className="text-[0.9rem] text-[var(--text-muted)] leading-relaxed max-w-[200px]">
                                     {item.desc}
                                 </p>
@@ -117,11 +117,11 @@ export default function Home() {
 
             {/* --- CALIBRACIÓN SENSORIAL CTA --- */}
             <section className="px-[5%] py-[200px] bg-[var(--text-main)] text-white text-center relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none text-[30vw] font-black leading-none flex items-center justify-center select-none font-['Cinzel']">
-                    KIWI
+                <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none text-[30vw] font-black leading-none flex items-center justify-center select-none font-sugo">
+                    MIKIWI
                 </div>
                 <div className="relative z-10 max-w-[800px] mx-auto">
-                    <h2 className="font-['Cinzel'] text-[3.5rem] md:text-[5rem] font-black leading-[1] mb-[50px]">
+                    <h2 className="font-sugo text-[3.5rem] md:text-[5rem] font-black leading-[1] mb-[50px]">
                         Redefine tu Percepción.
                     </h2>
                     <p className="text-[1.2rem] md:text-[1.5rem] font-medium text-white/70 mb-[70px] leading-relaxed italic">

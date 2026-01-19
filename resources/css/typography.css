@@ -1,0 +1,49 @@
+/**
+ * Typography Configuration
+ * Sugo Pro Display for titles
+ * Mulish for body text
+ */
+
+/* Import Mulish from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;600;700;800;900&display=swap');
+
+/* Sugo Pro Display - Local Fonts */
+@font-face {
+    font-family: 'Sugo Pro Display';
+    src: url('/fonts/Sugo-Pro-Display-Regular-trial.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sugo Pro Display';
+    src: url('/fonts/Sugo-Pro-Display-Bold-trial.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Typography Utilities */
+.font-sugo {
+    font-family: 'Sugo Pro Display', 'Cinzel', serif;
+}
+
+.font-mulish {
+    font-family: 'Mulish', sans-serif;
+}
+
+/* Apply to body */
+body {
+    font-family: 'Mulish', sans-serif;
+}
+
+/* Apply to headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Sugo Pro Display', 'Cinzel', serif;
+}
