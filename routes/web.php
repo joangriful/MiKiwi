@@ -30,9 +30,9 @@ Route::prefix('configurador')->group(function () {
         return Inertia::render('Configurador/Home');
     })->name('configurador.home');
 
-    Route::get('/wizard', function () {
+    Route::get('/index', function () {
         return Inertia::render('Configurador/Index');
-    })->name('configurador.wizard');
+    })->name('configurador.index');
 
     Route::get('/collections', function () {
         return Inertia::render('Configurador/Collections');
@@ -43,5 +43,5 @@ Route::prefix('configurador')->group(function () {
     })->name('configurador.quiz');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
