@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Head, Link } from '@inertiajs/react';
-import '../../css/configurador.css';
+import '../../../css/configurador.css';
 
 export default function ConfiguratorWizard() {
     const [currentStep, setCurrentStep] = useState(1);
