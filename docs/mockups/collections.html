@@ -105,8 +105,13 @@
 
         /* =============== HEADER SECTION =============== */
         .header-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            padding: 160px 20px 100px;
+            padding: 100px 20px;
             background: linear-gradient(to bottom, #0a0a0a 0%, #111 100%);
         }
 
@@ -176,9 +181,25 @@
             width: 100%;
             overflow: hidden;
             transform-origin: center top;
-            will-change: transform, opacity, filter;
-            transition: transform 0.1s ease-out, opacity 0.1s ease-out, filter 0.1s ease-out;
+            will-change: transform, filter;
             padding: 20px;
+        }
+
+        /* Z-index: NEW cards appear ON TOP of previous ones */
+        .stack-cards__item:nth-child(1) {
+            z-index: 1;
+        }
+
+        .stack-cards__item:nth-child(2) {
+            z-index: 2;
+        }
+
+        .stack-cards__item:nth-child(3) {
+            z-index: 3;
+        }
+
+        .stack-cards__item:nth-child(4) {
+            z-index: 4;
         }
 
         .stack-cards__item section {
@@ -689,103 +710,212 @@
         </ul>
     </div>
 
-    <!-- Improved Stack Cards JavaScript -->
+    <!-- Awwwards-Level Premium Stack Cards Effect -->
     <script>
             (function () {
-                const stackCardsContainer = document.querySelector('.stack-cards-container');
-                const stackCards = document.querySelector('.js-stack-cards');
-                const items = Array.from(stackCards.querySelectorAll('.js-stack-cards__item'));
+                const items = Array.from(document.querySelectorAll('.js-stack-cards__item'));
+                const sections = items.map(item => item.querySelector('section'));
                 const itemsCount = items.length;
 
-                // Configuration
-                const cardMargin = 60; // Margin between cards when stacked
-                const scaleDecrement = 0.04; // Scale reduction per card in stack
+                // Premium Configuration - Awwwards Style
+                const config = {
+                    // 3D Perspective & Rotation
+                    perspective: 1200,
+                    rotationX: 8,              // Subtle tilt when stacking
 
-                function setContainerHeight() {
-                    const viewportHeight = window.innerHeight;
-                    // Each card takes 100vh of scroll, plus one final viewport
-                    const totalHeight = viewportHeight * (itemsCount + 0.5);
-                    stackCardsContainer.style.height = `${totalHeight}px`;
+                    // Scale with depth illusion
+                    scaleStep: 0.045,
+                    minScale: 0.82,
+
+                    // Vertical parallax movement
+                    translateYStep: 35,
+                    translateZStep: -80,       // Push back in 3D space
+
+                    // Opacity fade - FAST disappear
+                    opacityStep: 0.9,          // 90% reduction per level = disappear after 1 card
+                    minOpacity: 0,
+
+                    // Dynamic shadow
+                    shadowIntensity: 0.3,
+
+                    // Visual effects
+                    blurStep: 2.5,
+                    maxBlur: 8,
+                    brightnessStep: 0.06,
+                    minBrightness: 0.75,
+
+                    // Animation - exponential easing
+                    lerpFactor: 0.085,
+
+                    // Trigger threshold
+                    triggerOffset: 30
+                };
+
+                // State per card
+                const states = items.map(() => ({
+                    current: {
+                        scale: 1, opacity: 1, blur: 0, brightness: 1,
+                        translateY: 0, translateZ: 0, rotateX: 0, shadow: 0
+                    },
+                    target: {
+                        scale: 1, opacity: 1, blur: 0, brightness: 1,
+                        translateY: 0, translateZ: 0, rotateX: 0, shadow: 0
+                    }
+                }));
+
+                // Exponential easing lerp
+                function lerp(a, b, t) {
+                    return a + (b - a) * t;
                 }
 
-                function updateCards() {
-                    const scrollTop = window.scrollY;
-                    const containerTop = stackCardsContainer.offsetTop;
-                    const viewportHeight = window.innerHeight;
+                // Ease out expo for smoother feel
+                function easeOutExpo(x) {
+                    return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
+                }
 
-                    // How far we've scrolled into the container
-                    const scrollIntoContainer = scrollTop - containerTop;
+                function calculateTargets() {
+                    let activeIndex = -1;
 
-                    items.forEach((item, index) => {
-                        // Each card has a scroll range of one viewport height
-                        const cardTriggerStart = viewportHeight * index;
-                        const cardTriggerEnd = viewportHeight * (index + 1);
-
-                        // Calculate how far through this card's scroll zone we are (0 to 1+)
-                        const rawProgress = (scrollIntoContainer - cardTriggerStart) / viewportHeight;
-
-                        let opacity, scale, translateY, blur, zIndex;
-
-                        if (rawProgress < 0) {
-                            // Card hasn't been reached yet - starts off-screen below
-                            const enterProgress = Math.max(0, rawProgress + 1); // -1 to 0 becomes 0 to 1
-                            opacity = enterProgress;
-                            scale = 0.92 + (0.08 * enterProgress);
-                            translateY = (1 - enterProgress) * 150;
-                            blur = 0;
-                            zIndex = index;
+                    // Find topmost active card
+                    items.forEach((card, i) => {
+                        const rect = card.getBoundingClientRect();
+                        if (rect.top <= config.triggerOffset) {
+                            activeIndex = i;
                         }
-                        else if (rawProgress >= 0 && rawProgress < 1) {
-                            // Card is the current active card
-                            opacity = 1;
-                            scale = 1;
-                            translateY = 0;
-                            blur = 0;
-                            zIndex = 100 + index;
-                        }
-                        else {
-                            // Card has been scrolled past - stacks at top and fades
-                            const exitProgress = Math.min(rawProgress - 1, itemsCount); // How far past its zone
-                            const stackPosition = Math.min(exitProgress, 2); // Cap stacking effect
+                    });
 
-                            opacity = Math.max(0, 1 - (exitProgress * 0.5));
-                            scale = 1 - (scaleDecrement * stackPosition);
-                            translateY = -exitProgress * cardMargin;
-                            blur = Math.min(exitProgress * 2, 4);
-                            zIndex = 50 - index;
-                        }
+                    items.forEach((card, i) => {
+                        const state = states[i];
+                        const depth = Math.max(0, activeIndex - i);
+                        const t = state.target;
 
-                        // Apply styles directly (no lerp for immediate response)
-                        item.style.opacity = opacity;
-                        item.style.transform = `translateY(${translateY}px) scale(${scale})`;
-                        item.style.filter = blur > 0.1 ? `blur(${blur}px)` : 'none';
-                        item.style.zIndex = zIndex;
+                        if (depth > 0) {
+                            // Card is BEHIND others - apply premium 3D effects
+                            const depthFactor = Math.min(depth, 3); // Cap at 3 levels
+
+                            t.scale = Math.max(config.minScale, 1 - (depthFactor * config.scaleStep));
+                            // Opacity uses FULL depth, not capped - to disappear faster
+                            t.opacity = Math.max(config.minOpacity, 1 - (depth * config.opacityStep));
+                            t.blur = Math.min(depthFactor * config.blurStep, config.maxBlur);
+                            t.brightness = Math.max(config.minBrightness, 1 - (depthFactor * config.brightnessStep));
+
+                            // 3D transforms
+                            t.translateY = -depthFactor * config.translateYStep;
+                            t.translateZ = depthFactor * config.translateZStep;
+                            t.rotateX = depthFactor * config.rotationX;
+
+                            // Dynamic shadow intensity
+                            t.shadow = Math.min(depthFactor * config.shadowIntensity, 0.6);
+                        } else {
+                            // Card is ACTIVE - full prominence
+                            t.scale = 1;
+                            t.opacity = 1;
+                            t.blur = 0;
+                            t.brightness = 1;
+                            t.translateY = 0;
+                            t.translateZ = 0;
+                            t.rotateX = 0;
+                            t.shadow = 0;
+                        }
                     });
                 }
 
-                function init() {
-                    setContainerHeight();
-                    updateCards();
+                function applyStyles() {
+                    let animating = false;
+
+                    items.forEach((card, i) => {
+                        const section = sections[i];
+                        const state = states[i];
+                        const c = state.current;
+                        const t = state.target;
+
+                        // Lerp all properties with exponential smoothing
+                        const factor = config.lerpFactor;
+                        c.scale = lerp(c.scale, t.scale, factor);
+                        c.opacity = lerp(c.opacity, t.opacity, factor);
+                        c.blur = lerp(c.blur, t.blur, factor);
+                        c.brightness = lerp(c.brightness, t.brightness, factor);
+                        c.translateY = lerp(c.translateY, t.translateY, factor);
+                        c.translateZ = lerp(c.translateZ, t.translateZ, factor);
+                        c.rotateX = lerp(c.rotateX, t.rotateX, factor);
+                        c.shadow = lerp(c.shadow, t.shadow, factor);
+
+                        // Check if still animating
+                        const diff = Math.abs(c.scale - t.scale) +
+                            Math.abs(c.opacity - t.opacity) * 0.1 +
+                            Math.abs(c.translateY - t.translateY) * 0.01;
+                        if (diff > 0.001) animating = true;
+
+                        // Build 3D transform
+                        const transform = `
+                        perspective(${config.perspective}px)
+                        translateY(${c.translateY.toFixed(1)}px)
+                        translateZ(${c.translateZ.toFixed(1)}px)
+                        rotateX(${c.rotateX.toFixed(2)}deg)
+                        scale(${c.scale.toFixed(4)})
+                    `.replace(/\s+/g, ' ').trim();
+
+                        // Build filter chain
+                        let filters = [];
+                        if (c.blur > 0.3) filters.push(`blur(${c.blur.toFixed(1)}px)`);
+                        if (c.brightness < 0.98) filters.push(`brightness(${c.brightness.toFixed(2)})`);
+
+                        // Apply to card
+                        card.style.transform = transform;
+                        card.style.opacity = c.opacity.toFixed(3);
+                        card.style.filter = filters.length ? filters.join(' ') : 'none';
+
+                        // Dynamic shadow on section
+                        if (section && c.shadow > 0.01) {
+                            section.style.boxShadow = `
+                            0 ${20 + c.shadow * 30}px ${40 + c.shadow * 40}px rgba(0, 0, 0, ${c.shadow.toFixed(2)}),
+                            0 ${5 + c.shadow * 10}px ${15 + c.shadow * 15}px rgba(0, 0, 0, ${(c.shadow * 0.5).toFixed(2)})
+                        `;
+                        } else if (section) {
+                            section.style.boxShadow = 'none';
+                        }
+                    });
+
+                    return animating;
                 }
 
-                // Initialize
-                window.addEventListener('load', init);
-                window.addEventListener('resize', () => {
-                    setContainerHeight();
-                    updateCards();
-                });
+                // Animation loop
+                let running = false;
+                function tick() {
+                    calculateTargets();
+                    const needsMore = applyStyles();
 
-                // Scroll handling with requestAnimationFrame
-                let ticking = false;
-                window.addEventListener('scroll', () => {
-                    if (!ticking) {
-                        requestAnimationFrame(() => {
-                            updateCards();
-                            ticking = false;
-                        });
-                        ticking = true;
+                    if (needsMore) {
+                        running = true;
+                        requestAnimationFrame(tick);
+                    } else {
+                        running = false;
                     }
+                }
+
+                function start() {
+                    if (!running) {
+                        running = true;
+                        requestAnimationFrame(tick);
+                    }
+                }
+
+                // Set perspective on container
+                function initPerspective() {
+                    const container = document.querySelector('.stack-cards-container');
+                    if (container) {
+                        container.style.perspective = `${config.perspective}px`;
+                        container.style.perspectiveOrigin = 'center top';
+                    }
+                }
+
+                // Events
+                window.addEventListener('load', () => {
+                    initPerspective();
+                    start();
                 });
+                window.addEventListener('resize', start);
+                window.addEventListener('scroll', start, { passive: true });
             })();
     </script>
 
