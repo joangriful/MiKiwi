@@ -24,6 +24,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/perfil', function () {
+    return Inertia::render('perfil');
+});
+
 
 Route::prefix('configurador')->group(function () {
     Route::get('/', function () {
