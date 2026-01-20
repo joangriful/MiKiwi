@@ -28,6 +28,9 @@ Route::get('/perfil', function () {
     return Inertia::render('perfil');
 });
 
+Route::get('/colecciones', function () {
+    return Inertia::render('colecciones');
+});
 
 Route::prefix('configurador')->group(function () {
     Route::get('/', function () {
