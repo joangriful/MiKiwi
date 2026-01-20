@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MI.KIWI | Colecciones</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Cinzel', 'serif'],
+                    },
+                    colors: {
+                        mikiwi: {
+                            dark: '#1a1a1a',
+                            lime: '#a3e635',
+                            cream: '#faf8f5',
+                            indigo: '#6366f1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* =============== FIXED HEADER =============== */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            background: rgba(10, 10, 10, 0.8);
+        }
+
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            letter-spacing: 0.05em;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .logo:hover {
+            opacity: 0.7;
+        }
+
+        .site-header nav {
+            display: none;
+            gap: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .site-header nav {
+                display: flex;
+            }
+        }
+
+        .site-header nav a {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+        }
+
+        .site-header nav a:hover {
+            color: #ffffff;
+        }
+
+        /* =============== HEADER SECTION =============== */
+        .header-section {
+            text-align: center;
+            padding: 140px 20px 80px;
+        }
+
+        .header-section h2 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(32px, 8vw, 72px);
+            font-weight: 400;
+            line-height: 1.2;
+            color: #ffffff;
+            margin-bottom: 24px;
+        }
+
+        .header-section p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.75);
+            max-width: 500px;
+            margin: 0 auto 32px;
+        }
+
+        .header-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px 12px 20px;
+            background: #ffffff;
+            color: #0a0a0a;
+            border-radius: 9999px;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .header-cta:hover {
+            background: #0a0a0a;
+            color: #ffffff;
+            border: 1px solid #fff;
+        }
+
+        /* =============== STACK CARDS CONTAINER =============== */
+        .stack-cards-container {
+            position: relative;
+        }
+
+        .stack-cards {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* =============== EACH CARD =============== */
+        .stack-cards__item {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transform-origin: center top;
+            will-change: transform, opacity;
+        }
+
+        .stack-cards__item section {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Full-screen image */
+        .card-image-container {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .card-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Gradient overlay at bottom */
+        .card-gradient-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top,
+                    rgba(10, 10, 10, 1) 0%,
+                    rgba(10, 10, 10, 0.8) 20%,
+                    rgba(10, 10, 10, 0.4) 40%,
+                    transparent 70%);
+            z-index: 1;
+        }
+
+        /* Content positioned at bottom */
+        .card-content-wrapper {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px 80px;
+        }
+
+        .card-content {
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(32px, 6vw, 72px);
+            font-weight: 400;
+            line-height: 1.2;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .card-description {
+            font-size: 16px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.75);
+            max-width: 600px;
+            margin: 0 auto 24px;
+        }
+
+        /* Progress Dots */
+        .progress-dots {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0;
+        }
+
+        @media (min-width: 768px) {
+            .progress-dots {
+                display: flex;
+            }
+        }
+
+        .progress-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 9999px;
+            background: rgba(217, 217, 217, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            width: 40px;
+            background: #f97316;
+        }
+
+        /* Features Grid */
+        .features-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .features-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (min-width: 1024px) {
+            .features-grid {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 24px;
+            }
+        }
+
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 6px;
+        }
+
+        .feature-item svg {
+            width: 20px;
+            height: 20px;
+            stroke: #ffffff;
+            fill: none;
+        }
+
+        .feature-item p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* CTA Button */
+        .learn-more-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 32px;
+            background: rgba(240, 240, 240, 0.1);
+            color: #ffffff;
+            border-radius: 9999px;
+            backdrop-filter: blur(8px);
+            font-size: 14px;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .learn-more-btn:hover {
+            background: rgba(240, 240, 240, 0.2);
+        }
+
+        /* Collection accent colors */
+        .collection-ella .progress-dot.active {
+            background: #ec4899;
+        }
+
+        .collection-el .progress-dot.active {
+            background: #6366f1;
+        }
+
+        .collection-parejas .progress-dot.active {
+            background: #f97316;
+        }
+
+        .collection-experiencias .progress-dot.active {
+            background: #a3e635;
+        }
+
+        /* =============== RESPONSIVE =============== */
+        @media (max-width: 768px) {
+            .card-content-wrapper {
+                padding: 40px 16px 60px;
+            }
+
+            .features-grid {
+                gap: 12px 16px;
+            }
+
+            .feature-item p {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Fixed Header -->
+    <header class="site-header">
+        <a href="/" class="logo">MI.KIWI</a>
+        <nav>
+            <a href="#">Productos</a>
+            <a href="#">Colecciones</a>
+            <a href="#">Experiencias</a>
+        </nav>
+        <a href="#"
+            style="font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; text-decoration: none; color: #fff;">Acceder</a>
+    </header>
+
+    <!-- Header Section -->
+    <div class="header-section">
+        <h2>Nuestras Colecciones</h2>
+        <p>Explora universos de sensaciones cuidadosamente curados. Cada colección cuenta una historia única.</p>
+        <a href="#" class="header-cta">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Ver Catálogo
+        </a>
+    </div>
+
+    <!-- Stack Cards Container -->
+    <div class="stack-cards-container">
+        <ul class="stack-cards js-stack-cards">
+
+            <!-- Collection 1: Para Ella -->
+            <li class="stack-cards__item js-stack-cards__item collection-ella">
+                <section>
+                    <div class="card-image-container">
+                        <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1920&h=1080&fit=crop&q=80"
+                            alt="Colección Para Ella">
+                        <div class="card-gradient-overlay"></div>
+                    </div>
+                    <div class="card-content-wrapper">
+                        <div class="card-content">
+                            <h2 class="card-title">Para Ella</h2>
+                            <p class="card-description">
+                                Diseños ergonómicos y texturas premium pensados para maximizar el placer femenino.
+                                Tecnología de vibración silenciosa y materiales hipoalergénicos.
+                            </p>
+                            <div class="progress-dots">
+                                <span class="progress-dot active"></span>
+                                <span class="progress-dot"></span>
+                                <span class="progress-dot"></span>
+                                <span class="progress-dot"></span>
+                            </div>
+                        </div>
+                        <div class="features-container">
+                            <div class="features-grid">
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M12 6v6l4 2" />
+                                    </svg>
+                                    <p>Silicona Premium</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path
+                                            d="M5.5 8.5 9 12l-3.5 3.5L2 12l3.5-3.5ZM12 2l3.5 3.5L12 9 8.5 5.5 12 2ZM18.5 8.5 22 12l-3.5 3.5L15 12l3.5-3.5ZM12 15l3.5 3.5L12 22l-3.5-3.5L12 15Z" />
+                                    </svg>
+                                    <p>Ultrasilencioso</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                                        <path d="M3 9h18M9 21V9" />
+                                    </svg>
+                                    <p>10 Modos</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                                    </svg>
+                                    <p>Sumergible</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path
+                                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                    </svg>
+                                    <p>Ergonómico</p>
+                                </div>
+                            </div>
+                            <a href="#" class="learn-more-btn">Explorar Colección</a>
+                        </div>
+                    </div>
+                </section>
+            </li>
+
+            <!-- Collection 2: Para Él -->
+            <li class="stack-cards__item js-stack-cards__item collection-el">
+                <section>
+                    <div class="card-image-container">
+                        <img src="https://images.unsplash.com/photo-1517142089942-ba376ce32a2e?w=1920&h=1080&fit=crop&q=80"
+                            alt="Colección Para Él">
+                        <div class="card-gradient-overlay"></div>
+                    </div>
+                    <div class="card-content-wrapper">
+                        <div class="card-content">
+                            <h2 class="card-title">Para Él</h2>
+                            <p class="card-description">
+                                Innovación masculina redefinida. Masturbadores con tecnología háptica, anillos
+                                vibradores y accesorios para potenciar cada sensación.
+                            </p>
+                            <div class="progress-dots">
+                                <span class="progress-dot"></span>
+                                <span class="progress-dot active"></span>
+                                <span class="progress-dot"></span>
+                                <span class="progress-dot"></span>
+                            </div>
+                        </div>
+                        <div class="features-container">
+                            <div class="features-grid">
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path
+                                            d="M12 2v6M12 22v-6M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M2 12h6M22 12h-6" />
+                                    </svg>
+                                    <p>Tecnología Háptica</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <rect x="5" y="2" width="14" height="20" rx="2" />
+                                        <path d="M12 18h.01" />
+                                    </svg>
+                                    <p>Control App</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                    </svg>
+                                    <p>Materiales Seguros</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path
+                                            d="M5 18H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2M7 18h10M19 18h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2" />
+                                    </svg>
+                                    <p>Recargable USB</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M12 6v6l4 2" />
+                                    </svg>
+                                    <p>Larga Duración</p>
+                                </div>
+                            </div>
+                            <a href="#" class="learn-more-btn">Explorar Colección</a>
+                        </div>
+                    </div>
+                </section>
+            </li>
+
+            <!-- Collection 3: Parejas -->
+            <li class="stack-cards__item js-stack-cards__item collection-parejas">
+                <section>
+                    <div class="card-image-container">
+                        <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=1920&h=1080&fit=crop&q=80"
+                            alt="Colección Parejas">
+                        <div class="card-gradient-overlay"></div>
+                    </div>
+                    <div class="card-content-wrapper">
+                        <div class="card-content">
+                            <h2 class="card-title">Para Parejas</h2>
+                            <p class="card-description">
+                                Juguetes diseñados para compartir. Vibradores controlados a distancia, kits de
+                                exploración y accesorios que intensifican la conexión.
+                            </p>
+                            <div class="progress-dots">
+                                <span class="progress-dot"></span>
+                                <span class="progress-dot"></span>
+                                <span class="progress-dot active"></span>
+                                <span class="progress-dot"></span>
+                            </div>
+                        </div>
+                        <div class="features-container">
+                            <div class="features-grid">
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                                    </svg>
+                                    <p>Control Dual</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="2" y1="12" x2="22" y2="12" />
+                                        <path
+                                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                                    </svg>
+                                    <p>Larga Distancia</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg>
+                                    <p>Sincronización</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path
+                                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                                    </svg>
+                                    <p>Kits Completos</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path
+                                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                    </svg>
+                                    <p>Para Dos</p>
+                                </div>
+                            </div>
+                            <a href="#" class="learn-more-btn">Explorar Colección</a>
+                        </div>
+                    </div>
+                </section>
+            </li>
+
+            <!-- Collection 4: Experiencias -->
+            <li class="stack-cards__item js-stack-cards__item collection-experiencias">
+                <section>
+                    <div class="card-image-container">
+                        <img src="https://images.unsplash.com/photo-1600428853876-fb5a50152cbb?w=1920&h=1080&fit=crop&q=80"
+                            alt="Experiencias Sensoriales">
+                        <div class="card-gradient-overlay"></div>
+                    </div>
+                    <div class="card-content-wrapper">
+                        <div class="card-content">
+                            <h2 class="card-title">Experiencias Sensoriales</h2>
+                            <p class="card-description">
+                                Kits curados para despertar todos los sentidos. Aceites de masaje, velas aromáticas,
+                                vendas de seda y elementos de exploración sensorial.
+                            </p>
+                            <div class="progress-dots">
+                                <span class="progress-dot"></span>
+                                <span class="progress-dot"></span>
+                                <span class="progress-dot"></span>
+                                <span class="progress-dot active"></span>
+                            </div>
+                        </div>
+                        <div class="features-container">
+                            <div class="features-grid">
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                                    </svg>
+                                    <p>Aceites Naturales</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path d="M8 18l4-12 4 12M3 18h18" />
+                                    </svg>
+                                    <p>Aromaterapia</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                                        <path d="M3 9h18M9 21V9" />
+                                    </svg>
+                                    <p>Texturas Premium</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path
+                                            d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
+                                    </svg>
+                                    <p>Gift-Ready</p>
+                                </div>
+                                <div class="feature-item">
+                                    <svg viewBox="0 0 24 24" stroke-width="1.5">
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                    <p>Experiencia Única</p>
+                                </div>
+                            </div>
+                            <a href="#" class="learn-more-btn">Explorar Colección</a>
+                        </div>
+                    </div>
+                </section>
+            </li>
+
+        </ul>
+    </div>
+
+    <!-- Stack Cards JavaScript -->
+    <script>
+            (function () {
+                const stackCardsContainer = document.querySelector('.stack-cards-container');
+                const stackCards = document.querySelector('.js-stack-cards');
+                const items = Array.from(stackCards.querySelectorAll('.js-stack-cards__item'));
+                const itemsCount = items.length;
+
+                // Configuration
+                const marginY = 120;
+                const scaleDecrement = 0.05;
+
+                function setContainerHeight() {
+                    // Container needs extra height to allow scrolling through all cards
+                    const viewportHeight = window.innerHeight;
+                    const totalHeight = viewportHeight * itemsCount;
+                    stackCardsContainer.style.height = `${totalHeight}px`;
+                }
+
+                function updateCards() {
+                    const scrollTop = window.scrollY;
+                    const containerTop = stackCardsContainer.offsetTop;
+                    const viewportHeight = window.innerHeight;
+
+                    // How far we've scrolled into the container
+                    const scrollIntoContainer = scrollTop - containerTop;
+
+                    items.forEach((item, index) => {
+                        // Each card takes one viewport height of scroll
+                        const cardScrollStart = viewportHeight * index;
+                        const cardScrollEnd = viewportHeight * (index + 1);
+
+                        // Progress through this card's section (0 to 1)
+                        const cardProgress = (scrollIntoContainer - cardScrollStart) / viewportHeight;
+
+                        if (scrollIntoContainer < cardScrollStart) {
+                            // Card is below - not yet reached
+                            item.style.opacity = '0';
+                            item.style.transform = `translateY(${marginY}px) scale(0.9)`;
+                            item.style.zIndex = itemsCount - index;
+                        }
+                        else if (scrollIntoContainer >= cardScrollStart && scrollIntoContainer < cardScrollEnd) {
+                            // Card is currently active
+                            const enterProgress = Math.min(1, cardProgress);
+                            const opacity = Math.min(1, enterProgress * 2);
+                            const translateY = marginY * (1 - enterProgress);
+                            const scale = 0.9 + (0.1 * enterProgress);
+
+                            item.style.opacity = opacity.toString();
+                            item.style.transform = `translateY(${translateY}px) scale(${scale})`;
+                            item.style.zIndex = 100 + index;
+                        }
+                        else {
+                            // Card has been scrolled past - stack it
+                            const exitProgress = Math.min(1, (scrollIntoContainer - cardScrollEnd) / viewportHeight);
+
+                            // Cards behind should scale down and fade
+                            const cardsAhead = items.length - 1 - index;
+                            const stackScale = 1 - (scaleDecrement * (1 + exitProgress));
+                            const stackOpacity = Math.max(0, 1 - (exitProgress * 1.5));
+                            const stackTranslateY = -exitProgress * 100;
+
+                            item.style.opacity = stackOpacity.toString();
+                            item.style.transform = `translateY(${stackTranslateY}vh) scale(${stackScale})`;
+                            item.style.zIndex = index;
+                        }
+                    });
+                }
+
+                function init() {
+                    setContainerHeight();
+                    updateCards();
+                }
+
+                // Initialize
+                window.addEventListener('load', init);
+                window.addEventListener('resize', () => {
+                    setContainerHeight();
+                    updateCards();
+                });
+
+                // Throttled scroll
+                let ticking = false;
+                window.addEventListener('scroll', () => {
+                    if (!ticking) {
+                        requestAnimationFrame(() => {
+                            updateCards();
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                });
+            })();
+    </script>
+
+</body>
+
+</html>
