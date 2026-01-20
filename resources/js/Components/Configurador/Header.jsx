@@ -4,8 +4,8 @@ import { Link } from '@inertiajs/react';
 export default function Header() {
     return (
         <header className="fixed top-0 w-full px-[5%] py-[20px] flex justify-between items-center z-[1000] bg-white/90 backdrop-blur-[20px] border-b border-[var(--border)]">
-            <div className="configurador-logo text-[1.2rem] font-black tracking-[6px] text-[var(--text-main)] transition-opacity hover:opacity-70 cursor-default">
-                MI<span>.</span>KIWI
+            <div className="configurador-logo text-[1.4rem] font-bold tracking-[8px] text-[var(--text-main)] transition-opacity hover:opacity-70 cursor-default font-sugo">
+                MIKIWI
             </div>
             <nav className="hidden md:block">
                 <ul className="flex gap-[40px] list-none">

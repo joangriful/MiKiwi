@@ -5,7 +5,7 @@ export default function Footer() {
         <footer className="px-[5%] py-[120px] pb-[60px] bg-[#fafafa] border-t border-[var(--border)]">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[80px] mb-[100px]">
                 <div className="col-span-1 lg:col-span-1">
-                    <div className="configurador-logo text-[1.5rem] font-black tracking-[8px] mb-[30px] text-[var(--text-main)]">MI KIWI</div>
+                    <div className="configurador-logo text-[1.5rem] font-bold tracking-[10px] mb-[30px] text-[var(--text-main)] font-sugo">MIKIWI</div>
                     <p className="text-[var(--text-muted)] text-[0.85rem] leading-[2] max-w-[280px]">
                         Reduccionismo técnico y excelencia sensorial. Diseñado para la introspección moderna.
                     </p>
@@ -42,7 +42,7 @@ export default function Footer() {
                 </div>
             </div>
             <div className="pt-[60px] border-t border-[var(--border)] flex flex-col md:flex-row justify-between items-center gap-[20px] text-[0.65rem] text-[var(--text-muted)] tracking-[2px] font-bold uppercase">
-                <div>&copy; {new Date().getFullYear()} MI KIWI • SWISS DESIGN ORIGIN</div>
+                <div>&copy; {new Date().getFullYear()} MIKIWI • SWISS DESIGN ORIGIN</div>
                 <div className="flex gap-[30px]">
                     <a href="#" className="hover:text-[var(--text-main)]">Privacidad</a>
                     <a href="#" className="hover:text-[var(--text-main)]">Términos</a>

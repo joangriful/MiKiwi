@@ -31,8 +31,8 @@
     --transition-slow: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 
     /* Fonts */
-    --font-head: 'Cinzel', serif;
-    --font-body: 'Montserrat', sans-serif;
+    --font-head: 'Sugo Pro Display', sans-serif;
+    --font-body: 'Mulish', sans-serif;
 }
 
 .bg-radial-gradient {
