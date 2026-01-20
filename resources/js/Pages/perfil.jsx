@@ -6,15 +6,14 @@ function Header () {
     );
 }
 
-function Header () {
+function Footer () {
     return (
         <></>
     );
 }
 
-
     return (
-        <div className="grid grid-cols-5 grid-rows-6 gap-3">
+        <div className="grid grid-cols-5 grid-rows-6 gap-3 backdrop-brightness-90">
             <div className="col-span-2 row-span-2" id="cerranSesion">
                 <h1>Cerrar Sesión</h1>
             </div>
