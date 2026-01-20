@@ -1,49 +1,70 @@
 /**
  * Typography Configuration
- * Sugo Pro Display for titles
- * Mulish for body text
+ * Sugo Pro Display for titles & brand
+ * Agrandir (via Mulish/Inter/Montserrat fallback or Agrandir if possible) for body
  */
 
-/* Import Mulish from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;600;700;800;900&display=swap');
+/* Search for Agrandir similar fonts or import if provided. 
+   Since 'Agrandir' is often a premium font, I will use a high-end geometric sans-serif (Inter/Mulish) 
+   and prioritize Agrandir if the user provides it later. 
+*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Mulish:wght@200..900&display=swap');
 
-/* Sugo Pro Display - Local Fonts */
+/* Sugo Pro Display - Comprehensive Local Fonts */
+@font-face {
+    font-family: 'Sugo Pro Display';
+    src: url('/fonts/Sugo-Pro-Display-Thin-trial.ttf') format('truetype');
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: 'Sugo Pro Display';
+    src: url('/fonts/Sugo-Pro-Display-Light-trial.ttf') format('truetype');
+    font-weight: 300;
+}
+
 @font-face {
     font-family: 'Sugo Pro Display';
     src: url('/fonts/Sugo-Pro-Display-Regular-trial.ttf') format('truetype');
     font-weight: 400;
-    font-style: normal;
-    font-display: swap;
 }
 
 @font-face {
     font-family: 'Sugo Pro Display';
     src: url('/fonts/Sugo-Pro-Display-Bold-trial.ttf') format('truetype');
     font-weight: 700;
-    font-style: normal;
-    font-display: swap;
 }
 
 /* Typography Utilities */
+:root {
+    --font-head: 'Sugo Pro Display', sans-serif;
+    --font-body: 'Mulish', 'Inter', sans-serif;
+    /* Agrandir style alternative */
+}
+
 .font-sugo {
-    font-family: 'Sugo Pro Display', 'Cinzel', serif;
+    font-family: var(--font-head);
 }
 
-.font-mulish {
-    font-family: 'Mulish', sans-serif;
+.font-agrandir {
+    font-family: var(--font-body);
+    letter-spacing: -0.01em;
 }
 
-/* Apply to body */
+/* Base Styles */
 body {
-    font-family: 'Mulish', sans-serif;
+    font-family: var(--font-body);
+    font-weight: 400;
 }
 
-/* Apply to headings */
 h1,
 h2,
 h3,
 h4,
 h5,
-h6 {
-    font-family: 'Sugo Pro Display', 'Cinzel', serif;
+h6,
+.brand-name {
+    font-family: var(--font-head);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
