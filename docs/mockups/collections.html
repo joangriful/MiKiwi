@@ -697,56 +697,15 @@
                 const items = Array.from(stackCards.querySelectorAll('.js-stack-cards__item'));
                 const itemsCount = items.length;
 
-                // Smooth configuration - slower scroll gives more importance to each card
-                const scrollMultiplier = 1.5; // How much scroll per card (higher = slower)
-                const scaleAmount = 0.06; // Scale reduction when stacked
-                const blurAmount = 3; // Max blur in px
-
-                let lastScrollY = 0;
-                let currentTransforms = [];
-
-                function lerp(start, end, factor) {
-                    return start + (end - start) * factor;
-                }
+                // Configuration
+                const cardMargin = 60; // Margin between cards when stacked
+                const scaleDecrement = 0.04; // Scale reduction per card in stack
 
                 function setContainerHeight() {
                     const viewportHeight = window.innerHeight;
-                    const totalHeight = viewportHeight * itemsCount * scrollMultiplier + viewportHeight;
+                    // Each card takes 100vh of scroll, plus one final viewport
+                    const totalHeight = viewportHeight * (itemsCount + 0.5);
                     stackCardsContainer.style.height = `${totalHeight}px`;
-                }
-
-                function calculateCardState(index, scrollProgress) {
-                    const cardProgress = scrollProgress - index;
-
-                    let opacity = 1;
-                    let scale = 1;
-                    let translateY = 0;
-                    let blur = 0;
-                    let zIndex = itemsCount - index;
-
-                    if (cardProgress < 0) {
-                        // Card not yet reached - hidden below
-                        const enterProgress = cardProgress + 1;
-                        opacity = Math.max(0, enterProgress * 1.5);
-                        scale = 0.9 + (0.1 * Math.max(0, enterProgress));
-                        translateY = (1 - Math.max(0, enterProgress)) * 120;
-                    } else if (cardProgress >= 0 && cardProgress < 1) {
-                        // Current active card
-                        opacity = 1;
-                        scale = 1;
-                        translateY = 0;
-                        zIndex = 100;
-                    } else {
-                        // Card has been passed - stacking above
-                        const stackProgress = Math.min(cardProgress - 1, 1);
-                        opacity = Math.max(0, 1 - stackProgress * 1.2);
-                        scale = 1 - (scaleAmount * (1 + stackProgress * 0.5));
-                        translateY = -stackProgress * 80;
-                        blur = stackProgress * blurAmount;
-                        zIndex = index;
-                    }
-
-                    return { opacity, scale, translateY, blur, zIndex };
                 }
 
                 function updateCards() {
@@ -754,51 +713,79 @@
                     const containerTop = stackCardsContainer.offsetTop;
                     const viewportHeight = window.innerHeight;
 
+                    // How far we've scrolled into the container
                     const scrollIntoContainer = scrollTop - containerTop;
-                    const scrollProgress = scrollIntoContainer / (viewportHeight * scrollMultiplier);
 
                     items.forEach((item, index) => {
-                        const state = calculateCardState(index, scrollProgress);
+                        // Each card has a scroll range of one viewport height
+                        const cardTriggerStart = viewportHeight * index;
+                        const cardTriggerEnd = viewportHeight * (index + 1);
 
-                        // Smooth interpolation
-                        if (!currentTransforms[index]) {
-                            currentTransforms[index] = state;
-                        } else {
-                            currentTransforms[index].opacity = lerp(currentTransforms[index].opacity, state.opacity, 0.15);
-                            currentTransforms[index].scale = lerp(currentTransforms[index].scale, state.scale, 0.15);
-                            currentTransforms[index].translateY = lerp(currentTransforms[index].translateY, state.translateY, 0.15);
-                            currentTransforms[index].blur = lerp(currentTransforms[index].blur, state.blur, 0.15);
-                            currentTransforms[index].zIndex = state.zIndex;
+                        // Calculate how far through this card's scroll zone we are (0 to 1+)
+                        const rawProgress = (scrollIntoContainer - cardTriggerStart) / viewportHeight;
+
+                        let opacity, scale, translateY, blur, zIndex;
+
+                        if (rawProgress < 0) {
+                            // Card hasn't been reached yet - starts off-screen below
+                            const enterProgress = Math.max(0, rawProgress + 1); // -1 to 0 becomes 0 to 1
+                            opacity = enterProgress;
+                            scale = 0.92 + (0.08 * enterProgress);
+                            translateY = (1 - enterProgress) * 150;
+                            blur = 0;
+                            zIndex = index;
+                        }
+                        else if (rawProgress >= 0 && rawProgress < 1) {
+                            // Card is the current active card
+                            opacity = 1;
+                            scale = 1;
+                            translateY = 0;
+                            blur = 0;
+                            zIndex = 100 + index;
+                        }
+                        else {
+                            // Card has been scrolled past - stacks at top and fades
+                            const exitProgress = Math.min(rawProgress - 1, itemsCount); // How far past its zone
+                            const stackPosition = Math.min(exitProgress, 2); // Cap stacking effect
+
+                            opacity = Math.max(0, 1 - (exitProgress * 0.5));
+                            scale = 1 - (scaleDecrement * stackPosition);
+                            translateY = -exitProgress * cardMargin;
+                            blur = Math.min(exitProgress * 2, 4);
+                            zIndex = 50 - index;
                         }
 
-                        const t = currentTransforms[index];
-                        item.style.opacity = t.opacity.toFixed(3);
-                        item.style.transform = `translateY(${t.translateY.toFixed(2)}px) scale(${t.scale.toFixed(4)})`;
-                        item.style.filter = t.blur > 0.1 ? `blur(${t.blur.toFixed(2)}px)` : 'none';
-                        item.style.zIndex = t.zIndex;
+                        // Apply styles directly (no lerp for immediate response)
+                        item.style.opacity = opacity;
+                        item.style.transform = `translateY(${translateY}px) scale(${scale})`;
+                        item.style.filter = blur > 0.1 ? `blur(${blur}px)` : 'none';
+                        item.style.zIndex = zIndex;
                     });
-
-                    lastScrollY = scrollTop;
-                }
-
-                function animate() {
-                    updateCards();
-                    requestAnimationFrame(animate);
                 }
 
                 function init() {
                     setContainerHeight();
-
-                    // Initialize transforms
-                    items.forEach((item, index) => {
-                        currentTransforms[index] = { opacity: 0, scale: 0.9, translateY: 120, blur: 0, zIndex: itemsCount - index };
-                    });
-
-                    animate();
+                    updateCards();
                 }
 
+                // Initialize
                 window.addEventListener('load', init);
-                window.addEventListener('resize', setContainerHeight);
+                window.addEventListener('resize', () => {
+                    setContainerHeight();
+                    updateCards();
+                });
+
+                // Scroll handling with requestAnimationFrame
+                let ticking = false;
+                window.addEventListener('scroll', () => {
+                    if (!ticking) {
+                        requestAnimationFrame(() => {
+                            updateCards();
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                });
             })();
     </script>
 
