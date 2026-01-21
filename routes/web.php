@@ -28,4 +28,30 @@ Route::get('/product', function () {
     return Inertia::render('ProductPage');
 })->name('product');
 
-require __DIR__.'/auth.php';
+Route::get('/perfil', function () {
+    return Inertia::render('perfil');
+});
+
+Route::get('/colecciones', function () {
+    return Inertia::render('colecciones');
+});
+
+Route::prefix('configurador')->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('Configurador/Home');
+    })->name('configurador.home');
+
+    Route::get('/index', function () {
+        return Inertia::render('Configurador/Index');
+    })->name('configurador.index');
+
+    Route::get('/collections', function () {
+        return Inertia::render('Configurador/Collections');
+    })->name('configurador.collections');
+
+    Route::get('/quiz', function () {
+        return Inertia::render('Configurador/Quiz');
+    })->name('configurador.quiz');
+});
+
+require __DIR__ . '/auth.php';

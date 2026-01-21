@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MI.KIWI | Acceso</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Cinzel', 'serif'],
+                    },
+                    colors: {
+                        mikiwi: {
+                            dark: '#1a1a1a',
+                            lime: '#a3e635',
+                            cream: '#faf8f5',
+                            indigo: '#6366f1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #faf8f5;
+            color: #1a1a1a;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        /* =============== GLOWS ANIMADOS =============== */
+        .glow-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .glow-left {
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 50%;
+            height: 140%;
+            background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+            animation: floatGlow 25s ease-in-out infinite;
+            transition: opacity 1.5s ease;
+        }
+
+        .glow-right {
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 50%;
+            height: 140%;
+            background: radial-gradient(ellipse at center, rgba(163, 230, 53, 0.10) 0%, transparent 70%);
+            animation: floatGlow 25s ease-in-out infinite reverse;
+            animation-delay: -12s;
+            transition: opacity 1.5s ease;
+        }
+
+        /* Estado activo de glows */
+        body.login-active .glow-left {
+            opacity: 1;
+        }
+
+        body.login-active .glow-right {
+            opacity: 0.3;
+        }
+
+        body.register-active .glow-left {
+            opacity: 0.3;
+        }
+
+        body.register-active .glow-right {
+            opacity: 1;
+        }
+
+        @keyframes floatGlow {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.7;
+            }
+
+            50% {
+                transform: translateY(2%) scale(1.02);
+                opacity: 0.85;
+            }
+        }
+
+        /* =============== PANELES =============== */
+        .panel {
+            transition:
+                flex-grow 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                background-color 1s ease;
+            will-change: flex-grow;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel-content {
+            transition:
+                opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Estados de los paneles */
+        .panel.active {
+            flex-grow: 2.5;
+        }
+
+        .panel.inactive {
+            flex-grow: 1;
+        }
+
+        .panel.inactive .panel-content.form-content {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            position: absolute;
+        }
+
+        .panel.active .panel-content.form-content {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .panel.inactive .panel-content.decorative-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .panel.active .panel-content.decorative-content {
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+            position: absolute;
+        }
+
+        /* =============== AURORA EFFECTS =============== */
+        .aurora {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            transition: opacity 1.2s ease;
+        }
+
+        .aurora-login {
+            background:
+                radial-gradient(ellipse 80% 80% at 50% 50%, rgba(99, 102, 241, 0.06), transparent),
+                radial-gradient(ellipse 60% 60% at 30% 30%, rgba(139, 92, 246, 0.04), transparent);
+            animation: auroraShift 20s ease-in-out infinite;
+        }
+
+        .aurora-register {
+            background:
+                radial-gradient(ellipse 80% 80% at 50% 50%, rgba(163, 230, 53, 0.08), transparent),
+                radial-gradient(ellipse 60% 60% at 70% 70%, rgba(132, 204, 22, 0.05), transparent);
+            animation: auroraShift 20s ease-in-out infinite reverse;
+        }
+
+        .panel.active .aurora {
+            opacity: 1;
+        }
+
+        .panel.inactive .aurora {
+            opacity: 0.3;
+        }
+
+        @keyframes auroraShift {
+
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                transform: scale(1.03) rotate(1deg);
+            }
+        }
+
+        /* =============== GRID TÉCNICO =============== */
+        .tech-grid {
+            position: absolute;
+            inset: 0;
+            background-size: 60px 60px;
+            background-image:
+                linear-gradient(to right, rgba(26, 26, 26, 0.015) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(26, 26, 26, 0.015) 1px, transparent 1px);
+            transition: opacity 1s ease;
+        }
+
+        .panel.active .tech-grid {
+            opacity: 0.8;
+        }
+
+        .panel.inactive .tech-grid {
+            opacity: 0.3;
+        }
+
+        /* =============== INPUTS =============== */
+        .input-field {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(26, 26, 26, 0.08);
+            border-radius: 12px;
+            transition:
+                border-color 0.4s ease,
+                box-shadow 0.4s ease,
+                background-color 0.4s ease,
+                transform 0.3s ease;
+        }
+
+        .input-field:hover {
+            border-color: rgba(26, 26, 26, 0.15);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .input-field:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+            background: white;
+            outline: none;
+            transform: translateY(-1px);
+        }
+
+        .input-field-lime:focus {
+            border-color: #a3e635;
+            box-shadow: 0 0 0 3px rgba(163, 230, 53, 0.1);
+        }
+
+        .input-field::placeholder {
+            color: rgba(26, 26, 26, 0.35);
+        }
+
+        /* =============== LABELS =============== */
+        .label-premium {
+            font-size: 0.65rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(26, 26, 26, 0.5);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* =============== BOTONES =============== */
+        .btn-primary {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+            color: white;
+            border-radius: 12px;
+            letter-spacing: 0.12em;
+            position: relative;
+            overflow: hidden;
+            transition:
+                transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.5s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(26, 26, 26, 0.2);
+        }
+
+        .btn-lime {
+            background: linear-gradient(135deg, #a3e635 0%, #84cc16 100%);
+            color: #1a1a1a;
+            border-radius: 12px;
+            letter-spacing: 0.12em;
+            transition:
+                transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.5s ease;
+        }
+
+        .btn-lime:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(163, 230, 53, 0.25);
+        }
+
+        .btn-switch {
+            background: transparent;
+            border: 1.5px solid currentColor;
+            border-radius: 12px;
+            letter-spacing: 0.12em;
+            transition:
+                transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                background-color 0.4s ease,
+                color 0.4s ease;
+        }
+
+        .btn-switch:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-switch-indigo {
+            color: #6366f1;
+            border-color: #6366f1;
+        }
+
+        .btn-switch-indigo:hover {
+            background: #6366f1;
+            color: white;
+        }
+
+        .btn-switch-lime {
+            color: #65a30d;
+            border-color: #a3e635;
+        }
+
+        .btn-switch-lime:hover {
+            background: #a3e635;
+            color: #1a1a1a;
+        }
+
+        /* =============== SOCIAL BUTTONS =============== */
+        .btn-social {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(26, 26, 26, 0.08);
+            border-radius: 12px;
+            transition:
+                transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                border-color 0.4s ease,
+                box-shadow 0.5s ease,
+                background-color 0.4s ease;
+        }
+
+        .btn-social:hover {
+            transform: translateY(-2px);
+            border-color: rgba(26, 26, 26, 0.15);
+            box-shadow: 0 10px 30px rgba(26, 26, 26, 0.1);
+            background: white;
+        }
+
+        /* =============== DECORATIVE ELEMENTS =============== */
+        .decorative-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.15;
+            }
+        }
+
+        .decorative-text {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 0.9;
+            opacity: 0.08;
+        }
+
+        /* =============== LINKS =============== */
+        .link-premium {
+            color: rgba(26, 26, 26, 0.6);
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .link-premium::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #6366f1, #a3e635);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .link-premium:hover {
+            color: #1a1a1a;
+        }
+
+        .link-premium:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* =============== DIVIDER =============== */
+        .divider-animated {
+            position: relative;
+        }
+
+        .divider-animated::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(26, 26, 26, 0.1), transparent);
+        }
+
+        .divider-animated span {
+            background: #faf8f5;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* =============== CENTER DIVIDER =============== */
+        .center-divider {
+            width: 1px;
+            background: linear-gradient(to bottom,
+                    transparent 0%,
+                    rgba(26, 26, 26, 0.06) 20%,
+                    rgba(26, 26, 26, 0.1) 50%,
+                    rgba(26, 26, 26, 0.06) 80%,
+                    transparent 100%);
+        }
+
+        /* =============== RESPONSIVE =============== */
+        @media (max-width: 768px) {
+            .panel.active {
+                flex-grow: 4;
+            }
+
+            .panel.inactive {
+                flex-grow: 1;
+            }
+
+            .decorative-text {
+                font-size: 2.5rem;
+            }
+
+            .decorative-circle {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased h-screen flex flex-col login-active">
+
+    <!-- Glows animados de fondo -->
+    <div class="glow-container">
+        <div class="glow-left"></div>
+        <div class="glow-right"></div>
+    </div>
+
+    <!-- Header/Nav -->
+    <nav class="fixed top-0 w-full z-50 px-6 md:px-10 py-5 flex justify-between items-center">
+        <a href="/"
+            class="font-display text-lg tracking-wide text-mikiwi-dark hover:opacity-70 transition-opacity duration-300">MI.KIWI</a>
+        <div
+            class="hidden md:flex items-center gap-8 text-[11px] font-medium tracking-[0.2em] uppercase text-mikiwi-dark/50">
+            <button id="nav-login" class="hover:text-mikiwi-dark transition-colors">Acceso</button>
+            <span class="opacity-30">•</span>
+            <button id="nav-register" class="hover:text-mikiwi-dark transition-colors">Registro</button>
+        </div>
+        <a href="/"
+            class="text-[11px] uppercase tracking-[0.15em] font-medium text-mikiwi-dark/50 hover:text-mikiwi-dark transition-colors duration-300">
+            Volver al inicio
+        </a>
+    </nav>
+
+    <!-- Main Split Panes -->
+    <main class="flex-grow flex flex-col md:flex-row h-full relative pt-16 z-10">
+
+        <!-- ==================== PANEL LOGIN ==================== -->
+        <section id="panel-login" class="panel active flex-1 flex flex-col justify-center items-center">
+
+            <div class="tech-grid"></div>
+            <div class="aurora aurora-login"></div>
+
+            <!-- Contenido del formulario (visible cuando activo) -->
+            <div class="panel-content form-content relative z-10 px-6 md:px-12 lg:px-16 w-full max-w-lg mx-auto py-8">
+
+                <span class="block text-[11px] font-semibold tracking-[0.25em] uppercase text-indigo-500 mb-5">
+                    01 — Acceso a tu cuenta
+                </span>
+
+                <h2 class="font-black text-4xl md:text-5xl lg:text-6xl uppercase leading-[0.9] mb-5 tracking-tight">
+                    <span class="text-mikiwi-dark block">Iniciar</span>
+                    <span class="text-mikiwi-dark/30 block">Sesión.</span>
+                </h2>
+
+                <p class="text-gray-500 text-sm md:text-base leading-relaxed mb-8 max-w-sm">
+                    Accede a tu perfil sensorial personalizado y continúa tu experiencia MI.KIWI.
+                </p>
+
+                <form class="space-y-5 mb-6">
+                    <div>
+                        <label class="label-premium">Correo Electrónico</label>
+                        <input type="email" placeholder="tu@email.com" class="input-field w-full px-4 py-3.5 text-sm"
+                            required>
+                    </div>
+                    <div>
+                        <label class="label-premium">Contraseña</label>
+                        <input type="password" placeholder="••••••••••" class="input-field w-full px-4 py-3.5 text-sm"
+                            required>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-1">
+                        <label class="flex items-center gap-2.5 cursor-pointer group/check">
+                            <input type="checkbox"
+                                class="w-4 h-4 rounded border-gray-300 text-indigo-500 focus:ring-indigo-500">
+                            <span
+                                class="text-xs text-gray-500 group-hover/check:text-gray-700 transition-colors">Recordarme</span>
+                        </label>
+                        <a href="#" class="link-premium text-xs font-medium">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <button type="submit" class="btn-primary w-full py-4 text-xs uppercase font-semibold mt-2">
+                        Acceder a MI.KIWI
+                    </button>
+                </form>
+
+                <div class="divider-animated flex items-center justify-center my-6">
+                    <span class="text-[10px] tracking-[0.2em] uppercase text-gray-400">o continúa con</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button" class="btn-social flex items-center justify-center gap-2.5 py-3.5 px-4">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24">
+                            <path fill="#4285F4"
+                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                            <path fill="#34A853"
+                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                            <path fill="#FBBC05"
+                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                            <path fill="#EA4335"
+                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                        </svg>
+                        <span class="text-xs font-medium text-gray-700">Google</span>
+                    </button>
+                    <button type="button" class="btn-social flex items-center justify-center gap-2.5 py-3.5 px-4">
+                        <svg class="w-5 h-5" fill="#1a1a1a" viewBox="0 0 24 24">
+                            <path
+                                d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
+                        </svg>
+                        <span class="text-xs font-medium text-gray-700">Apple</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contenido decorativo (visible cuando inactivo) -->
+            <div
+                class="panel-content decorative-content absolute inset-0 flex flex-col justify-center items-center z-10 px-8">
+                <div class="decorative-circle bg-gradient-to-br from-indigo-500 to-purple-500 mb-8"></div>
+                <p class="decorative-text text-center text-indigo-500">
+                    Bienvenido<br>de vuelta.
+                </p>
+                <p class="text-gray-400 text-center mt-6 max-w-xs text-sm leading-relaxed">
+                    ¿Ya tienes cuenta? Accede para continuar tu experiencia personalizada.
+                </p>
+                <button id="switch-to-login"
+                    class="btn-switch btn-switch-indigo mt-8 px-8 py-3.5 text-xs uppercase font-semibold">
+                    Iniciar Sesión
+                </button>
+            </div>
+        </section>
+
+        <!-- Línea divisoria central -->
+        <div class="center-divider hidden md:block"></div>
+
+        <!-- ==================== PANEL REGISTRO ==================== -->
+        <section id="panel-register"
+            class="panel inactive flex-1 flex flex-col justify-center items-center border-t md:border-t-0 border-black/5">
+
+            <div class="tech-grid"></div>
+            <div class="aurora aurora-register"></div>
+
+            <!-- Contenido del formulario (visible cuando activo) -->
+            <div
+                class="panel-content form-content relative z-10 px-6 md:px-12 lg:px-16 w-full max-w-lg mx-auto py-8 md:text-right">
+
+                <span class="block text-[11px] font-semibold tracking-[0.25em] uppercase text-lime-600 mb-5">
+                    02 — Únete a nosotros
+                </span>
+
+                <h2 class="font-black text-4xl md:text-5xl lg:text-6xl uppercase leading-[0.9] mb-5 tracking-tight">
+                    <span class="text-mikiwi-dark block">Crear</span>
+                    <span class="text-mikiwi-dark/30 block">Cuenta.</span>
+                </h2>
+
+                <p class="text-gray-500 text-sm md:text-base leading-relaxed mb-8 max-w-sm md:ml-auto">
+                    Descubre tu identidad sónica única y accede a colecciones exclusivas.
+                </p>
+
+                <form class="space-y-5 mb-6">
+                    <div>
+                        <label class="label-premium md:text-right">Nombre Completo</label>
+                        <input type="text" placeholder="Tu nombre"
+                            class="input-field input-field-lime w-full px-4 py-3.5 text-sm md:text-right" required>
+                    </div>
+                    <div>
+                        <label class="label-premium md:text-right">Correo Electrónico</label>
+                        <input type="email" placeholder="tu@email.com"
+                            class="input-field input-field-lime w-full px-4 py-3.5 text-sm md:text-right" required>
+                    </div>
+                    <div>
+                        <label class="label-premium md:text-right">Contraseña</label>
+                        <input type="password" placeholder="Mínimo 8 caracteres"
+                            class="input-field input-field-lime w-full px-4 py-3.5 text-sm md:text-right" required>
+                    </div>
+
+                    <button type="submit" class="btn-lime w-full py-4 text-xs uppercase font-semibold mt-2">
+                        Crear mi cuenta
+                    </button>
+                </form>
+
+                <div class="divider-animated flex items-center justify-center my-6">
+                    <span class="text-[10px] tracking-[0.2em] uppercase text-gray-400">o regístrate con</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button" class="btn-social flex items-center justify-center gap-2.5 py-3.5 px-4">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24">
+                            <path fill="#4285F4"
+                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                            <path fill="#34A853"
+                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                            <path fill="#FBBC05"
+                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                            <path fill="#EA4335"
+                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                        </svg>
+                        <span class="text-xs font-medium text-gray-700">Google</span>
+                    </button>
+                    <button type="button" class="btn-social flex items-center justify-center gap-2.5 py-3.5 px-4">
+                        <svg class="w-5 h-5" fill="#1a1a1a" viewBox="0 0 24 24">
+                            <path
+                                d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
+                        </svg>
+                        <span class="text-xs font-medium text-gray-700">Apple</span>
+                    </button>
+                </div>
+
+                <p class="text-[10px] text-gray-400 mt-6 leading-relaxed">
+                    Al registrarte, aceptas nuestros
+                    <a href="#" class="link-premium font-medium">Términos</a>
+                    y
+                    <a href="#" class="link-premium font-medium">Privacidad</a>
+                </p>
+            </div>
+
+            <!-- Contenido decorativo (visible cuando inactivo) -->
+            <div
+                class="panel-content decorative-content absolute inset-0 flex flex-col justify-center items-center z-10 px-8">
+                <div class="decorative-circle bg-gradient-to-br from-lime-400 to-green-500 mb-8"></div>
+                <p class="decorative-text text-center text-lime-500">
+                    Únete<br>a nosotros.
+                </p>
+                <p class="text-gray-400 text-center mt-6 max-w-xs text-sm leading-relaxed">
+                    ¿Aún no tienes cuenta? Crea una para descubrir tu identidad sónica.
+                </p>
+                <button id="switch-to-register"
+                    class="btn-switch btn-switch-lime mt-8 px-8 py-3.5 text-xs uppercase font-semibold">
+                    Crear Cuenta
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="fixed bottom-0 w-full z-40 px-6 md:px-10 py-4 flex justify-between items-end pointer-events-none">
+        <div
+            class="text-[9px] font-medium tracking-[0.15em] uppercase text-mikiwi-dark/30 max-w-[280px] leading-relaxed">
+            Selecciona acceso o registro para continuar
+        </div>
+        <div class="hidden md:block text-[9px] font-medium tracking-[0.15em] uppercase text-mikiwi-dark/30">
+            MI.KIWI © 2026
+        </div>
+    </footer>
+
+    <!-- JavaScript para cambio de paneles -->
+    <script>
+        const body = document.body;
+        const panelLogin = document.getElementById('panel-login');
+        const panelRegister = document.getElementById('panel-register');
+        const switchToLogin = document.getElementById('switch-to-login');
+        const switchToRegister = document.getElementById('switch-to-register');
+        const navLogin = document.getElementById('nav-login');
+        const navRegister = document.getElementById('nav-register');
+
+        function showLogin() {
+            body.classList.remove('register-active');
+            body.classList.add('login-active');
+            panelLogin.classList.remove('inactive');
+            panelLogin.classList.add('active');
+            panelRegister.classList.remove('active');
+            panelRegister.classList.add('inactive');
+        }
+
+        function showRegister() {
+            body.classList.remove('login-active');
+            body.classList.add('register-active');
+            panelRegister.classList.remove('inactive');
+            panelRegister.classList.add('active');
+            panelLogin.classList.remove('active');
+            panelLogin.classList.add('inactive');
+        }
+
+        // Event listeners
+        switchToLogin.addEventListener('click', showLogin);
+        switchToRegister.addEventListener('click', showRegister);
+        navLogin.addEventListener('click', showLogin);
+        navRegister.addEventListener('click', showRegister);
+
+        // También permitir click en el panel inactivo
+        panelLogin.addEventListener('click', (e) => {
+            if (panelLogin.classList.contains('inactive') && !e.target.closest('button, input, a')) {
+                showLogin();
+            }
+        });
+
+        panelRegister.addEventListener('click', (e) => {
+            if (panelRegister.classList.contains('inactive') && !e.target.closest('button, input, a')) {
+                showRegister();
+            }
+        });
+    </script>
+
+</body>
+
+</html>

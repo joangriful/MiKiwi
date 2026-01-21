@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECLIPSE | Sensory Identification</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../minimal.css">
+    <style>
+        /* --- THEME OVERRIDES --- */
+        :root {
+            --bg-panel-left: var(--bg-surface);
+            --bg-panel-right: var(--bg-main);
+            --text-primary: var(--text-main);
+            --text-secondary: var(--text-muted);
+            --accent: var(--color-primary);
+            --highlight: var(--color-primary-dark);
+            --font-head: 'Cinzel', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-panel-right);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 35% 65%;
+        }
+
+        /* --- LEFT SIDE: ART / CONTEXT --- */
+        .art-panel {
+            background: var(--bg-panel-left);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 60px;
+            border-right: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .art-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 10% 20%, rgba(153, 184, 73, 0.05), transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(248, 183, 234, 0.05), transparent 40%);
+            z-index: 0;
+        }
+
+        /* Animated Mesh/Orb */
+        .orb {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            background: conic-gradient(from 180deg, transparent, var(--accent), transparent);
+            border-radius: 50%;
+            filter: blur(40px);
+            animation: rotateOrb 10s linear infinite;
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        @keyframes rotateOrb {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        .brand-logo {
+            position: relative;
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            letter-spacing: 4px;
+            z-index: 10;
+            font-weight: 700;
+        }
+
+        .context-text {
+            position: relative;
+            z-index: 10;
+        }
+
+        .context-text h1 {
+            font-family: var(--font-head);
+            font-size: 3rem;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .context-text p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            max-width: 300px;
+            font-weight: 500;
+        }
+
+        .progress-indicator {
+            position: relative;
+            z-index: 10;
+            font-family: var(--font-head);
+            font-size: 4rem;
+            opacity: 0.05;
+            font-weight: 700;
+        }
+
+        /* --- RIGHT SIDE: INTERACTION --- */
+        .form-panel {
+            background: var(--bg-panel-right);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 100px;
+        }
+
+        .step-wrapper {
+            width: 100%;
+            max-width: 600px;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .step-wrapper.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+        }
+
+        .step-wrapper.prev {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+
+        .question-num {
+            color: var(--accent);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: block;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: -1px;
+        }
+
+        /* Options List Style */
+        .option-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-item {
+            padding: 25px 30px;
+            border: 1px solid var(--border);
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+            position: relative;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .option-item:hover {
+            border-color: var(--accent);
+            transform: translateX(10px);
+            box-shadow: var(--shadow-medium);
+            background: rgba(153, 184, 73, 0.02);
+        }
+
+        .option-item span {
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        /* Result Card */
+        .result-card {
+            text-align: center;
+            border: 1px solid var(--accent);
+            padding: 60px;
+            background: #fff;
+            position: relative;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .result-title {
+            font-family: var(--font-head);
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .res-btn {
+            margin-top: 40px;
+            padding: 18px 50px;
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+            font-family: var(--font-body);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: var(--transition);
+            cursor: pointer;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(153, 184, 73, 0.2);
+        }
+
+        .res-btn:hover {
+            background: var(--color-primary-dark);
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(153, 184, 73, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LEFT PANEL -->
+    <section class="art-panel">
+        <div class="art-bg"></div>
+        <div class="orb"></div>
+
+        <div class="brand-logo">ECLIPSE.</div>
+
+        <div class="context-text">
+            <h1 id="ctx-title">The Initial<br>Input.</h1>
+            <p>Tell us without words. We are calibrating your personal sensory profile.</p>
+        </div>
+
+        <div class="progress-indicator">01</div>
+    </section>
+
+    <!-- RIGHT PANEL (FORM) -->
+    <section class="form-panel">
+
+        <!-- STEP 1 -->
+        <div class="step-wrapper active" id="step-1">
+            <span class="question-num">Query 01 / 03</span>
+            <h3>What draws your eye first?</h3>
+            <div class="option-list">
+                <div class="option-item" onclick="nextStep(1, 'Visual')">
+                    <span>Structure & Symmetry</span>
+                </div>
+                <div class="option-item" onclick="nextStep(1, 'Chaos')">
+                    <span>Chaos & Motion</span>
+                </div>
+                <div class="option-item" onclick="nextStep(1, 'Shadow')">
+                    <span>Shadow & Depth</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="step-wrapper" id="step-2">
+            <span class="question-num">Query 02 / 03</span>
+            <h3>Your skin prefers...</h3>
+            <div class="option-list">
+                <div class="option-item" onclick="nextStep(2, 'Cold')">
+                    <span>Cold Metal / Glass</span>
+                </div>
+                <div class="option-item" onclick="nextStep(2, 'Warm')">
+                    <span>Warm Skin / Silk</span>
+                </div>
+                <div class="option-item" onclick="nextStep(2, 'Rough')">
+                    <span>Texture / Friction</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="step-wrapper" id="step-3">
+            <span class="question-num">Query 03 / 03</span>
+            <h3>The rhythm of your desire is...</h3>
+            <div class="option-list">
+                <div class="option-item" onclick="nextStep(3, 'Slow')">
+                    <span>Slow & Building</span>
+                </div>
+                <div class="option-item" onclick="nextStep(3, 'Fast')">
+                    <span>Rapid & Intense</span>
+                </div>
+                <div class="option-item" onclick="nextStep(3, 'Unpredictable')">
+                    <span>Unpredictable</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULT -->
+        <div class="step-wrapper" id="step-result">
+            <div class="result-card">
+                <span class="question-num">Calibration Complete</span>
+                <h2 class="result-title">VOID WALKER</h2>
+                <p style="color: #aaa; line-height: 1.6;">You exist in the spaces between. Your pleasure is found in the
+                    unknown, the texture of shadows, and the thrill of the unseen.</p>
+                <button class="res-btn">Unlock Profile</button>
+            </div>
+        </div>
+
+    </section>
+
+    <script>
+        // Form Logic
+        const totalSteps = 3;
+        const progressNum = document.querySelector('.progress-indicator');
+        const ctxTitle = document.getElementById('ctx-title');
+
+        function nextStep(current, answer) {
+            // Out current
+            document.getElementById(`step-${current}`).classList.remove('active');
+            document.getElementById(`step-${current}`).classList.add('prev');
+
+            // Logic for next
+            let next = current + 1;
+
+            // Update Context Panel
+            if (next <= totalSteps) {
+                progressNum.textContent = `0${next}`;
+                if (next === 2) ctxTitle.innerHTML = "Tactile<br>Response.";
+                if (next === 3) ctxTitle.innerHTML = "Tempo<br>& Pace.";
+
+                setTimeout(() => {
+                    document.getElementById(`step-${next}`).classList.add('active');
+                }, 200);
+            } else {
+                // Show Result
+                progressNum.textContent = "00";
+                ctxTitle.innerHTML = "Profile<br>Locked.";
+                setTimeout(() => {
+                    document.getElementById(`step-result`).classList.add('active');
+                }, 200);
+            }
+        }
+    </script>
+</body>
+
+</html>

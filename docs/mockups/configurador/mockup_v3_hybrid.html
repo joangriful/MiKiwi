@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiKiwi | Hybrid Sensory Experience</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Mulish:wght@200;300;400;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Sugo Pro Display';
+            src: url('./sugo_pro_display/Sugo-Pro-Display-Bold-trial.ttf') format('truetype');
+            font-weight: 700;
+        }
+
+        @font-face {
+            font-family: 'Sugo Pro Display';
+            src: url('./sugo_pro_display/Sugo-Pro-Display-Regular-trial.ttf') format('truetype');
+            font-weight: 400;
+        }
+
+        :root {
+            --bg-warm: #f8f5f0;
+            --white: #ffffff;
+            --black: #111111;
+            --main: #222b24;
+            --muted: #66672a;
+            --kiwi: #99b849;
+            --pink: #f8b7ea;
+            --grey: #f0f0f0;
+            --font-head: 'Sugo Pro Display', sans-serif;
+            --font-body: 'Mulish', 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--white);
+            color: var(--black);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 40px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .logo {
+            font-family: var(--font-head);
+            font-size: 1.6rem;
+            letter-spacing: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--black);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--black);
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-left: 40px;
+        }
+
+        /* --- HERO (FROM SERENITY V2) --- */
+        .hero {
+            height: 100vh;
+            background: var(--bg-warm);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding-top: 100px;
+        }
+
+        .hero h1 {
+            font-family: var(--font-head);
+            font-size: 15vw;
+            line-height: 0.8;
+            color: rgba(34, 43, 36, 0.03);
+            position: absolute;
+            z-index: 1;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .hero-title {
+            font-family: var(--font-head);
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            z-index: 10;
+        }
+
+        .hero-p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            max-width: 550px;
+            margin: 0 auto 50px;
+            color: var(--muted);
+            z-index: 10;
+        }
+
+        .sphere {
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle at 30% 30%, #fff, var(--pink));
+            border-radius: 50%;
+            box-shadow: 0 100px 150px rgba(0, 0, 0, 0.08);
+            animation: float 6s ease-in-out infinite;
+            margin-bottom: 40px;
+            z-index: 5;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* --- HUMANOID (FROM KINETIC V1 TRANSFORMATION) --- */
+        .humanoid-section {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            min-height: 90vh;
+            border-top: 1px solid var(--grey);
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .humanoid-left {
+            padding: 120px 8%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: var(--white);
+        }
+
+        .humanoid-right {
+            background: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .humanoid-left h2 {
+            font-family: var(--font-head);
+            font-size: 7vw;
+            line-height: 0.85;
+            margin-bottom: 40px;
+            letter-spacing: -2px;
+        }
+
+        .humanoid-left p {
+            font-size: 1.2rem;
+            max-width: 450px;
+            color: #666;
+            margin-bottom: 50px;
+        }
+
+        .decoration-text {
+            position: absolute;
+            font-size: 20vw;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.03);
+            bottom: -30px;
+            left: -20px;
+            font-family: var(--font-head);
+            pointer-events: none;
+        }
+
+        .doll-outline {
+            width: 250px;
+            height: 600px;
+            background: linear-gradient(to bottom, #222, #000);
+            border-radius: 125px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        /* --- QUIZ (SERENITY CONTENT + KINETIC STYLE) --- */
+        .quiz-section {
+            padding: 150px 5%;
+            background: var(--grey);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: center;
+        }
+
+        .quiz-card {
+            background: var(--white);
+            padding: 100px;
+            border: 2px solid var(--black);
+            /* Bold Kinetic Border */
+            transition: transform 0.3s;
+        }
+
+        .quiz-card:hover {
+            transform: translate(-10px, -10px);
+            box-shadow: 15px 15px 0 var(--kiwi);
+        }
+
+        .quiz-section h2 {
+            font-family: var(--font-head);
+            font-size: 4.5rem;
+            line-height: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .quiz-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            max-width: 500px;
+        }
+
+        .btn-bold {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 25px 60px;
+            background: var(--black);
+            color: white;
+            text-transform: uppercase;
+            font-weight: 900;
+            letter-spacing: 5px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn-bold:hover {
+            background: var(--kiwi);
+        }
+
+        /* --- GALLERY (FROM SERENITY V2) --- */
+        .gallery-section {
+            padding: 150px 5%;
+            background: var(--white);
+            text-align: center;
+        }
+
+        .gallery-grid {
+            margin-top: 100px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 60px;
+        }
+
+        .gallery-item {
+            text-align: left;
+        }
+
+        .gallery-img {
+            aspect-ratio: 1/1;
+            background: #fafafa;
+            border-radius: 60px;
+            /* Rounded Serenity edges */
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.5s;
+        }
+
+        .gallery-img:hover {
+            transform: scale(1.02);
+            background: var(--bg-warm);
+        }
+
+        .gallery-item h3 {
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .gallery-item p {
+            color: var(--muted);
+            font-weight: 300;
+        }
+
+        /* --- FINAL CTA --- */
+        .final-cta {
+            padding: 150px 5%;
+            background: var(--black);
+            color: white;
+            text-align: center;
+        }
+
+        .btn-xl {
+            display: inline-block;
+            padding: 30px 80px;
+            border: 2px solid var(--kiwi);
+            color: var(--kiwi);
+            font-family: var(--font-head);
+            font-size: 2rem;
+            text-transform: uppercase;
+            text-decoration: none;
+            letter-spacing: 10px;
+            transition: 0.4s;
+        }
+
+        .btn-xl:hover {
+            background: var(--kiwi);
+            color: var(--black);
+        }
+
+        footer {
+            padding: 80px 5%;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #555;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            border-top: 1px solid var(--grey);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="#" class="logo">MiKiwi</a>
+        <nav>
+            <a href="#">Catálogo</a>
+            <a href="#">Atelier</a>
+            <a href="#">ID Calibración</a>
+        </nav>
+    </header>
+
+    <!-- SECTION 1: HERO (SERENITY) -->
+    <section class="hero">
+        <h1>SERENITY.</h1>
+        <div class="sphere"></div>
+        <h2 class="hero-title">Beyond Material.</h2>
+        <p class="hero-p">Explora el silencio a través del diseño suizo. Tecnologia de precisión para momentos de calma
+            absoluta.</p>
+    </section>
+
+    <!-- SECTION 2: HUMANOID TECH (KINETIC TRANSFORMED) -->
+    <section class="humanoid-section">
+        <div class="humanoid-left">
+            <span
+                style="font-weight: 900; letter-spacing: 8px; color: var(--kiwi); text-transform: uppercase; font-size: 0.7rem; margin-bottom: 30px;">EXCLUSIVO
+                ATELIER</span>
+            <h2>HUMANOID<br>DESIGN.</h2>
+            <p>La culminación de la presencia física. No es una réplica, es una evolución sensorial impulsada por
+                materiales biomiméticos inteligentes.</p>
+            <div style="display: flex; gap: 20px;">
+                <a href="#" class="btn-bold" style="background: var(--kiwi); color: var(--black);">Personalizar</a>
+                <a href="#" class="btn-bold"
+                    style="background: white; color: var(--black); border: 1px solid black;">Ver Manifiesto</a>
+            </div>
+        </div>
+        <div class="humanoid-right">
+            <div class="decoration-text">ATELIER</div>
+            <div class="doll-outline"></div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: QUIZ (SERENITY CONTENT + KINETIC STYLE) -->
+    <section class="quiz-section">
+        <div class="quiz-text-box">
+            <span
+                style="text-transform: uppercase; letter-spacing: 10px; color: var(--kiwi); font-weight: 900; display: block; margin-bottom: 20px;">CALIBRACIÓN
+                AURA ID</span>
+            <h2>¿Cuál es tu<br>resonancia?</h2>
+            <p style="margin-top: 40px;">Tu viaje comienza con una introspección. Realiza nuestro test de identidad para
+                descubrir qué combinación de formas y texturas se alinea con tu estado mental actual. No hay dos caminos
+                iguales.</p>
+        </div>
+        <div class="quiz-card">
+            <h3 style="font-family: var(--font-head); font-size: 2.5rem; margin-bottom: 20px;">TEST DE IDENTIDAD</h3>
+            <p>Descubre tu perfil de resonancia único mediante algoritmos de análisis sensorial avanzado.</p>
+            <a href="#" class="btn-bold">Iniciar Calibración</a>
+        </div>
+    </section>
+
+    <!-- SECTION 4: GALLERY (SERENITY) -->
+    <section class="gallery-section">
+        <span
+            style="display:block; margin-bottom: 20px; font-weight: 900; letter-spacing: 5px; color: var(--muted); text-transform: uppercase; font-size: 0.7rem;">PRODUCTOS
+            SELECCIONADOS</span>
+        <h2 style="font-family: var(--font-head); font-size: 4rem;">Obras Sensoriales.</h2>
+
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <div class="gallery-img">
+                    <div
+                        style="width: 120px; height: 120px; background: radial-gradient(circle at 30% 30%, #fff, #ddd); border-radius: 50%;">
+                    </div>
+                </div>
+                <h3>Void Sphere</h3>
+                <p>Minimalismo táctico para la palma de la mano.</p>
+            </div>
+            <div class="gallery-item">
+                <div class="gallery-img">
+                    <div
+                        style="width: 120px; height: 120px; background: radial-gradient(circle at 30% 30%, #fff, var(--pink)); border-radius: 50%;">
+                    </div>
+                </div>
+                <h3>Aura Lens</h3>
+                <p>Filtración de espectro para calma visual.</p>
+            </div>
+            <div class="gallery-item">
+                <div class="gallery-img">
+                    <div
+                        style="width: 120px; height: 120px; background: radial-gradient(circle at 30% 30%, #fff, var(--kiwi)); border-radius: 50%;">
+                    </div>
+                </div>
+                <h3>Zen Flow</h3>
+                <p>Resonancia rítmica de baja frecuencia.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: FINAL CTA -->
+    <section class="final-cta">
+        <p style="margin-bottom: 40px; text-transform: uppercase; letter-spacing: 5px; font-weight: 200; opacity: 0.6;">
+            Explora el catálogo completo</p>
+        <a href="#" class="btn-xl">Colecciones</a>
+    </section>
+
+    <footer>
+        &copy; 2026 MiKiwi PROJECT • SWISS PRECISION • BEYOND THE PHYSICAL
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiKiwi | Identity Calibration</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Mulish:wght@300;400;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        body {
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quiz-wrapper {
+            margin-left: var(--nav-width);
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .step-container {
+            display: none;
+            text-align: center;
+            animation: fadeInQuiz 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .step-container.active {
+            display: block;
+        }
+
+        @keyframes fadeInQuiz {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-label {
+            font-size: 0.7rem;
+            letter-spacing: 8px;
+            color: var(--color-primary);
+            text-transform: uppercase;
+            font-weight: 900;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .step-container h2 {
+            font-family: var(--font-head);
+            font-size: 6vw;
+            line-height: 1;
+            margin-bottom: 60px;
+            letter-spacing: -3px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .option-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 50px 30px;
+            cursor: pointer;
+            transition: 0.4s;
+            border-radius: 20px;
+        }
+
+        .option-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .option-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .option-title {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+        }
+
+        .progress-line-container {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 2px;
+            background: var(--border);
+        }
+
+        .progress-line-fill {
+            height: 100%;
+            background: var(--color-primary);
+            width: 0%;
+            transition: 0.5s;
+        }
+
+        /* Result Styles */
+        .persona-name {
+            font-family: var(--font-head);
+            font-size: 8vw;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+        }
+
+        .persona-desc {
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 50px;
+            font-weight: 300;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="side-nav">
+        <a href="index.html" class="mikiwi-logo">MIKIWI</a>
+        <div class="nav-links"
+            style="writing-mode: vertical-rl; transform: rotate(180deg); display: flex; gap: 40px; font-size: 0.6rem; letter-spacing: 5px; font-weight: 900;">
+            <a href="index.html" style="color: var(--text-main); text-decoration: none;">CANCELAR</a>
+        </div>
+        <div class="theme-toggle" id="theme-toggle">🌙</div>
+    </nav>
+
+    <div class="kinetic-bg">CALIB</div>
+
+    <div class="quiz-wrapper">
+        <div class="progress-line-container">
+            <div class="progress-line-fill" id="progress-bar"></div>
+        </div>
+
+        <!-- STEP 0: START -->
+        <div class="step-container active" id="step-0">
+            <span class="step-label">Sequence Initiation</span>
+            <h2>Inicia tu Calibración.</h2>
+            <button class="btn-v6" onclick="goToStep(1)">Iniciar Secuencia</button>
+        </div>
+
+        <!-- STEP 1: ATMOSPHERE -->
+        <div class="step-container" id="step-1">
+            <span class="step-label">01 / Atmosfera</span>
+            <h2>¿Cuál es tu estado ideal?</h2>
+            <div class="options-grid">
+                <div class="option-card" onclick="saveAnswer(1, 'soft')">
+                    <span class="option-icon">☁</span>
+                    <span class="option-title">Etéreo</span>
+                </div>
+                <div class="option-card" onclick="saveAnswer(1, 'intense')">
+                    <span class="option-icon">⚡</span>
+                    <span class="option-title">Intenso</span>
+                </div>
+                <div class="option-card" onclick="saveAnswer(1, 'playful')">
+                    <span class="option-icon">✦</span>
+                    <span class="option-title">Curioso</span>
+                </div>
+                <div class="option-card" onclick="saveAnswer(1, 'ritual')">
+                    <span class="option-icon">∞</span>
+                    <span class="option-title">Ritual</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2: DYNAMIC -->
+        <div class="step-container" id="step-2">
+            <span class="step-label">02 / Dinámica</span>
+            <h2>¿Cómo prefieres fluir?</h2>
+            <div class="options-grid">
+                <div class="option-card" onclick="saveAnswer(2, 'solo')">
+                    <span class="option-icon">●</span>
+                    <span class="option-title">Solo</span>
+                </div>
+                <div class="option-card" onclick="saveAnswer(2, 'duo')">
+                    <span class="option-icon">● ●</span>
+                    <span class="option-title">Compartido</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: SENSATION -->
+        <div class="step-container" id="step-3">
+            <span class="step-label">03 / Sensación</span>
+            <h2>¿Qué pulso te define?</h2>
+            <div class="options-grid">
+                <div class="option-card" onclick="saveAnswer(3, 'vibration')">
+                    <span class="option-icon">〰</span>
+                    <span class="option-title">Vibración</span>
+                </div>
+                <div class="option-card" onclick="saveAnswer(3, 'air')">
+                    <span class="option-icon">◎</span>
+                    <span class="option-title">Pulsos de Aire</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 4: RESULT -->
+        <div class="step-container" id="step-4">
+            <span class="step-label">Calibration Complete</span>
+            <div id="result-content">
+                <h1 class="persona-name" id="persona-name">Elite-01</h1>
+                <p class="persona-desc" id="persona-desc">Tu resonancia es profunda y estructurada. Eres un arquitecto
+                    visual de las sensaciones.</p>
+                <div style="display: flex; gap: 20px; justify-content: center;">
+                    <a href="index.html" class="btn-v6">Explorar Curación</a>
+                    <button class="btn-v6 btn-v6-outline" onclick="location.reload()">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/main.js"></script>
+    <script>
+        let currentStep = 0;
+        const totalSteps = 4;
+        const answers = {};
+
+        function goToStep(step) {
+            document.querySelectorAll('.step-container').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step-${step}`).classList.add('active');
+            currentStep = step;
+
+            const progress = (step / totalSteps) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            if (step === 4) generateResult();
+        }
+
+        function saveAnswer(step, value) {
+            answers[step] = value;
+            goToStep(step + 1);
+        }
+
+        function generateResult() {
+            const nameEl = document.getElementById('persona-name');
+            const descEl = document.getElementById('persona-desc');
+
+            const atmo = answers[1];
+            const dyn = answers[2];
+
+            if (atmo === 'soft') {
+                nameEl.innerText = "The Dreamer";
+                descEl.innerText = "Buscas estados de calma profunda y fluidez etérea. Tu core ideal es Opal Resonance.";
+            } else if (atmo === 'intense') {
+                nameEl.innerText = "The Sovereign";
+                descEl.innerText = "Poder, control e intensidad. Tu resonancia exige el Obsidian Deep Core.";
+            } else if (atmo === 'ritual') {
+                nameEl.innerText = "The Alchemist";
+                descEl.innerText = "Cada interacción es una ceremonia. Te mueves en la sintonía del Bio-Link.";
+            } else {
+                nameEl.innerText = "The Muse";
+                descEl.innerText = "Curiosidad y exploración constante. Eres compatible con toda la arquitectura MiKiwi.";
+            }
+        }
+    </script>
+</body>
+
+</html>

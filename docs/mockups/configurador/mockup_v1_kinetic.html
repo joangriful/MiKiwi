@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIKIWI | Kinetic Editorial Mockup</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Mulish:wght@300;400;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Sugo Pro Display';
+            src: url('./sugo_pro_display/Sugo-Pro-Display-Bold-trial.ttf') format('truetype');
+            font-weight: 700;
+        }
+
+        @font-face {
+            font-family: 'Sugo Pro Display';
+            src: url('./sugo_pro_display/Sugo-Pro-Display-Regular-trial.ttf') format('truetype');
+            font-weight: 400;
+        }
+
+        :root {
+            --kiwi: #99b849;
+            --black: #111;
+            --white: #fff;
+            --grey: #f0f0f0;
+            --font-head: 'Sugo Pro Display', sans-serif;
+            --font-body: 'Mulish', 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--white);
+            color: var(--black);
+            overflow-x: hidden;
+        }
+
+        header {
+            padding: 40px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .logo {
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            letter-spacing: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--black);
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-left: 40px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            min-height: 90vh;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .hero-left {
+            padding: 100px 5%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-right {
+            background: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-family: var(--font-head);
+            font-size: 8vw;
+            line-height: 0.9;
+            margin-bottom: 40px;
+            letter-spacing: -2px;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            max-width: 400px;
+            color: #666;
+            margin-bottom: 60px;
+        }
+
+        .cta-box {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 20px 40px;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--kiwi);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--black);
+            color: var(--black);
+        }
+
+        /* Personality Section */
+        .personality-quiz {
+            padding: 150px 5%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            background: var(--grey);
+        }
+
+        .quiz-card {
+            background: var(--white);
+            padding: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border: 1px solid #ddd;
+        }
+
+        .quiz-card h2 {
+            font-family: var(--font-head);
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .quiz-card p {
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .quiz-link {
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--kiwi);
+            text-decoration: none;
+            border-bottom: 2px solid var(--kiwi);
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+
+        .decoration-text {
+            position: absolute;
+            font-size: 20vw;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.05);
+            bottom: -50px;
+            left: -20px;
+            font-family: var(--font-head);
+            pointer-events: none;
+        }
+
+        .product-image {
+            width: 70%;
+            height: auto;
+            filter: drop-shadow(0 50px 100px rgba(0, 0, 0, 0.5));
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">MIKIWI</div>
+        <nav>
+            <a href="#">Colecciones</a>
+            <a href="#">Atelier</a>
+            <a href="#">Soporte</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-left">
+            <h1>LUXURY<br>SENSORY<br>TECH.</h1>
+            <p class="tagline">La próxima frontera de la percepción personal. Reduccionismo suizo para el alma moderna.
+            </p>
+            <div class="cta-box">
+                <button class="btn btn-primary">Diseñar</button>
+                <button class="btn btn-outline">Explorar</button>
+            </div>
+        </div>
+        <div class="hero-right">
+            <div class="decoration-text">KIWI</div>
+            <div
+                style="width: 200px; height: 500px; background: linear-gradient(to bottom, #333, #000); border-radius: 100px; border: 2px solid rgba(255,255,255,0.1); box-shadow: 0 50px 100px rgba(0,0,0,0.5);">
+            </div>
+        </div>
+    </section>
+
+    <section class="personality-quiz">
+        <div class="quiz-text">
+            <span
+                style="text-transform: uppercase; letter-spacing: 5px; color: var(--kiwi); font-weight: 900; display: block; margin-bottom: 20px;">AURA
+                ID</span>
+            <h2 style="font-family: var(--font-head); font-size: 4rem; line-height: 1;">Calibración<br>Sensorial.</h2>
+            <p style="margin-top: 30px; font-size: 1.1rem; color: #555; max-width: 450px;">Antes de diseñar, debemos
+                entender tu resonancia. Nuestro algoritmo de identidad analiza tus preferencias para crear el
+                dispositivo perfecto.</p>
+        </div>
+        <div class="quiz-card">
+            <h2>Test de Identidad</h2>
+            <p>Descubre tu perfil de resonancia único a través de nuestra serie de pruebas psicométricas y sensoriales.
+            </p>
+            <a href="#" class="quiz-link">Iniciar Calibración</a>
+        </div>
+    </section>
+
+    <!-- NEW SECTION: FEATURED PRODUCTS -->
+    <section style="padding: 150px 5%; border-bottom: 1px solid var(--grey);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 80px;">
+            <h2 style="font-family: var(--font-head); font-size: 5vw; line-height: 1;">ARCHIVO<br>CURADO.</h2>
+            <p
+                style="max-width: 300px; font-size: 0.8rem; letter-spacing: 1px; color: #888; text-transform: uppercase; font-weight: 700;">
+                Selección de ingeniería sensorial de alta precisión.</p>
+        </div>
+
+        <div
+            style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--grey); border: 1px solid var(--grey);">
+            <div
+                style="background: white; padding: 60px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <span style="font-size: 0.6rem; letter-spacing: 3px; font-weight: 900; color: #ccc;">MODEL
+                        0.1</span>
+                    <h3 style="font-family: var(--font-head); font-size: 1.5rem; margin-top: 10px;">SHADOW</h3>
+                </div>
+                <div style="width: 40px; height: 120px; background: #222; margin: 20px 0; border-radius: 20px;"></div>
+                <button
+                    style="border: none; background: none; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; font-size: 0.65rem; border-bottom: 1px solid var(--black); width: fit-content; padding-bottom: 5px;">Detalles</button>
+            </div>
+            <div
+                style="background: white; padding: 60px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <span style="font-size: 0.6rem; letter-spacing: 3px; font-weight: 900; color: #ccc;">MODEL
+                        0.2</span>
+                    <h3 style="font-family: var(--font-head); font-size: 1.5rem; margin-top: 10px;">PEARL</h3>
+                </div>
+                <div
+                    style="width: 40px; height: 120px; background: #f0f0f0; margin: 20px 0; border-radius: 20px; border: 1px solid #ddd;">
+                </div>
+                <button
+                    style="border: none; background: none; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; font-size: 0.65rem; border-bottom: 1px solid var(--black); width: fit-content; padding-bottom: 5px;">Detalles</button>
+            </div>
+            <div
+                style="background: white; padding: 60px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <span style="font-size: 0.6rem; letter-spacing: 3px; font-weight: 900; color: #ccc;">MODEL
+                        0.3</span>
+                    <h3 style="font-family: var(--font-head); font-size: 1.5rem; margin-top: 10px;">MINT</h3>
+                </div>
+                <div style="width: 40px; height: 120px; background: var(--kiwi); margin: 20px 0; border-radius: 20px;">
+                </div>
+                <button
+                    style="border: none; background: none; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; font-size: 0.65rem; border-bottom: 1px solid var(--black); width: fit-content; padding-bottom: 5px;">Detalles</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW SECTION: ANATOMICAL ENGINEERING (MUÑECAS) -->
+    <section style="background: var(--black); color: var(--white); overflow: hidden; position: relative;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh;">
+            <div
+                style="padding: 120px 10%; display: flex; flex-direction: column; justify-content: center; z-index: 2;">
+                <span
+                    style="font-weight: 900; letter-spacing: 8px; color: var(--kiwi); text-transform: uppercase; font-size: 0.7rem; margin-bottom: 30px;">ATELIER
+                    SERIES</span>
+                <h2 style="font-family: var(--font-head); font-size: 6vw; line-height: 0.9; margin-bottom: 40px;">
+                    KINETIC<br>ANATOMY.</h2>
+                <div style="width: 50px; height: 4px; background: var(--kiwi); margin-bottom: 40px;"></div>
+                <p style="font-size: 1.2rem; line-height: 1.8; color: #888; margin-bottom: 50px; max-width: 500px;">
+                    La culminación de la presencia física. No es una réplica, es una evolución sensorial. Ingeniería de
+                    biomateriales aplicada a la forma humana para una conexión emocional sin precedentes.
+                </p>
+                <button class="btn btn-primary"
+                    style="background: var(--kiwi); width: fit-content; padding: 25px 50px;">Personalizar Forma</button>
+            </div>
+            <div style="position: relative; background: linear-gradient(to right, #111, #000);">
+                <!-- Abstract Humanoid Representation -->
+                <div
+                    style="position: absolute; top: 10%; right: -10%; width: 100%; height: 110%; opacity: 0.2; border: 1px solid rgba(255,255,255,0.1); border-radius: 500px 500px 0 0; background: linear-gradient(to bottom, #222, transparent);">
+                </div>
+                <div
+                    style="position: absolute; top: 20%; left: 20%; width: 60%; height: 80%; border: 1px solid var(--kiwi); border-radius: 300px; opacity: 0.1;">
+                </div>
+                <div
+                    style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                    <span
+                        style="font-family: var(--font-head); font-size: 20vw; font-weight: 900; color: rgba(255,255,255,0.02); pointer-events: none;">HUMAN</span>
+                </div>
+            </div>
+        </div>
+
+        <div
+            style="padding: 100px 5%; border-top: 1px solid #222; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px;">
+            <div>
+                <h4
+                    style="font-size: 0.7rem; letter-spacing: 3px; font-weight: 900; margin-bottom: 20px; color: var(--kiwi);">
+                    BIOPOLÍMERO</h4>
+                <p style="font-size: 0.75rem; color: #666; line-height: 1.6;">Textura sub-dérmica con respuesta térmica
+                    activa.</p>
+            </div>
+            <div>
+                <h4
+                    style="font-size: 0.7rem; letter-spacing: 3px; font-weight: 900; margin-bottom: 20px; color: var(--kiwi);">
+                    DINÁMICA</h4>
+                <p style="font-size: 0.75rem; color: #666; line-height: 1.6;">Estructura ósea de fibra de carbono
+                    ultra-silenciosa.</p>
+            </div>
+            <div>
+                <h4
+                    style="font-size: 0.7rem; letter-spacing: 3px; font-weight: 900; margin-bottom: 20px; color: var(--kiwi);">
+                    AURA COMP</h4>
+                <p style="font-size: 0.75rem; color: #666; line-height: 1.6;">Integración total con tu perfil de
+                    calibración personal.</p>
+            </div>
+            <div>
+                <h4
+                    style="font-size: 0.7rem; letter-spacing: 3px; font-weight: 900; margin-bottom: 20px; color: var(--kiwi);">
+                    EXCLUSIVO</h4>
+                <p style="font-size: 0.75rem; color: #666; line-height: 1.6;">Cada pieza se manufactura bajo demanda con
+                    número de serie.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer
+        style="padding: 100px 5%; text-align: center; font-size: 0.7rem; letter-spacing: 5px; color: #999; text-transform: uppercase;">
+        &copy; 2026 MIKIWI PROJECT • BEYOND THE PHYSICAL
+    </footer>
+</body>
+
+</html>

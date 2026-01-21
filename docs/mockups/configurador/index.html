@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurador MI KIWI | Premium Experience</title>
+    <link rel="stylesheet" href="../minimal.css">
+    <style>
+        /* --- THEME OVERRIDES --- */
+        :root {
+            --bg-body: var(--bg-main);
+            --bg-panel: var(--bg-surface);
+            --border: #e2e0db;
+            --accent: var(--color-primary);
+            --accent-dark: var(--color-primary-dark);
+            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        body {
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        /* --- TOP BAR --- */
+        .wizard-header {
+            height: 70px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            justify-content: space-between;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .w-logo {
+            font-weight: 800;
+            letter-spacing: 3px;
+            font-size: 1.2rem;
+            color: var(--text-main);
+        }
+
+        .w-close {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .w-close:hover {
+            color: var(--text-main);
+            transform: rotate(90deg);
+        }
+
+        .progress-container {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: var(--transition);
+        }
+
+        .step-dot.active {
+            background: var(--accent);
+            box-shadow: 0 0 15px rgba(153, 184, 73, 0.3);
+            transform: scale(1.2);
+        }
+
+        .step-line {
+            width: 30px;
+            height: 2px;
+            background: var(--border);
+            transition: var(--transition);
+        }
+
+        .step-line.active {
+            background: var(--accent);
+        }
+
+        /* --- MAIN LAYOUT --- */
+        .wizard-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* PREVIEW */
+        .preview-pane {
+            flex: 1.4;
+            background: radial-gradient(circle at 50% 40%, #ffffff, #f0f4e8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .toy-model {
+            width: 180px;
+            height: 450px;
+            background: linear-gradient(135deg, #e0e0e0, #ffffff, #f0f0f0);
+            border-radius: 90px;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.05), inset 0 0 20px rgba(0, 0, 0, 0.02);
+            position: relative;
+            transition: var(--transition);
+            transform-style: preserve-3d;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        /* Model Elements */
+        .toy-model::after {
+            content: '';
+            position: absolute;
+            top: 5%;
+            left: 15%;
+            width: 8px;
+            height: 90%;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            filter: blur(3px);
+            opacity: 0.5;
+        }
+
+        /* Color overlays */
+        .model-color-overlay {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            opacity: 0.4;
+            mix-blend-mode: multiply;
+            transition: var(--transition);
+        }
+
+        .preview-label {
+            position: absolute;
+            bottom: 40px;
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+
+        /* CONTROLS */
+        .controls-pane {
+            flex: 1;
+            background: var(--bg-panel);
+            border-left: 1px solid var(--border);
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-content {
+            display: none;
+            animation: fadeInSlide 0.6s var(--transition);
+            flex: 1;
+            flex-direction: column;
+        }
+
+        .step-content.active {
+            display: flex;
+        }
+
+        @keyframes fadeInSlide {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .step-info {
+            margin-bottom: 40px;
+        }
+
+        .step-number {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .step-title-text {
+            font-size: 2.2rem;
+            font-weight: 600;
+            letter-spacing: -1px;
+            color: var(--text-main);
+        }
+
+        .option-section {
+            margin-bottom: 35px;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* CARDS */
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .option-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        }
+
+        .option-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .option-card.selected {
+            background: rgba(153, 184, 73, 0.05);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(153, 184, 73, 0.1);
+        }
+
+        .card-name {
+            font-weight: 700;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        .card-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* COLOR DOTS */
+        .color-grid {
+            display: flex;
+            gap: 15px;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid #fff;
+            transition: var(--transition);
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .color-option.selected {
+            box-shadow: 0 0 0 2px var(--accent);
+            transform: scale(1.1);
+        }
+
+        .color-name-display {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* SUMMARY LIST */
+        .summary-list {
+            list-style: none;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-price {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* FOOTER */
+        .pane-footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .current-total {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .total-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .total-amount {
+            font-size: 1.6rem;
+            font-weight: 300;
+            font-family: 'Helvetica Neue', serif;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-prev {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        .btn-prev:hover {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .btn-next {
+            background: var(--color-primary);
+            color: #fff;
+        }
+
+        .btn-next:hover {
+            background: var(--color-primary-dark);
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(153, 184, 73, 0.3);
+        }
+
+        /* RESPONSIVE */
+        @media(max-width: 1100px) {
+            .wizard-body {
+                flex-direction: column;
+                overflow-y: auto;
+            }
+
+            .preview-pane {
+                min-height: 400px;
+                flex: none;
+            }
+
+            .controls-pane {
+                flex: none;
+                min-height: 600px;
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wizard-header">
+        <div class="w-logo">MI KIWI</div>
+        <div class="progress-container" id="progressBar">
+            <div class="step-dot active"></div>
+            <div class="step-line"></div>
+            <div class="step-dot"></div>
+            <div class="step-line"></div>
+            <div class="step-dot"></div>
+        </div>
+        <div class="w-close" onclick="window.location.href='entry.html'">&#10005;</div>
+    </div>
+
+    <div class="wizard-body">
+        <!-- PREVIEW -->
+        <div class="preview-pane">
+            <div class="toy-model" id="modelPreview">
+                <div class="model-color-overlay" id="colorOverlay"></div>
+            </div>
+            <div class="preview-label">VISTA PREVIA EN VIVO</div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls-pane">
+
+            <!-- STEP 1 -->
+            <div class="step-content active" id="step1">
+                <div class="step-info">
+                    <div class="step-number">PASO 01</div>
+                    <div class="step-title-text">Elige tu base</div>
+                </div>
+
+                <div class="option-section">
+                    <div class="section-label">MODELO</div>
+                    <div class="card-grid">
+                        <div class="option-card selected" onclick="updateSelection('model', 'classic', 89)">
+                            <div class="card-name">Classic Wand</div>
+                            <div class="card-sub">Cabezal flexible y potencia tradicional.</div>
+                        </div>
+                        <div class="option-card" onclick="updateSelection('model', 'curve', 109)">
+                            <div class="card-name">Ergo Curve</div>
+                            <div class="card-sub">Diseño ergonómico para mayor confort.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="option-section">
+                    <div class="section-label">MATERIAL</div>
+                    <div class="card-grid">
+                        <div class="option-card selected" onclick="updateSelection('material', 'satin', 0)">
+                            <div class="card-name">Mate Satinado</div>
+                            <div class="card-sub">Suave al tacto y antideslizante.</div>
+                        </div>
+                        <div class="option-card" onclick="updateSelection('material', 'metal', 25)">
+                            <div class="card-name">Metal Pulido</div>
+                            <div class="card-sub">Acabado frío y premium (+25€).</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="step-content" id="step2">
+                <div class="step-info">
+                    <div class="step-number">PASO 02</div>
+                    <div class="step-title-text">Personalización</div>
+                </div>
+
+                <div class="option-section">
+                    <div class="section-label">COLOR</div>
+                    <div class="color-grid">
+                        <div class="color-option selected" style="background: #111;"
+                            onclick="updateColor('Obsidian Black', '#000')"></div>
+                        <div class="color-option" style="background: #e0e0e0;"
+                            onclick="updateColor('Pearl White', '#fff')"></div>
+                        <div class="color-option" style="background: #e5b3a3;"
+                            onclick="updateColor('Rose Gold', '#e5b3a3')"></div>
+                        <div class="color-option" style="background: #90d090;"
+                            onclick="updateColor('Kiwi Mint', '#90d090')"></div>
+                    </div>
+                    <div class="color-name-display" id="colorName">Obsidian Black</div>
+                </div>
+
+                <div class="option-section">
+                    <div class="section-label">ACABADO</div>
+                    <div class="card-grid">
+                        <div class="option-card selected" onclick="updateSelection('finish', 'matte', 0)">
+                            <div class="card-name">Mate Profundo</div>
+                            <div class="card-sub">Sin reflejos, elegancia pura.</div>
+                        </div>
+                        <div class="option-card" onclick="updateSelection('finish', 'glossy', 10)">
+                            <div class="card-name">Brillo Espejo</div>
+                            <div class="card-sub">Reflejos vibrantes (+10€).</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="step-content" id="step3">
+                <div class="step-info">
+                    <div class="step-number">PASO 03</div>
+                    <div class="step-title-text">Extras y Resumen</div>
+                </div>
+
+                <div class="option-section">
+                    <div class="section-label">ACCESORIOS</div>
+                    <div class="card-grid">
+                        <div class="option-card" id="case-card" onclick="toggleExtra('case', 15)">
+                            <div class="card-name">Funda de Viaje</div>
+                            <div class="card-sub">Protección rígida (+15€).</div>
+                        </div>
+                        <div class="option-card" id="care-card" onclick="toggleExtra('care', 12)">
+                            <div class="card-name">Kit de Cuidado</div>
+                            <div class="card-sub">Limpieza y mantenimiento (+12€).</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-list">
+                    <div class="summary-item">
+                        <span>Base: <span id="summ-model">Classic Wand</span></span>
+                        <span class="summary-price" id="price-base">89€</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Material: <span id="summ-material">Mate Satinado</span></span>
+                        <span class="summary-price" id="price-material">0€</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Color: <span id="summ-color">Obsidian Black</span></span>
+                        <span class="summary-price">INCL.</span>
+                    </div>
+                    <div class="summary-item" id="summ-extras-row">
+                        <span>Extras seleccionados</span>
+                        <span class="summary-price" id="price-extras">0€</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="pane-footer">
+                <div class="current-total">
+                    <span class="total-label">TOTAL ESTIMADO</span>
+                    <span class="total-amount" id="totalDisplay">89,00 €</span>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-prev" id="prevBtn" onclick="changeStep(-1)"
+                        style="display: none;">Atrás</button>
+                    <button class="btn btn-next" id="nextBtn" onclick="changeStep(1)">Siguiente &rarr;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let selections = {
+            model: { name: 'Classic Wand', price: 89, type: 'classic' },
+            material: { name: 'Mate Satinado', price: 0, type: 'satin' },
+            color: { name: 'Obsidian Black', hex: '#000' },
+            finish: { name: 'Mate Profundo', price: 0, type: 'matte' },
+            extras: []
+        };
+
+        function changeStep(n) {
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            currentStep += n;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+
+            // Update Progress Bar
+            const dots = document.querySelectorAll('.step-dot');
+            const lines = document.querySelectorAll('.step-line');
+
+            dots.forEach((dot, i) => {
+                if (i < currentStep) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
+
+            lines.forEach((line, i) => {
+                if (i < currentStep - 1) line.classList.add('active');
+                else line.classList.remove('active');
+            });
+
+            // Footer buttons
+            document.getElementById('prevBtn').style.display = currentStep > 1 ? 'flex' : 'none';
+            document.getElementById('nextBtn').innerHTML = currentStep === 3 ? 'Finalizar Pedido' : 'Siguiente &rarr;';
+
+            if (currentStep === 3) updateSummary();
+
+            // Preview animation on step change
+            const toy = document.getElementById('modelPreview');
+            toy.style.transform = `rotateY(${currentStep * 45}deg)`;
+            setTimeout(() => {
+                toy.style.transform = currentStep === 1 ? 'none' : (currentStep === 2 ? 'rotateY(30deg)' : 'rotateY(0deg) scale(0.9)');
+            }, 500);
+        }
+
+        function updateSelection(group, type, price) {
+            // UI highlights
+            const cards = event.currentTarget.parentElement.querySelectorAll('.option-card');
+            cards.forEach(c => c.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            // Internal state
+            selections[group] = {
+                name: event.currentTarget.querySelector('.card-name').innerText,
+                price: price,
+                type: type
+            };
+
+            // Preview changes
+            const toy = document.getElementById('modelPreview');
+            if (group === 'model') {
+                if (type === 'curve') {
+                    toy.style.transform = 'skewX(-5deg) rotate(3deg)';
+                    toy.style.borderRadius = '40px 90px 40px 90px';
+                } else {
+                    toy.style.transform = 'none';
+                    toy.style.borderRadius = '90px';
+                }
+            }
+
+            if (group === 'material') {
+                if (type === 'metal') {
+                    toy.style.background = 'linear-gradient(135deg, #888, #222, #555)';
+                    toy.style.boxShadow = '0 50px 100px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(255,255,255,0.2)';
+                } else {
+                    toy.style.background = 'linear-gradient(135deg, #333, #111, #222)';
+                    toy.style.boxShadow = '0 50px 100px rgba(0, 0, 0, 0.9)';
+                }
+            }
+
+            if (group === 'finish') {
+                document.getElementById('colorOverlay').style.opacity = type === 'glossy' ? '0.6' : '0.3';
+            }
+
+            calculateTotal();
+        }
+
+        function updateColor(name, hex) {
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            selections.color = { name, hex };
+            document.getElementById('colorName').innerText = name;
+            document.getElementById('colorOverlay').style.backgroundColor = hex;
+
+            calculateTotal();
+        }
+
+        function toggleExtra(id, price) {
+            const card = event.currentTarget;
+            card.classList.toggle('selected');
+
+            const name = card.querySelector('.card-name').innerText;
+            const index = selections.extras.findIndex(e => e.id === id);
+
+            if (index > -1) {
+                selections.extras.splice(index, 1);
+            } else {
+                selections.extras.push({ id, name, price });
+            }
+
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            let total = selections.model.price + selections.material.price + selections.finish.price;
+            selections.extras.forEach(e => total += e.price);
+
+            document.getElementById('totalDisplay').innerText = total.toFixed(2).replace('.', ',') + ' €';
+        }
+
+        function updateSummary() {
+            document.getElementById('summ-model').innerText = selections.model.name;
+            document.getElementById('price-base').innerText = selections.model.price + '€';
+
+            document.getElementById('summ-material').innerText = selections.material.name;
+            document.getElementById('price-material').innerText = (selections.material.price > 0 ? '+' : '') + selections.material.price + '€';
+
+            document.getElementById('summ-color').innerText = selections.color.name;
+
+            const extrasPrice = selections.extras.reduce((acc, e) => acc + e.price, 0);
+            document.getElementById('price-extras').innerText = (extrasPrice > 0 ? '+' : '') + extrasPrice + '€';
+        }
+    </script>
+</body>
+
+</html>

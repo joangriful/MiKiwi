@@ -65,6 +65,55 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         </header>
 
                         <main className="mt-6">
+                            {/* Navigation Panel */}
+                            <div className="mb-8 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:bg-zinc-900 dark:ring-zinc-800">
+                                <h2 className="text-2xl font-bold text-black dark:text-white mb-6">Navegación de Páginas</h2>
+
+                                {/* Configurador Section */}
+                                <div className="mb-6">
+                                    <h3 className="text-lg font-semibold text-black dark:text-white mb-3">Configurador</h3>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                        <Link
+                                            href="/configurador"
+                                            className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-[#FF2D20] to-[#FF6B55] text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 font-medium"
+                                        >
+                                            Home
+                                        </Link>
+                                        <Link
+                                            href="/configurador/index"
+                                            className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-[#FF2D20] to-[#FF6B55] text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 font-medium"
+                                        >
+                                            Index
+                                        </Link>
+                                        <Link
+                                            href="/configurador/collections"
+                                            className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-[#FF2D20] to-[#FF6B55] text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 font-medium"
+                                        >
+                                            Collections
+                                        </Link>
+                                        <Link
+                                            href="/configurador/quiz"
+                                            className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-[#FF2D20] to-[#FF6B55] text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 font-medium"
+                                        >
+                                            Quiz
+                                        </Link>
+                                    </div>
+                                </div>
+
+                                {/* Profile Section */}
+                                <div>
+                                    <h3 className="text-lg font-semibold text-black dark:text-white mb-3">Perfil</h3>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                        <Link
+                                            href="/profile"
+                                            className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 font-medium"
+                                        >
+                                            Editar Perfil
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
                                 <a
                                     href="https://laravel.com/docs"

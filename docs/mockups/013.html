@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurador AURA | Paso 1</title>
+    <style>
+        /* --- VARIABLES & RESET --- */
+        :root {
+            --bg-body: #0a0a0a;
+            --bg-panel: #141414;
+            /* Darker panel */
+            --text-main: #ffffff;
+            --text-muted: #888;
+            --accent: #bfaec9;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+
+        /* --- TOP BAR (Progress) --- */
+        .wizard-header {
+            height: 70px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            justify-content: space-between;
+        }
+
+        .w-logo {
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .w-close {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .progress-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #333;
+        }
+
+        .step-dot.active {
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .step-line {
+            width: 40px;
+            height: 2px;
+            background: #333;
+        }
+
+        .step-line.active {
+            background: var(--accent);
+        }
+
+        /* --- MAIN LAYOUT (Split) --- */
+        .wizard-body {
+            flex: 1;
+            display: flex;
+        }
+
+        /* LEFT: PREVIEW (Dominant) */
+        .preview-pane {
+            flex: 2;
+            background: radial-gradient(circle at center, #1a1a1a, #050505);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .toy-model {
+            width: 200px;
+            height: 500px;
+            background: linear-gradient(to right, #222, #111, #222);
+            border-radius: 100px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        /* Highlight reflection */
+        .toy-model::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            bottom: 10%;
+            left: 20%;
+            width: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            filter: blur(2px);
+        }
+
+        .preview-label {
+            position: absolute;
+            bottom: 40px;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* RIGHT: CONTROLS */
+        .controls-pane {
+            flex: 1;
+            background: var(--bg-panel);
+            border-left: 1px solid var(--border);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .step-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .step-heading {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 40px;
+        }
+
+        .option-group {
+            margin-bottom: 40px;
+        }
+
+        .option-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        /* Card Selectors */
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .selection-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        .selection-card:hover,
+        .selection-card.selected {
+            background: rgba(191, 174, 201, 0.1);
+            border-color: var(--accent);
+        }
+
+        .s-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        .s-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Footer inside Panel */
+        .panel-footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price-tag {
+            font-family: 'Georgia', serif;
+            font-size: 1.5rem;
+        }
+
+        .btn-next {
+            background: var(--text-main);
+            color: var(--bg-body);
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .btn-next:hover {
+            background: var(--accent);
+        }
+
+        @media(max-width: 1000px) {
+            .wizard-body {
+                flex-direction: column;
+                overflow-y: scroll;
+            }
+
+            .preview-pane {
+                min-height: 400px;
+            }
+
+            .controls-pane {
+                min-height: 500px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wizard-header">
+        <div class="w-logo">AURA CONFIGURATOR</div>
+        <div class="progress-container">
+            <div class="step-dot active"></div>
+            <div class="step-line active"></div>
+            <div class="step-dot"></div>
+            <div class="step-line"></div>
+            <div class="step-dot"></div>
+        </div>
+        <div class="w-close">&#10005;</div>
+    </div>
+
+    <div class="wizard-body">
+        <!-- PREVIEW -->
+        <div class="preview-pane">
+            <div class="toy-model" id="modelPreview"></div>
+            <div class="preview-label">Vista Previa</div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls-pane">
+            <div class="step-title">Paso 1 de 3</div>
+            <div class="step-heading">Elige tu base</div>
+
+            <div class="option-group">
+                <div class="option-label">MODELO</div>
+                <div class="card-grid">
+                    <div class="selection-card selected" onclick="selectModel('classic')">
+                        <div class="s-title">Classic Wand</div>
+                        <div class="s-desc">Potencia tradicional y cabezal flexible.</div>
+                    </div>
+                    <div class="selection-card" onclick="selectModel('curve')">
+                        <div class="s-title">Ergo Curve</div>
+                        <div class="s-desc">Diseño angulado para mayor alcance.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <div class="option-label">MATERIAL DEL MANGO</div>
+                <div class="card-grid">
+                    <div class="selection-card selected">
+                        <div class="s-title">Mate Satinado</div>
+                        <div class="s-desc">Suave y antideslizante.</div>
+                    </div>
+                    <div class="selection-card">
+                        <div class="s-title">Metal Pulido</div>
+                        <div class="s-desc">Peso extra y acabado premium (+20€).</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-footer">
+                <div class="price-tag">89,00 €</div>
+                <button class="btn-next">Siguiente Paso &rarr;</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectModel(type) {
+            const cards = document.querySelectorAll('.selection-card');
+            // Mock selection UI only
+            const toy = document.getElementById('modelPreview');
+
+            if (type === 'curve') {
+                toy.style.transform = 'skewX(-10deg) rotate(5deg)';
+                toy.style.borderRadius = '50px';
+            } else {
+                toy.style.transform = 'none';
+                toy.style.borderRadius = '100px';
+            }
+        }
+
+        // Simple click highlighting
+        const cards = document.querySelectorAll('.selection-card');
+        cards.forEach(c => {
+            c.addEventListener('click', (e) => {
+                // In a real app this would be scoped to the group
+                c.classList.toggle('selected');
+            })
+        })
+    </script>
+</body>
+
+</html>

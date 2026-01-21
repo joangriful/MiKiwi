@@ -1,0 +1,151 @@
+/* 
+   MINIMALIST THEME - MI KIWI
+   Clean, light mode aesthetic with soft contrast.
+*/
+
+:root {
+    /* Brand Colors */
+    --color-primary: #99b849;
+    --color-primary-dark: #7a943a;
+    --color-secondary: #f8b7ea;
+    --color-secondary-dark: #d697c8;
+
+    /* Light Mode (Base) */
+    --bg-main: #f8f5f0;
+    --bg-surface: #ffffff;
+    --text-main: #222b24;
+    --text-muted: #66672a;
+    --border: #e2e0db;
+
+    /* Semantic & Utility */
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.04);
+    --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.08);
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- BASE STYLES --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+a {
+    transition: var(--transition);
+    text-decoration: none;
+    color: inherit;
+}
+
+/* --- COMMON COMPONENTS --- */
+
+/* Header Base */
+.minimal-header {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 16px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Button Base */
+.btn-minimal {
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(153, 184, 73, 0.3);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+}
+
+.btn-outline:hover {
+    background: var(--bg-surface);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+/* Card Base */
+.minimal-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+}
+
+.minimal-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
+    border-color: var(--color-primary);
+}
+
+/* --- UTILITIES --- */
+.text-muted {
+    color: var(--text-muted);
+}
+
+.bg-surface {
+    background-color: var(--bg-surface);
+}
+
+.p-4 {
+    padding: 1.5rem;
+}
+
+.m-b-1 {
+    margin-bottom: 0.5rem;
+}
+
+.m-b-2 {
+    margin-bottom: 1rem;
+}
+
+.m-b-4 {
+    margin-bottom: 2rem;
+}
