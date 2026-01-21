@@ -140,7 +140,7 @@ export default function Perfil() {
                                 >
                                     <div className="flex items-center justify-between">
                                         <span className="font-body font-medium">
-                                            💳 Tarjeta
+                                            Tarjeta
                                         </span>
                                         {metodoPago === "tarjeta" && (
                                             <span className="text-xs font-semibold text-primary">
@@ -183,7 +183,7 @@ export default function Perfil() {
                                 >
                                     <div className="flex items-center justify-between">
                                         <span className="font-body font-medium">
-                                            📱 Bizum
+                                            Bizum
                                         </span>
                                         {metodoPago === "bizum" && (
                                             <span className="text-xs font-semibold text-primary">
@@ -217,7 +217,7 @@ export default function Perfil() {
                                 >
                                     <div className="flex items-center justify-between">
                                         <span className="font-body font-medium">
-                                            🅿️ PayPal
+                                            PayPal
                                         </span>
                                         {metodoPago === "paypal" && (
                                             <span className="text-xs font-semibold text-primary">
