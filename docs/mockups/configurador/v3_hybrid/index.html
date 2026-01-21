@@ -19,17 +19,33 @@
         </nav>
     </header>
 
-    <!-- KIWI HERO ELEMENT (Fixed) -->
-    <div class="kiwi-container">
-        <div class="floating-kiwi"></div>
+    <!-- CAPSULE CORE ELEMENT (CSS Based) -->
+    <div class="capsule-container">
+        <div class="resonance-container" id="resonance-root">
+            <div class="resonance-ring"></div>
+            <div class="resonance-ring"></div>
+            <div class="resonance-ring"></div>
+        </div>
+        <div class="floating-capsule" id="main-capsule"></div>
     </div>
 
-    <!-- SECTION 1: HERO (SERENITY) -->
+    <!-- MODULE CUSTOMIZER UI -->
+    <div class="customizer-ui" id="customizer-panel">
+        <div class="material-option selected" data-material="titanium" data-label="Titanium-S"
+            style="background: #bfc1c2;"></div>
+        <div class="material-option" data-material="obsidian" data-label="Deep Void" style="background: #111;"></div>
+        <div class="material-option" data-material="pearl" data-label="Opal Glass"
+            style="background: #fdfdfd; border: 1px solid #ddd;"></div>
+        <div class="material-option" data-material="biolink" data-label="Bio-Link" style="background: var(--kiwi);">
+        </div>
+    </div>
+
+    <!-- SECTION 1: HERO (THE ORIGIN) -->
     <section class="hero">
-        <h1>MIKIWI.</h1>
-        <h2 class="hero-title">Beyond Material.</h2>
-        <p class="hero-p">Explora el silencio a través del diseño suizo. Tecnologia de precisión para momentos de calma
-            absoluta.</p>
+        <h1>MIKIWI</h1>
+        <h2 class="hero-title">MiKiwi.</h2>
+        <p class="hero-p">Arquitectura sensorial para la introspección moderna. El núcleo MiKiwi redefine la conexión
+            entre el usuario y su entorno digital.</p>
     </section>
 
     <!-- SECTION 2: HUMANOID TECH (KINETIC TRANSFORMED) -->
@@ -49,7 +65,10 @@
         </div>
         <div class="humanoid-right">
             <div class="decoration-text">ATELIER</div>
-            <div class="doll-outline"></div>
+            <div class="doll-outline">
+                <div class="tech-tag tag-1">H-01 BIOMATERIAL</div>
+                <div class="tech-tag tag-2">CALIBRACIÓN TÉRMICA</div>
+            </div>
         </div>
     </section>
 
