@@ -24,6 +24,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/product', function () {
+    return Inertia::render('ProductPage');
+})->name('product');
+
 Route::get('/perfil', function () {
     return Inertia::render('perfil');
 });
@@ -51,4 +55,3 @@ Route::prefix('configurador')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
-
