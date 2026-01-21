@@ -8,3 +8,5 @@ export { default as ProductCarousel } from './ProductPage/ProductCarousel';
 export { default as ProductCard } from './ProductPage/ProductCard';
 export { default as ProductImagePlaceholder } from './ProductPage/ProductImagePlaceholder';
 export { default as ProductCardInfo } from './ProductPage/ProductCardInfo';
+export { default as ProductShowcase } from './ProductPage/ProductShowcase';
+export { default as RelatedProductsSection } from './ProductPage/RelatedProductsSection';

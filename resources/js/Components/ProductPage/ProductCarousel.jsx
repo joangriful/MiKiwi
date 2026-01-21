@@ -2,8 +2,10 @@ import ProductCard from './ProductCard';
 
 export default function ProductCarousel() {
     return (
-        <div className="flex gap-4 overflow-x-auto border-2 border-dashed border-pink-500 bg-pink-50 p-4">
+        <div className="w-full flex gap-4 overflow-x-auto px-4 pb-4 no-scrollbar">
             {/* ProductCarousel Container */}
+            <ProductCard />
+            <ProductCard />
             <ProductCard />
             <ProductCard />
             <ProductCard />

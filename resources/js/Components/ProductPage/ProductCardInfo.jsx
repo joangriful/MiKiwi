@@ -1,15 +1,20 @@
 export default function ProductCardInfo() {
     return (
-        <div className="border border-dashed border-yellow-500 bg-yellow-50 p-2">
-            <div className="font-bold text-sm mb-1">Kiwi Pack</div>
-            <div className="text-yellow-500 flex text-xs mb-1">
-                <span className="material-symbols-outlined text-[14px]">star</span>
-                <span className="material-symbols-outlined text-[14px]">star</span>
-                <span className="material-symbols-outlined text-[14px]">star</span>
-                <span className="material-symbols-outlined text-[14px]">star</span>
-                <span className="material-symbols-outlined text-[14px]">star</span>
+        <div className="p-4">
+            <div className="font-bold text-gray-900 mb-1">Kiwi Pack</div>
+            <div className="text-yellow-400 flex text-xs mb-2">
+                <span className="material-symbols-outlined text-[16px] fill-current">star</span>
+                <span className="material-symbols-outlined text-[16px] fill-current">star</span>
+                <span className="material-symbols-outlined text-[16px] fill-current">star</span>
+                <span className="material-symbols-outlined text-[16px] fill-current">star</span>
+                <span className="material-symbols-outlined text-[16px] fill-current">star</span>
             </div>
-            <div className="font-bold text-gray-800">$4.99</div>
+            <div className="flex justify-between items-center">
+                <span className="font-bold text-lg text-gray-900">$4.99</span>
+                <button className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transition-colors flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[16px]">add_shopping_cart</span>
+                </button>
+            </div>
         </div>
     );
 }
