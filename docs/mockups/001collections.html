@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiKiwi | Colecciones Sensoriales</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Mulish:wght@300;400;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Sugo Pro Display';
+            src: url('./configurador/sugo_pro_display/Sugo-Pro-Display-Bold-trial.ttf') format('truetype');
+            font-weight: 700;
+        }
+
+        :root {
+            /* v3_hybrid color palette */
+            --bg-warm: #f8f5f0;
+            --white: #ffffff;
+            --black: #111111;
+            --main: #222b24;
+            --muted: #66672a;
+            --kiwi: #99b849;
+            --pink: #f8b7ea;
+            --grey: #f0f0f0;
+            --border: rgba(0, 0, 0, 0.1);
+            --glass: rgba(255, 255, 255, 0.7);
+
+            --font-head: 'Sugo Pro Display', sans-serif;
+            --font-body: 'Mulish', 'Inter', sans-serif;
+
+            --ease-out: cubic-bezier(0.165, 0.84, 0.44, 1);
+            --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-warm);
+            color: var(--black);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ========== HEADER ========== */
+        header {
+            padding: 0 5%;
+            height: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(248, 245, 240, 0.9);
+            backdrop-filter: blur(15px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--grey);
+        }
+
+        .logo {
+            font-family: var(--font-head);
+            font-size: 1.6rem;
+            letter-spacing: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--black);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--black);
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-left: 40px;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: var(--kiwi);
+        }
+
+        /* ========== HERO ========== */
+        .hero {
+            min-height: 100vh;
+            background: var(--bg-warm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding: 120px 5% 80px;
+            overflow: hidden;
+        }
+
+        .hero-bg-text {
+            position: absolute;
+            font-family: var(--font-head);
+            font-size: 25vw;
+            color: rgba(34, 43, 36, 0.03);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+        }
+
+        .hero h1 {
+            font-family: var(--font-head);
+            font-size: clamp(4rem, 12vw, 10rem);
+            line-height: 0.9;
+            letter-spacing: -3px;
+            margin-bottom: 30px;
+        }
+
+        .hero h1 span {
+            color: var(--kiwi);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            font-weight: 300;
+            max-width: 550px;
+            margin: 0 auto 50px;
+            color: var(--muted);
+        }
+
+        .btn-bold {
+            display: inline-block;
+            padding: 25px 60px;
+            background: var(--black);
+            color: white;
+            text-transform: uppercase;
+            font-weight: 900;
+            letter-spacing: 5px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            border: 2px solid var(--black);
+            transition: all 0.3s var(--ease-out);
+        }
+
+        .btn-bold:hover {
+            background: var(--kiwi);
+            border-color: var(--kiwi);
+            color: var(--black);
+            transform: translate(-5px, -5px);
+            box-shadow: 8px 8px 0 var(--black);
+        }
+
+        /* ========== STACK CARDS ========== */
+        .stack-container {
+            position: relative;
+            background: var(--white);
+        }
+
+        .stack-cards {
+            list-style: none;
+        }
+
+        .stack-cards__item {
+            position: sticky;
+            top: 80px;
+            min-height: calc(100vh - 80px);
+            width: 100%;
+            padding: 50px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-origin: center top;
+            will-change: transform, filter;
+        }
+
+        .stack-cards__item:nth-child(1) {
+            z-index: 1;
+        }
+
+        .stack-cards__item:nth-child(2) {
+            z-index: 2;
+        }
+
+        .stack-cards__item:nth-child(3) {
+            z-index: 3;
+        }
+
+        .stack-cards__item:nth-child(4) {
+            z-index: 4;
+        }
+
+        .stack-cards__item:nth-child(5) {
+            z-index: 5;
+        }
+
+        /* Card Styles - CREATIVE LAYOUT */
+        .collection-card {
+            width: 100%;
+            max-width: 1100px;
+            min-height: 550px;
+            background: var(--white);
+            border: 2px solid var(--black);
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            overflow: hidden;
+            transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+        }
+
+        .collection-card:hover {
+            transform: translate(-8px, -8px);
+            box-shadow: 12px 12px 0 var(--kiwi);
+        }
+
+        /* Alternate layouts */
+        .collection-card.alt {
+            grid-template-columns: 1fr 1.1fr;
+        }
+
+        .collection-card.alt .card-visual {
+            order: 2;
+        }
+
+        .collection-card.dark {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .collection-card.dark:hover {
+            box-shadow: 12px 12px 0 var(--pink);
+        }
+
+        /* Card Visual */
+        .card-visual {
+            position: relative;
+            overflow: hidden;
+            background: var(--grey);
+        }
+
+        .collection-card.dark .card-visual {
+            background: #1a1a1a;
+        }
+
+        .card-visual img {
+            width: 100%;
+            height: 130%;
+            position: absolute;
+            top: -15%;
+            left: 0;
+            object-fit: cover;
+            will-change: transform;
+            transition: transform 0.8s var(--ease-out);
+        }
+
+        .collection-card:hover .card-visual img {
+            transform: scale(1.05);
+        }
+
+        /* Geometric accent */
+        .card-visual::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: var(--kiwi);
+            clip-path: polygon(100% 0, 100% 100%, 0 100%);
+        }
+
+        .collection-card.dark .card-visual::after {
+            background: var(--pink);
+        }
+
+        /* Card Content */
+        .card-content {
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card-tag {
+            font-weight: 900;
+            letter-spacing: 8px;
+            color: var(--kiwi);
+            text-transform: uppercase;
+            font-size: 0.65rem;
+            margin-bottom: 25px;
+        }
+
+        .collection-card.dark .card-tag {
+            color: var(--pink);
+        }
+
+        .card-title {
+            font-family: var(--font-head);
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            line-height: 0.95;
+            margin-bottom: 25px;
+            letter-spacing: -1px;
+        }
+
+        .card-desc {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--muted);
+            margin-bottom: 40px;
+            max-width: 400px;
+        }
+
+        .collection-card.dark .card-desc {
+            color: #888;
+        }
+
+        /* Feature pills */
+        .feature-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .pill {
+            padding: 10px 20px;
+            background: var(--bg-warm);
+            border: 1px solid var(--border);
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .collection-card.dark .pill {
+            background: #222;
+            border-color: #333;
+            color: var(--white);
+        }
+
+        .card-link {
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--kiwi);
+            text-decoration: none;
+            border-bottom: 2px solid var(--kiwi);
+            padding-bottom: 5px;
+            display: inline-block;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+            width: fit-content;
+        }
+
+        .card-link:hover {
+            color: var(--black);
+            border-color: var(--black);
+        }
+
+        .collection-card.dark .card-link {
+            color: var(--pink);
+            border-color: var(--pink);
+        }
+
+        .collection-card.dark .card-link:hover {
+            color: var(--white);
+            border-color: var(--white);
+        }
+
+        /* ========== FINAL GRID ========== */
+        .final-section {
+            padding: 150px 5%;
+            background: var(--grey);
+        }
+
+        .final-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 80px;
+        }
+
+        .final-header h2 {
+            font-family: var(--font-head);
+            font-size: clamp(3rem, 6vw, 5rem);
+            line-height: 1;
+        }
+
+        .final-header p {
+            max-width: 300px;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            color: var(--muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3px;
+            background: var(--black);
+            border: 3px solid var(--black);
+        }
+
+        .grid-item {
+            background: var(--white);
+            aspect-ratio: 3/4;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--black);
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: 75%;
+            object-fit: cover;
+            transition: transform 0.6s var(--ease-out);
+        }
+
+        .grid-item:hover img {
+            transform: scale(1.08);
+        }
+
+        .grid-item-content {
+            padding: 25px;
+            height: 25%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .grid-item-content span {
+            font-size: 0.55rem;
+            letter-spacing: 3px;
+            font-weight: 900;
+            color: var(--muted);
+            margin-bottom: 5px;
+        }
+
+        .grid-item-content h3 {
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+        }
+
+        .grid-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--kiwi);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .grid-item:hover::before {
+            opacity: 0.1;
+        }
+
+        .grid-item:nth-child(2)::before,
+        .grid-item:nth-child(4)::before {
+            background: var(--pink);
+        }
+
+        /* ========== CTA SECTION ========== */
+        .cta-section {
+            padding: 150px 5%;
+            background: var(--black);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-section p {
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-weight: 200;
+            opacity: 0.6;
+        }
+
+        .btn-xl {
+            display: inline-block;
+            padding: 30px 80px;
+            border: 2px solid var(--kiwi);
+            color: var(--kiwi);
+            font-family: var(--font-head);
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            text-decoration: none;
+            letter-spacing: 10px;
+            transition: all 0.4s var(--ease-out);
+        }
+
+        .btn-xl:hover {
+            background: var(--kiwi);
+            color: var(--black);
+            transform: translateY(-5px);
+        }
+
+        /* ========== FOOTER ========== */
+        footer {
+            padding: 80px 5%;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #555;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            border-top: 1px solid var(--grey);
+            background: var(--bg-warm);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1024px) {
+            .collection-card {
+                grid-template-columns: 1fr;
+            }
+
+            .collection-card.alt .card-visual {
+                order: 0;
+            }
+
+            .card-visual {
+                min-height: 350px;
+            }
+
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .card-content {
+                padding: 40px;
+            }
+
+            .final-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .final-header p {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header>
+        <a href="configurador/v3_hybrid/index.html" class="logo">MiKiwi</a>
+        <nav>
+            <a href="#" class="active">Colecciones</a>
+            <a href="#">Atelier</a>
+            <a href="#">ID Calibración</a>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg-text">COLS</div>
+        <div class="hero-content">
+            <h1>Colect<span>ions</span>.</h1>
+            <p>Universos sensoriales cuidadosamente curados. Cada colección cuenta una historia única de placer y
+                descubrimiento.</p>
+            <a href="#collections" class="btn-bold">Explorar Universos</a>
+        </div>
+    </section>
+
+    <!-- STACK CARDS -->
+    <div class="stack-container" id="collections">
+        <ul class="stack-cards js-stack-cards">
+
+            <!-- Collection 1: Para Ella -->
+            <li class="stack-cards__item js-stack-cards__item">
+                <article class="collection-card">
+                    <div class="card-visual">
+                        <img src="collection_ella.png" alt="Colección Para Ella" class="card-image">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">COL-01 // FEMININE</span>
+                        <h2 class="card-title">Para Ella.</h2>
+                        <p class="card-desc">Diseños ergonómicos y texturas premium pensados para maximizar el placer
+                            femenino. Tecnología de vibración silenciosa y materiales hipoalergénicos.</p>
+                        <div class="feature-pills">
+                            <span class="pill">Silicona Premium</span>
+                            <span class="pill">10 Modos</span>
+                            <span class="pill">IPX7</span>
+                        </div>
+                        <a href="#" class="card-link">Explorar Colección</a>
+                    </div>
+                </article>
+            </li>
+
+            <!-- Collection 2: Para Él -->
+            <li class="stack-cards__item js-stack-cards__item">
+                <article class="collection-card dark alt">
+                    <div class="card-visual">
+                        <img src="collection_el.png" alt="Colección Para Él" class="card-image">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">COL-02 // MASCULINE</span>
+                        <h2 class="card-title">Para Él.</h2>
+                        <p class="card-desc">Innovación masculina redefinida. Masturbadores con tecnología háptica,
+                            anillos vibradores y accesorios para potenciar cada sensación.</p>
+                        <div class="feature-pills">
+                            <span class="pill">Tech Háptica</span>
+                            <span class="pill">Control App</span>
+                            <span class="pill">USB-C</span>
+                        </div>
+                        <a href="#" class="card-link">Explorar Colección</a>
+                    </div>
+                </article>
+            </li>
+
+            <!-- Collection 3: Parejas -->
+            <li class="stack-cards__item js-stack-cards__item">
+                <article class="collection-card">
+                    <div class="card-visual">
+                        <img src="collection_parejas.png" alt="Colección Parejas" class="card-image">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">COL-03 // SHARED</span>
+                        <h2 class="card-title">Parejas.</h2>
+                        <p class="card-desc">Juguetes diseñados para compartir. Vibradores controlados a distancia, kits
+                            de exploración y accesorios que intensifican la conexión.</p>
+                        <div class="feature-pills">
+                            <span class="pill">Control Dual</span>
+                            <span class="pill">Sync</span>
+                            <span class="pill">Long Range</span>
+                        </div>
+                        <a href="#" class="card-link">Explorar Colección</a>
+                    </div>
+                </article>
+            </li>
+
+            <!-- Collection 4: Experiencias -->
+            <li class="stack-cards__item js-stack-cards__item">
+                <article class="collection-card dark alt">
+                    <div class="card-visual">
+                        <img src="collection_experiencias.png" alt="Experiencias Sensoriales" class="card-image">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">COL-04 // SENSORIAL</span>
+                        <h2 class="card-title">Experiencias.</h2>
+                        <p class="card-desc">Kits curados para despertar todos los sentidos. Aceites de masaje, velas
+                            aromáticas, vendas de seda y elementos de exploración sensorial.</p>
+                        <div class="feature-pills">
+                            <span class="pill">Aromaterapia</span>
+                            <span class="pill">Gift Ready</span>
+                            <span class="pill">Premium</span>
+                        </div>
+                        <a href="#" class="card-link">Explorar Colección</a>
+                    </div>
+                </article>
+            </li>
+
+        </ul>
+    </div>
+
+    <!-- FINAL GRID -->
+    <section class="final-section">
+        <div class="final-header">
+            <h2>Obras<br>Sensoriales.</h2>
+            <p>Acceso directo a todas las colecciones disponibles en el catálogo.</p>
+        </div>
+        <div class="grid-container">
+            <a href="#" class="grid-item">
+                <img src="collection_ella.png" alt="Para Ella">
+                <div class="grid-item-content">
+                    <span>COL-01</span>
+                    <h3>Para Ella</h3>
+                </div>
+            </a>
+            <a href="#" class="grid-item">
+                <img src="collection_el.png" alt="Para Él">
+                <div class="grid-item-content">
+                    <span>COL-02</span>
+                    <h3>Para Él</h3>
+                </div>
+            </a>
+            <a href="#" class="grid-item">
+                <img src="collection_parejas.png" alt="Parejas">
+                <div class="grid-item-content">
+                    <span>COL-03</span>
+                    <h3>Parejas</h3>
+                </div>
+            </a>
+            <a href="#" class="grid-item">
+                <img src="collection_experiencias.png" alt="Experiencias">
+                <div class="grid-item-content">
+                    <span>COL-04</span>
+                    <h3>Experiencias</h3>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <p>Explora el catálogo completo</p>
+        <a href="#" class="btn-xl">Catálogo</a>
+    </section>
+
+    <footer>
+        © 2026 MiKiwi PROJECT • SWISS PRECISION • BEYOND THE PHYSICAL
+    </footer>
+
+    <script>
+        // Stack Cards Animation
+        (function () {
+            const items = Array.from(document.querySelectorAll('.js-stack-cards__item'));
+            const itemsCount = items.length;
+
+            const config = {
+                perspective: 1400,
+                rotationX: 4,
+                scaleStep: 0.035,
+                minScale: 0.88,
+                translateYStep: 22,
+                translateZStep: -45,
+                opacityStep: 0.75,
+                minOpacity: 0,
+                blurStep: 1.8,
+                maxBlur: 7,
+                brightnessStep: 0.07,
+                minBrightness: 0.72,
+                saturationStep: 0.12,
+                minSaturation: 0.65,
+                lerpFactorBase: 0.11,
+                lerpFactorFast: 0.18,
+                lerpFactorSlow: 0.06,
+            };
+
+            const states = items.map(() => ({
+                current: { scale: 1, opacity: 1, blur: 0, brightness: 1, saturation: 1, translateY: 0, translateZ: 0, rotateX: 0, imageScale: 1 },
+                target: { scale: 1, opacity: 1, blur: 0, brightness: 1, saturation: 1, translateY: 0, translateZ: 0, rotateX: 0, imageScale: 1 }
+            }));
+
+            function adaptiveLerp(current, target, baseFactor) {
+                const distance = Math.abs(target - current);
+                let factor = distance > 50 ? config.lerpFactorSlow : distance > 10 ? baseFactor : config.lerpFactorFast;
+                return current + (target - current) * Math.min(factor, 0.25);
+            }
+
+            function calculateTargets() {
+                const windowHeight = window.innerHeight;
+                const depths = new Array(itemsCount).fill(0);
+
+                for (let i = itemsCount - 1; i >= 0; i--) {
+                    let overlappingRectTop = windowHeight;
+                    if (i < itemsCount - 1) {
+                        overlappingRectTop = items[i + 1].getBoundingClientRect().top;
+                    }
+                    const overlapProgress = Math.max(0, Math.min(1, 1 - (overlappingRectTop / windowHeight)));
+                    let neighborDepth = i < itemsCount - 1 ? depths[i + 1] : 0;
+                    depths[i] = overlapProgress + neighborDepth;
+                }
+
+                items.forEach((card, i) => {
+                    const t = states[i].target;
+                    const depth = depths[i];
+
+                    if (depth > 0.01) {
+                        const effectiveDepth = Math.min(depth, 4);
+                        t.scale = Math.max(config.minScale, 1 - (effectiveDepth * config.scaleStep));
+                        t.opacity = Math.max(config.minOpacity, 1 - (effectiveDepth * config.opacityStep));
+                        t.blur = Math.min(effectiveDepth * config.blurStep, config.maxBlur);
+                        t.brightness = Math.max(config.minBrightness, 1 - (effectiveDepth * config.brightnessStep));
+                        t.saturation = Math.max(config.minSaturation, 1 - (effectiveDepth * config.saturationStep));
+                        t.imageScale = 1 + (effectiveDepth * 0.02);
+                        t.translateY = -effectiveDepth * config.translateYStep;
+                        t.translateZ = effectiveDepth * config.translateZStep;
+                        t.rotateX = effectiveDepth * config.rotationX;
+                    } else {
+                        t.scale = 1; t.opacity = 1; t.blur = 0; t.brightness = 1; t.saturation = 1;
+                        t.translateY = 0; t.translateZ = 0; t.rotateX = 0; t.imageScale = 1;
+                    }
+                });
+            }
+
+            function applyStyles() {
+                let animating = false;
+                const windowHeight = window.innerHeight;
+
+                items.forEach((card, i) => {
+                    const c = states[i].current;
+                    const t = states[i].target;
+                    const baseFactor = config.lerpFactorBase;
+
+                    c.scale = adaptiveLerp(c.scale, t.scale, baseFactor);
+                    c.opacity = adaptiveLerp(c.opacity, t.opacity, baseFactor);
+                    c.blur = adaptiveLerp(c.blur, t.blur, baseFactor);
+                    c.brightness = adaptiveLerp(c.brightness, t.brightness, baseFactor);
+                    c.saturation = adaptiveLerp(c.saturation, t.saturation, baseFactor);
+                    c.translateY = adaptiveLerp(c.translateY, t.translateY, baseFactor);
+                    c.translateZ = adaptiveLerp(c.translateZ, t.translateZ, baseFactor);
+                    c.rotateX = adaptiveLerp(c.rotateX, t.rotateX, baseFactor);
+                    c.imageScale = adaptiveLerp(c.imageScale, t.imageScale, baseFactor);
+
+                    const diff = Math.abs(c.scale - t.scale) + Math.abs(c.opacity - t.opacity) * 0.1;
+                    if (diff > 0.001) animating = true;
+
+                    const transform = `perspective(${config.perspective}px) translateY(${c.translateY.toFixed(1)}px) translateZ(${c.translateZ.toFixed(1)}px) rotateX(${c.rotateX.toFixed(2)}deg) scale(${c.scale.toFixed(4)})`;
+                    let filters = [];
+                    if (c.blur > 0.3) filters.push(`blur(${c.blur.toFixed(1)}px)`);
+                    if (c.brightness < 0.98) filters.push(`brightness(${c.brightness.toFixed(2)})`);
+                    if (c.saturation < 0.98) filters.push(`saturate(${c.saturation.toFixed(2)})`);
+
+                    card.style.transform = transform;
+                    card.style.opacity = c.opacity.toFixed(3);
+                    card.style.filter = filters.length ? filters.join(' ') : 'none';
+
+                    // Parallax interno
+                    const rect = card.getBoundingClientRect();
+                    const cardProgress = 1 - (rect.top / windowHeight);
+                    const clampedProgress = Math.max(0, Math.min(1, cardProgress));
+                    const parallaxOffset = (clampedProgress - 0.5) * 70;
+                    const img = card.querySelector('.card-image');
+                    if (img) {
+                        img.style.transform = `translateY(${parallaxOffset.toFixed(1)}px) scale(${c.imageScale.toFixed(3)})`;
+                    }
+                });
+                return animating;
+            }
+
+            let running = false;
+            function tick() {
+                calculateTargets();
+                const needsMore = applyStyles();
+                if (needsMore) {
+                    running = true;
+                    requestAnimationFrame(tick);
+                } else {
+                    running = false;
+                }
+            }
+
+            function start() {
+                if (!running) {
+                    running = true;
+                    requestAnimationFrame(tick);
+                }
+            }
+
+            function initPerspective() {
+                const container = document.querySelector('.stack-container');
+                if (container) {
+                    container.style.perspective = `${config.perspective}px`;
+                    container.style.perspectiveOrigin = 'center top';
+                }
+            }
+
+            window.addEventListener('load', () => { initPerspective(); start(); });
+            window.addEventListener('resize', start);
+            window.addEventListener('scroll', start, { passive: true });
+        })();
+    </script>
+</body>
+
+</html>
