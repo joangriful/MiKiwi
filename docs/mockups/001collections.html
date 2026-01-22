@@ -246,12 +246,7 @@
             position: absolute;
             border: 1px solid var(--glass-border);
             border-radius: 3px;
-            opacity: 0;
-            transition: all 1.2s var(--ease-out-expo);
-        }
-
-        .hero-shape.visible {
-            opacity: 0.5;
+            will-change: transform, opacity;
         }
 
         .hero-shape--1 {
@@ -259,11 +254,6 @@
             height: 80px;
             top: 20%;
             left: 10%;
-            transform: rotate(45deg) scale(0.5);
-        }
-
-        .hero-shape--1.visible {
-            transform: rotate(45deg) scale(1);
         }
 
         .hero-shape--2 {
@@ -274,12 +264,6 @@
             background: var(--glow-kiwi);
             filter: blur(25px);
             border: none;
-            transform: scale(0);
-        }
-
-        .hero-shape--2.visible {
-            opacity: 0.6;
-            transform: scale(1);
         }
 
         .hero-shape--3 {
@@ -288,12 +272,6 @@
             bottom: 25%;
             left: 20%;
             border-color: var(--pink);
-            transform: rotate(-15deg) translateY(30px);
-        }
-
-        .hero-shape--3.visible {
-            opacity: 0.4;
-            transform: rotate(-15deg) translateY(0);
         }
 
         .hero-shape--4 {
@@ -303,12 +281,6 @@
             right: 8%;
             background: linear-gradient(90deg, transparent, var(--kiwi), transparent);
             border: none;
-            transform: scaleX(0);
-        }
-
-        .hero-shape--4.visible {
-            opacity: 0.7;
-            transform: scaleX(1);
         }
 
         .hero-content {
@@ -334,14 +306,7 @@
 
         .hero-title .char {
             display: inline-block;
-            transform: translateY(120%);
-            opacity: 0;
-            transition: all 0.7s var(--ease-out-expo);
-        }
-
-        .hero-title .char.visible {
-            transform: translateY(0);
-            opacity: 1;
+            will-change: transform, opacity;
         }
 
         .hero-title .word:nth-child(2) .char {
@@ -354,15 +319,7 @@
             color: var(--text-muted);
             max-width: 550px;
             margin: 0 auto 50px;
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s var(--ease-out-expo);
-            transition-delay: 0.3s;
-        }
-
-        .hero-subtitle.visible {
-            opacity: 1;
-            transform: translateY(0);
+            will-change: transform, opacity;
         }
 
         /* Magnetic CTA */
@@ -383,15 +340,7 @@
             border-radius: 60px;
             overflow: hidden;
             cursor: pointer;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.5s var(--ease-out-expo);
-            transition-delay: 0.5s;
-        }
-
-        .btn-magnetic.visible {
-            opacity: 1;
-            transform: translateY(0);
+            will-change: transform, opacity;
         }
 
         .btn-magnetic::before {
@@ -428,18 +377,11 @@
             position: absolute;
             bottom: 40px;
             left: 50%;
-            transform: translateX(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 12px;
-            opacity: 0;
-            transition: all 0.8s var(--ease-out-expo);
-            transition-delay: 0.7s;
-        }
-
-        .scroll-indicator.visible {
-            opacity: 1;
+            will-change: transform, opacity;
         }
 
         .scroll-indicator span {
@@ -1193,15 +1135,17 @@
     </footer>
 
     <script>
-        // Initialize Lenis Smooth Scroll
+        // Initialize Lenis Smooth Scroll - enhanced for mouse wheel fluidity
         const lenis = new Lenis({
-            duration: 1.4,
+            duration: 2.0,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             direction: 'vertical',
             gestureDirection: 'vertical',
             smooth: true,
             smoothTouch: false,
             touchMultiplier: 2,
+            wheelMultiplier: 0.8,
+            lerp: 0.08,
         });
 
         function raf(time) {
@@ -1210,40 +1154,113 @@
         }
         requestAnimationFrame(raf);
 
-        // ========== SCROLL-BASED REVERSIBLE ANIMATIONS ==========
+        // ========== SMOOTH LERP HERO ANIMATIONS ==========
         (function () {
             const hero = document.getElementById('hero');
-            const heroElements = hero.querySelectorAll('[data-scroll-reveal]');
+            const chars = hero.querySelectorAll('.hero-title .char');
+            const shapes = hero.querySelectorAll('.hero-shape');
+            const subtitle = hero.querySelector('.hero-subtitle');
+            const btnMagnetic = hero.querySelector('.btn-magnetic');
+            const scrollIndicator = hero.querySelector('.scroll-indicator');
 
-            // Calculate visibility based on scroll position
-            function updateHeroAnimations() {
+            // State tracking for smooth interpolation
+            const heroState = {
+                current: { progress: 0 },
+                target: { progress: 0 }
+            };
+
+            const lerpFactor = 0.08; // Smooth interpolation speed
+
+            function lerp(current, target, factor) {
+                return current + (target - current) * factor;
+            }
+
+            function easeOutExpo(t) {
+                return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+            }
+
+            function calculateProgress() {
                 const rect = hero.getBoundingClientRect();
                 const windowHeight = window.innerHeight;
 
-                // Hero is visible when its center is in the viewport
-                // Progress: 1 = fully visible (at top), 0 = scrolled past
-                const heroCenter = rect.top + rect.height / 2;
-                const viewportCenter = windowHeight / 2;
+                // Progress based on hero visibility - extended range for softer transition
+                // 1 = hero at top (fully visible), 0 = scrolled far past
+                // Using windowHeight * 1.2 extends visibility zone for smoother handoff to cards
+                const scrollProgress = Math.max(0, Math.min(1, 1 - (Math.abs(rect.top) / (windowHeight * 1.2))));
+                heroState.target.progress = scrollProgress;
+            }
 
-                // Calculate how much of the hero is "active" (visible and centered)
-                const distanceFromCenter = Math.abs(heroCenter - viewportCenter);
-                const maxDistance = windowHeight;
+            function applyHeroAnimations() {
+                // Smooth lerp
+                heroState.current.progress = lerp(heroState.current.progress, heroState.target.progress, lerpFactor);
+                const p = heroState.current.progress;
+                const eased = easeOutExpo(p);
 
-                // Progress: 1 when hero center is at viewport center, 0 when far away
-                const progress = Math.max(0, 1 - (distanceFromCenter / maxDistance));
+                // Animate characters with staggered reveal
+                chars.forEach((char, i) => {
+                    const delay = parseInt(char.dataset.delay) || 0;
+                    const charOffset = delay / 600; // Normalize delay to progress offset
+                    const charProgress = Math.max(0, Math.min(1, (p - charOffset * 0.3) * 1.8));
+                    const charEased = easeOutExpo(charProgress);
 
-                // Apply visibility classes based on progress
-                // Elements become visible when progress > 0.3, hidden when < 0.2 (hysteresis to avoid flickering)
-                heroElements.forEach(el => {
-                    const delay = parseInt(el.dataset.delay) || 0;
-                    const threshold = 0.3 + (delay / 2000); // Stagger the thresholds
+                    const translateY = (1 - charEased) * 120;
+                    const opacity = charEased;
 
-                    if (progress > threshold) {
-                        el.classList.add('visible');
-                    } else if (progress < threshold - 0.15) {
-                        el.classList.remove('visible');
+                    char.style.transform = `translateY(${translateY.toFixed(2)}%)`;
+                    char.style.opacity = opacity.toFixed(3);
+                });
+
+                // Animate shapes
+                shapes.forEach((shape, i) => {
+                    const shapeProgress = Math.max(0, Math.min(1, (p - 0.1 * i) * 1.5));
+                    const shapeEased = easeOutExpo(shapeProgress);
+
+                    if (shape.classList.contains('hero-shape--1')) {
+                        const scale = 0.5 + shapeEased * 0.5;
+                        shape.style.transform = `rotate(45deg) scale(${scale.toFixed(3)})`;
+                        shape.style.opacity = (shapeEased * 0.5).toFixed(3);
+                    } else if (shape.classList.contains('hero-shape--2')) {
+                        shape.style.transform = `scale(${shapeEased.toFixed(3)})`;
+                        shape.style.opacity = (shapeEased * 0.6).toFixed(3);
+                    } else if (shape.classList.contains('hero-shape--3')) {
+                        const translateY = (1 - shapeEased) * 30;
+                        shape.style.transform = `rotate(-15deg) translateY(${translateY.toFixed(2)}px)`;
+                        shape.style.opacity = (shapeEased * 0.4).toFixed(3);
+                    } else if (shape.classList.contains('hero-shape--4')) {
+                        shape.style.transform = `scaleX(${shapeEased.toFixed(3)})`;
+                        shape.style.opacity = (shapeEased * 0.7).toFixed(3);
                     }
                 });
+
+                // Subtitle
+                if (subtitle) {
+                    const subProgress = Math.max(0, Math.min(1, (p - 0.2) * 1.6));
+                    const subEased = easeOutExpo(subProgress);
+                    const subTranslateY = (1 - subEased) * 40;
+                    subtitle.style.transform = `translateY(${subTranslateY.toFixed(2)}px)`;
+                    subtitle.style.opacity = subEased.toFixed(3);
+                }
+
+                // Button - softer, more extended transition
+                if (btnMagnetic) {
+                    const btnProgress = Math.max(0, Math.min(1, (p - 0.15) * 1.2));
+                    const btnEased = easeOutExpo(btnProgress);
+                    const btnTranslateY = (1 - btnEased) * 30;
+                    btnMagnetic.style.transform = `translateY(${btnTranslateY.toFixed(2)}px)`;
+                    btnMagnetic.style.opacity = btnEased.toFixed(3);
+                }
+
+                // Scroll indicator
+                if (scrollIndicator) {
+                    const scrollProgress = Math.max(0, Math.min(1, (p - 0.4) * 2));
+                    const scrollEased = easeOutExpo(scrollProgress);
+                    scrollIndicator.style.transform = `translateX(-50%)`;
+                    scrollIndicator.style.opacity = scrollEased.toFixed(3);
+                }
+
+                // Check if still animating
+                const diff = Math.abs(heroState.current.progress - heroState.target.progress);
+                return diff > 0.001;
             }
 
             // Header scroll effect
@@ -1256,16 +1273,14 @@
                 }
             }
 
-            // Gallery reveal - also reversible
+            // Gallery reveal - also with lerp
             const galleryHeader = document.querySelector('.gallery-header');
             const galleryCards = document.querySelectorAll('.gallery-card');
 
             function updateGalleryAnimations() {
-                // Gallery header
                 if (galleryHeader) {
                     const rect = galleryHeader.getBoundingClientRect();
                     const windowHeight = window.innerHeight;
-
                     if (rect.top < windowHeight * 0.85 && rect.bottom > 0) {
                         galleryHeader.classList.add('visible');
                     } else {
@@ -1273,11 +1288,9 @@
                     }
                 }
 
-                // Gallery cards
                 galleryCards.forEach(card => {
                     const rect = card.getBoundingClientRect();
                     const windowHeight = window.innerHeight;
-
                     if (rect.top < windowHeight * 0.9 && rect.bottom > 0) {
                         card.classList.add('visible');
                     } else {
@@ -1286,20 +1299,32 @@
                 });
             }
 
-            // Combined scroll handler
-            function onScroll() {
-                updateHeroAnimations();
+            // Animation loop
+            let animating = false;
+            function tick() {
+                calculateProgress();
+                const needsMore = applyHeroAnimations();
                 updateHeader();
                 updateGalleryAnimations();
+
+                if (needsMore) {
+                    animating = true;
+                    requestAnimationFrame(tick);
+                } else {
+                    animating = false;
+                }
             }
 
-            // Initial call
-            window.addEventListener('load', () => {
-                onScroll();
-            });
+            function startAnimation() {
+                if (!animating) {
+                    animating = true;
+                    requestAnimationFrame(tick);
+                }
+            }
 
-            // Scroll listener
-            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('load', startAnimation);
+            window.addEventListener('scroll', startAnimation, { passive: true });
+            window.addEventListener('resize', startAnimation);
         })();
 
         // ========== STACK CARDS ANIMATION ==========
