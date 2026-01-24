@@ -33,4 +33,10 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function accessories() {
+        return $this->belonngsTo(Product::class, 'product_accessories', 'product_id', 'accessory_product_id');
+    }
+    
 }
+
