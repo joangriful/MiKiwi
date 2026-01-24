@@ -17,15 +17,15 @@ class Order extends Model
         'total_amount',
         'payment_status',
         'payment_method',
-        'shipping_address',
-        'billing_address',
+        'shipping_address_snapshot',
+        'billing_address_snapshot',
         'notes',
     ];
 
     protected $casts = [
         'total_amount' => 'decimal:2',
-        'shipping_address' => 'array',
-        'billing_address' => 'array',
+        'shipping_address_snapshot' => 'array',
+        'billing_address_snapshot' => 'array',
         'created_at' => 'datetime',
     ];
 
