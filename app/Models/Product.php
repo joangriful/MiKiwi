@@ -35,7 +35,7 @@ class Product extends Model
     }
 
     public function accessories() {
-        return $this->belongsTo(Product::class, 'product_accessories', 'product_id', 'accessory_product_id');
+        return $this->belongsToMany(Product::class, 'product_accessories', 'product_id', 'accessory_product_id');
     }
     
 }
