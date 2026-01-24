@@ -11,13 +11,18 @@ class UserAddress extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
-        'user_id',
-        'address_line1',
-        'address_line2',
+        'alias',
+        'full_name',
+        'phone',
+        'street_address',
         'city',
-        'state',
         'postal_code',
         'country',
-        'is_default'
+        'is_default',
     ];
+
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }
