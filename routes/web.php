@@ -52,6 +52,10 @@ Route::prefix('configurador')->group(function () {
     Route::get('/quiz', function () {
         return Inertia::render('Configurador/Quiz');
     })->name('configurador.quiz');
+
+    Route::get('/munecas', function () {
+        return Inertia::render('DollConfigurator');
+    })->name('configurador.dolls');
 });
 
 require __DIR__ . '/auth.php';
