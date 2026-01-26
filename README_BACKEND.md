@@ -1,4 +1,4 @@
-# 🥝 MiKiwi - Documentación del Backend (Estado Actual)
+# MiKiwi - Documentación del Backend (Estado Actual)
 
 **Fecha:** 23 de Enero, 2026
 **Estado:** Backend Inicial Configurado (MySQL + Laravel)
@@ -62,7 +62,7 @@ Hemos creado scripts para poblar la base de datos automáticamente con el comand
 3.  **`DatabaseSeeder`:**
     * Orquesta la ejecución de los dos anteriores.
 
-### 🔑 Credenciales de Acceso (Local)
+### Credenciales de Acceso (Local)
 | Rol | Email | Contraseña |
 | :--- | :--- | :--- |
 | **Admin** | `admin@kinky-toys.com` | `password` |
@@ -106,28 +106,3 @@ Una vez la API funcione, pasaremos al diseño visual.
 - [ ] **Setup:** Inicializar proyecto con Vite + React.
 - [ ] **Conexión:** Configurar `Axios` para llamar a nuestra API de Laravel.
 - [ ] **UI:** Maquetar la Home con la lista de productos real traída de la BBDD.
----
-
-## 7. Informe de Estabilización: Fase 2 (Refactorización del Núcleo)
-**Responsable Técnico:** Miguel Sánchez Vázquez
-**Fecha:** 24 de Enero, 2026
-
-En esta fase crítica del desarrollo, se ha llevado a cabo una auditoría profunda y posterior corrección del núcleo del backend para alinearlo con los **Pilares del Proyecto** (Enterprise Level Standards).
-
-### 🛠️ Logros Principales
-
-#### ✅ Integridad Referencial y Seguridad (Critical Fixes)
-1.  **Sessions Table:** Se corrigió el tipo de dato de `user_id` en la tabla de sesiones (`BigInt` -> `UUID`), solucionando un fallo de diseño que habría impedido el login de cualquier usuario.
-2.  **User Factory:** Reparado el generador de usuarios de prueba. Ahora genera correctamente `DNI` y `Fecha de Nacimiento`, permitiendo la ejecución de tests automatizados sin errores de integridad SQL.
-3.  **UserAddress Guard:** Se blindó el modelo de direcciones eliminando `user_id` de la lista de asignación masiva (`$fillable`) para prevenir vulnerabilidades de seguridad (Mass Assignment Injection).
-
-#### ✅ Completitud del Modelo de Dominio (Domain Driven Design)
-1.  **Modelo `Product`:** Habilitada la relación "Muchos a Muchos" para accesorios, una característica vital para el "Cross-Selling" y la venta de packs configurables.
-2.  **Modelo `Category`:** Habilitada la recursividad jerárquica (Padre/Hijo), permitiendo la construcción de menús de navegación multinivel dinámicos.
-3.  **Modelos de Pedidos (`Order` & `OrderItem`):** Implementados desde cero. Estos modelos existían en base de datos pero no en código ("Modelos Fantasma"). Ahora incluyen configuración avanzada de Casting para manejar Snapshots de direcciones (JSON) y cálculos decimales precisos.
-
-#### ✅ Limpieza de Código (Clean Code)
-1.  **Saneamiento:** Eliminación de directorios duplicados y código muerto (`app/Models 2`, etc.) que generaba ruido técnico y riesgo de conflictos.
-
-### 📊 Estado Final de la Fase 2
-El backend ha evolucionado de un prototipo estructural a una **base sólida y consistente**. Los cimientos son ahora seguros y reflejan fielmente la lógica de negocio requerida para una plataforma de e-commerce escalable.
