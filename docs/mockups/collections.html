@@ -1269,6 +1269,100 @@
             })();
     </script>
 
+<!-- Script for One-Scroll-Per-Section (Mouse Wheel) -->
+<script>
+    (function () {
+        // Configuration
+        const scrollCooldown = 500; // Faster response time
+        let lastScrollTime = 0;
+        let isScrolling = false;
+        let currentSectionIndex = 0;
+
+        // Define the visual sections (stops)
+        function getSections() {
+            const header = document.querySelector('.header-section');
+            const cards = Array.from(document.querySelectorAll('.stack-cards__item')); // Sticky cards
+            // Filter valid elements
+            return [header, ...cards].filter(el => el && el.offsetParent !== null);
+        }
+
+        function initScrollLogic() {
+            // IMPORTANT: Disable CSS scroll snap on desktop to avoid conflict with JS scroll
+            // This ensures "one tick = one section" without browser interference
+            const container = document.querySelector('.stack-cards-container');
+            if (container) {
+                container.style.scrollSnapType = 'none';
+                container.style.scrollBehavior = 'auto'; // Disable native smooth scroll if set
+            }
+            document.documentElement.style.scrollBehavior = 'auto'; // Ensure global is auto
+
+            // Initial alignment
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            currentSectionIndex = Math.round(scrollY / windowHeight);
+        }
+
+        function handleWheel(e) {
+            // Allow normal pinch-zoom or horizontal scroll
+            if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+
+            // Prevent default scrolling behavior (browser snap/smooth)
+            e.preventDefault();
+
+            const now = Date.now();
+            if (now - lastScrollTime < scrollCooldown || isScrolling) return;
+
+            const direction = Math.sign(e.deltaY);
+            if (direction === 0) return;
+
+            const sections = getSections();
+
+            // Recalculate index based on current position
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const calculatedIndex = Math.round(scrollY / windowHeight);
+
+            // Determine target
+            let targetIndex = calculatedIndex + direction;
+
+            // Clamp
+            targetIndex = Math.max(0, Math.min(targetIndex, sections.length - 1));
+
+            if (targetIndex === calculatedIndex) return;
+
+            isScrolling = true;
+            lastScrollTime = now;
+            currentSectionIndex = targetIndex;
+
+            // Force JS Smooth Scroll
+            window.scrollTo({
+                top: targetIndex * windowHeight,
+                behavior: 'smooth'
+            });
+
+            // Release lock
+            setTimeout(() => {
+                isScrolling = false;
+            }, scrollCooldown);
+        }
+
+        // Only activate on large screens (desktop behavior)
+        if (window.matchMedia("(min-width: 1024px)").matches) {
+            // Initialize
+            initScrollLogic();
+            // Add listener with passive: false to allow preventDefault
+            window.addEventListener('wheel', handleWheel, { passive: false });
+
+            // Re-init on resize to clear/set CSS snap
+            window.addEventListener('resize', () => {
+                if (window.matchMedia("(min-width: 1024px)").matches) {
+                    initScrollLogic();
+                }
+            });
+        }
+    })();
+</script>
+
 </body>
 
 </html>
