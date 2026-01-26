@@ -36,6 +36,10 @@ Route::get('/colecciones', function () {
     return Inertia::render('colecciones');
 });
 
+Route::get('/components-manager', function () {
+    return Inertia::render('ComponentsManager');
+})->name('components.manager');
+
 Route::prefix('configurador')->group(function () {
     Route::get('/', function () {
         return Inertia::render('Configurador/Home');

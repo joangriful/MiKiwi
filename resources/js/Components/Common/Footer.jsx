@@ -2,33 +2,18 @@ export default function Footer() {
     return (
         <footer className="bg-black text-white pt-16 pb-8 border-t border-gray-900">
             <div className="container mx-auto px-6">
-                <div className="flex flex-col md:flex-row justify-between items-start gap-12">
-                    {/* Brand Section */}
+                <div className="flex flex-col md:flex-row justify-between items-start mb-12">
+                    {/* Brand Section - Logo Only */}
                     <div className="flex-1 max-w-sm">
                         <img
                             src="/assets/icons/mikiwi_logo.svg"
                             alt="MiKiwi Logo"
-                            className="h-12 w-auto mb-6 invert brightness-0"
+                            className="w-full max-w-[280px] h-auto mb-8 invert brightness-0 opacity-90"
                         />
-                        <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                            Llevando la frescura de la naturaleza directamente a tu mesa. Kiwis premium seleccionados para el máximo sabor y nutrición.
-                        </p>
-                        {/* Social Icons */}
-                        <div className="flex gap-4">
-                            <a href="#" className="p-2 bg-gray-900 rounded-full hover:bg-gray-800 transition-colors">
-                                <img src="/assets/icons/github.svg" alt="GitHub" className="h-5 w-5 invert" />
-                            </a>
-                            <a href="#" className="p-2 bg-gray-900 rounded-full hover:bg-gray-800 transition-colors">
-                                <img src="/assets/icons/linkedin.svg" alt="LinkedIn" className="h-5 w-5 invert" />
-                            </a>
-                            <a href="#" className="p-2 bg-gray-900 rounded-full hover:bg-gray-800 transition-colors">
-                                <img src="/assets/icons/gmail.svg" alt="Gmail" className="h-5 w-5 invert" />
-                            </a>
-                        </div>
                     </div>
 
-                    {/* Navigation Columns */}
-                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-16">
+                    {/* Navigation Columns - Tighter spacing */}
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
                         <div>
                             <h3 className="font-bold text-lg mb-4 text-green-400">Tienda</h3>
                             <ul className="space-y-3 text-sm text-gray-400">
@@ -60,7 +45,43 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="border-t border-gray-900 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+                {/* Social & Newsletter Row */}
+                <div className="flex flex-col md:flex-row justify-between items-end gap-8 pb-12 border-b border-gray-900">
+                    {/* Social Icons */}
+                    <div className="flex gap-4">
+                        <a href="#" className="flex items-center justify-center p-3 rounded-full hover:bg-white transition-all group border border-transparent hover:border-white/50">
+                            <img src="/assets/icons/github.svg" alt="GitHub" className="h-6 w-6 invert brightness-0 group-hover:filter-none transition-all" />
+                        </a>
+                        <a href="#" className="flex items-center justify-center p-3 rounded-full hover:bg-white transition-all group border border-transparent hover:border-white/50">
+                            <img src="/assets/icons/linkedin.svg" alt="LinkedIn" className="h-6 w-6 invert brightness-0 group-hover:filter-none transition-all" />
+                        </a>
+                        <a href="#" className="flex items-center justify-center p-3 rounded-full hover:bg-white transition-all group border border-transparent hover:border-white/50">
+                            <img src="/assets/icons/gmail.svg" alt="Gmail" className="h-6 w-6 invert brightness-0 group-hover:filter-none transition-all" />
+                        </a>
+                    </div>
+
+                    {/* Newsletter Section */}
+                    <div className="w-full md:w-auto">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                            <div>
+                                <h4 className="text-white font-medium mb-1 text-lg">Únete al círculo exclusivo de MiKiwi</h4>
+                                <p className="text-gray-500 text-xs">Recibe ofertas especiales y recetas frescas.</p>
+                            </div>
+                            <form className="flex gap-2 w-full md:w-auto md:min-w-[350px]">
+                                <input
+                                    type="email"
+                                    placeholder="Tu correo electrónico"
+                                    className="bg-zinc-900/50 border border-zinc-800 text-gray-300 text-sm rounded-lg block w-full p-2.5 focus:ring-[#FF2D20] focus:border-[#FF2D20] outline-none transition-colors"
+                                />
+                                <button type="submit" className="text-white bg-[#FF2D20] hover:bg-[#d6251b] focus:ring-4 focus:ring-[#FF2D20]/30 font-medium rounded-lg text-sm px-4 py-2.5 transition-all">
+                                    Suscribirse
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
                     <p>&copy; 2026 MiKiwi Inc. Todos los derechos reservados.</p>
                     <div className="flex gap-6 mt-4 md:mt-0">
                         <a href="#" className="hover:text-white transition-colors">Politica de Privacidad</a>
