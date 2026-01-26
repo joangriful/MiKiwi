@@ -106,3 +106,56 @@ Una vez la API funcione, pasaremos al diseño visual.
 - [ ] **Setup:** Inicializar proyecto con Vite + React.
 - [ ] **Conexión:** Configurar `Axios` para llamar a nuestra API de Laravel.
 - [ ] **UI:** Maquetar la Home con la lista de productos real traída de la BBDD.
+
+
+
+## 7. Informe de Estabilización: Fase 2 (Refactorización del Núcleo)
+**Responsable Técnico:** Miguel Sánchez Vázquez
+**Fecha:** 24 de Enero, 2026
+
+En esta fase crítica del desarrollo, se ha llevado a cabo una auditoría profunda y posterior corrección del núcleo del backend para alinearlo con los **Pilares del Proyecto** (Enterprise Level Standards).
+
+### Logros Principales
+
+#### Integridad Referencial y Seguridad (Critical Fixes)
+1.  **Sessions Table:** Se corrigió el tipo de dato de `user_id` en la tabla de sesiones (`BigInt` -> `UUID`), solucionando un fallo de diseño que habría impedido el login de cualquier usuario.
+2.  **User Factory:** Reparado el generador de usuarios de prueba. Ahora genera correctamente `DNI` y `Fecha de Nacimiento`, permitiendo la ejecución de tests automatizados sin errores de integridad SQL.
+3.  **UserAddress Guard:** Se blindó el modelo de direcciones eliminando `user_id` de la lista de asignación masiva (`$fillable`) para prevenir vulnerabilidades de seguridad (Mass Assignment Injection).
+
+#### Completitud del Modelo de Dominio (Domain Driven Design)
+1.  **Modelo `Product`:** Habilitada la relación "Muchos a Muchos" para accesorios, una característica vital para el "Cross-Selling" y la venta de packs configurables.
+2.  **Modelo `Category`:** Habilitada la recursividad jerárquica (Padre/Hijo), permitiendo la construcción de menús de navegación multinivel dinámicos.
+3.  **Modelos de Pedidos (`Order` & `OrderItem`):** Implementados desde cero. Estos modelos existían en base de datos pero no en código ("Modelos Fantasma"). Ahora incluyen configuración avanzada de Casting para manejar Snapshots de direcciones (JSON) y cálculos decimales precisos.
+
+#### Limpieza de Código (Clean Code)
+1.  **Saneamiento:** Eliminación de directorios duplicados y código muerto (`app/Models 2`, etc.) que generaba ruido técnico y riesgo de conflictos.
+
+### Estado Final de la Fase 2
+El backend ha evolucionado de un prototipo estructural a una **base sólida y consistente**. Los cimientos son ahora seguros y reflejan fielmente la lógica de negocio requerida para una plataforma de e-commerce escalable.
+
+## 8. Informe de Avance: Fase 3 (Módulos de Interacción y Soporte)
+**Responsable Técnico:** Miguel Sánchez Vázquez
+**Fecha:** 26 de Enero, 2026
+
+En esta fase se ha expandido la funcionalidad del backend integrando módulos esenciales para la interacción del usuario y el soporte al cliente, manteniendo la consistencia arquitectónica establecida en la fase anterior.
+
+### Logros Principales
+
+#### Sistema de Valoraciones (Social Proof)
+1.  **Modelo `Review`:** Implementación completa del modelo de reseñas.
+    *   **Identificadores Seguros:** Uso de UUIDs para prevenir enumeración.
+    *   **Integridad de Datos:** Relaciones definidas con `User` y `Product`.
+    *   **Validación de Tipos:** Casting estricto para `is_approved` (boolean) y `rating` (integer).
+
+#### Sistema de Soporte (Customer Care)
+1.  **Modelo `ChatSession`:** Estructura base para tickets o sesiones de chat.
+    *   Incluye gestión de estados (`status`) y asuntos (`subject`).
+    *   Relación directa con usuarios para historial de soporte.
+2.  **Modelo `ChatMessage`:** Unidad de comunicación dentro de las sesiones.
+    *   Optimizado con `HasUuids` y control de estado de lectura (`is_read`).
+
+#### Estandarización de Desarrollo (Developer Experience)
+1.  **Limpieza y Refactorización:** Ajuste de atributos `fillable` en los nuevos modelos para garantizar la seguridad en la asignación masiva.
+
+### Estado Final de la Fase 3
+El backend ahora soporta flujos bidireccionales de información (Usuario <-> Sistema), permitiendo no solo la transacción comercial (Pedidos), sino también la interacción social (Reseñas) y el soporte técnico (Chat). La arquitectura sigue siendo modular y preparada para la integración con el Frontend.
