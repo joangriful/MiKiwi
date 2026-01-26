@@ -97,6 +97,12 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         >
                                             Quiz
                                         </Link>
+                                        <Link
+                                            href="/configurador/munecas"
+                                            className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 font-medium"
+                                        >
+                                            Configurador 3D
+                                        </Link>
                                     </div>
                                 </div>
 
