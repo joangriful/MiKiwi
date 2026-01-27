@@ -5,6 +5,18 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+// 👇 IMPORTAMOS LOS CONTROLADORES DE LA TIENDA
+use App\Http\Controllers\ColeccionesController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CartController;
+
+/*
+|--------------------------------------------------------------------------
+| Rutas Principales
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -18,23 +30,53 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+/*
+|--------------------------------------------------------------------------
+| Tienda (Catálogo, Productos, Categorías)
+|--------------------------------------------------------------------------
+*/
+
+// Catálogo Principal (Sustituye a la ruta estática anterior)
+Route::get('/colecciones', [ColeccionesController::class, 'index'])->name('colecciones');
+
+// Ver Producto Individual (Dinámico usando Slug)
+Route::get('/producto/{product}', [ProductController::class, 'show'])->name('products.show');
+
+// Ver Categoría Específica
+Route::get('/categoria/{category}', [CategoryController::class, 'show'])->name('categories.show');
+
+/*
+|--------------------------------------------------------------------------
+| Carrito de Compras
+|--------------------------------------------------------------------------
+*/
+Route::prefix('cart')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/add', [CartController::class, 'store'])->name('cart.add');
+    Route::delete('/remove/{id}', [CartController::class, 'destroy'])->name('cart.remove');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Rutas de Usuario Autenticado
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // Perfil visual (si es diferente al de edición)
+    Route::get('/perfil', function () {
+        return Inertia::render('perfil');
+    })->name('perfil.view');
 });
 
-Route::get('/product', function () {
-    return Inertia::render('ProductPage');
-})->name('product');
-
-Route::get('/perfil', function () {
-    return Inertia::render('perfil');
-});
-
-Route::get('/colecciones', function () {
-    return Inertia::render('colecciones');
-});
+/*
+|--------------------------------------------------------------------------
+| Configurador y Herramientas
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/components-manager', function () {
     return Inertia::render('ComponentsManager');
@@ -61,5 +103,10 @@ Route::prefix('configurador')->group(function () {
         return Inertia::render('DollConfigurator');
     })->name('configurador.dolls');
 });
+
+// Ruta antigua estática (Comentada para que no interfiera, puedes borrarla si ya no usas ProductPage)
+// Route::get('/product', function () {
+//    return Inertia::render('ProductPage');
+// })->name('product');
 
 require __DIR__ . '/auth.php';
