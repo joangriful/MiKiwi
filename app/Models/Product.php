@@ -35,8 +35,15 @@ class Product extends Model
     }
 
     public function accessories() {
-        return $this->belongsToMany(Product::class, 'product_accessories', 'product_id', 'accessory_product_id');
-    }
+    return $this->belongsToMany(
+        Product::class,
+        'product_accessories',
+        'parent_product_id',
+        'accessory_product_id'
+    )
+    ->withPivot(['is_mandatory', 'group_name'])
+    ->withTimestamps();
+}
     
 }
 
