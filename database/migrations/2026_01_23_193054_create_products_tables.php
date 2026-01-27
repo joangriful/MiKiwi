@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('sku')->unique()->nullable();
             $table->text('description')->nullable();
             $table->decimal('base_price', 10, 2);
+            $table->boolean('is_active')->default(true);
             $table->integer('stock_quantity')->nullable();
             $table->enum('product_type', ['simple', 'configurable', 'component'])->default('simple');
             $table->boolean('is_adult_only')->default(true);
