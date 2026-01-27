@@ -34,16 +34,27 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function accessories() {
-    return $this->belongsToMany(
-        Product::class,
-        'product_accessories',
-        'parent_product_id',
-        'accessory_product_id'
-    )
-    ->withPivot(['is_mandatory', 'group_name'])
-    ->withTimestamps();
-}
+    public function accessories()
+    {
+        return $this->belongsToMany(
+            Product::class,
+            'product_accessories',
+            'parent_product_id',
+            'accessory_product_id'
+        )
+        ->withPivot(['is_mandatory', 'group_name'])
+        ->withTimestamps();
+    }
+
+    public function reviews()
+        {
+        return $this->hasMany(Review::class);
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
     
 }
 

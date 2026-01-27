@@ -16,7 +16,6 @@ class Category extends Model
         'is_active' => 'boolean',
     ];
 
-    
     public function scopeActive($query) {
         return $query->where('is_active', true);
     }
@@ -25,7 +24,6 @@ class Category extends Model
     {
         return $query->whereNull('parent_id');
     }
-
 
     public function products()
     {

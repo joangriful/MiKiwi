@@ -31,7 +31,7 @@ class User extends Authenticatable
 
     protected $hidden = [
         'password',
-        'remenber_token',
+        'remember_token',
     ];
 
     // Relación con direcciones (para el futuro)
@@ -41,7 +41,7 @@ class User extends Authenticatable
     }
 
     public function orders() {
-        return $this->hasMany(Orders::class);
+        return $this->hasMany(Order::class);
     }
 
     public function reviews()
