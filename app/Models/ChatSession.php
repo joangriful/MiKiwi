@@ -16,7 +16,7 @@ class ChatSession extends Model
     ];
 
     protected $casts = [
-        'status' => 'enum',
+        'status' => ChatSessionStatus::class,
     ];
 
     public function scopeActive($query)
@@ -29,11 +29,21 @@ class ChatSession extends Model
         return $query->where('status', 'closed');
     }
 
+    /**
+     * Get the messages for the chat session.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function messages()
     {
         return $this->hasMany(ChatMessage::class, 'session_id');
     }
 
+    /**
+     * Get the user that owns the chat session.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class);

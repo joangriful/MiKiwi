@@ -16,7 +16,6 @@ class ChatMessage extends Model
     ];
 
     protected $casts = [
-        // 'sender_type', => ''
         'is_read' => 'boolean',
     ];
 
@@ -25,11 +24,23 @@ class ChatMessage extends Model
         return $query->where('is_read', false);
     }
 
+    /**
+     * Scope a query to only include messages for a specific session.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $sessionId
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeBySession($query, $sessionId)
     {
         return $query->where('session_id', $sessionId);
     }
 
+    /**
+     * Get the chat session that owns the message.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function session()
     {
         return $this->belongsTo(ChatSession::class, 'session_id');

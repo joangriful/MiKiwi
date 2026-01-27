@@ -30,6 +30,11 @@ class UserAddress extends Model
         return $query->where('is_default', true);
     }
 
+    /**
+     * Get the user that owns the address.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -47,11 +47,21 @@ class Product extends Model
         return $query->where('is_adult_only', false);
     }
 
+    /**
+     * Get the category that owns the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
+    /**
+     * Get the accessories for this product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function accessories()
     {
         return $this->belongsToMany(
@@ -64,11 +74,21 @@ class Product extends Model
             ->withTimestamps();
     }
 
+    /**
+     * Get the reviews for the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
 
+    /**
+     * Get the order items for the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);

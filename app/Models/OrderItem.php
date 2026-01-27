@@ -25,10 +25,20 @@ class OrderItem extends Model
         'unit_price' => 'decimal:2',
     ];
 
+    /**
+     * Get the order that owns the order item.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function order() {
         return $this->belongsTo(Order::class);
     }
 
+    /**
+     * Get the product associated with the order item.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function product() {
         return $this->belongsTo(Product::class);
     }

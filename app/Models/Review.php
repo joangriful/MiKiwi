@@ -18,6 +18,7 @@ class Review extends Model
 
     protected $casts = [
         'rating' => 'integer',
+        'is_approved' => 'boolean',
     ];
 
     public function scopeApproved($query)
@@ -30,11 +31,21 @@ class Review extends Model
         return $query->where('is_approved', false);
     }
 
+    /**
+     * Get the user that wrote the review.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Get the product that was reviewed.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function product()
     {
         return $this->belongsTo(Product::class);
