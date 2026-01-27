@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
-    use HasFactory, HasUuids;
-
+    use HasFactory, HasUuids, SoftDeletes;
 
     protected $fillable = [
         'order_number',
@@ -29,12 +29,23 @@ class Order extends Model
         'created_at' => 'datetime',
     ];
 
-    public function user() {
+    public function scopeStatus($query, $status)
+    {
+        return $query->where('status', $status);
+    }
+
+    public function scopePaid($query)
+    {
+        return $query->where('payment_status', 'paid');
+    }
+
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function items() {
+    public function items()
+    {
         return $this->hasMany(OrderItem::class);
     }
-
 }

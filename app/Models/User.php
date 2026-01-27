@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids; // <--- LA CLAVE
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasUuids; // <--- Activa la generación de IDs
+    use HasFactory, Notifiable, HasUuids;
 
     protected $fillable = [
         'name',
@@ -28,9 +28,29 @@ class User extends Authenticatable
         'is_active' => 'boolean',
     ];
 
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
     // Relación con direcciones (para el futuro)
     public function addresses()
     {
         return $this->hasMany(UserAddress::class);
+    }
+
+    public function orders() {
+        return $this->hasMany(Order::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function chatSessions()
+    {
+        return $this->hasMany(ChatSession::class);
     }
 }
