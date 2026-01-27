@@ -1,33 +1,30 @@
-:root {
-  /* Brand Colors */
-  --color-primary: #99b849;
-  --color-primary-dark: #7a943a;
-  --color-secondary: #f8b7ea;
-  --color-secondary-dark: #d697c8;
+  :root {
+    /* Brand Colors */
+    --color-primary: #99b849;
+    --color-primary-dark: #7a943a;
+    --color-secondary: #f8b7ea;
+    --color-secondary-dark: #d697c8;
 
-  /* Light Mode (Base) */
-  --bg-main: #f8f5f0;
-  --bg-surface: #ffffff;
-  --text-main: #222b24;
-  --text-muted: #66672a;
-  --border: #e2e0db;
-  
-  /* Shadows */
-  --shadow-sm: 0 2px 4px rgba(34, 43, 36, 0.05);
-  --shadow-md: 0 4px 12px rgba(34, 43, 36, 0.08);
-  --shadow-lg: 0 10px 25px rgba(34, 43, 36, 0.12);
-}
+    /* Light Mode (Base) */
+    --bg-main: #f8f5f0;
+    --bg-surface: #ffffff;
+    --text-main: #222b24;
+    --text-muted: #66672a;
+    --border: #e2e0db;
 
-/* Dark Mode */
-[data-theme="dark"] {
-  --bg-main: #222b24;       /* El color oscuro de tu imagen */
-  --bg-surface: #2d3830;    /* Un tono ligeramente más claro para elevación */
-  --text-main: #f8f5f0;     /* El color crema de tu imagen para texto */
-  --text-muted: #99b849;    /* Verde lima para textos secundarios */
-  --border: #424d44;
-  
-  /* Sombras más densas y oscuras para modo oscuro */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.5);
-}
+    /* Shadows */
+    --shadow-sm: 0 2px 4px rgba(34, 43, 36, 0.05);
+    --shadow-md: 0 4px 12px rgba(34, 43, 36, 0.08);
+  }
+
+  /* Dark Mode - Usamos la clase .dark para que coincida con tu React */
+  .dark {
+    --bg-main: #222b24;
+    --bg-surface: #2d3830;
+    --text-main: #f8f5f0;
+    --text-muted: #99b849;
+    --border: #424d44;
+
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.4);
+  }

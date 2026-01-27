@@ -1,3 +1,7 @@
+@import './colores.css';
+@import './typography.css';
+@import './configurador.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
