@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Review extends Model
@@ -13,14 +13,22 @@ class Review extends Model
     protected $fillable = [
         'product_id',
         'rating',
-        'comment'
-        // 'is_approved'removed for security
+        'comment',
     ];
 
     protected $casts = [
-        'is_approved' => 'boolean',
-        'rating' => 'integer'
+        'rating' => 'integer',
     ];
+
+    public function scopeApproved($query)
+    {
+        return $query->where('is_approved', true);
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('is_approved', false);
+    }
 
     public function user()
     {
