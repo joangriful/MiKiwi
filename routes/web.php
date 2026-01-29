@@ -60,6 +60,10 @@ Route::prefix('configurador')->group(function () {
     Route::get('/munecas', function () {
         return Inertia::render('DollConfigurator');
     })->name('configurador.dolls');
+
+    Route::get('/mannequin', function () {
+        return Inertia::render('Configurador/MannequinConfigurator');
+    })->name('configurador.mannequin');
 });
 
 require __DIR__ . '/auth.php';
