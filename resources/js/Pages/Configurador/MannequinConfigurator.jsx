@@ -1,6 +1,6 @@
 import React, { useState, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Environment, ContactShadows } from '@react-three/drei';
+import { OrbitControls, PerspectiveCamera, Environment, ContactShadows, useFBX } from '@react-three/drei';
 import { Head } from '@inertiajs/react';
 import ConfiguradorLayout from '@/Layouts/ConfiguradorLayout';
 import MannequinModel from '@/Components/Configurador/MannequinModel';
@@ -9,14 +9,41 @@ import ModelErrorBoundary from '@/Components/Configurador/ModelErrorBoundary';
 const availableModels = [
     {
         id: 'naked_queen',
-        name: 'Naked Queen',
+        name: 'Queen',
         path: '/models/naked-queen/source/NakedQueen.fbx',
         texturePath: '/models/naked-queen/textures/NakedQueen.jpeg',
         thumbnail: null
     },
-    { id: 'chloe_toy_3', name: 'Chloe', path: '/models/chloe_toy_3.glb', thumbnail: null },
-    { id: 'witch_naked', name: 'Witch', path: '/models/witch_naked.glb', thumbnail: null },
+
+    {
+        id: 'naked_woman_standing',
+        name: 'Standing',
+        path: '/models/naked-woman-standing/source/Nake-Sum_Wom_RtStand_875.fbx',
+        texturePath: '/models/naked-woman-standing/textures/Nake-Sum_Wom_RtStand_diffuse_875.png',
+        thumbnail: null
+    },
+    {
+        id: 'naked_woman_walk',
+        name: 'Walking',
+        path: '/models/naked-woman-walk/source/Nake-Sum_Wom_RtWalk_854.fbx',
+        texturePath: '/models/naked-woman-walk/textures/Nake-Sum_Wom_RtWalk_diffuse_854.png',
+        thumbnail: null
+    },
+    {
+        id: 'witch_naked',
+        name: 'Witch',
+        path: '/models/witch-naked/source/Yennefer_Naked_med.fbx',
+        texturePath: '/models/witch-naked/textures/Yennefer_Naked_med.jpeg',
+        thumbnail: null
+    },
 ];
+
+// Preload FBX models for faster switching
+availableModels.forEach(model => {
+    if (model.path.endsWith('.fbx')) {
+        useFBX.preload(model.path);
+    }
+});
 
 const hairStyles = [
     { id: 'bald', name: 'Sin Pelo' },

@@ -89,10 +89,49 @@ export default function MannequinModel({
     // Bone References
     const bones = useRef({});
 
+    // Apply Transformations & Map Bones
     useEffect(() => {
         if (!scene) return;
 
+        // 1. Calculate and Normalize Height
+        const box = new THREE.Box3().setFromObject(scene);
+        const height = box.max.y - box.min.y;
+        const desiredHeight = 1.75; // Standard mannequin height
+        // Only scale if height is significantly off standard (e.g. centimeters vs meters)
+        // If height is > 100, it's probably cm. If < 5, meters.
+        let scaleFactor = 1;
+        if (height > 50) {
+            scaleFactor = desiredHeight / height;
+        } else if (height < 2) {
+            // Already meters likely, but normalize anyway?
+            // Maybe better to just rely on visual parity.
+        }
+        // Actually, user wants "same height". So forcing to constant is good.
+        // We apply this scale key to the ROOT scene.
+        scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+
         scene.traverse((object) => {
+            // 2. Hide Floor Artifacts (Walking Model)
+            if (object.isMesh && modelPath.includes('walk')) {
+                // Heuristic: The floor is a large plane.
+                if (object.geometry) {
+                    object.geometry.computeBoundingBox();
+                    const box = object.geometry.boundingBox;
+                    if (box) {
+                        const width = box.max.x - box.min.x;
+                        const depth = box.max.z - box.min.z;
+                        const height = box.max.y - box.min.y;
+
+                        // If it's vastly wider than it is tall, and located near 0
+                        // The floor in image is huge.
+                        if ((width > 2 || depth > 2) && height < 0.2) {
+                            object.visible = false;
+                        }
+                    }
+                }
+            }
+
             if (object.isBone) {
                 const name = object.name.toLowerCase();
                 // Standard Mixamo/General bone mapping
@@ -120,11 +159,6 @@ export default function MannequinModel({
                 // Else if model has a specific texture defined (auto-texture)
                 else if (texturePath) {
                     object.material.map = autoTexture;
-                    // Ensure color doesn't tint it weirdly, unless 'color' state is meant to tint the skin
-                    // The user asked for "Included texture", so we likely want the texture AS IS.
-                    // But we also have a "Skin Color" picker. 
-                    // usually if a texture is provided, we might want to multiply the color OR ignore it.
-                    // Let's assume for now the texture provides the base look.
                     object.material.color = new THREE.Color(1, 1, 1);
                     object.material.needsUpdate = true;
                 }
@@ -136,7 +170,7 @@ export default function MannequinModel({
                 }
             }
         });
-    }, [scene, color, customTexture, userTexture, texturePath, autoTexture]);
+    }, [scene, color, customTexture, userTexture, texturePath, autoTexture, modelPath]);
 
     // Apply Transformations
     useFrame(() => {
@@ -191,10 +225,11 @@ export default function MannequinModel({
                 <primitive
                     object={scene}
                     dispose={null}
+                    // Scale handled by useEffect for normalization
                     scale={[
-                        0.012, // FBX is often 100x larger (cm vs m), scaling down. Adjust if needed.
-                        0.012 * (1 + (bodyParams.height * 0.2)),
-                        0.012
+                        1 + (bodyParams.height * 0.2),
+                        1 + (bodyParams.height * 0.2),
+                        1 + (bodyParams.height * 0.2)
                     ]}
                 />
 
