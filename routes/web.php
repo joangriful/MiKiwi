@@ -136,6 +136,10 @@ Route::prefix('configurador')->group(function () {
     Route::get('/munecas', function () {
         return Inertia::render('DollConfigurator');
     })->name('configurador.dolls');
+
+    Route::get('/mannequin', function () {
+        return Inertia::render('Configurador/MannequinConfigurator');
+    })->name('configurador.mannequin');
 });
 
 // Ruta antigua estática (Comentada para que no interfiera, puedes borrarla si ya no usas ProductPage)
