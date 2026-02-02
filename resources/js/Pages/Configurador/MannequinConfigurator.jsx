@@ -12,7 +12,8 @@ const availableModels = [
         name: 'Queen',
         path: '/models/naked-queen/source/NakedQueen.fbx',
         texturePath: '/models/naked-queen/textures/NakedQueen.jpeg',
-        thumbnail: null
+        thumbnail: null,
+        rotationY: 0
     },
 
     {
@@ -20,21 +21,26 @@ const availableModels = [
         name: 'Standing',
         path: '/models/naked-woman-standing/source/Nake-Sum_Wom_RtStand_875.fbx',
         texturePath: '/models/naked-woman-standing/textures/Nake-Sum_Wom_RtStand_diffuse_875.png',
-        thumbnail: null
+        normalPath: '/models/naked-woman-standing/textures/Nake-Sum_Wom_RtStand_normal_875.png',
+        thumbnail: null,
+        rotationY: Math.PI // Flip 180 degrees
     },
     {
         id: 'naked_woman_walk',
         name: 'Walking',
         path: '/models/naked-woman-walk/source/Nake-Sum_Wom_RtWalk_854.fbx',
         texturePath: '/models/naked-woman-walk/textures/Nake-Sum_Wom_RtWalk_diffuse_854.png',
-        thumbnail: null
+        normalPath: '/models/naked-woman-walk/textures/Nake-Sum_Wom_RtWalk_normal_854.png',
+        thumbnail: null,
+        rotationY: 0
     },
     {
         id: 'witch_naked',
         name: 'Witch',
         path: '/models/witch-naked/source/Yennefer_Naked_med.fbx',
         texturePath: '/models/witch-naked/textures/Yennefer_Naked_med.jpeg',
-        thumbnail: null
+        thumbnail: null,
+        rotationY: 0
     },
 ];
 
@@ -61,37 +67,52 @@ const hairColors = [
     { id: '#ea80fc', name: 'Fantasía' },
 ];
 
-function Scene({ customTexture, color, bodyParams, hairParams, modelPath, texturePath }) {
+function Scene({ customTexture, color, bodyParams, hairParams, modelPath, texturePath, normalPath, modelId, rotationY }) {
     return (
         <>
-            <PerspectiveCamera makeDefault position={[0, 1, 3.5]} fov={50} />
+            <PerspectiveCamera makeDefault position={[0, 1.5, 4]} fov={50} />
             <OrbitControls
-                minDistance={1.5}
-                maxDistance={6}
+                minDistance={1}
+                maxDistance={10}
                 minPolarAngle={0}
-                maxPolarAngle={Math.PI / 1.8}
+                maxPolarAngle={Math.PI / 1.7}
                 enableDamping
                 target={[0, 1, 0]}
             />
 
-            <ambientLight intensity={0.6} />
-            <directionalLight position={[5, 5, 5]} intensity={1.0} castShadow />
-            <directionalLight position={[-5, 3, -5]} intensity={0.4} />
+            <ambientLight intensity={0.7} />
+            <directionalLight position={[5, 10, 5]} intensity={1.2} castShadow />
+            <directionalLight position={[-5, 5, -5]} intensity={0.5} />
 
             <Environment preset="studio" />
+
+            {/* Visual Helpers requested by USER */}
+            <gridHelper args={[10, 10, '#888888', '#cccccc']} />
+            <axesHelper args={[5]} />
 
             <group position={[0, 0, 0]}>
                 <ModelErrorBoundary key={modelPath}>
                     <MannequinModel
                         modelPath={modelPath}
                         texturePath={texturePath}
+                        normalPath={normalPath}
+                        modelId={modelId}
                         customTexture={customTexture}
                         color={color}
                         bodyParams={bodyParams}
                         hairParams={hairParams}
+                        rotationY={rotationY}
                     />
                 </ModelErrorBoundary>
-                <ContactShadows resolution={1024} scale={10} blur={1} opacity={0.4} far={10} color="#000000" />
+                <ContactShadows
+                    resolution={1024}
+                    scale={10}
+                    blur={2}
+                    opacity={0.4}
+                    far={10}
+                    color="#000000"
+                    position={[0, 0.01, 0]}
+                />
             </group>
         </>
     );
@@ -154,6 +175,9 @@ export default function MannequinConfigurator() {
                             <Scene
                                 modelPath={selectedModel.path}
                                 texturePath={selectedModel.texturePath}
+                                normalPath={selectedModel.normalPath}
+                                modelId={selectedModel.id}
+                                rotationY={selectedModel.rotationY || 0}
                                 customTexture={customTexture}
                                 color={color}
                                 bodyParams={bodyParams}
@@ -358,37 +382,6 @@ export default function MannequinConfigurator() {
                                     </div>
                                 </div>
 
-                                {/* 3. Texture & Model */}
-                                <div>
-                                    <h3 className="flex items-center text-sm font-bold text-gray-900 uppercase tracking-wider mb-4 border-b pb-2">
-                                        <span className="bg-emerald-100 text-emerald-600 p-1 rounded mr-2">3</span>
-                                        Material
-                                    </h3>
-
-                                    {/* Texture Upload */}
-                                    <div className="mb-4">
-                                        <label className="block text-xs font-semibold text-gray-600 mb-2">
-                                            Textura Personalizada
-                                        </label>
-                                        <label className="flex items-center justify-center w-full h-24 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-colors bg-white">
-                                            <div className="text-center">
-                                                <p className="text-xs text-gray-500">Subir Imagen</p>
-                                            </div>
-                                            <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
-                                        </label>
-                                        {customTexture && (
-                                            <div className="mt-2 flex items-center justify-between bg-gray-100 p-2 rounded">
-                                                <span className="text-xs text-gray-600">Textura activa</span>
-                                                <button
-                                                    onClick={() => setCustomTexture(null)}
-                                                    className="text-xs text-red-500 hover:underline"
-                                                >
-                                                    Eliminar
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
 
                             </div>
                         )}

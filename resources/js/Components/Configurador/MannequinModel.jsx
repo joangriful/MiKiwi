@@ -1,52 +1,54 @@
-import React, { useRef, useEffect, useMemo } from 'react';
-import { useGLTF, useTexture, Center, useFBX } from '@react-three/drei';
-import { useGraph, useFrame } from '@react-three/fiber';
+import React, { useRef, useEffect, useMemo, useState } from 'react';
+import { useTexture } from '@react-three/drei';
+import { useFrame, useLoader } from '@react-three/fiber';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as THREE from 'three';
 
-// Procedural Hair Component
+// Procedural Hair Component (Stable)
 const Hair = ({ style, color }) => {
     const material = useMemo(() => new THREE.MeshStandardMaterial({
-        color: color,
-        roughness: 0.5,
+        color: color || '#000000',
+        roughness: 0.8,
         metalness: 0.1
     }), [color]);
 
     if (style === 'bald') return null;
 
+    // Standard head height for our 1.75m model is approx 1.62-1.65
     return (
-        <group position={[0, 1.75, 0]}>
+        <group position={[0, 1.63, -0.01]}>
             {style === 'short' && (
-                <mesh material={material} position={[0, 0, -0.02]}>
-                    <sphereGeometry args={[0.16, 32, 32, 0, Math.PI * 2, 0, Math.PI * 0.5]} />
+                <mesh material={material}>
+                    <sphereGeometry args={[0.11, 32, 32, 0, Math.PI * 2, 0, Math.PI * 0.5]} />
                 </mesh>
             )}
             {style === 'medium' && (
                 <group>
-                    <mesh material={material} position={[0, 0, -0.02]}>
-                        <sphereGeometry args={[0.17, 32, 32, 0, Math.PI * 2, 0, Math.PI * 0.6]} />
+                    <mesh material={material}>
+                        <sphereGeometry args={[0.12, 32, 32, 0, Math.PI * 2, 0, Math.PI * 0.6]} />
                     </mesh>
-                    <mesh material={material} position={[0, -0.15, -0.1]}>
-                        <cylinderGeometry args={[0.17, 0.2, 0.3, 32, 1, true]} />
+                    <mesh material={material} position={[0, -0.1, -0.04]}>
+                        <cylinderGeometry args={[0.12, 0.14, 0.2, 32, 1, true]} />
                     </mesh>
                 </group>
             )}
             {style === 'long' && (
                 <group>
-                    <mesh material={material} position={[0, 0, -0.02]}>
-                        <sphereGeometry args={[0.17, 32, 32, 0, Math.PI * 2, 0, Math.PI * 0.6]} />
+                    <mesh material={material}>
+                        <sphereGeometry args={[0.12, 32, 32, 0, Math.PI * 2, 0, Math.PI * 0.6]} />
                     </mesh>
-                    <mesh material={material} position={[0, -0.3, -0.1]}>
-                        <cylinderGeometry args={[0.17, 0.25, 0.8, 32, 1, true]} />
+                    <mesh material={material} position={[0, -0.25, -0.04]}>
+                        <cylinderGeometry args={[0.12, 0.16, 0.5, 32, 1, true]} />
                     </mesh>
                 </group>
             )}
             {style === 'updo' && (
                 <group>
-                    <mesh material={material} position={[0, 0, -0.02]}>
-                        <sphereGeometry args={[0.16, 32, 32, 0, Math.PI * 2, 0, Math.PI * 0.55]} />
+                    <mesh material={material}>
+                        <sphereGeometry args={[0.11, 32, 32, 0, Math.PI * 2, 0, Math.PI * 0.55]} />
                     </mesh>
-                    <mesh material={material} position={[0, 0.15, -0.1]}>
-                        <sphereGeometry args={[0.12, 32, 32]} />
+                    <mesh material={material} position={[0, 0.1, -0.04]}>
+                        <sphereGeometry args={[0.08, 32, 32]} />
                     </mesh>
                 </group>
             )}
@@ -56,192 +58,178 @@ const Hair = ({ style, color }) => {
 
 export default function MannequinModel({
     modelPath,
-    texturePath, // New prop for auto-texture
+    texturePath,
+    normalPath,
+    modelId,
     customTexture,
     color,
-    bodyParams,
-    hairParams
+    bodyParams = {},
+    hairParams = {},
+    rotationY = 0
 }) {
-    // Determine file type
-    const isFBX = modelPath && modelPath.toLowerCase().endsWith('.fbx');
+    // 1. Load Model (Using useLoader for better resource control)
+    const fbx = useLoader(FBXLoader, modelPath, (loader) => {
+        loader.setResourcePath('');
+    });
 
-    // Load Model (FBX or GLB)
-    let scene;
-    if (isFBX) {
-        scene = useFBX(modelPath);
-    } else {
-        const gltf = useGLTF(modelPath || '/models/mannequin.glb');
-        scene = gltf.scene;
-    }
+    // 2. Load Textures
+    const emptyPix = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+    const autoTexture = useTexture(texturePath || emptyPix);
+    const normalTexture = useTexture(normalPath || emptyPix);
+    const userTexture = useTexture(customTexture || emptyPix);
 
-    // Auto-load texture if provided
-    const autoTexture = useTexture(texturePath || '/images/mannequin_ref.png'); // Fallback to something if missing, but should be provided
-    if (texturePath) {
-        autoTexture.flipY = true; // FBX textures often need flipY
-        autoTexture.encoding = THREE.sRGBEncoding;
-    }
-
-    // Custom User Texture (overrides auto)
-    const emptyTexture = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
-    const userTexture = useTexture(customTexture || emptyTexture);
-    userTexture.flipY = false;
-
-    // Bone References
-    const bones = useRef({});
-
-    // Apply Transformations & Map Bones
     useEffect(() => {
-        if (!scene) return;
-
-        // 1. Calculate and Normalize Height
-        const box = new THREE.Box3().setFromObject(scene);
-        const height = box.max.y - box.min.y;
-        const desiredHeight = 1.75; // Standard mannequin height
-        // Only scale if height is significantly off standard (e.g. centimeters vs meters)
-        // If height is > 100, it's probably cm. If < 5, meters.
-        let scaleFactor = 1;
-        if (height > 50) {
-            scaleFactor = desiredHeight / height;
-        } else if (height < 2) {
-            // Already meters likely, but normalize anyway?
-            // Maybe better to just rely on visual parity.
-        }
-        // Actually, user wants "same height". So forcing to constant is good.
-        // We apply this scale key to the ROOT scene.
-        scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
-
-
-        scene.traverse((object) => {
-            // 2. Hide Floor Artifacts (Walking Model)
-            if (object.isMesh && modelPath.includes('walk')) {
-                // Heuristic: The floor is a large plane.
-                if (object.geometry) {
-                    object.geometry.computeBoundingBox();
-                    const box = object.geometry.boundingBox;
-                    if (box) {
-                        const width = box.max.x - box.min.x;
-                        const depth = box.max.z - box.min.z;
-                        const height = box.max.y - box.min.y;
-
-                        // If it's vastly wider than it is tall, and located near 0
-                        // The floor in image is huge.
-                        if ((width > 2 || depth > 2) && height < 0.2) {
-                            object.visible = false;
-                        }
-                    }
+        [autoTexture, normalTexture, userTexture].forEach(t => {
+            if (t && t.image) {
+                t.flipY = true;
+                if (t === normalTexture) {
+                    t.colorSpace = THREE.NoColorSpace;
+                } else {
+                    t.colorSpace = THREE.SRGBColorSpace;
                 }
-            }
-
-            if (object.isBone) {
-                const name = object.name.toLowerCase();
-                // Standard Mixamo/General bone mapping
-                if (name.includes('hip') || name.includes('root') || name === 'mixamorig_hips') bones.current.hips = object;
-                if ((name.includes('spine') && !name.includes('1') && !name.includes('2')) || name === 'mixamorig_spine') bones.current.spine = object;
-                if (name.includes('chest') || name.includes('spine2') || name === 'mixamorig_spine2') bones.current.chest = object;
-                if (name.includes('neck') || name === 'mixamorig_neck') bones.current.neck = object;
-                if (name.includes('head') || name === 'mixamorig_head') bones.current.head = object;
-
-                if ((name.includes('leg') && name.includes('up') && name.includes('l')) || name === 'mixamorig_leftupleg') bones.current.legL = object;
-                if ((name.includes('leg') && name.includes('up') && name.includes('r')) || name === 'mixamorig_rightupleg') bones.current.legR = object;
-
-                if ((name.includes('shoulder') && name.includes('l')) || name === 'mixamorig_leftshoulder') bones.current.shoulderL = object;
-                if ((name.includes('shoulder') && name.includes('r')) || name === 'mixamorig_rightshoulder') bones.current.shoulderR = object;
-            }
-
-            // Apply textures/colors
-            if (object.isMesh) {
-                // If custom texture is uploaded by user, use it
-                if (customTexture) {
-                    object.material.map = userTexture;
-                    object.material.color = new THREE.Color(0xffffff); // Reset color to white so texture shows
-                    object.material.needsUpdate = true;
-                }
-                // Else if model has a specific texture defined (auto-texture)
-                else if (texturePath) {
-                    object.material.map = autoTexture;
-                    object.material.color = new THREE.Color(1, 1, 1);
-                    object.material.needsUpdate = true;
-                }
-                // Fallback: Color picker
-                else {
-                    object.material.color = new THREE.Color(color);
-                    object.material.map = null;
-                    object.material.needsUpdate = true;
-                }
+                t.needsUpdate = true;
             }
         });
-    }, [scene, color, customTexture, userTexture, texturePath, autoTexture, modelPath]);
+    }, [autoTexture, normalTexture, userTexture]);
 
-    // Apply Transformations
+    // 3. State & Refs
+    const bones = useRef({});
+    const [normScale, setNormScale] = useState(1);
+    const [offset, setOffset] = useState(new THREE.Vector3(0, 0, 0));
+
+    // 4. Setup Model Geometry & Materials
+    useEffect(() => {
+        if (!fbx) return;
+
+        console.log("Patch 9: Skin & Stability:", modelId);
+
+        // A. Reset & Rotate first
+        fbx.scale.set(1, 1, 1);
+        fbx.position.set(0, 0, 0);
+        fbx.rotation.set(0, rotationY, 0);
+        fbx.updateMatrixWorld(true);
+
+        // B. Measure rotated geometry for precise centering
+        const box = new THREE.Box3().setFromObject(fbx);
+        const center = new THREE.Vector3();
+        box.getCenter(center);
+
+        const h = box.max.y - box.min.y;
+        if (h > 0.1) {
+            setNormScale(1.75 / h);
+            setOffset(new THREE.Vector3(-center.x, -box.min.y, -center.z));
+            console.log(`Final Normalization ${modelId}: h=${h.toFixed(2)}, factor=${(1.75 / h).toFixed(4)}`);
+        }
+
+        // C. Clean up meshes and materials
+        fbx.traverse(obj => {
+            obj.frustumCulled = false;
+            if (obj.isMesh) {
+                obj.visible = true;
+                // Standardize materials
+                const replaceMat = (m) => {
+                    const n = new THREE.MeshStandardMaterial({
+                        side: THREE.DoubleSide,
+                        roughness: 0.6, // Slightly lower for skin look
+                        metalness: 0.05
+                    });
+                    if (m && m.color) n.color.copy(m.color);
+                    return n;
+                };
+
+                if (Array.isArray(obj.material)) {
+                    obj.material = obj.material.map(m => replaceMat(m));
+                } else {
+                    obj.material = replaceMat(obj.material);
+                }
+
+                // Hide artifacts
+                const name = obj.name.toLowerCase();
+                if (name.includes('plane') || name.includes('floor') || name.includes('ground') || name.includes('shadow')) {
+                    obj.visible = false;
+                }
+            }
+
+            if (obj.isBone) {
+                const name = obj.name.toLowerCase();
+                if (name.includes('hip') || name.includes('root') || name === 'mixamorig_hips') bones.current.hips = obj;
+                if ((name.includes('spine') && !name.includes('1') && !name.includes('2')) || name === 'mixamorig_spine') bones.current.spine = obj;
+                if (name.includes('chest') || name.includes('spine2') || name === 'mixamorig_spine2') bones.current.chest = obj;
+                if (name.includes('neck') || name === 'mixamorig_neck') bones.current.neck = obj;
+                if (name.includes('head') || name === 'mixamorig_head') bones.current.head = obj;
+                if ((name.includes('leg') && name.includes('up') && name.includes('l')) || name === 'mixamorig_leftupleg') bones.current.legL = obj;
+                if ((name.includes('leg') && name.includes('up') && name.includes('r')) || name === 'mixamorig_rightupleg') bones.current.legR = obj;
+                if ((name.includes('shoulder') && name.includes('l')) || name === 'mixamorig_leftshoulder') bones.current.shoulderL = obj;
+                if ((name.includes('shoulder') && name.includes('r')) || name === 'mixamorig_rightshoulder') bones.current.shoulderR = obj;
+            }
+        });
+    }, [fbx, modelId, rotationY]);
+
+    // 5. Apply Textures & Colors Reactively (SKIN FIX)
+    useEffect(() => {
+        if (!fbx) return;
+        fbx.traverse(obj => {
+            if (obj.isMesh && obj.material) {
+                const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+                mats.forEach(m => {
+                    if (customTexture) {
+                        m.map = userTexture;
+                        m.color.set('#ffffff');
+                        m.normalMap = null; // Ensure normal map is cleared if custom texture is used without a normal map
+                    } else if (texturePath && autoTexture && autoTexture.image) {
+                        m.map = autoTexture;
+                        m.color.set('#ffffff');
+                        if (normalPath && normalTexture && normalTexture.image) {
+                            m.normalMap = normalTexture;
+                            m.normalScale.set(1, 1);
+                        } else {
+                            m.normalMap = null;
+                        }
+                    } else {
+                        m.color.set(color);
+                        m.map = null;
+                        m.normalMap = null;
+                    }
+                    m.needsUpdate = true;
+                });
+            }
+        });
+    }, [fbx, color, customTexture, userTexture, texturePath, autoTexture, normalPath, normalTexture]);
+
+    // 6. Body Shape Animations
     useFrame(() => {
-        if (!scene) return;
-
-        // Reset logic if needed, but for now we apply scale relative to base
-
-        // Hips (Width)
-        if (bones.current.hips) {
-            // Hips often scale the whole lower body if we aren't careful, but scaling children helps
-            // For simple width:
-            const width = 1 + (bodyParams.hips * 0.4);
-            bones.current.hips.scale.set(width, 1, width);
-        }
-
-        // Chest/Bust
-        if (bones.current.chest) {
-            const scale = 1 + (bodyParams.bust * 0.5);
-            bones.current.chest.scale.set(scale, 1, scale * 1.2);
-        }
-
-        // Waist (Spine)
-        if (bones.current.spine) {
-            const width = 1 + (bodyParams.waist * 0.4);
-            bones.current.spine.scale.set(width, 1, width);
-        }
-
-        // Head
+        if (!fbx) return;
+        const bp = bodyParams;
+        if (bones.current.hips) bones.current.hips.scale.set(1 + (bp.hips - 0.5) * 0.8, 1, 1 + (bp.hips - 0.5) * 0.8);
+        if (bones.current.chest) bones.current.chest.scale.set(1 + (bp.bust - 0.5) * 1, 1, 1 + (bp.bust - 0.5) * 1);
+        if (bones.current.spine) bones.current.spine.scale.set(1 + (bp.waist - 0.5) * 0.8, 1, 1 + (bp.waist - 0.5) * 0.8);
         if (bones.current.head) {
-            const size = 1 + (bodyParams.head * 0.5 - 0.25);
-            bones.current.head.scale.set(size, size, size);
+            const s = 1 + (bp.head - 0.5) * 0.5;
+            bones.current.head.scale.set(s, s, s);
         }
-
-        // Legs (Length)
         if (bones.current.legL && bones.current.legR) {
-            const len = 1 + (bodyParams.legs * 0.3);
-            bones.current.legL.scale.y = len;
-            bones.current.legR.scale.y = len;
+            const l = 1 + (bp.legs - 0.5) * 0.6;
+            bones.current.legL.scale.y = l;
+            bones.current.legR.scale.y = l;
         }
-
-        // Shoulders
         if (bones.current.shoulderL && bones.current.shoulderR) {
-            const width = 1 + (bodyParams.shoulders * 0.3);
-            bones.current.shoulderL.scale.x = width;
-            bones.current.shoulderR.scale.x = width;
+            const w = 1 + (bp.shoulders - 0.5) * 0.6;
+            bones.current.shoulderL.scale.x = w;
+            bones.current.shoulderR.scale.x = w;
         }
     });
 
-    return (
-        <Center top>
-            <group>
-                <primitive
-                    object={scene}
-                    dispose={null}
-                    // Scale handled by useEffect for normalization
-                    scale={[
-                        1 + (bodyParams.height * 0.2),
-                        1 + (bodyParams.height * 0.2),
-                        1 + (bodyParams.height * 0.2)
-                    ]}
-                />
+    const scaledHeight = 1 + (bodyParams.height - 0.5) * 0.4;
+    const finalScaleX = normScale;
+    const finalScaleY = normScale * scaledHeight;
+    const finalScaleZ = normScale;
 
-                {/* Hair */}
-                {hairParams.style !== 'bald' && (
-                    <group position={[0, 1.7, 0]} scale={[1, 1 + (bodyParams.height * 0.2), 1]}>
-                        <Hair style={hairParams.style} color={hairParams.color} />
-                    </group>
-                )}
-            </group>
-        </Center>
+    return (
+        <group scale={[finalScaleX, finalScaleY, finalScaleZ]}>
+            <primitive object={fbx} position={offset} dispose={null} />
+            {hairParams.style !== 'bald' && (
+                <Hair style={hairParams.style} color={hairParams.color} />
+            )}
+        </group>
     );
 }
-
-useGLTF.preload('/models/mannequin_ref.glb');
