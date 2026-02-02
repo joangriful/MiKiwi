@@ -10,6 +10,8 @@ use App\Http\Controllers\ColeccionesController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserAddressController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +60,30 @@ Route::prefix('cart')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
+| Pedidos / Checkout
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->group(function () {
+
+    // Resumen antes de pagar
+    Route::get('/checkout', [OrderController::class, 'create'])
+        ->name('orders.create');
+
+    // Procesar compra
+    Route::post('/checkout', [OrderController::class, 'store'])
+        ->name('orders.store');
+
+    // Página de éxito
+    Route::get('/orders/success', [OrderController::class, 'success'])
+        ->name('orders.success');
+
+    // Historial de pedidos del usuario
+    Route::get('/orders', [OrderController::class, 'index'])
+        ->name('orders.index');
+});
+
+/*
+|--------------------------------------------------------------------------
 | Rutas de Usuario Autenticado
 |--------------------------------------------------------------------------
 */
@@ -65,11 +91,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     // Perfil visual (si es diferente al de edición)
     Route::get('/perfil', function () {
         return Inertia::render('perfil');
     })->name('perfil.view');
+
+    // 📍 Gestión de Direcciones del Usuario
+    Route::prefix('addresses')->name('addresses.')->group(function () {
+        Route::get('/', [UserAddressController::class, 'index'])->name('index');
+        Route::post('/', [UserAddressController::class, 'store'])->name('store');
+        Route::put('/{address}', [UserAddressController::class, 'update'])->name('update');
+        Route::delete('/{address}', [UserAddressController::class, 'destroy'])->name('destroy');
+    });
 });
 
 /*
