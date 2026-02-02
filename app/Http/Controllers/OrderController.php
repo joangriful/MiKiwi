@@ -5,29 +5,35 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 
+
 class OrderController extends Controller
 {
+    protected $cartService;
+
+    public function __construct(CartService $cartService)
+    {
+        $this->cartService = $cartService;
+    }
+
     // Muestra el resumen antes de pagar
     public function create()
     {
-        $cart = session()->get('cart', []);
+        $cartData = $this->cartService->getCart();
         
-        if (empty($cart)) {
+        if ($cartData['item_count'] === 0) {
             return redirect()->route('colecciones');
         }
 
-        // Calculamos total
-        $total = array_reduce($cart, fn($carry, $item) => $carry + ($item['price'] * $item['quantity']), 0);
-
         return Inertia::render('Checkout/Create', [
-            'cart' => $cart,
-            'total' => $total,
+            'cart' => $cartData['items'],
+            'total' => $cartData['total'],
             'user' => Auth::user(),
         ]);
     }
@@ -44,28 +50,28 @@ class OrderController extends Controller
             'payment_method' => 'required|string',
         ]);
 
-        $cart = session()->get('cart', []);
+        $cartValidation = $this->cartService->validateCartStock();
 
-        if (empty($cart)) {
+        if (!$cartValidation['valid']) {
+            return back()->with('error', implode(' ', $cartValidation['errors']));
+        }
+
+        $cartData = $this->cartService->getCart();
+
+        if ($cartData['item_count'] === 0) {
             return back()->with('error', 'El carrito está vacío.');
         }
 
         try {
-            DB::transaction(function () use ($request, $cart) {
+            DB::transaction(function () use ($request, $cartData) {
                 
-                // Recalcular total por seguridad
-                $totalAmount = 0;
-                foreach ($cart as $item) {
-                    $totalAmount += $item['price'] * $item['quantity'];
-                }
-
                 // A. Crear la Orden (Usando los campos de Miguel)
                 $order = Order::create([
                     'user_id' => Auth::id(),
                     // Generamos un número de orden único
                     'order_number' => 'ORD-' . strtoupper(Str::random(10)),
                     'status' => 'pending',
-                    'total_amount' => $totalAmount,
+                    'total_amount' => $cartData['total'],
                     'payment_status' => 'pending', // O 'paid' si integras pasarela real
                     'payment_method' => $request->payment_method,
                     // Guardamos la dirección como snapshot (Laravel lo convierte a JSON solo)
@@ -75,9 +81,8 @@ class OrderController extends Controller
                 ]);
 
                 // B. Crear los Items
-                foreach ($cart as $details) {
-                    // Buscamos el producto real para sacar el SKU si existe
-                    $product = Product::find($details['id']);
+                foreach ($cartData['items'] as $item) {
+                    $product = $item['product'];
                     
                     OrderItem::create([
                         'order_id' => $order->id,
@@ -85,18 +90,16 @@ class OrderController extends Controller
                         // Snapshots: Guardamos los datos tal cual están hoy
                         'product_name_snapshot' => $product->name,
                         'sku_snapshot' => $product->sku ?? 'SKU-GENERICO', // Asegúrate que tu modelo Product tenga sku
-                        'quantity' => $details['quantity'],
-                        'unit_price' => $details['price'],
+                        'quantity' => $item['quantity'],
+                        'unit_price' => $product->base_price,
                     ]);
 
                     // Restar Stock
-                    if($product) {
-                        $product->decrement('stock_quantity', $details['quantity']);
-                    }
+                    $product->decrement('stock_quantity', $item['quantity']);
                 }
 
                 // C. Vaciar Carrito
-                session()->forget('cart');
+                $this->cartService->clearCart();
             });
 
             return redirect()->route('orders.success')->with('success', '¡Pedido realizado con éxito!');
