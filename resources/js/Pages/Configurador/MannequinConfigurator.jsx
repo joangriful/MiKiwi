@@ -4,6 +4,8 @@ import { OrbitControls, PerspectiveCamera, Environment, ContactShadows, useFBX }
 import { Head } from '@inertiajs/react';
 import ConfiguradorLayout from '@/Layouts/ConfiguradorLayout';
 import MannequinModel from '@/Components/Configurador/MannequinModel';
+import Mannequin2D from '@/Components/Configurador/Mannequin2D';
+import PartThumbnail from '@/Components/Configurador/PartThumbnail';
 import ModelErrorBoundary from '@/Components/Configurador/ModelErrorBoundary';
 
 const availableModels = [
@@ -145,10 +147,20 @@ export default function MannequinConfigurator() {
     };
     const [bodyParams, setBodyParams] = useState(defaultBodyParams);
 
-    // Hair Parameters
     const [hairParams, setHairParams] = useState({
         style: 'bald',
         color: '#5d4037'
+    });
+
+    const [selectedParts, setSelectedParts] = useState({
+        head: 'doll-2',
+        bust: 'doll-2',
+        arms: 'doll-2',
+        torso: 'doll-2',
+        pelvis: 'doll-2',
+        legs: 'doll-2',
+        hair: 'none',
+        eyes: 'none'
     });
 
     const handleImageUpload = (event) => {
@@ -171,19 +183,30 @@ export default function MannequinConfigurator() {
                 {/* 3D Viewport */}
                 <div className="w-full lg:w-3/4 relative h-[50vh] lg:h-full bg-gradient-to-b from-gray-200 to-gray-300">
                     <Suspense fallback={<Loader />}>
-                        <Canvas shadows dpr={[1, 2]}>
-                            <Scene
-                                modelPath={selectedModel.path}
-                                texturePath={selectedModel.texturePath}
-                                normalPath={selectedModel.normalPath}
-                                modelId={selectedModel.id}
-                                rotationY={selectedModel.rotationY || 0}
-                                customTexture={customTexture}
-                                color={color}
-                                bodyParams={bodyParams}
-                                hairParams={hairParams}
-                            />
-                        </Canvas>
+                        {activeTab === 'chicas' ? (
+                            <Canvas shadows dpr={[1, 2]}>
+                                <Scene
+                                    modelPath={selectedModel.path}
+                                    texturePath={selectedModel.texturePath}
+                                    normalPath={selectedModel.normalPath}
+                                    modelId={selectedModel.id}
+                                    rotationY={selectedModel.rotationY || 0}
+                                    customTexture={customTexture}
+                                    color={color}
+                                    bodyParams={bodyParams}
+                                    hairParams={hairParams}
+                                />
+                            </Canvas>
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center animate-fade-in">
+                                <Mannequin2D
+                                    color={color}
+                                    bodyParams={bodyParams}
+                                    hairParams={hairParams}
+                                    selectedParts={selectedParts}
+                                />
+                            </div>
+                        )}
                     </Suspense>
 
                     <div className="absolute top-4 left-4 pointer-events-none">
@@ -198,7 +221,12 @@ export default function MannequinConfigurator() {
                             onClick={() => {
                                 setBodyParams(defaultBodyParams);
                                 setColor('#ffd5b4');
-                                setHairParams({ style: 'medium', color: '#5d4037' });
+                                setHairParams({ style: 'bald', color: '#5d4037' });
+                                setSelectedParts({
+                                    head: 'doll-2', bust: 'doll-2', arms: 'doll-2',
+                                    torso: 'doll-2', pelvis: 'doll-2', legs: 'doll-2',
+                                    hair: 'none', eyes: 'none'
+                                });
                             }}
                             className="px-4 py-2 bg-white/80 hover:bg-white text-gray-700 rounded-full shadow-md text-sm font-medium transition-all backdrop-blur-sm"
                         >
@@ -382,7 +410,41 @@ export default function MannequinConfigurator() {
                                     </div>
                                 </div>
 
+                                {/* 3. Piezas del Collage (Only in 2D) */}
+                                {activeTab === 'personalizar' && (
+                                    <div className="pt-4 mt-4 border-t border-gray-100">
+                                        <h3 className="flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-4">
+                                            Ensamblar Collage
+                                        </h3>
 
+                                        <div className="space-y-6">
+                                            {/* VISUAL PART SELECTORS */}
+                                            {[
+                                                { id: 'head', label: 'Cabeza' },
+                                                { id: 'bust', label: 'Pecho / Busto' },
+                                                { id: 'arms', label: 'Brazos / Extremidades' },
+                                                { id: 'torso', label: 'Torso / Abdómen' },
+                                                { id: 'pelvis', label: 'Partes Íntimas' },
+                                                { id: 'legs', label: 'Piernas / Extremidades' },
+                                            ].map((part) => (
+                                                <div key={part.id}>
+                                                    <label className="text-[10px] font-bold text-gray-400 uppercase mb-3 block px-1 tracking-wider">{part.label}</label>
+                                                    <div className="grid grid-cols-3 gap-3">
+                                                        {[1, 2, 3].map((num) => (
+                                                            <PartThumbnail
+                                                                key={num}
+                                                                partType={part.id}
+                                                                source={`/images/dolls/sources/doll-${num}.png`}
+                                                                isSelected={selectedParts[part.id] === `doll-${num}`}
+                                                                onClick={() => setSelectedParts(prev => ({ ...prev, [part.id]: `doll-${num}` }))}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
