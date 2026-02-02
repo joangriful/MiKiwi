@@ -44,9 +44,10 @@ class OrderController extends Controller
         // 1. Validamos que nos envíen una dirección completa (Objeto/Array)
         $request->validate([
             'shipping_address' => 'required|array', // Ahora esperamos un array, no un string
-            'shipping_address.street' => 'required|string',
+            'shipping_address.street_address' => 'required|string',
             'shipping_address.city' => 'required|string',
-            'shipping_address.zip' => 'required|string',
+            'shipping_address.postal_code' => 'required|string',
+            'shipping_address.country' => 'required|string',
             'payment_method' => 'required|string',
         ]);
 

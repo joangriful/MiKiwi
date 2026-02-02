@@ -18,11 +18,14 @@ return new class extends Migration
             $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'cancelled'])->default('pending');
             $table->enum('payment_status', ['pending', 'paid', 'failed'])->default('pending');
             $table->decimal('total_amount', 10, 2);
+            $table->string('payment_method')->nullable();
+            $table->text('notes')->nullable();
 
             $table->json('shipping_address_snapshot'); // CAMBIO: jsonb a json
             $table->json('billing_address_snapshot')->nullable(); // CAMBIO: jsonb a json
 
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('order_items', function (Blueprint $table) {
