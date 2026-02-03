@@ -161,6 +161,87 @@
     letter-spacing: 0.3px;
 }
 
+/* Panel Tabs */
+.panel-tabs {
+    display: flex;
+    gap: 0;
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+    padding: 0;
+    position: sticky;
+    top: 130px;
+    z-index: 99;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 16px 20px;
+    background: transparent;
+    border: none;
+    font-family: 'Mulish', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-button::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transform: scaleX(0);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-button:hover {
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.tab-button.active {
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.08);
+}
+
+.tab-button.active::after {
+    transform: scaleX(1);
+}
+
+.editar-content,
+.personalizar-content {
+    animation: fadeInTab 0.4s ease-out;
+}
+
+@keyframes fadeInTab {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.loading-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    font-family: 'Mulish', sans-serif;
+    color: #7f8c8d;
+}
+
 /* Panel Content */
 .panel-content {
     padding: 30px;
