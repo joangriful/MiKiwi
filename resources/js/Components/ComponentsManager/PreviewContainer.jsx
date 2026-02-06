@@ -19,7 +19,9 @@ const PreviewContainer = ({ children, title }) => {
             'configurador/index': '/configurador/index',
             'configurador/collections': '/configurador/collections',
             'configurador/quiz': '/configurador/quiz',
-            'dollconfigurator': '/configurador/munecas'
+            'dollconfigurator': '/configurador/munecas',
+            'claimsform': '/formulario-reclamaciones',
+            'privacypolicy': '/politica-privacidad'
         };
 
         if (routes[lower]) {

@@ -1,19 +1,45 @@
+import { useState } from 'react';
+
 export default function ProductCardInfo() {
+    const [rating, setRating] = useState(0);
+    const [hoverRating, setHoverRating] = useState(0);
+    const reviewsCount = 120; // Fictitious review count
+
     return (
-        <div className="p-4">
-            <div className="font-bold text-gray-900 mb-1">Kiwi Pack</div>
-            <div className="text-yellow-400 flex text-xs mb-2">
-                <span className="material-symbols-outlined text-[16px] fill-current">star</span>
-                <span className="material-symbols-outlined text-[16px] fill-current">star</span>
-                <span className="material-symbols-outlined text-[16px] fill-current">star</span>
-                <span className="material-symbols-outlined text-[16px] fill-current">star</span>
-                <span className="material-symbols-outlined text-[16px] fill-current">star</span>
+        <div className="flex-1 flex flex-col p-4 bg-white text-left justify-between">
+            <div>
+                {/* Product Name */}
+                <h3 className="text-lg font-bold text-gray-900 mb-2 truncate">Kiwi Pack Premium</h3>
+
+                {/* Description */}
+                <p className="text-sm text-gray-500 leading-snug line-clamp-3 mb-4">
+                    Kiwis frescos selección premium. Directos de nuestros huertos a tu mesa, garantizando el mejor sabor y frescura.
+                </p>
             </div>
-            <div className="flex justify-between items-center">
-                <span className="font-bold text-lg text-gray-900">$4.99</span>
-                <button className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transition-colors flex items-center justify-center">
-                    <span className="material-symbols-outlined text-[16px]">add_shopping_cart</span>
-                </button>
+
+            <div className="space-y-3">
+                {/* Stars */}
+                <div className="flex items-center gap-2">
+                    <div className="flex" onMouseLeave={() => setHoverRating(0)}>
+                        {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                                key={star}
+                                className={`text-xl transition-colors ${star <= (hoverRating || rating) ? 'text-yellow-400' : 'text-gray-200'
+                                    }`}
+                                onClick={() => setRating(star)}
+                                onMouseEnter={() => setHoverRating(star)}
+                            >
+                                ★
+                            </button>
+                        ))}
+                    </div>
+                    <span className="text-gray-400 text-xs">({reviewsCount})</span>
+                </div>
+
+                {/* Price */}
+                <div>
+                    <span className="font-bold text-xl text-gray-900">$14.99</span>
+                </div>
             </div>
         </div>
     );

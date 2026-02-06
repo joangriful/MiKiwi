@@ -1,6 +1,6 @@
 export default function ImageCarouselVertical({ images = [], selectedImage, onSelectImage }) {
     return (
-        <div className="h-full w-24 border-r-2 border-dashed border-green-500 flex flex-col gap-4 items-center justify-center py-4 bg-white/50">
+        <div className="h-full w-24 flex flex-col gap-4 items-center justify-center py-4">
             {images.map((img, index) => (
                 <div
                     key={index}

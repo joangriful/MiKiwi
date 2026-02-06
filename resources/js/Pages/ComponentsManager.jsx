@@ -25,7 +25,7 @@ export default function ComponentsManager() {
     } = useComponentsManager();
 
     return (
-        <div className="h-screen flex flex-col bg-white font-sans overflow-hidden">
+        <div className="h-screen flex flex-col bg-white font-sans overflow-hidden select-none cursor-default">
             <Head title="Components Manager" />
 
             <ManagerHeader searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
