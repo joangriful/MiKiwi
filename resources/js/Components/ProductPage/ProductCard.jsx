@@ -3,7 +3,7 @@ import ProductCardInfo from './ProductCardInfo';
 
 export default function ProductCard() {
     return (
-        <div className="min-w-[240px] border border-gray-100 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group">
+        <div className="w-[321px] h-[616px] flex flex-col bg-white group box-border relative shrink-0">
             {/* Product Card */}
             <ProductImagePlaceholder />
             <ProductCardInfo />
