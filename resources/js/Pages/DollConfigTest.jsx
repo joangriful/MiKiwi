@@ -7,7 +7,7 @@ import OptionsBar from '@/Components/DollConfigurator/OptionsBar';
 import Header from '@/Components/Common/Header';
 
 export default function DollConfigTest({ views, defaultSettings }) {
-    const [selectedParts, setSelectedParts] = useState({});
+    const [allSelections, setAllSelections] = useState({ front: {}, back: {} });
     const [currentView, setCurrentView] = useState('front');
     const [zoomLevel, setZoomLevel] = useState(100);
     const [viewportInfo, setViewportInfo] = useState(null);
@@ -49,7 +49,7 @@ export default function DollConfigTest({ views, defaultSettings }) {
             defaults = { front: {}, back: {} };
         }
 
-        setSelectedParts(defaults);
+        setAllSelections(defaults);
     }, [defaultSettings]);
 
     const defaultZoom = useMemo(() => {
@@ -67,30 +67,27 @@ export default function DollConfigTest({ views, defaultSettings }) {
         return parts;
     }, [views, currentView]);
 
-    const handleSelectPart = (category, part) => {
-        setSelectedParts(prev => {
-            const newSelections = { ...prev };
+    const handleSelectPart = (category, item) => {
+        setAllSelections(prev => {
+            const next = { ...prev };
+            const currentViewSelections = { ...(next[currentView] || {}) };
 
-            if (!newSelections.front) newSelections.front = {};
-            if (!newSelections.back) newSelections.back = {};
-
-            const targetView = currentView;
-            const otherView = currentView === 'front' ? 'back' : 'front';
-
-            // Update ONLY current view - NO SYNC to other view
-            if (part && part.id === (newSelections[targetView][category]?.id)) {
-                delete newSelections[targetView][category];
+            // Update Current View
+            if (!item) {
+                delete currentViewSelections[category];
             } else {
-                newSelections[targetView][category] = part;
+                currentViewSelections[category] = item;
             }
+            next[currentView] = currentViewSelections;
 
-            return newSelections;
+            return next;
         });
     };
 
-    const currentViewSelections = useMemo(() => {
-        return selectedParts[currentView] || {};
-    }, [selectedParts, currentView]);
+    // Get selections for current view - EXACT pattern from DollDefaultConfigurator
+    const selectedParts = useMemo(() => {
+        return allSelections[currentView] || {};
+    }, [allSelections, currentView]);
 
     return (
         <>
@@ -116,7 +113,7 @@ export default function DollConfigTest({ views, defaultSettings }) {
                                         lg:w-1/4">
                             <div className="absolute inset-0 flex items-center justify-center">
                                 <PreviewArea
-                                    selectedParts={currentViewSelections}
+                                    selectedParts={selectedParts}
                                     viewportInfo={viewportInfo}
                                     onViewportChange={setViewportInfo}
                                 />
@@ -127,7 +124,7 @@ export default function DollConfigTest({ views, defaultSettings }) {
                         <div className="w-full h-full relative bg-gray-100 overflow-hidden shadow-inner
                                         min-[724px]:w-1/2 lg:flex-1">
                             <CloseUp
-                                selectedParts={currentViewSelections}
+                                selectedParts={selectedParts}
                                 onViewportChange={setViewportInfo}
                                 viewportOverride={viewportInfo}
                                 initialViewport={defaultZoom}
@@ -153,7 +150,7 @@ export default function DollConfigTest({ views, defaultSettings }) {
                                 lg:w-[400px] lg:h-full lg:border-t-0 lg:border-l lg:flex-none">
                     <PartSelector
                         parts={availableParts}
-                        selectedParts={currentViewSelections}
+                        selectedParts={selectedParts}
                         onSelect={handleSelectPart}
                     />
                 </div>
