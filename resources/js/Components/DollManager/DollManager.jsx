@@ -1,12 +1,60 @@
 import React, { useState } from 'react';
 import DollDefaultConfigurator from './DollDefaultConfigurator';
+import DollZoomConfigurator from './DollZoomConfigurator';
+import axios from 'axios';
 
 export default function DollManager({ views, defaultSettings }) {
     const [activeSection, setActiveSection] = useState('default_images');
 
+    // Master State for all defaults
+    // Expected structure: { selections: { front:..., back:... }, zoom: { x, y, w, h } }
+    const [fullSettings, setFullSettings] = useState(() => {
+        // Migration logic for existing data (if it's old flat format)
+        // If defaultSettings has 'selections' key, it's new format.
+        // If not, assume it's the old format (selections directly)
+        if (defaultSettings && !defaultSettings.selections && (defaultSettings.front || defaultSettings.back || Object.keys(defaultSettings).length > 0)) {
+            return {
+                selections: defaultSettings,
+                zoom: { x: 0, y: 0, w: 1, h: 1 } // Default full view
+            };
+        }
+
+        // Default clean state
+        return {
+            selections: defaultSettings?.selections || { front: {}, back: {} },
+            zoom: defaultSettings?.zoom || { x: 0, y: 0, w: 1, h: 1 }
+        };
+    });
+
+    const [saving, setSaving] = useState(false);
+    const [message, setMessage] = useState(null);
+
+    const handleSave = async (partialUpdate) => {
+        setSaving(true);
+        setMessage(null);
+
+        // Merge updates
+        const newSettings = {
+            ...fullSettings,
+            ...partialUpdate
+        };
+
+        try {
+            await axios.post(route('doll.settings.save'), { settings: newSettings });
+            setFullSettings(newSettings); // Update local state
+            setMessage({ type: 'success', text: 'Settings saved successfully!' });
+        } catch (error) {
+            setMessage({ type: 'error', text: 'Failed to save settings.' });
+            console.error(error);
+        } finally {
+            setSaving(false);
+            setTimeout(() => setMessage(null), 3000);
+        }
+    };
+
     const sections = [
         { id: 'default_images', label: 'Default Images' },
-        // Future sections could go here (e.g., 'Collection Manager', 'Pricing')
+        { id: 'default_zoom', label: 'Default Zoom' },
     ];
 
     return (
@@ -39,7 +87,20 @@ export default function DollManager({ views, defaultSettings }) {
                 {activeSection === 'default_images' && (
                     <DollDefaultConfigurator
                         views={views}
-                        initialSettings={defaultSettings}
+                        currentSelections={fullSettings.selections}
+                        onSave={(selections) => handleSave({ selections })}
+                        saving={saving}
+                        message={message}
+                    />
+                )}
+                {activeSection === 'default_zoom' && (
+                    <DollZoomConfigurator
+                        views={views}
+                        currentSelections={fullSettings.selections}
+                        currentZoom={fullSettings.zoom}
+                        onSave={(zoom) => handleSave({ zoom })}
+                        saving={saving}
+                        message={message}
                     />
                 )}
             </main>

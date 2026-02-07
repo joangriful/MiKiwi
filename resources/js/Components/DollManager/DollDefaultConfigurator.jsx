@@ -2,15 +2,24 @@ import React, { useState, useEffect, useMemo } from 'react';
 import PreviewArea from '@/Components/DollConfigurator/PreviewArea';
 import CloseUp from '@/Components/DollConfigurator/CloseUp';
 import PartSelector from '@/Components/DollConfigurator/PartSelector';
-import axios from 'axios';
 
-export default function DollDefaultConfigurator({ views, initialSettings = {} }) {
+export default function DollDefaultConfigurator({ views, currentSelections, onSave, saving, message }) {
     const [currentView, setCurrentView] = useState('front');
     const [viewportInfo, setViewportInfo] = useState({ visible: false });
     const [zoomLevel, setZoomLevel] = useState(100);
-    const [selectedParts, setSelectedParts] = useState(initialSettings || {});
-    const [saving, setSaving] = useState(false);
-    const [message, setMessage] = useState(null);
+
+    // Local state for editing, initialized from parent prop
+    const [allSelections, setAllSelections] = useState(currentSelections);
+
+    // Sync if parent updates (e.g. after save or init)
+    useEffect(() => {
+        setAllSelections(currentSelections);
+    }, [currentSelections]);
+
+    // Get selections for current view
+    const selectedParts = useMemo(() => {
+        return allSelections[currentView] || {};
+    }, [allSelections, currentView]);
 
     // Identify parts for current view
     const availableParts = useMemo(() => {
@@ -18,32 +27,46 @@ export default function DollDefaultConfigurator({ views, initialSettings = {} })
     }, [views, currentView]);
 
     const handleSelectPart = (category, item) => {
-        setSelectedParts(prev => {
+        setAllSelections(prev => {
+            const next = { ...prev };
+            const currentViewSelections = { ...(next[currentView] || {}) };
+
+            // 1. Update Current View
             if (!item) {
-                const next = { ...prev };
-                delete next[category];
-                return next;
+                delete currentViewSelections[category];
+            } else {
+                currentViewSelections[category] = item;
             }
-            return {
-                ...prev,
-                [category]: item
-            };
+            next[currentView] = currentViewSelections;
+
+            // 2. Try Syncing to Other Views (e.g. Front -> Back)
+            const otherView = currentView === 'front' ? 'back' : 'front';
+            const otherViewParts = views[otherView]?.[category];
+
+            if (otherViewParts && Array.isArray(otherViewParts)) {
+                const nextOtherSelections = { ...(next[otherView] || {}) };
+                if (item) {
+                    const match = otherViewParts.find(p => p.id === item.id);
+                    if (match) {
+                        nextOtherSelections[category] = match;
+                    }
+                } else {
+                    // If Deselecting: Only remove from other view if it was the SAME item
+                    const currentOtherInCat = nextOtherSelections[category];
+                    const removedItem = prev[currentView][category];
+                    if (currentOtherInCat && removedItem && currentOtherInCat.id === removedItem.id) {
+                        delete nextOtherSelections[category];
+                    }
+                }
+                next[otherView] = nextOtherSelections;
+            }
+
+            return next;
         });
     };
 
-    const handleSave = async () => {
-        setSaving(true);
-        setMessage(null);
-        try {
-            await axios.post(route('doll.settings.save'), { settings: selectedParts });
-            setMessage({ type: 'success', text: 'Settings saved successfully!' });
-        } catch (error) {
-            setMessage({ type: 'error', text: 'Failed to save settings.' });
-            console.error(error);
-        } finally {
-            setSaving(false);
-            setTimeout(() => setMessage(null), 3000);
-        }
+    const handleSaveClick = () => {
+        onSave(allSelections);
     };
 
     return (
@@ -75,7 +98,7 @@ export default function DollDefaultConfigurator({ views, initialSettings = {} })
                         </span>
                     )}
                     <button
-                        onClick={handleSave}
+                        onClick={handleSaveClick}
                         disabled={saving}
                         className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center"
                     >

@@ -1,10 +1,11 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 
-export default function CloseUp({ selectedParts, onViewportChange, viewportOverride, zoomLevel = 100 }) {
+export default function CloseUp({ selectedParts, onViewportChange, viewportOverride, zoomLevel = 100, initialViewport }) {
     const containerRef = useRef(null);
     const contentRef = useRef(null);
     const timeoutRef = useRef(null);
     const isScrollingRef = useRef(false);
+    const isFirstRender = useRef(true); // Track first render to avoid conflict
 
     // Sync from Parent (Preview Area interaction)
     useEffect(() => {
@@ -73,7 +74,7 @@ export default function CloseUp({ selectedParts, onViewportChange, viewportOverr
         }, 1000); // Hide after 1 second of no movement
     };
 
-    // Auto-scroll to center on mount
+    // Auto-scroll to center OR initial position on mount
     useEffect(() => {
         if (containerRef.current && contentRef.current) {
             const container = containerRef.current;
@@ -81,21 +82,44 @@ export default function CloseUp({ selectedParts, onViewportChange, viewportOverr
 
             // Wait for next frame to ensure layout is done, or roughly done
             requestAnimationFrame(() => {
-                const scrollX = (content.scrollWidth - container.clientWidth) / 2;
-                const scrollY = (content.scrollHeight - container.clientHeight) / 2;
+                let scrollX, scrollY;
+
+                // Always center Horizontally by default, ignoring initialViewport.x
+                scrollX = (content.scrollWidth - container.clientWidth) / 2;
+
+                // Ensure y is number
+                const initY = initialViewport ? Number(initialViewport.y) : NaN;
+
+                if (!isNaN(initY)) {
+                    // Use provided viewport Y
+                    scrollY = initY * content.scrollHeight;
+                } else {
+                    // Default to Center Vertical
+                    scrollY = (content.scrollHeight - container.clientHeight) / 2;
+                }
 
                 container.scrollTo({
                     top: scrollY,
                     left: scrollX,
                     behavior: 'instant'
                 });
-                handleScroll(); // Init viewport info
+                // Initialize viewport info
+                handleScroll();
             });
         }
-    }, []);
+    }, [initialViewport]);
 
     // Center on Zoom Change
     React.useLayoutEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            // If we have initialViewport, SKIP the default centering on mount
+            // The useEffect above will handle the positioning.
+            if (initialViewport) {
+                return;
+            }
+        }
+
         if (containerRef.current && contentRef.current) {
             const container = containerRef.current;
             const content = contentRef.current;

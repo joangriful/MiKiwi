@@ -131,7 +131,7 @@ export default function PreviewArea({ selectedParts, viewportInfo, onViewportCha
             {viewportInfo && viewportInfo.visible && (
                 <div
                     onMouseDown={handleMouseDown}
-                    className="absolute border-2 border-red-500 shadow-md bg-yellow-400/10 pointer-events-auto cursor-move z-[1000] transition-opacity duration-200"
+                    className="absolute border-2 border-red-500 shadow-md bg-yellow-400/10 pointer-events-auto cursor-move z-[900] transition-opacity duration-200"
                     style={{
                         top: `${viewportInfo.y * 100}%`,
                         left: `${viewportInfo.x * 100}%`,
