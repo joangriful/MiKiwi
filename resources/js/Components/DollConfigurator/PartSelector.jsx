@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import PartCarousel from './PartCarousel';
 
-const PartSelector = memo(({ parts, selectedParts, onSelect }) => {
+const PartSelector = memo(({ parts, selectedParts, onSelect, selectionLabel }) => {
     return (
         <div className="h-full flex flex-col bg-white/50 backdrop-blur-sm">
             <div className="p-6 pb-2 border-b border-gray-200 bg-white sticky top-0 z-10">
@@ -19,6 +19,7 @@ const PartSelector = memo(({ parts, selectedParts, onSelect }) => {
                         items={items}
                         selectedItem={selectedParts[category]}
                         onSelect={(item) => onSelect(category, item)}
+                        selectionLabel={selectionLabel}
                     />
                 ))}
 

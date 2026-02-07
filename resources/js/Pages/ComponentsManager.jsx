@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import DollManager from '../Components/DollManager/DollManager';
 import { Head } from '@inertiajs/react';
 import ManagerHeader from '../Components/ComponentsManager/ManagerHeader';
 import ManagerSidebar from '../Components/ComponentsManager/ManagerSidebar';
@@ -6,7 +7,9 @@ import SingleComponentView from '../Components/ComponentsManager/SingleComponent
 import PagesGridView from '../Components/ComponentsManager/PagesGridView';
 import { useComponentsManager } from '../Components/ComponentsManager/useComponentsManager';
 
-export default function ComponentsManager() {
+export default function ComponentsManager({ views, defaultSettings }) {
+    const [activeManager, setActiveManager] = useState('components'); // 'components' | 'doll'
+
     const {
         sourceType, setSourceType,
         selectedPagePaths, setSelectedPagePaths,
@@ -19,7 +22,7 @@ export default function ComponentsManager() {
         visibleItems,
         handleFolderToggle,
         handleItemSelect,
-        SelectedSingleComponent, // This is a component (LazyExoticComponent) or null
+        SelectedSingleComponent,
         SelectedPages,
         itemsList
     } = useComponentsManager();
@@ -28,41 +31,72 @@ export default function ComponentsManager() {
         <div className="h-screen flex flex-col bg-white font-sans overflow-hidden select-none cursor-default">
             <Head title="Components Manager" />
 
-            <ManagerHeader searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+            {/* Top Bar with Tabs */}
+            <div className="bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between shadow-sm z-10">
+                <div className="flex space-x-4">
+                    <button
+                        onClick={() => setActiveManager('components')}
+                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeManager === 'components'
+                            ? 'bg-gray-900 text-white'
+                            : 'text-gray-600 hover:bg-gray-100'
+                            }`}
+                    >
+                        Components Manager
+                    </button>
+                    <button
+                        onClick={() => setActiveManager('doll')}
+                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeManager === 'doll'
+                            ? 'bg-gray-900 text-white'
+                            : 'text-gray-600 hover:bg-gray-100'
+                            }`}
+                    >
+                        Doll Manager
+                    </button>
+                </div>
+                {activeManager === 'components' && (
+                    <ManagerHeader searchTerm={searchTerm} setSearchTerm={setSearchTerm} minimal={true} />
+                )}
+            </div>
 
-            <div className="flex flex-1 overflow-hidden">
-                <ManagerSidebar
-                    sourceType={sourceType}
-                    setSourceType={setSourceType}
-                    definedColors={definedColors}
-                    selectedColor={selectedColor}
-                    setSelectedColor={setSelectedColor}
-                    visibleItems={visibleItems}
-                    focusedIndex={focusedIndex}
-                    selectedPagePaths={selectedPagePaths}
-                    selectedComponentPath={selectedComponentPath}
-                    openFolders={openFolders}
-                    handleFolderToggle={handleFolderToggle}
-                    handleItemSelect={handleItemSelect}
-                />
-
-                <main className={`flex-1 overflow-y-auto ${sourceType === 'pages' ? 'bg-gray-200' : 'bg-gray-50'}`}>
-                    {sourceType === 'components' ? (
-                        <SingleComponentView
-                            selectedComponentPath={selectedComponentPath}
-                            SelectedSingleComponent={SelectedSingleComponent}
-                        />
-                    ) : (
-                        <PagesGridView
-                            itemsList={itemsList}
+            <div className="flex-1 overflow-hidden relative">
+                {activeManager === 'components' ? (
+                    <div className="flex h-full">
+                        <ManagerSidebar
+                            sourceType={sourceType}
+                            setSourceType={setSourceType}
+                            definedColors={definedColors}
+                            selectedColor={selectedColor}
+                            setSelectedColor={setSelectedColor}
+                            visibleItems={visibleItems}
+                            focusedIndex={focusedIndex}
                             selectedPagePaths={selectedPagePaths}
-                            setSelectedPagePaths={setSelectedPagePaths}
-                            gridCols={gridCols}
-                            setGridCols={setGridCols}
-                            SelectedPages={SelectedPages}
+                            selectedComponentPath={selectedComponentPath}
+                            openFolders={openFolders}
+                            handleFolderToggle={handleFolderToggle}
+                            handleItemSelect={handleItemSelect}
                         />
-                    )}
-                </main>
+
+                        <main className={`flex-1 overflow-y-auto ${sourceType === 'pages' ? 'bg-gray-200' : 'bg-gray-50'}`}>
+                            {sourceType === 'components' ? (
+                                <SingleComponentView
+                                    selectedComponentPath={selectedComponentPath}
+                                    SelectedSingleComponent={SelectedSingleComponent}
+                                />
+                            ) : (
+                                <PagesGridView
+                                    itemsList={itemsList}
+                                    selectedPagePaths={selectedPagePaths}
+                                    setSelectedPagePaths={setSelectedPagePaths}
+                                    gridCols={gridCols}
+                                    setGridCols={setGridCols}
+                                    SelectedPages={SelectedPages}
+                                />
+                            )}
+                        </main>
+                    </div>
+                ) : (
+                    <DollManager views={views} defaultSettings={defaultSettings} />
+                )}
             </div>
         </div>
     );

@@ -40,8 +40,22 @@ Route::get('/colecciones', function () {
 });
 
 Route::get('/components-manager', function () {
-    return Inertia::render('ComponentsManager');
+    // Shared Cloudinary Cache Logic
+    $views = Cache::remember('doll_parts_cloudinary', 3600, function () {
+        $service = new CloudinaryService();
+        return $service->listDollParts();
+    });
+
+    $settingsController = new App\Http\Controllers\DollSettingsController();
+    $defaultSettings = $settingsController->getSettings();
+
+    return Inertia::render('ComponentsManager', [
+        'views' => $views,
+        'defaultSettings' => $defaultSettings
+    ]);
 })->name('components.manager');
+
+Route::post('/doll-settings', [App\Http\Controllers\DollSettingsController::class, 'saveSettings'])->name('doll.settings.save');
 
 Route::get('/formulario-reclamaciones', function () {
     return Inertia::render('ClaimsForm');
@@ -81,8 +95,12 @@ Route::get('/doll_config_test', function () {
         return $service->listDollParts();
     });
 
+    $settingsController = new App\Http\Controllers\DollSettingsController();
+    $defaultSettings = $settingsController->getSettings();
+
     return Inertia::render('DollConfigTest', [
-        'views' => $views
+        'views' => $views,
+        'defaultSettings' => $defaultSettings
     ]);
 })->name('doll.config.test');
 

@@ -7,14 +7,14 @@ import CloseUp from '@/Components/DollConfigurator/CloseUp';
 import PartSelector from '@/Components/DollConfigurator/PartSelector';
 import Header from '@/Components/Common/Header';
 
-export default function DollConfigTest({ views = {} }) {
+export default function DollConfigTest({ views = {}, defaultSettings = {} }) {
     const [currentView, setCurrentView] = useState('front');
     const [viewportInfo, setViewportInfo] = useState({ visible: false });
     const [zoomLevel, setZoomLevel] = useState(100);
     const [isHeaderVisible, setIsHeaderVisible] = useState(false);
 
-    // Initial load: Try to restore selections or just default empty
-    const [selectedParts, setSelectedParts] = useState({});
+    // Initial load: Use defaults if provided
+    const [selectedParts, setSelectedParts] = useState(defaultSettings || {});
 
     // Identify parts for current view
     const availableParts = useMemo(() => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from '@inertiajs/react';
 
-const ManagerHeader = ({ searchTerm, setSearchTerm }) => {
+const ManagerHeader = ({ searchTerm, setSearchTerm, minimal = false }) => {
     return (
         <header className="bg-white border-b border-gray-200 shadow-sm flex items-center justify-between px-6 py-4 z-10 shrink-0">
             <div className="flex items-center gap-4">
@@ -16,17 +16,19 @@ const ManagerHeader = ({ searchTerm, setSearchTerm }) => {
                 </h1>
             </div>
 
-            <div className="flex items-center gap-4">
-                <div className="w-64">
-                    <input
-                        type="text"
-                        placeholder="Search..."
-                        className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-[#99b849]/20 focus:border-[#99b849] outline-none transition-all text-sm select-text cursor-text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+            {!minimal && (
+                <div className="flex items-center gap-4">
+                    <div className="w-64">
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-[#99b849]/20 focus:border-[#99b849] outline-none transition-all text-sm select-text cursor-text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
                 </div>
-            </div>
+            )}
         </header>
     );
 };
