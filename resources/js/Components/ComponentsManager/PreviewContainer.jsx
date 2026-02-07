@@ -21,7 +21,8 @@ const PreviewContainer = ({ children, title }) => {
             'configurador/quiz': '/configurador/quiz',
             'dollconfigurator': '/configurador/munecas',
             'claimsform': '/formulario-reclamaciones',
-            'privacypolicy': '/politica-privacidad'
+            'privacypolicy': '/politica-privacidad',
+            'dollconfigtest': '/doll_config_test'
         };
 
         if (routes[lower]) {

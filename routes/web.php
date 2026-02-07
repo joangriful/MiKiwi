@@ -3,7 +3,10 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\File;
 use Inertia\Inertia;
+use App\Services\CloudinaryService;
+use Illuminate\Support\Facades\Cache;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -69,5 +72,20 @@ Route::prefix('configurador')->group(function () {
         return Inertia::render('DollConfigurator');
     })->name('configurador.dolls');
 });
+
+Route::get('/doll_config_test', function () {
+    // Cache the Cloudinary response for 1 hour (3600 seconds)
+    // to avoid hitting API limits and improve load time.
+    $views = Cache::remember('doll_parts_cloudinary', 3600, function () {
+        $service = new CloudinaryService();
+        return $service->listDollParts();
+    });
+
+    return Inertia::render('DollConfigTest', [
+        'views' => $views
+    ]);
+})->name('doll.config.test');
+
+
 
 require __DIR__ . '/auth.php';
