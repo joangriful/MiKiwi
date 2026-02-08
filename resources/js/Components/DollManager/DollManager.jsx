@@ -1,29 +1,35 @@
 import React, { useState } from 'react';
 import DollDefaultConfigurator from './DollDefaultConfigurator';
 import DollZoomConfigurator from './DollZoomConfigurator';
+import DollSectionOrderConfigurator from './DollSectionOrderConfigurator';
 import axios from 'axios';
 
 export default function DollManager({ views, defaultSettings }) {
     const [activeSection, setActiveSection] = useState('default_images');
 
     // Master State for all defaults
-    // Expected structure: { selections: { front:..., back:... }, zoom: { x, y, w, h } }
+    // Expected structure: { selections: { front:..., back:... }, zoom: { x, y, w, h }, sectionOrder: [] }
     const [fullSettings, setFullSettings] = useState(() => {
         // Migration logic for existing data (if it's old flat format)
         // If defaultSettings has 'selections' key, it's new format.
         // If not, assume it's the old format (selections directly)
+        let initialSettings = {};
+
         if (defaultSettings && !defaultSettings.selections && (defaultSettings.front || defaultSettings.back || Object.keys(defaultSettings).length > 0)) {
-            return {
+            initialSettings = {
                 selections: defaultSettings,
-                zoom: { x: 0, y: 0, w: 1, h: 1 } // Default full view
+                zoom: { x: 0, y: 0, w: 1, h: 1 }, // Default full view
+                sectionOrder: []
+            };
+        } else {
+            // Default clean state
+            initialSettings = {
+                selections: defaultSettings?.selections || { front: {}, back: {} },
+                zoom: defaultSettings?.zoom || { x: 0, y: 0, w: 1, h: 1 },
+                sectionOrder: defaultSettings?.sectionOrder || []
             };
         }
-
-        // Default clean state
-        return {
-            selections: defaultSettings?.selections || { front: {}, back: {} },
-            zoom: defaultSettings?.zoom || { x: 0, y: 0, w: 1, h: 1 }
-        };
+        return initialSettings;
     });
 
     const [saving, setSaving] = useState(false);
@@ -55,6 +61,7 @@ export default function DollManager({ views, defaultSettings }) {
     const sections = [
         { id: 'default_images', label: 'Default Images' },
         { id: 'default_zoom', label: 'Default Zoom' },
+        { id: 'section_order', label: 'Section Order' },
     ];
 
     return (
@@ -72,8 +79,8 @@ export default function DollManager({ views, defaultSettings }) {
                             key={section.id}
                             onClick={() => setActiveSection(section.id)}
                             className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === section.id
-                                    ? 'bg-blue-50 text-blue-700'
-                                    : 'text-gray-700 hover:bg-gray-100'
+                                ? 'bg-blue-50 text-blue-700'
+                                : 'text-gray-700 hover:bg-gray-100'
                                 }`}
                         >
                             {section.label}
@@ -99,6 +106,15 @@ export default function DollManager({ views, defaultSettings }) {
                         currentSelections={fullSettings.selections}
                         currentZoom={fullSettings.zoom}
                         onSave={(zoom) => handleSave({ zoom })}
+                        saving={saving}
+                        message={message}
+                    />
+                )}
+                {activeSection === 'section_order' && (
+                    <DollSectionOrderConfigurator
+                        views={views}
+                        currentOrder={fullSettings.sectionOrder}
+                        onSave={(order) => handleSave({ sectionOrder: order })}
                         saving={saving}
                         message={message}
                     />

@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useEffect } from 'react';
+import { getCloudinaryUrl } from '@/Utils/cloudinary';
 
 export default function PreviewArea({ selectedParts, viewportInfo, onViewportChange }) {
     // ... (logic remains same) ...
@@ -12,7 +13,8 @@ export default function PreviewArea({ selectedParts, viewportInfo, onViewportCha
             item.layers.forEach((layer) => {
                 layers.push({
                     key: `${category}-${item.id}-${layer.name}`,
-                    url: layer.url,
+                    url: getCloudinaryUrl(layer.url, { transformations: 'f_auto,q_auto' }),
+                    originalUrl: layer.url, // Keep original for reference if needed
                     zIndex: layer.zIndex ?? 0,
                     blendMode: layer.blendMode || 'normal',
                     category
@@ -118,6 +120,7 @@ export default function PreviewArea({ selectedParts, viewportInfo, onViewportCha
                         key={layer.key}
                         src={layer.url}
                         alt={layer.key}
+                        fetchpriority="high" // High priority for main doll layers
                         className="absolute h-full w-auto max-w-none object-contain pointer-events-none select-none left-1/2 -translate-x-1/2"
                         style={{
                             zIndex: layer.zIndex,

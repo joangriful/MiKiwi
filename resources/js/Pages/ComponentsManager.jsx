@@ -31,32 +31,13 @@ export default function ComponentsManager({ views, defaultSettings }) {
         <div className="h-screen flex flex-col bg-white font-sans overflow-hidden select-none cursor-default">
             <Head title="Components Manager" />
 
-            {/* Top Bar with Tabs */}
-            <div className="bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between shadow-sm z-10">
-                <div className="flex space-x-4">
-                    <button
-                        onClick={() => setActiveManager('components')}
-                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeManager === 'components'
-                            ? 'bg-gray-900 text-white'
-                            : 'text-gray-600 hover:bg-gray-100'
-                            }`}
-                    >
-                        Components Manager
-                    </button>
-                    <button
-                        onClick={() => setActiveManager('doll')}
-                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeManager === 'doll'
-                            ? 'bg-gray-900 text-white'
-                            : 'text-gray-600 hover:bg-gray-100'
-                            }`}
-                    >
-                        Doll Manager
-                    </button>
-                </div>
-                {activeManager === 'components' && (
-                    <ManagerHeader searchTerm={searchTerm} setSearchTerm={setSearchTerm} minimal={true} />
-                )}
-            </div>
+            {/* Unified Manager Header */}
+            <ManagerHeader
+                activeManager={activeManager}
+                setActiveManager={setActiveManager}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+            />
 
             <div className="flex-1 overflow-hidden relative">
                 {activeManager === 'components' ? (

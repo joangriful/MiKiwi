@@ -19,18 +19,12 @@ const PartOption = ({ item, isSelected, onSelect, onKeyDown, selectionLabel }) =
             title={item.id}
         >
             <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-                {item.thumbnail ? (
-                    <img
-                        src={item.thumbnail}
-                        alt={item.id}
-                        className="w-full h-full object-contain p-1"
-                        loading="lazy"
-                    />
-                ) : (
-                    <span className="text-xs text-center font-medium text-gray-700 break-words w-full p-2">
-                        {item.id}
-                    </span>
-                )}
+                <span className="text-[10px] text-center font-medium text-gray-600 break-words w-full p-1 leading-tight select-none">
+                    {item.thumbnail
+                        ? item.thumbnail.split('/').pop()
+                        : item.id
+                    }
+                </span>
             </div>
 
             {/* Selection Label Badge */}

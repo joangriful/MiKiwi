@@ -89,6 +89,11 @@ export default function DollConfigTest({ views, defaultSettings }) {
         return allSelections[currentView] || {};
     }, [allSelections, currentView]);
 
+    // Get section order from settings
+    const sectionOrder = useMemo(() => {
+        return defaultSettings?.sectionOrder || [];
+    }, [defaultSettings]);
+
     return (
         <>
             <Head title="Doll Configurator" />
@@ -152,6 +157,7 @@ export default function DollConfigTest({ views, defaultSettings }) {
                         parts={availableParts}
                         selectedParts={selectedParts}
                         onSelect={handleSelectPart}
+                        sectionOrder={sectionOrder}
                     />
                 </div>
 

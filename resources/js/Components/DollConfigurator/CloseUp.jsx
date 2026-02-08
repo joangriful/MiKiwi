@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
+import { getCloudinaryUrl } from '@/Utils/cloudinary';
 
 export default function CloseUp({ selectedParts, onViewportChange, viewportOverride, zoomLevel = 100, initialViewport }) {
     const containerRef = useRef(null);
@@ -35,8 +36,9 @@ export default function CloseUp({ selectedParts, onViewportChange, viewportOverr
             item.layers.forEach((layer) => {
                 layers.push({
                     key: `${category}-${item.id}-${layer.name}`,
-                    url: layer.url,
+                    url: getCloudinaryUrl(layer.url, { transformations: 'f_auto,q_auto' }),
                     zIndex: layer.zIndex ?? 0,
+                    blendMode: layer.blendMode || 'normal',
                     category
                 });
             });
@@ -161,6 +163,7 @@ export default function CloseUp({ selectedParts, onViewportChange, viewportOverr
                         key={layer.key}
                         src={layer.url}
                         alt={layer.key}
+                        fetchpriority="high"
                         className="absolute h-full w-auto max-w-none object-contain pointer-events-none select-none left-1/2 -translate-x-1/2"
                         style={{
                             zIndex: layer.zIndex,
