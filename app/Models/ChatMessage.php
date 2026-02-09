@@ -17,6 +17,7 @@ class ChatMessage extends Model
 
     protected $casts = [
         'is_read' => 'boolean',
+        'sender_type' => ChatSenderType::class,
     ];
 
     public function scopeUnread($query)
