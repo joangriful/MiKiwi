@@ -117,7 +117,10 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/components-manager', function () {
     // Shared Cloudinary Cache Logic
-    $views = Cache::remember('doll_parts_cloudinary', 3600, function () {
+    // In local, cache for 5 seconds to allow quick updates. In production, 1 hour.
+    $cacheDuration = app()->environment('local') ? 5 : 3600;
+    
+    $views = Cache::remember('doll_parts_cloudinary', $cacheDuration, function () {
         $service = new CloudinaryService();
         return $service->listDollParts();
     });
@@ -164,9 +167,11 @@ Route::prefix('configurador')->group(function () {
 });
 
 Route::get('/doll_config_test', function () {
-    // Cache the Cloudinary response for 1 hour (3600 seconds)
+    // Cache the Cloudinary response for 1 hour (3600 seconds) in production, 5s in local
     // to avoid hitting API limits and improve load time.
-    $views = Cache::remember('doll_parts_cloudinary', 3600, function () {
+    $cacheDuration = app()->environment('local') ? 5 : 3600;
+
+    $views = Cache::remember('doll_parts_cloudinary', $cacheDuration, function () {
         $service = new CloudinaryService();
         return $service->listDollParts();
     });
