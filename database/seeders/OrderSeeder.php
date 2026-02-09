@@ -33,6 +33,14 @@ class OrderSeeder extends Seeder
         $totalOrders = 0;
         $totalItems = 0;
 
+        // Cargar todos los productos una vez para evitar N+1 queries
+        $products = Product::all();
+        if ($products->isEmpty()) {
+            $this->command->error('❌ No hay productos. Ejecuta ProductSeeder primero.');
+
+            return;
+        }
+
         // Crear 2-4 órdenes por cliente (15-20 órdenes aprox)
         foreach ($customers->take(5) as $customer) {
             $ordersCount = rand(2, 4);
@@ -77,7 +85,7 @@ class OrderSeeder extends Seeder
                 $total = 0;
 
                 for ($j = 0; $j < $itemsCount; $j++) {
-                    $product = Product::inRandomOrder()->first();
+                    $product = $products->random();
                     if (! $product) {
                         continue;
                     }

@@ -81,7 +81,7 @@ class DatabaseSeeder extends Seeder
         );
         $this->command->newLine();
         $this->command->info('💡 Usuarios de prueba:');
-        $this->command->info('   Admin: admin@mikiwi.com / password');
+        $this->command->info('   Admin: admin@kinky-toys.com / password');
         $this->command->info('   Cliente: juan@test.com / password');
         $this->command->newLine();
     }
