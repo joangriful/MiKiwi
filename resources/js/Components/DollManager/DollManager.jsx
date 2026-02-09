@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import DollDefaultConfigurator from './DollDefaultConfigurator';
 import DollZoomConfigurator from './DollZoomConfigurator';
 import DollSectionOrderConfigurator from './DollSectionOrderConfigurator';
 import axios from 'axios';
 
-export default function DollManager({ views, defaultSettings }) {
+const DollManager = forwardRef(({ views, defaultSettings }, ref) => {
     const [activeSection, setActiveSection] = useState('default_images');
 
     // Master State for all defaults
@@ -35,19 +35,12 @@ export default function DollManager({ views, defaultSettings }) {
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState(null);
 
-    const handleSave = async (partialUpdate) => {
+    const saveSettings = async () => {
         setSaving(true);
         setMessage(null);
 
-        // Merge updates
-        const newSettings = {
-            ...fullSettings,
-            ...partialUpdate
-        };
-
         try {
-            await axios.post(route('doll.settings.save'), { settings: newSettings });
-            setFullSettings(newSettings); // Update local state
+            await axios.post(route('doll.settings.save'), { settings: fullSettings });
             setMessage({ type: 'success', text: 'Settings saved successfully!' });
         } catch (error) {
             setMessage({ type: 'error', text: 'Failed to save settings.' });
@@ -58,6 +51,23 @@ export default function DollManager({ views, defaultSettings }) {
         }
     };
 
+    useImperativeHandle(ref, () => ({
+        save: saveSettings
+    }));
+
+    // State updaters
+    const updateSelections = (newSelections) => {
+        setFullSettings(prev => ({ ...prev, selections: newSelections }));
+    };
+
+    const updateZoom = (newZoom) => {
+        setFullSettings(prev => ({ ...prev, zoom: newZoom }));
+    };
+
+    const updateSectionOrder = (newOrder) => {
+        setFullSettings(prev => ({ ...prev, sectionOrder: newOrder }));
+    };
+
     const sections = [
         { id: 'default_images', label: 'Default Images' },
         { id: 'default_zoom', label: 'Default Zoom' },
@@ -65,9 +75,16 @@ export default function DollManager({ views, defaultSettings }) {
     ];
 
     return (
-        <div className="flex flex-1 overflow-hidden h-full">
+        <div className="flex flex-1 overflow-hidden h-full relative">
+            {/* Global Message Toast */}
+            {message && (
+                <div className={`absolute top-4 right-4 px-4 py-2 rounded shadow-lg z-50 transition-opacity duration-300 ${message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    {message.text}
+                </div>
+            )}
+
             {/* Sidebar */}
-            <aside className="w-64 bg-gray-50 border-r border-gray-200 flex flex-col">
+            <aside className="w-64 bg-gray-50 border-r border-gray-200 flex flex-col shrink-0">
                 <div className="p-4 border-b border-gray-200">
                     <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                         Doll Configuration
@@ -90,14 +107,13 @@ export default function DollManager({ views, defaultSettings }) {
             </aside>
 
             {/* Main Content Area */}
-            <main className="flex-1 bg-white overflow-hidden relative">
+            <main className="flex-1 bg-transparent overflow-hidden relative">
                 {activeSection === 'default_images' && (
                     <DollDefaultConfigurator
                         views={views}
                         currentSelections={fullSettings.selections}
-                        onSave={(selections) => handleSave({ selections })}
+                        onSelectionChange={updateSelections}
                         saving={saving}
-                        message={message}
                     />
                 )}
                 {activeSection === 'default_zoom' && (
@@ -105,21 +121,26 @@ export default function DollManager({ views, defaultSettings }) {
                         views={views}
                         currentSelections={fullSettings.selections}
                         currentZoom={fullSettings.zoom}
-                        onSave={(zoom) => handleSave({ zoom })}
+                        onZoomChange={updateZoom}
                         saving={saving}
-                        message={message}
                     />
                 )}
                 {activeSection === 'section_order' && (
                     <DollSectionOrderConfigurator
                         views={views}
                         currentOrder={fullSettings.sectionOrder}
-                        onSave={(order) => handleSave({ sectionOrder: order })}
+                        onSave={(order) => {
+                            updateSectionOrder(order);
+                            // For this one, we might want to trigger save immediately or just update state?
+                            // Plan says global save, so just update state.
+                        }}
                         saving={saving}
-                        message={message}
+                        message={message} // Keep passing message to this one if it handles its own UI or remove
                     />
                 )}
             </main>
         </div>
     );
-}
+});
+
+export default DollManager;

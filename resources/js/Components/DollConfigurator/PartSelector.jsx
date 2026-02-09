@@ -19,7 +19,7 @@ const PartSelector = memo(({ parts, selectedParts, onSelect, sectionOrder, selec
     }, [parts, sectionOrder]);
 
     return (
-        <div className="h-full flex flex-col bg-white/50 backdrop-blur-sm">
+        <div className="h-full flex flex-col bg-transparent">
             <div className="flex-1 overflow-y-auto p-6 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
                 {sortedParts.map(([category, items], index) => (
                     <PartCarousel

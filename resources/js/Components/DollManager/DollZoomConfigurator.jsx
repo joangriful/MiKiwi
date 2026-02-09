@@ -1,27 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import CloseUp from '@/Components/DollConfigurator/CloseUp';
 
-export default function DollZoomConfigurator({ views, currentSelections, currentZoom, onSave, saving, message }) {
-    // Initialize viewport state from currentZoom prop or default center-ish
-    // Using a key on the component to force re-mount when currentZoom changes from parent ensures fresh init
-    const [viewport, setViewport] = useState(currentZoom || { x: 0.5, y: 0.5, w: 1, h: 1 });
-    const [zoomLevel, setZoomLevel] = useState(100);
-
-    // Sync local state if prop changes (e.g. after save or load)
-    useEffect(() => {
-        if (currentZoom) {
-            setViewport(currentZoom);
-        }
-    }, [currentZoom]);
-
-    // We use the 'front' view selections for configuration. 
+export default function DollZoomConfigurator({ currentSelections, currentZoom, onZoomChange }) {
+    // We use the 'front' view selections for configuration.
     // If 'front' is empty, it might be blank, but usually there are defaults.
     const selectedParts = currentSelections?.front || {};
-
-    const handleSave = () => {
-        // Pass the current viewport state up to save
-        onSave(viewport);
-    };
+    const [zoomLevel, setZoomLevel] = useState(100);
 
     return (
         <div className="flex flex-col h-full bg-gray-50">
@@ -33,20 +17,6 @@ export default function DollZoomConfigurator({ views, currentSelections, current
                         Drag the image below to set the starting position for the Close Up view.
                     </p>
                 </div>
-                <div className="flex items-center space-x-4">
-                    {message && (
-                        <span className={`text-sm font-medium ${message.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
-                            {message.text}
-                        </span>
-                    )}
-                    <button
-                        onClick={handleSave}
-                        disabled={saving}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center"
-                    >
-                        {saving ? 'Saving...' : 'Save Position'}
-                    </button>
-                </div>
             </div>
 
             {/* Content: CloseUp View Container */}
@@ -56,9 +26,9 @@ export default function DollZoomConfigurator({ views, currentSelections, current
                 <div className="relative w-[400px] h-[600px] bg-white rounded-lg shadow-2xl border-4 border-gray-800 overflow-hidden">
                     <CloseUp
                         selectedParts={selectedParts}
-                        onViewportChange={setViewport}
+                        onViewportChange={onZoomChange}
                         viewportOverride={null}
-                        initialViewport={currentZoom} // Start at current saved position
+                        initialViewport={currentZoom}
                         zoomLevel={zoomLevel}
                     />
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from '@inertiajs/react';
 
-const ManagerHeader = ({ searchTerm, setSearchTerm, activeManager, setActiveManager }) => {
+const ManagerHeader = ({ searchTerm, setSearchTerm, activeManager, setActiveManager, onSaveDefaults }) => {
     return (
         <header className="bg-white border-b border-gray-200 shadow-sm flex items-center justify-between px-6 py-4 z-10 shrink-0">
             {/* Left: Logo & Title */}
@@ -38,6 +38,7 @@ const ManagerHeader = ({ searchTerm, setSearchTerm, activeManager, setActiveMana
                 </button>
             </div>
 
+
             {/* Right: Search (Conditional) */}
             <div className="w-1/4 flex justify-end">
                 {activeManager === 'components' ? (
@@ -51,7 +52,15 @@ const ManagerHeader = ({ searchTerm, setSearchTerm, activeManager, setActiveMana
                         />
                     </div>
                 ) : (
-                    <div className="w-full"></div>
+                    <button
+                        onClick={onSaveDefaults}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm text-sm flex items-center gap-2"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
+                        </svg>
+                        Save Defaults
+                    </button>
                 )}
             </div>
         </header>

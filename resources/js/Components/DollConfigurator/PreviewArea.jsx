@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useEffect } from 'react';
 import { getCloudinaryUrl } from '@/Utils/cloudinary';
 
-export default function PreviewArea({ selectedParts, viewportInfo, onViewportChange }) {
+export default function PreviewArea({ selectedParts, viewportInfo, onViewportChange, className = '' }) {
     // ... (logic remains same) ...
 
     // Flatten all layers from all selected parts
@@ -103,7 +103,7 @@ export default function PreviewArea({ selectedParts, viewportInfo, onViewportCha
     return (
         <div
             ref={containerRef}
-            className="relative w-full h-full flex items-center justify-center bg-transparent overflow-hidden"
+            className={`relative w-full h-full flex items-center justify-center overflow-hidden ${className}`}
             onWheel={handleWheel}
         >
             {/* Background Placeholder */}

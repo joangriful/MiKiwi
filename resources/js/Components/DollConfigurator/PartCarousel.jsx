@@ -75,24 +75,21 @@ const PartCarousel = ({ category, items, selectedItem, onSelect, index, id, sele
         <div id={id} className="mb-2 last:mb-24 scroll-mt-4 border-b border-gray-100 last:border-0">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex items-center justify-between text-left py-3 px-2 hover:bg-gray-50 rounded-lg transition-colors group focus:outline-none focus:ring-2 focus:ring-red-500/20"
+                className="w-full flex items-center justify-between text-left py-3 px-2 rounded-lg transition-colors group focus:outline-none"
                 aria-expanded={isOpen}
             >
                 <div className="flex items-center gap-3">
                     {/* Chevron (Simple Triangle) */}
                     <svg
-                        className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-90' : 'rotate-0'}`}
+                        className={`w-4 h-4 text-white/70 group-hover:text-blue-400 transition-transform duration-200 ${isOpen ? 'rotate-90' : 'rotate-0'}`}
                         fill="currentColor"
                         viewBox="0 0 20 20"
                     >
                         <path d="M6 6L14 10L6 14V6Z" />
                     </svg>
 
-                    <span className="text-sm font-bold text-gray-900 uppercase tracking-wider">
+                    <span className="text-sm font-bold text-white group-hover:text-blue-400 uppercase tracking-wider transition-colors">
                         {category}
-                    </span>
-                    <span className="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full group-hover:bg-white transition-colors">
-                        {items.length}
                     </span>
                 </div>
             </button>
@@ -100,7 +97,7 @@ const PartCarousel = ({ category, items, selectedItem, onSelect, index, id, sele
             {isOpen && (
                 <div className="relative group/carousel my-2 animate-in slide-in-from-top-2 fade-in duration-200">
                     {/* Scroll Container */}
-                    <div className="flex overflow-x-auto gap-4 pb-4 px-1 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+                    <div className="flex overflow-x-auto gap-4 py-4 px-1 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
 
                         {/* Clear Selection Option (First Item) */}
                         <button

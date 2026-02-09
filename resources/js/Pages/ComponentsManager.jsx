@@ -27,6 +27,14 @@ export default function ComponentsManager({ views, defaultSettings }) {
         itemsList
     } = useComponentsManager();
 
+    const dollManagerRef = React.useRef(null);
+
+    const handleSaveDollDefaults = () => {
+        if (dollManagerRef.current) {
+            dollManagerRef.current.save();
+        }
+    };
+
     return (
         <div className="h-screen flex flex-col bg-white font-sans overflow-hidden select-none cursor-default">
             <Head title="Components Manager" />
@@ -37,6 +45,7 @@ export default function ComponentsManager({ views, defaultSettings }) {
                 setActiveManager={setActiveManager}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
+                onSaveDefaults={handleSaveDollDefaults}
             />
 
             <div className="flex-1 overflow-hidden relative">
@@ -76,7 +85,7 @@ export default function ComponentsManager({ views, defaultSettings }) {
                         </main>
                     </div>
                 ) : (
-                    <DollManager views={views} defaultSettings={defaultSettings} />
+                    <DollManager ref={dollManagerRef} views={views} defaultSettings={defaultSettings} />
                 )}
             </div>
         </div>

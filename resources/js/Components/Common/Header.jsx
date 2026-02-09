@@ -27,7 +27,7 @@ export default function Header() {
     }, [isSearchOpen]);
 
     return (
-        <div className="flex items-center justify-between px-6 bg-black h-20 shadow-md">
+        <div className="flex items-center justify-between px-6 bg-black h-[60px] shadow-md">
             {/* Left: Logo */}
             <div className="flex items-center h-full py-[5px] pl-[5px]">
                 <img
