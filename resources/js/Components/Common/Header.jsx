@@ -44,7 +44,7 @@ export default function Header() {
 
                 {/* Expandable Search Bar */}
                 {/* Expandable Search Bar */}
-                <div ref={searchContainerRef} className={`flex items-center relative transition-all duration-300 ease-in-out pl-4 pr-2 py-1 rounded-full border border-transparent ${isSearchOpen ? 'w-64 bg-white border-[#99b849]' : 'w-10 bg-transparent'}`}>
+                <div ref={searchContainerRef} className={`flex items-center relative transition-all duration-300 ease-in-out pl-4 pr-2 py-1 rounded-full border border-transparent ${isSearchOpen ? 'w-64 bg-white border-primary' : 'w-10 bg-transparent'}`}>
                     <input
                         ref={searchInputRef}
                         type="text"

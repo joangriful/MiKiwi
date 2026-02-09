@@ -17,17 +17,22 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
             'dni' => '00000000A',
             'birth_date' => '1990-01-01',
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
-        // 2. Cliente
+        // 2. Cliente de prueba específico
         User::create([
             'name' => 'Juan Cliente',
             'email' => 'juan@test.com',
             'password' => Hash::make('password'),
             'dni' => '12345678Z',
             'birth_date' => '2000-05-20',
-            'role' => 'customer'
+            'role' => 'customer',
         ]);
+
+        // 3. Clientes adicionales generados con factory
+        User::factory()->count(20)->customer()->create();
+
+        $this->command->info('✅ Usuarios creados: 23 total (1 admin + 1 test + 20 aleatorios)');
     }
 }

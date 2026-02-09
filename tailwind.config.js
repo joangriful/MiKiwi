@@ -29,6 +29,7 @@ export default {
         'text-main': 'var(--text-main)',
         'text-muted': 'var(--text-muted)',
         border: 'var(--border)',
+        accent: 'var(--color-accent)',
       },
       boxShadow: {
         sm: 'var(--shadow-sm)',

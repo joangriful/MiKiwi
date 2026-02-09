@@ -23,9 +23,14 @@ class CartController extends Controller
     public function index()
     {
         $cart = $this->cartService->getCart();
+        $popularProducts = \App\Models\Product::where('is_active', true)
+            ->where('product_type', 'configurable') // Or any criteria for popular
+            ->limit(4)
+            ->get();
 
-        return Inertia::render('Cart/Index', [
+        return Inertia::render('Cart', [
             'cart' => $cart,
+            'popularProducts' => $popularProducts,
             'pageTitle' => 'Carrito de Compras - MiKiwi'
         ]);
     }
@@ -34,7 +39,7 @@ class CartController extends Controller
      * Agregar producto al carrito
      * 
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -51,16 +56,23 @@ class CartController extends Controller
                 $validated['accessories'] ?? []
             );
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Producto agregado al carrito',
-                'cart' => $cart
-            ]);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Producto agregado al carrito',
+                    'cart' => $cart
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Producto agregado al carrito');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 400);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ], 400);
+            }
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 
