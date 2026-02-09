@@ -56,4 +56,44 @@ class ReviewFactory extends Factory
             'rating' => 5,
         ]);
     }
+
+    /**
+     * Indicate that the review is pending approval.
+     */
+    public function pending(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_approved' => false,
+        ]);
+    }
+
+    /**
+     * Indicate that the review has the lowest rating.
+     */
+    public function oneStar(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'rating' => 1,
+        ]);
+    }
+
+    /**
+     * Indicate that the review has no comment (only rating).
+     */
+    public function withoutComment(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'comment' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the review has a specific rating.
+     */
+    public function withRating(int $rating): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'rating' => max(1, min(5, $rating)), // Clamp between 1-5
+        ]);
+    }
 }

@@ -34,4 +34,92 @@ class ProductFactory extends Factory
             range(1, $count)
         );
     }
+
+    /**
+     * Indicate that the product is a simple product.
+     */
+    public function simple(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'product_type' => 'simple',
+        ]);
+    }
+
+    /**
+     * Indicate that the product is configurable (e.g., customizable dolls).
+     */
+    public function configurable(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'product_type' => 'configurable',
+            'base_price' => $this->faker->randomFloat(2, 500, 3000),
+        ]);
+    }
+
+    /**
+     * Indicate that the product is a component (e.g., eyes, wigs).
+     */
+    public function component(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'product_type' => 'component',
+            'base_price' => $this->faker->randomFloat(2, 20, 200),
+        ]);
+    }
+
+    /**
+     * Indicate that the product is out of stock.
+     */
+    public function outOfStock(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'stock_quantity' => 0,
+        ]);
+    }
+
+    /**
+     * Indicate that the product is inactive.
+     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_active' => false,
+        ]);
+    }
+
+    /**
+     * Indicate that the product is on sale with reduced price.
+     */
+    public function onSale(): static
+    {
+        return $this->state(function (array $attributes) {
+            $originalPrice = $attributes['base_price'] ?? 100;
+            $discountPercentage = $this->faker->numberBetween(10, 50);
+            $salePrice = $originalPrice * (1 - $discountPercentage / 100);
+
+            return [
+                'base_price' => round($salePrice, 2),
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the product is for adults only.
+     */
+    public function adultOnly(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_adult_only' => true,
+        ]);
+    }
+
+    /**
+     * Indicate that the product has high stock.
+     */
+    public function inStock(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'stock_quantity' => $this->faker->numberBetween(50, 200),
+        ]);
+    }
 }
