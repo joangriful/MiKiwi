@@ -140,6 +140,10 @@ Route::prefix('configurador')->group(function () {
     Route::get('/mannequin', function () {
         return Inertia::render('Configurador/MannequinConfigurator');
     })->name('configurador.mannequin');
+
+    Route::get('/cart', function () {
+        return Inertia::render('Cart');
+    })->name('cart.view');
 });
 
 // Ruta antigua estática (Comentada para que no interfiera, puedes borrarla si ya no usas ProductPage)

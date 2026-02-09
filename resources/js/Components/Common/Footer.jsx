@@ -71,9 +71,9 @@ export default function Footer() {
                                 <input
                                     type="email"
                                     placeholder="Tu correo electrónico"
-                                    className="bg-zinc-900/50 border border-zinc-800 text-gray-300 text-sm rounded-lg block w-full p-2.5 focus:ring-[#FF2D20] focus:border-[#FF2D20] outline-none transition-colors"
+                                    className="bg-zinc-900/50 border border-zinc-800 text-gray-300 text-sm rounded-lg block w-full p-2.5 focus:ring-accent focus:border-accent outline-none transition-colors"
                                 />
-                                <button type="submit" className="text-white bg-[#FF2D20] hover:bg-[#d6251b] focus:ring-4 focus:ring-[#FF2D20]/30 font-medium rounded-lg text-sm px-4 py-2.5 transition-all">
+                                <button type="submit" className="text-white bg-accent hover:opacity-90 focus:ring-4 focus:ring-accent/30 font-medium rounded-lg text-sm px-4 py-2.5 transition-all">
                                     Suscribirse
                                 </button>
                             </form>
