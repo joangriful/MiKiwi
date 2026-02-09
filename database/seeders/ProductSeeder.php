@@ -253,7 +253,8 @@ class ProductSeeder extends Seeder
         // ========================================
 
         // Asociar accesorios a Muñeca Elsa (configurable)
-        DB::table('product_accessories')->insert([
+        // Usamos upsert para evitar errores de duplicados si se corre el seeder múltiples veces
+        DB::table('product_accessories')->upsert([
             [
                 'parent_product_id' => $elsa->id,
                 'accessory_product_id' => $ojosAzules->id,
@@ -286,7 +287,12 @@ class ProductSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-        ]);
+        ],
+            // Columnas que forman la clave única para detectar duplicados
+            ['parent_product_id', 'accessory_product_id'],
+            // Columnas a actualizar si ya existe el registro
+            ['is_mandatory', 'group_name', 'updated_at']
+        );
 
         // ========================================
         // 4. PRODUCTOS GENERADOS CON FAKER
@@ -299,11 +305,15 @@ class ProductSeeder extends Seeder
 
         if ($allCategories->isNotEmpty()) {
             $this->command->info('Creando 7 productos adicionales...');
-            Product::factory()->count(7)->make()->each(function ($product) use ($allCategories) {
-                $product->category_id = $allCategories->random()->id;
-                $product->is_adult_only = true;
-                $product->save();
-            });
+
+            // Usamos create() pasando el category_id para evitar que el factory cree categorías nuevas innecesarias
+            // y cause conflictos de unique slug.
+            foreach (range(1, 7) as $i) {
+                Product::factory()->create([
+                    'category_id' => $allCategories->random()->id,
+                    'is_adult_only' => true,
+                ]);
+            }
         } else {
             $this->command->warn('No hay subcategorías para crear productos aleatorios.');
         }
