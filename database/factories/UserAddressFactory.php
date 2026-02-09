@@ -2,17 +2,14 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Model\User;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\UserAddress>
  */
 class UserAddressFactory extends Factory
 {
-
-    protected $model = UserAddress::class;
-
     /**
      * Define the model's default state.
      *
@@ -22,21 +19,21 @@ class UserAddressFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'alias' => ucfirst($this->faker->unique()->word()),
+            'alias' => ucfirst($this->faker->word()).' '.$this->faker->word(),
             'full_name' => $this->faker->name(),
-            'phone' => $this->faker->phoneNumber(),
+            'phone' => $this->faker->regexify('(\+34\s)?[6-9]\d{2}\s?\d{3}\s?\d{3}'),
             'street_address' => $this->faker->streetAddress(),
             'city' => $this->faker->city(),
-            'postal_code' => $this->faker->postCode(),
-            'country' => $this->faker->country(),
+            'postal_code' => $this->faker->regexify('[0-5]\d{4}'),
+            'country' => 'España',
             'is_default' => false,
-            
         ];
     }
 
-    public function default(): static {
+    public function default(): static
+    {
         return $this->state(fn (array $attributes) => [
-            'is_default', true,
+            'is_default' => true,
         ]);
     }
 }

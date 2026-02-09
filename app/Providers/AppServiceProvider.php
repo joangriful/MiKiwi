@@ -2,16 +2,15 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Vite;
-use Illuminate\Support\ServiceProvider;
-
+use App\Repositories\Eloquent\EloquentCategoryRepository;
+use App\Repositories\Eloquent\EloquentOrderRepository;
 // 1. IMPORTANTE: Añade estas líneas para importar tus clases
-use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Repositories\Eloquent\ProductRepository;
 use App\Repositories\Interfaces\CategoryRepositoryInterface;
-use App\Repositories\Eloquent\EloquentCategoryRepository;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
-use App\Repositories\Eloquent\EloquentOrderRepository;
+use App\Repositories\Interfaces\ProductRepositoryInterface;
+use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // 2. Aquí hacemos la conexión (Binding)
         // "Laravel, cuando alguien pida la Interfaz, dale el Repositorio"
-        
+
         // Product Repository
         $this->app->bind(
             ProductRepositoryInterface::class,

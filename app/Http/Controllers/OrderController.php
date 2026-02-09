@@ -6,10 +6,10 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class OrderController extends Controller
 {
@@ -17,13 +17,13 @@ class OrderController extends Controller
     public function create()
     {
         $cart = session()->get('cart', []);
-        
+
         if (empty($cart)) {
             return redirect()->route('colecciones');
         }
 
         // Calculamos total
-        $total = array_reduce($cart, fn($carry, $item) => $carry + ($item['price'] * $item['quantity']), 0);
+        $total = array_reduce($cart, fn ($carry, $item) => $carry + ($item['price'] * $item['quantity']), 0);
 
         return Inertia::render('Checkout/Create', [
             'cart' => $cart,
@@ -52,7 +52,7 @@ class OrderController extends Controller
 
         try {
             DB::transaction(function () use ($request, $cart) {
-                
+
                 // Recalcular total por seguridad
                 $totalAmount = 0;
                 foreach ($cart as $item) {
@@ -63,7 +63,7 @@ class OrderController extends Controller
                 $order = Order::create([
                     'user_id' => Auth::id(),
                     // Generamos un número de orden único
-                    'order_number' => 'ORD-' . strtoupper(Str::random(10)),
+                    'order_number' => 'ORD-'.strtoupper(Str::random(10)),
                     'status' => 'pending',
                     'total_amount' => $totalAmount,
                     'payment_status' => 'pending', // O 'paid' si integras pasarela real
@@ -78,7 +78,7 @@ class OrderController extends Controller
                 foreach ($cart as $details) {
                     // Buscamos el producto real para sacar el SKU si existe
                     $product = Product::find($details['id']);
-                    
+
                     OrderItem::create([
                         'order_id' => $order->id,
                         'product_id' => $product->id,
@@ -90,7 +90,7 @@ class OrderController extends Controller
                     ]);
 
                     // Restar Stock
-                    if($product) {
+                    if ($product) {
                         $product->decrement('stock_quantity', $details['quantity']);
                     }
                 }
@@ -102,7 +102,7 @@ class OrderController extends Controller
             return redirect()->route('orders.success')->with('success', '¡Pedido realizado con éxito!');
 
         } catch (\Exception $e) {
-            return back()->with('error', 'Error al procesar: ' . $e->getMessage());
+            return back()->with('error', 'Error al procesar: '.$e->getMessage());
         }
     }
 
@@ -119,7 +119,7 @@ class OrderController extends Controller
             ->get();
 
         return Inertia::render('Profile/Orders', [
-            'orders' => $orders
+            'orders' => $orders,
         ]);
     }
 }

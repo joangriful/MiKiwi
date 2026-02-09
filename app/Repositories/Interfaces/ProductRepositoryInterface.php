@@ -9,6 +9,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
 interface ProductRepositoryInterface
 {
     public function getActiveBySlug(string $slug): ?Product;
+
     public function getAccessories(string $productId): Collection;
+
     public function getAllActivePaginated(int $perPage = 12): LengthAwarePaginator;
 }

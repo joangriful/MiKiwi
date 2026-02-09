@@ -11,7 +11,7 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         $name = $this->faker->unique()->words(3, true); // Ej: "Satisfyer Pro 2"
-        
+
         return [
             'name' => ucfirst($name),
             'slug' => Str::slug($name),
@@ -20,8 +20,8 @@ class ProductFactory extends Factory
             'base_price' => $this->faker->randomFloat(2, 15, 150), // Entre 15€ y 150€
             'stock_quantity' => $this->faker->numberBetween(0, 50),
             'is_active' => true,
-            'image_url' => 'https://placehold.co/600x600/png?text=' . urlencode($name), // Placeholder dinámico
-            
+            'image_url' => 'https://placehold.co/600x600/png?text='.urlencode($name), // Placeholder dinámico
+
             // Relacionamos con una categoría existente o creamos una nueva si hace falta
             'category_id' => Category::factory(),
         ];

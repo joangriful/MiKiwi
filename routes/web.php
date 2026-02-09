@@ -1,15 +1,14 @@
 <?php
 
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ColeccionesController;
+use App\Http\Controllers\ProductController;
+// 👇 IMPORTAMOS LOS CONTROLADORES DE LA TIENDA
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
-// 👇 IMPORTAMOS LOS CONTROLADORES DE LA TIENDA
-use App\Http\Controllers\ColeccionesController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,7 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     // Perfil visual (si es diferente al de edición)
     Route::get('/perfil', function () {
         return Inertia::render('perfil');
@@ -109,4 +108,4 @@ Route::prefix('configurador')->group(function () {
 //    return Inertia::render('ProductPage');
 // })->name('product');
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
