@@ -1,7 +1,9 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { useState, useRef, useEffect } from 'react';
 
 export default function Header() {
+    const { auth } = usePage().props;
+    const user = auth?.user;
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const searchInputRef = useRef(null);
     const searchContainerRef = useRef(null);
@@ -61,13 +63,15 @@ export default function Header() {
                     </button>
                 </div>
 
-                <button className="hover:opacity-80 transition-opacity">
+                <Link href="/perfil" className="hover:opacity-80 transition-opacity">
                     <span className="material-symbols-outlined text-white text-2xl">person</span>
-                </button>
-
-                <Link href="/components-manager" className="hover:opacity-80 transition-opacity">
-                    <img src="/assets/icons/manager.svg" alt="Manager" className="h-6 w-6 invert brightness-0" />
                 </Link>
+
+                {user?.role === 'admin' && (
+                    <Link href="/components-manager" className="hover:opacity-80 transition-opacity">
+                        <img src="/assets/icons/manager.svg" alt="Manager" className="h-6 w-6 invert brightness-0" />
+                    </Link>
+                )}
 
                 <button className="hover:opacity-80 transition-opacity relative">
                     <img src="/assets/icons/cart.svg" alt="Cart" className="h-6 w-6 invert brightness-0" />

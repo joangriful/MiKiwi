@@ -36,6 +36,15 @@ const ManagerHeader = ({ searchTerm, setSearchTerm, activeManager, setActiveMana
                 >
                     Doll Manager
                 </button>
+                <button
+                    onClick={() => setActiveManager('users')}
+                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeManager === 'users'
+                        ? 'bg-white shadow-sm text-gray-900'
+                        : 'text-gray-500 hover:text-gray-900'
+                        }`}
+                >
+                    Users
+                </button>
             </div>
 
 

@@ -22,7 +22,8 @@ const PreviewContainer = ({ children, title }) => {
             'dollconfigurator': '/configurador/munecas',
             'claimsform': '/formulario-reclamaciones',
             'privacypolicy': '/politica-privacidad',
-            'dollconfigtest': '/doll_config_test'
+            'dollconfigtest': '/doll_config_test',
+            'auth/auth': '/login'
         };
 
         if (routes[lower]) {

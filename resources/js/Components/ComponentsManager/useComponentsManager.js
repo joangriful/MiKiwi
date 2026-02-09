@@ -84,6 +84,12 @@ export const useComponentsManager = () => {
         if (index !== -1) setFocusedIndex(index);
         if (item.isFolder) return;
 
+        // Redirect Auth/Auth to actual login page
+        if (sourceType === 'pages' && item.name === 'Auth/Auth') {
+            window.location.href = '/login';
+            return;
+        }
+
         if (sourceType === 'pages') {
             setSelectedPagePaths(prev => {
                 const next = new Set(prev);

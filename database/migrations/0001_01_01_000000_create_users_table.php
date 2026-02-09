@@ -16,8 +16,8 @@ return new class extends Migration
             $table->uuid('id')->primary(); // MySQL lo convierte a CHAR(36) automáticamente
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('dni', 20)->unique();
-            $table->date('birth_date');
+            $table->string('dni', 20)->unique()->nullable();
+            $table->date('birth_date')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
 

@@ -115,26 +115,35 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::get('/components-manager', function () {
-    // Shared Cloudinary Cache Logic
-    // In local, cache for 5 seconds to allow quick updates. In production, 1 hour.
-    $cacheDuration = app()->environment('local') ? 5 : 3600;
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/components-manager', function () {
+        // Shared Cloudinary Cache Logic
+        // In local, cache for 5 seconds to allow quick updates. In production, 1 hour.
+        $cacheDuration = app()->environment('local') ? 5 : 3600;
+        
+        $views = Cache::remember('doll_parts_cloudinary', $cacheDuration, function () {
+            $service = new CloudinaryService();
+            return $service->listDollParts();
+        });
+
+        $settingsController = new App\Http\Controllers\DollSettingsController();
+        $defaultSettings = $settingsController->getSettings();
+
+        // Fetch users for Admin Manager
+        $users = \App\Models\User::all(['id', 'name', 'email', 'username', 'role', 'created_at']);
+
+        return Inertia::render('ComponentsManager', [
+            'views' => $views,
+            'defaultSettings' => $defaultSettings,
+            'users' => $users
+        ]);
+    })->name('components.manager');
+
+    Route::post('/doll-settings', [App\Http\Controllers\DollSettingsController::class, 'saveSettings'])->name('doll.settings.save');
     
-    $views = Cache::remember('doll_parts_cloudinary', $cacheDuration, function () {
-        $service = new CloudinaryService();
-        return $service->listDollParts();
-    });
-
-    $settingsController = new App\Http\Controllers\DollSettingsController();
-    $defaultSettings = $settingsController->getSettings();
-
-    return Inertia::render('ComponentsManager', [
-        'views' => $views,
-        'defaultSettings' => $defaultSettings
-    ]);
-})->name('components.manager');
-
-Route::post('/doll-settings', [App\Http\Controllers\DollSettingsController::class, 'saveSettings'])->name('doll.settings.save');
+    // User Management
+    Route::post('/users/{user}/toggle-role', [App\Http\Controllers\UserController::class, 'toggleAdmin'])->name('users.toggleRole');
+});
 
 Route::get('/formulario-reclamaciones', function () {
     return Inertia::render('ClaimsForm');

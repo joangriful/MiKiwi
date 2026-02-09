@@ -5,10 +5,11 @@ import ManagerHeader from '../Components/ComponentsManager/ManagerHeader';
 import ManagerSidebar from '../Components/ComponentsManager/ManagerSidebar';
 import SingleComponentView from '../Components/ComponentsManager/SingleComponentView';
 import PagesGridView from '../Components/ComponentsManager/PagesGridView';
+import UsersManager from '../Components/ComponentsManager/UsersManager'; // Imported
 import { useComponentsManager } from '../Components/ComponentsManager/useComponentsManager';
 
-export default function ComponentsManager({ views, defaultSettings }) {
-    const [activeManager, setActiveManager] = useState('components'); // 'components' | 'doll'
+export default function ComponentsManager({ views, defaultSettings, users }) { // Added users prop
+    const [activeManager, setActiveManager] = useState('components'); // 'components' | 'doll' | 'users'
 
     const {
         sourceType, setSourceType,
@@ -49,7 +50,7 @@ export default function ComponentsManager({ views, defaultSettings }) {
             />
 
             <div className="flex-1 overflow-hidden relative">
-                {activeManager === 'components' ? (
+                {activeManager === 'components' && (
                     <div className="flex h-full">
                         <ManagerSidebar
                             sourceType={sourceType}
@@ -84,8 +85,14 @@ export default function ComponentsManager({ views, defaultSettings }) {
                             )}
                         </main>
                     </div>
-                ) : (
+                )}
+
+                {activeManager === 'doll' && (
                     <DollManager ref={dollManagerRef} views={views} defaultSettings={defaultSettings} />
+                )}
+
+                {activeManager === 'users' && (
+                    <UsersManager users={users} />
                 )}
             </div>
         </div>
