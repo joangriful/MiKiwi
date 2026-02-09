@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        // 2. Cliente
+        // 2. Cliente de prueba específico
         User::create([
             'name' => 'Juan Cliente',
             'email' => 'juan@test.com',
@@ -29,5 +29,10 @@ class UserSeeder extends Seeder
             'birth_date' => '2000-05-20',
             'role' => 'customer',
         ]);
+
+        // 3. Clientes adicionales generados con factory
+        User::factory()->count(20)->customer()->create();
+
+        $this->command->info('✅ Usuarios creados: 23 total (1 admin + 1 test + 20 aleatorios)');
     }
 }
