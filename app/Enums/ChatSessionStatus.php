@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum ChatSessionsStatus: string
+enum ChatSessionStatus: string
 {
     case Active = 'active';
     case Closed = 'closed';
