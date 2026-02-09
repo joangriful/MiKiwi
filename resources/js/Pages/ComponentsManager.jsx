@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import DollManager from '../Components/DollManager/DollManager';
 import { Head } from '@inertiajs/react';
+import Header from '../Components/Common/Header';
 import ManagerHeader from '../Components/ComponentsManager/ManagerHeader';
 import ManagerSidebar from '../Components/ComponentsManager/ManagerSidebar';
 import SingleComponentView from '../Components/ComponentsManager/SingleComponentView';
 import PagesGridView from '../Components/ComponentsManager/PagesGridView';
-import UsersManager from '../Components/ComponentsManager/UsersManager'; // Imported
+import UsersManager from '../Components/ComponentsManager/UsersManager';
+import ContentManager from '../Components/ComponentsManager/ContentManager';
 import { useComponentsManager } from '../Components/ComponentsManager/useComponentsManager';
 
-export default function ComponentsManager({ views, defaultSettings, users }) { // Added users prop
-    const [activeManager, setActiveManager] = useState('components'); // 'components' | 'doll' | 'users'
+export default function ComponentsManager({ views, defaultSettings, users, heroImages }) {
+    const [activeManager, setActiveManager] = useState('components'); // 'components' | 'doll' | 'users' | 'content'
 
     const {
         sourceType, setSourceType,
@@ -39,6 +41,9 @@ export default function ComponentsManager({ views, defaultSettings, users }) { /
     return (
         <div className="h-screen flex flex-col bg-white font-sans overflow-hidden select-none cursor-default">
             <Head title="Components Manager" />
+
+            {/* Main Site Header */}
+            <Header />
 
             {/* Unified Manager Header */}
             <ManagerHeader
@@ -93,6 +98,10 @@ export default function ComponentsManager({ views, defaultSettings, users }) { /
 
                 {activeManager === 'users' && (
                     <UsersManager users={users} />
+                )}
+
+                {activeManager === 'content' && (
+                    <ContentManager heroImages={heroImages} />
                 )}
             </div>
         </div>

@@ -31,13 +31,13 @@ export default function Header() {
     return (
         <div className="flex items-center justify-between px-6 bg-black h-[60px] shadow-md">
             {/* Left: Logo */}
-            <div className="flex items-center h-full py-[5px] pl-[5px]">
+            <Link href={route('home')} className="flex items-center h-full py-[5px] pl-[5px]">
                 <img
                     src="/assets/icons/mikiwi_logo.svg"
                     alt="MiKiwi Logo"
                     className="h-full w-auto invert brightness-0"
                 />
-            </div>
+            </Link>
 
             {/* Right: Icons (Search, Profile, Cart) */}
             <div className="flex items-center gap-6">

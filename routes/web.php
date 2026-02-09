@@ -23,13 +23,11 @@ use App\Http\Controllers\UserAddressController;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
+    $heroImages = \App\Models\HeroImage::orderBy('created_at', 'desc')->get();
+    return Inertia::render('Home', [
+        'heroImages' => $heroImages
     ]);
-});
+})->name('home');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -133,10 +131,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
         // Fetch users for Admin Manager
         $users = \App\Models\User::all(['id', 'name', 'email', 'username', 'role', 'created_at']);
 
+        // Fetch hero images for Content Manager
+        $heroImages = \App\Models\HeroImage::orderBy('created_at', 'desc')->get();
+
         return Inertia::render('ComponentsManager', [
             'views' => $views,
             'defaultSettings' => $defaultSettings,
-            'users' => $users
+            'users' => $users,
+            'heroImages' => $heroImages
         ]);
     })->name('components.manager');
 
@@ -144,6 +146,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     
     // User Management
     Route::post('/users/{user}/toggle-role', [App\Http\Controllers\UserController::class, 'toggleAdmin'])->name('users.toggleRole');
+    
+    // Content Management
+    Route::post('/content/hero/upload', [App\Http\Controllers\ContentController::class, 'uploadHeroImages'])->name('content.hero.upload');
+    Route::delete('/content/hero/{heroImage}', [App\Http\Controllers\ContentController::class, 'deleteHeroImage'])->name('content.hero.delete');
 });
 
 Route::get('/formulario-reclamaciones', function () {
