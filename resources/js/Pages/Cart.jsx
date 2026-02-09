@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
-import CartStep from './Checkout/Steps/CartStep';
-import InfoStep from './Checkout/Steps/InfoStep';
-import ShippingStep from './Checkout/Steps/ShippingStep';
-import PaymentStep from './Checkout/Steps/PaymentStep';
+import CartStep from '@/Components/Checkout/CartStep';
+import InfoStep from '@/Components/Checkout/InfoStep';
+import ShippingStep from '@/Components/Checkout/ShippingStep';
+import PaymentStep from '@/Components/Checkout/PaymentStep';
 import Header from '@/Components/Common/Header';
 import Footer from '@/Components/Common/Footer';
 
