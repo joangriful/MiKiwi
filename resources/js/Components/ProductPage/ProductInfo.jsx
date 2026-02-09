@@ -1,6 +1,6 @@
 export default function ProductInfo() {
     return (
-        <div className="h-full w-full flex flex-col p-6 border-dashed border-orange-500 overflow-y-auto">
+        <div className="h-full w-full flex flex-col p-6 overflow-y-auto">
             <div className="flex justify-between items-start mb-2">
                 <h1 className="text-3xl font-bold text-gray-800">Kiwi Premium</h1>
                 <span className="material-symbols-outlined text-gray-400 hover:text-red-500 cursor-pointer">favorite</span>

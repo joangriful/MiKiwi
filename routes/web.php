@@ -3,7 +3,10 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\File;
 use Inertia\Inertia;
+use App\Services\CloudinaryService;
+use Illuminate\Support\Facades\Cache;
 
 // 👇 IMPORTAMOS LOS CONTROLADORES DE LA TIENDA
 use App\Http\Controllers\ColeccionesController;
@@ -113,8 +116,33 @@ Route::middleware('auth')->group(function () {
 */
 
 Route::get('/components-manager', function () {
-    return Inertia::render('ComponentsManager');
+    // Shared Cloudinary Cache Logic
+    // In local, cache for 5 seconds to allow quick updates. In production, 1 hour.
+    $cacheDuration = app()->environment('local') ? 5 : 3600;
+    
+    $views = Cache::remember('doll_parts_cloudinary', $cacheDuration, function () {
+        $service = new CloudinaryService();
+        return $service->listDollParts();
+    });
+
+    $settingsController = new App\Http\Controllers\DollSettingsController();
+    $defaultSettings = $settingsController->getSettings();
+
+    return Inertia::render('ComponentsManager', [
+        'views' => $views,
+        'defaultSettings' => $defaultSettings
+    ]);
 })->name('components.manager');
+
+Route::post('/doll-settings', [App\Http\Controllers\DollSettingsController::class, 'saveSettings'])->name('doll.settings.save');
+
+Route::get('/formulario-reclamaciones', function () {
+    return Inertia::render('ClaimsForm');
+})->name('claims.form');
+
+Route::get('/politica-privacidad', function () {
+    return Inertia::render('PrivacyPolicy');
+})->name('privacy.policy');
 
 Route::prefix('configurador')->group(function () {
     Route::get('/', function () {
@@ -141,6 +169,25 @@ Route::prefix('configurador')->group(function () {
         return Inertia::render('Cart');
     })->name('cart.view');
 });
+
+Route::get('/doll_config_test', function () {
+    // Cache the Cloudinary response for 1 hour (3600 seconds) in production, 5s in local
+    // to avoid hitting API limits and improve load time.
+    $cacheDuration = app()->environment('local') ? 5 : 3600;
+
+    $views = Cache::remember('doll_parts_cloudinary', $cacheDuration, function () {
+        $service = new CloudinaryService();
+        return $service->listDollParts();
+    });
+
+    $settingsController = new App\Http\Controllers\DollSettingsController();
+    $defaultSettings = $settingsController->getSettings();
+
+    return Inertia::render('DollConfigTest', [
+        'views' => $views,
+        'defaultSettings' => $defaultSettings
+    ]);
+})->name('doll.config.test');
 
 // Ruta antigua estática (Comentada para que no interfiera, puedes borrarla si ya no usas ProductPage)
 // Route::get('/product', function () {
