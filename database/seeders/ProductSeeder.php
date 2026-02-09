@@ -25,6 +25,13 @@ class ProductSeeder extends Seeder
         // ========================================
 
         $catMunecasPremium = Category::where('slug', 'munecas-premium')->first();
+
+        if (! $catMunecasPremium) {
+            $this->command->error('❌ No se encontraron las categorías. Ejecuta CategorySeeder primero.');
+
+            return;
+        }
+
         $catMunecasBasicas = Category::where('slug', 'munecas-basicas')->first();
         $catVibradores = Category::where('slug', 'vibradores')->first();
         $catLubricantesAgua = Category::where('slug', 'base-agua')->first();
@@ -266,14 +273,20 @@ class ProductSeeder extends Seeder
         // 30% productos generados (7 productos adicionales aprox)
         $allCategories = Category::whereNotNull('parent_id')->get(); // Solo subcategorías
 
+        $this->command->info('Categorías encontradas: '.$allCategories->count());
+
         if ($allCategories->isNotEmpty()) {
-            Product::factory()->count(7)->create([
-                'category_id' => $allCategories->random()->id,
-                'is_adult_only' => true,
-            ]);
+            $this->command->info('Creando 7 productos adicionales...');
+            Product::factory()->count(7)->make()->each(function ($product) use ($allCategories) {
+                $product->category_id = $allCategories->random()->id;
+                $product->is_adult_only = true;
+                $product->save();
+            });
+        } else {
+            $this->command->warn('No hay subcategorías para crear productos aleatorios.');
         }
 
-        $this->command->info('✅ Productos creados: 18 productos realistas + 7 generados = 25 productos totales');
+        $this->command->info('✅ Productos creados: 11 productos realistas + 7 generados = 18 productos totales');
         $this->command->info('✅ Accesorios configurados: 4 opciones para Muñeca Elsa');
     }
 }

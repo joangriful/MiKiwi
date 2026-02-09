@@ -69,7 +69,7 @@ class DatabaseSeeder extends Seeder
             ['Entidad', 'Cantidad Aproximada'],
             [
                 ['Categorías', '~12 (5 raíz + 7 subcategorías)'],
-                ['Productos', '~25 (18 reales + 7 generados)'],
+                ['Productos', '~18 (11 reales + 7 generados)'],
                 ['Usuarios', '~25 (admin + clientes)'],
                 ['Direcciones', '~5-10'],
                 ['Órdenes', '~15-20'],
