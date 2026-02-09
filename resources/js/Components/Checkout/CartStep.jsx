@@ -5,7 +5,7 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
     const { delete: destroy, patch, processing } = useForm();
 
     const addToCart = (product) => {
-        router.post(route('cart.store'), {
+        router.post(route('cart.add'), {
             product_slug: product.slug,
             quantity: 1
         }, {
@@ -24,7 +24,7 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
 
     const removeItem = (id) => {
         if (confirm('¿Estás seguro de eliminar este producto?')) {
-            destroy(route('cart.destroy', id), {
+            destroy(route('cart.remove', id), {
                 preserveScroll: true,
             });
         }
