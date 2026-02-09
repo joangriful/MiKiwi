@@ -76,8 +76,22 @@ class CatalogSeeder extends Seeder
         else {
             // Asegúrate que la tabla se llame 'product_accessories' o la que hayas definido
             DB::table('product_accessories')->insert([
-                ['product_id' => $elsa->id, 'accessory_id' => $ojosAzules->id],
-                ['product_id' => $elsa->id, 'accessory_id' => $pelucaRubia->id],
+                [
+                    'parent_product_id' => $elsa->id,
+                    'accessory_product_id' => $ojosAzules->id,
+                    'is_mandatory' => false,
+                    'group_name' => 'Ojos',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'parent_product_id' => $elsa->id,
+                    'accessory_product_id' => $pelucaRubia->id,
+                    'is_mandatory' => false,
+                    'group_name' => 'Cabello',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
             ]);
         }
 
