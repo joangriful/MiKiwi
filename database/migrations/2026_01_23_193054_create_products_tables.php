@@ -34,6 +34,7 @@ return new class extends Migration
             $table->enum('product_type', ['simple', 'configurable', 'component'])->default('simple');
             $table->boolean('is_adult_only')->default(true);
 
+            $table->string('image_url')->nullable();
             $table->json('images')->nullable(); // CAMBIO: de jsonb a json
 
             $table->timestamps();
@@ -41,7 +42,7 @@ return new class extends Migration
         });
 
         Schema::create('product_accessories', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            // $table->uuid('id')->primary();
             $table->foreignUuid('parent_product_id')->constrained('products')->cascadeOnDelete();
             $table->foreignUuid('accessory_product_id')->constrained('products')->cascadeOnDelete();
             $table->boolean('is_mandatory')->default(false);
