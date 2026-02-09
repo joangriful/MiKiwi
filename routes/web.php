@@ -144,6 +144,10 @@ Route::prefix('configurador')->group(function () {
     Route::get('/cart', function () {
         return Inertia::render('Cart');
     })->name('cart.view');
+
+    // Gestión de Productos
+    Route::get('/products/create', [\App\Http\Controllers\Admin\ProductAdminController::class, 'index'])->name('products.create');
+    Route::post('/products', [\App\Http\Controllers\Admin\ProductAdminController::class, 'store'])->name('products.store');
 });
 
 // Ruta antigua estática (Comentada para que no interfiera, puedes borrarla si ya no usas ProductPage)
