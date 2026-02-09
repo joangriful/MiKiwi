@@ -6,7 +6,7 @@ import '../../css/configurador.css';
 
 export default function ConfiguradorLayout({ children }) {
     return (
-        <div className="min-h-screen flex flex-col justify-between">
+        <div className="min-h-screen flex flex-col justify-between cursor-default select-none">
             <div>
                 <Header />
                 <SubHeader />

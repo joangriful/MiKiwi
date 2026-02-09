@@ -2,16 +2,24 @@ import React from 'react';
 import ConfiguradorLayout from '@/Layouts/ConfiguradorLayout';
 import { Head, Link } from '@inertiajs/react';
 
-export default function Home() {
+export default function Home({ heroImages = [] }) {
     return (
         <ConfiguradorLayout>
             <Head title="Home | Configurator" />
 
             {/* --- HERO: ECLIPSE --- */}
-            <section className="relative h-screen flex items-center justify-center overflow-hidden bg-white">
-                <div className="absolute inset-0 z-0">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-radial-gradient from-[rgba(153,184,73,0.05)] to-transparent rounded-full animate-slow-float opacity-30"></div>
-                </div>
+            <section className="relative h-[calc(100vh-60px)] flex items-center justify-center overflow-hidden bg-white cursor-default select-none">
+                {/* Background Image */}
+                {heroImages.length > 0 && (
+                    <div className="absolute inset-0 z-0">
+                        <img
+                            src={heroImages[0].url}
+                            alt="Hero background"
+                            className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/20"></div>
+                    </div>
+                )}
 
                 <div className="relative z-10 text-center px-[5%]">
                     <span className="block text-[0.7rem] uppercase tracking-[8px] font-black text-[var(--text-muted)] mb-[30px] animate-fade-in-slide">
@@ -23,21 +31,6 @@ export default function Home() {
                     <p className="max-w-[600px] mx-auto text-[1.1rem] md:text-[1.4rem] text-[var(--text-muted)] font-medium leading-relaxed mb-[60px] animate-fade-in-slide">
                         Donde la tecnología de precisión se encuentra con la profundidad sensorial.
                     </p>
-
-                    <div className="flex flex-col md:flex-row gap-[20px] justify-center items-center animate-fade-in-slide">
-                        <Link
-                            href="/configurador/wizard"
-                            className="px-[40px] py-[20px] bg-[var(--text-main)] text-white text-[0.75rem] font-black tracking-[4px] uppercase hover:bg-[var(--color-primary)] transition-all"
-                        >
-                            Configuración Personal
-                        </Link>
-                        <Link
-                            href="/configurador/collections"
-                            className="px-[40px] py-[20px] border border-[var(--border)] text-[var(--text-main)] text-[0.75rem] font-black tracking-[4px] uppercase hover:bg-[var(--bg-main)] transition-all"
-                        >
-                            Explorar Archivo
-                        </Link>
-                    </div>
                 </div>
 
                 <div className="absolute bottom-[50px] left-1/2 -translate-x-1/2 text-[0.6rem] uppercase tracking-[4px] font-black text-[var(--border)] animate-pulse">

@@ -45,6 +45,15 @@ const ManagerHeader = ({ searchTerm, setSearchTerm, activeManager, setActiveMana
                 >
                     Users
                 </button>
+                <button
+                    onClick={() => setActiveManager('content')}
+                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeManager === 'content'
+                        ? 'bg-white shadow-sm text-gray-900'
+                        : 'text-gray-500 hover:text-gray-900'
+                        }`}
+                >
+                    Contenido
+                </button>
             </div>
 
 

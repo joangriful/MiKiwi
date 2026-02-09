@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Api\Search\SearchApi;
+use Cloudinary\Api\Upload\UploadApi;
 
 class CloudinaryService
 {
@@ -201,6 +202,54 @@ class CloudinaryService
         } catch (\Exception $e) {
             \Log::error('Cloudinary fetch failed: ' . $e->getMessage());
             return ['front' => [], 'back' => []];
+        }
+    }
+
+    /**
+     * Upload an image to Cloudinary
+     * 
+     * @param \Illuminate\Http\UploadedFile $file
+     * @param string $folder
+     * @return array Cloudinary response with public_id, secure_url, width, height
+     */
+    public function uploadImage($file, $folder = 'hero_images')
+    {
+        try {
+            $uploadApi = new UploadApi();
+            $uploadResult = $uploadApi->upload($file->getRealPath(), [
+                'folder' => $folder,
+                'resource_type' => 'image',
+                'transformation' => [
+                    'quality' => 'auto',
+                    'fetch_format' => 'auto'
+                ]
+            ]);
+
+            return $uploadResult;
+        } catch (\Exception $e) {
+            \Log::error('Cloudinary upload error: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Delete an image from Cloudinary
+     * 
+     * @param string $publicId
+     * @return array Cloudinary response
+     */
+    public function deleteImage($publicId)
+    {
+        try {
+            $uploadApi = new UploadApi();
+            $result = $uploadApi->destroy($publicId, [
+                'resource_type' => 'image'
+            ]);
+
+            return $result;
+        } catch (\Exception $e) {
+            \Log::error('Cloudinary delete error: ' . $e->getMessage());
+            throw $e;
         }
     }
 }
