@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
             'dni' => '00000000A',
             'birth_date' => '1990-01-01',
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
 
         // 2. Cliente
@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
             'dni' => '12345678Z',
             'birth_date' => '2000-05-20',
-            'role' => 'customer'
+            'role' => 'customer',
         ]);
     }
 }
