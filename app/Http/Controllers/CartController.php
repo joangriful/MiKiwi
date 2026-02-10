@@ -24,14 +24,15 @@ class CartController extends Controller
     {
         $cart = $this->cartService->getCart();
         $popularProducts = \App\Models\Product::where('is_active', true)
-            ->where('product_type', 'configurable') // Or any criteria for popular
-            ->limit(4)
+            ->whereIn('product_type', ['configurable', 'simple'])
+            ->limit(8)
             ->get();
 
         return Inertia::render('Cart', [
             'cart' => $cart,
             'popularProducts' => $popularProducts,
-            'pageTitle' => 'Carrito de Compras - MiKiwi'
+            'pageTitle' => 'Carrito de Compras - MiKiwi',
+            'stripeKey' => config('services.stripe.key'),
         ]);
     }
 
