@@ -22,102 +22,78 @@ class CategorySeeder extends Seeder
         // 1. CATEGORÍAS RAÍZ (Principales)
         // ========================================
 
-        $munecas = Category::create([
-            'name' => 'Muñecas Realistas',
-            'slug' => 'munecas-realistas',
-            'is_active' => true,
-            'parent_id' => null,
-        ]);
+        $munecas = Category::firstOrCreate(
+            ['slug' => 'munecas-realistas'],
+            ['name' => 'Muñecas Realistas', 'is_active' => true, 'parent_id' => null]
+        );
 
-        $juguetes = Category::create([
-            'name' => 'Juguetes Íntimos',
-            'slug' => 'juguetes-intimos',
-            'is_active' => true,
-            'parent_id' => null,
-        ]);
+        $juguetes = Category::firstOrCreate(
+            ['slug' => 'juguetes-intimos'],
+            ['name' => 'Juguetes Íntimos', 'is_active' => true, 'parent_id' => null]
+        );
 
-        $lubricantes = Category::create([
-            'name' => 'Lubricantes',
-            'slug' => 'lubricantes',
-            'is_active' => true,
-            'parent_id' => null,
-        ]);
+        $lubricantes = Category::firstOrCreate(
+            ['slug' => 'lubricantes'],
+            ['name' => 'Lubricantes', 'is_active' => true, 'parent_id' => null]
+        );
 
-        $lenceria = Category::create([
-            'name' => 'Lencería',
-            'slug' => 'lenceria',
-            'is_active' => true,
-            'parent_id' => null,
-        ]);
+        $lenceria = Category::firstOrCreate(
+            ['slug' => 'lenceria'],
+            ['name' => 'Lencería', 'is_active' => true, 'parent_id' => null]
+        );
 
-        $componentes = Category::create([
-            'name' => 'Componentes',
-            'slug' => 'componentes',
-            'is_active' => true,
-            'parent_id' => null,
-        ]);
+        $componentes = Category::firstOrCreate(
+            ['slug' => 'componentes'],
+            ['name' => 'Componentes', 'is_active' => true, 'parent_id' => null]
+        );
 
         // ========================================
         // 2. SUBCATEGORÍAS - Muñecas
         // ========================================
 
-        Category::create([
-            'name' => 'Muñecas Premium',
-            'slug' => 'munecas-premium',
-            'is_active' => true,
-            'parent_id' => $munecas->id,
-        ]);
+        Category::firstOrCreate(
+            ['slug' => 'munecas-premium'],
+            ['name' => 'Muñecas Premium', 'is_active' => true, 'parent_id' => $munecas->id]
+        );
 
-        Category::create([
-            'name' => 'Muñecas Básicas',
-            'slug' => 'munecas-basicas',
-            'is_active' => true,
-            'parent_id' => $munecas->id,
-        ]);
+        Category::firstOrCreate(
+            ['slug' => 'munecas-basicas'],
+            ['name' => 'Muñecas Básicas', 'is_active' => true, 'parent_id' => $munecas->id]
+        );
 
         // ========================================
         // 3. SUBCATEGORÍAS - Juguetes Íntimos
         // ========================================
 
-        Category::create([
-            'name' => 'Vibradores',
-            'slug' => 'vibradores',
-            'is_active' => true,
-            'parent_id' => $juguetes->id,
-        ]);
+        Category::firstOrCreate(
+            ['slug' => 'vibradores'],
+            ['name' => 'Vibradores', 'is_active' => true, 'parent_id' => $juguetes->id]
+        );
 
-        Category::create([
-            'name' => 'Dildos',
-            'slug' => 'dildos',
-            'is_active' => true,
-            'parent_id' => $juguetes->id,
-        ]);
+        Category::firstOrCreate(
+            ['slug' => 'dildos'],
+            ['name' => 'Dildos', 'is_active' => true, 'parent_id' => $juguetes->id]
+        );
 
-        Category::create([
-            'name' => 'Anillos Vibradores',
-            'slug' => 'anillos-vibradores',
-            'is_active' => true,
-            'parent_id' => $juguetes->id,
-        ]);
+        Category::firstOrCreate(
+            ['slug' => 'anillos-vibradores'],
+            ['name' => 'Anillos Vibradores', 'is_active' => true, 'parent_id' => $juguetes->id]
+        );
 
         // ========================================
         // 4. SUBCATEGORÍAS - Lubricantes
         // ========================================
 
-        Category::create([
-            'name' => 'Base Agua',
-            'slug' => 'base-agua',
-            'is_active' => true,
-            'parent_id' => $lubricantes->id,
-        ]);
+        Category::firstOrCreate(
+            ['slug' => 'base-agua'],
+            ['name' => 'Base Agua', 'is_active' => true, 'parent_id' => $lubricantes->id]
+        );
 
-        Category::create([
-            'name' => 'Base Silicona',
-            'slug' => 'base-silicona',
-            'is_active' => true,
-            'parent_id' => $lubricantes->id,
-        ]);
+        Category::firstOrCreate(
+            ['slug' => 'base-silicona'],
+            ['name' => 'Base Silicona', 'is_active' => true, 'parent_id' => $lubricantes->id]
+        );
 
-        $this->command->info('✅ Categorías creadas: 12 categorías (5 raíz + 7 subcategorías)');
+        $this->command->info('✅ Categorías verificadas/creadas');
     }
 }

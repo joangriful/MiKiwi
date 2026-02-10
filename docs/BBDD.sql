@@ -63,12 +63,12 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     
-    -- DATOS LEGALES (Requeridos para +18)
-    dni VARCHAR(20) NOT NULL UNIQUE, 
-    birth_date DATE NOT NULL,
+    -- DATOS LEGALES (Opcionales hasta el checkout)
+    -- Se validarán en el proceso de compra para garantizar +18
+    dni VARCHAR(20) UNIQUE, 
+    birth_date DATE,
     
-    -- Constraint de Seguridad: La BBDD rechaza insertar si es menor de 18
-    CONSTRAINT check_is_adult CHECK (birth_date <= (CURRENT_DATE - INTERVAL '18 years')),
+    -- Nota: La validación de edad (+18) se hace en la aplicación durante el checkout
 
     role VARCHAR(50) DEFAULT 'customer' CHECK (role IN ('customer', 'admin', 'support')),
     is_active BOOLEAN DEFAULT TRUE,
