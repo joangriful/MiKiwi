@@ -93,6 +93,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // Profile image and banner uploads
+    Route::post('/profile/image', [ProfileController::class, 'updateProfileImage'])->name('profile.image.update');
+    Route::post('/profile/banner', [ProfileController::class, 'updateBanner'])->name('profile.banner.update');
 
     // Perfil visual (si es diferente al de edición)
     Route::get('/perfil', function () {
@@ -150,15 +154,26 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Content Management
     Route::post('/content/hero/upload', [App\Http\Controllers\ContentController::class, 'uploadHeroImages'])->name('content.hero.upload');
     Route::delete('/content/hero/{heroImage}', [App\Http\Controllers\ContentController::class, 'deleteHeroImage'])->name('content.hero.delete');
+    
+    // Newsletter
+    Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 });
 
 Route::get('/formulario-reclamaciones', function () {
     return Inertia::render('ClaimsForm');
-})->name('claims.form');
+})->name('formulario.reclamaciones');
+
+Route::get('/politica-cookies', function () {
+    return Inertia::render('CookiePolicy');
+})->name('politica.cookies');
 
 Route::get('/politica-privacidad', function () {
     return Inertia::render('PrivacyPolicy');
-})->name('privacy.policy');
+})->name('politica.privacidad');
+
+Route::get('/sobre-nosotros', function () {
+    return Inertia::render('AboutUs');
+})->name('sobre.nosotros');
 
 Route::prefix('configurador')->group(function () {
     Route::get('/', function () {

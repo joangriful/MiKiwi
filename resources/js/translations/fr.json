@@ -1,0 +1,67 @@
+{
+    "aboutUs": {
+        "title": "À Propos",
+        "whoWeAre": {
+            "title": "Qui Sommes-Nous",
+            "text1": "MiKiwi est une plateforme e-commerce innovante spécialisée dans le bien-être sexuel personnalisé. Nous sommes nés avec la vision de transformer l'industrie en offrant des produits entièrement personnalisables sur demande, éliminant les limitations des catalogues génériques traditionnels.",
+            "text2": "En tant que startup technologique, nous combinons innovation, design et un profond engagement éthique pour créer des expériences uniques qui s'adaptent parfaitement aux besoins individuels de chaque personne."
+        },
+        "mission": {
+            "title": "Notre Mission",
+            "text": "Démocratiser l'épanouissement sexuel en offrant à chaque individu la possibilité de co-créer des outils de plaisir uniques, personnalisés sur demande, avec un engagement inébranlable envers l'inclusion, la sécurité et la discrétion."
+        },
+        "vision": {
+            "title": "Notre Vision",
+            "text": "Être la référence mondiale du bien-être sexuel personnalisé, en éliminant la standardisation et en normalisant l'auto-exploration comme composante essentielle de la santé holistique. Nous aspirons à être la plateforme qui transforme le tabou en technologie et l'incertitude en confiance."
+        },
+        "values": {
+            "title": "Nos Valeurs",
+            "inclusion": {
+                "title": "Inclusion",
+                "text": "Nous garantissons que la recherche du plaisir soit accessible et respectueuse pour tous les corps et toutes les identités, y compris la communauté LGTBQ+."
+            },
+            "trust": {
+                "title": "Confiance et Éthique",
+                "text": "Nous maintenons un engagement absolu envers la discrétion du client et la sécurité du produit, en n'utilisant que des matériaux certifiés."
+            },
+            "wellness": {
+                "title": "Épanouissement et Bien-Être",
+                "text": "Nous promouvons la sexualité comme pilier fondamental de la santé holistique et encourageons l'auto-exploration positive."
+            },
+            "innovation": {
+                "title": "Innovation Technologique",
+                "text": "Nous utilisons des solutions de pointe, comme la co-création sur demande, pour résoudre les vrais problèmes des consommateurs."
+            }
+        },
+        "valueProposition": {
+            "title": "Notre Proposition de Valeur",
+            "intro": "MiKiwi résout la principale friction des consommateurs dans le secteur : l'incertitude. Grâce à notre configurateur innovant sur demande, nous éliminons les doutes sur l'ajustement, le matériau et la fonctionnalité du produit.",
+            "features": {
+                "customization": {
+                    "title": "Personnalisation Totale:",
+                    "text": "Concevez votre produit selon vos besoins anatomiques, fonctionnels et esthétiques."
+                },
+                "quality": {
+                    "title": "Qualité Premium:",
+                    "text": "Matériaux certifiés et processus de fabrication de haute valeur."
+                },
+                "discretion": {
+                    "title": "Discrétion Absolue:",
+                    "text": "Expédition et facturation entièrement confidentielles."
+                },
+                "experience": {
+                    "title": "Expérience Unique:",
+                    "text": "Technologie avancée pour une expérience d'achat fluide et sécurisée."
+                }
+            }
+        },
+        "contact": {
+            "title": "Vous avez une question?",
+            "text": "Nous sommes là pour vous aider. N'hésitez pas à nous contacter."
+        },
+        "footer": {
+            "tagline": "MiKiwi - Innovation, Inclusion et Bien-Être",
+            "address": "Pago Valdeconejos, s/n, 11550 Chipiona, Cadix, Espagne"
+        }
+    }
+}
