@@ -174,12 +174,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 Route::get('/formulario-reclamaciones', function () {
     return Inertia::render('ClaimsForm');
-<<<<<<< HEAD
-})->name('claims.form');
-Route::get('/politica-privacidad', function () {
-    return Inertia::render('PrivacyPolicy');
-})->name('privacy.policy');
-=======
 })->name('formulario.reclamaciones');
 
 Route::get('/politica-cookies', function () {
@@ -193,7 +187,6 @@ Route::get('/politica-privacidad', function () {
 Route::get('/sobre-nosotros', function () {
     return Inertia::render('AboutUs');
 })->name('sobre.nosotros');
->>>>>>> 1bfc2a7c9a53466d324d50f43afab6305a433166
 
 Route::prefix('configurador')->group(function () {
     Route::get('/', function () {
