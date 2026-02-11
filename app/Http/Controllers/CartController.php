@@ -33,6 +33,7 @@ class CartController extends Controller
             'popularProducts' => $popularProducts,
             'pageTitle' => 'Carrito de Compras - MiKiwi',
             'stripeKey' => config('services.stripe.key'),
+            'coupon' => session('coupon'),
         ]);
     }
 
@@ -110,23 +111,16 @@ class CartController extends Controller
      * Eliminar producto del carrito
      * 
      * @param string $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(string $id)
     {
         try {
-            $cart = $this->cartService->removeFromCart($id);
+            $this->cartService->removeFromCart($id);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Producto eliminado del carrito',
-                'cart' => $cart
-            ]);
+            return redirect()->back()->with('success', 'Producto eliminado del carrito');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 400);
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 

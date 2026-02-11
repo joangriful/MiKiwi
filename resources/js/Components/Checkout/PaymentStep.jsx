@@ -50,7 +50,7 @@ export default function PaymentStep({ data, setData, onSubmit, onBack, processin
                     </div>
 
                     <div className="space-y-4 px-4 pb-4">
-                        <div className="bg-white p-4 rounded-lg border border-gray-200 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+                        <div className="bg-white p-4 rounded-lg border border-gray-200 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all min-h-[60px]">
                             <InputLabel value="Detalles de la tarjeta" className="mb-3 text-xs uppercase tracking-widest font-bold text-gray-400" />
                             <div className="py-2">
                                 <CardElement
@@ -92,6 +92,47 @@ export default function PaymentStep({ data, setData, onSubmit, onBack, processin
                     Mi dirección de facturación es la misma que la de envío
                 </label>
             </div>
+
+            {!data.billing_same_as_shipping && (
+                <div className="p-6 bg-gray-50 rounded-xl border border-gray-100 space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
+                    <h4 className="font-bold text-gray-900 mb-2">Detalles de Facturación</h4>
+                    <div>
+                        <InputLabel htmlFor="billing_address" value="Dirección" />
+                        <input
+                            id="billing_address"
+                            type="text"
+                            value={data.billing_address.address}
+                            onChange={(e) => setData('billing_address', { ...data.billing_address, address: e.target.value })}
+                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
+                            required
+                        />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <InputLabel htmlFor="billing_city" value="Ciudad" />
+                            <input
+                                id="billing_city"
+                                type="text"
+                                value={data.billing_address.city}
+                                onChange={(e) => setData('billing_address', { ...data.billing_address, city: e.target.value })}
+                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <InputLabel htmlFor="billing_postal_code" value="Código Postal" />
+                            <input
+                                id="billing_postal_code"
+                                type="text"
+                                value={data.billing_address.postal_code}
+                                onChange={(e) => setData('billing_address', { ...data.billing_address, postal_code: e.target.value })}
+                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm"
+                                required
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-4">
                 <button type="button" onClick={onBack} className="text-primary hover:text-primary-dark font-bold text-sm uppercase tracking-widest order-2 md:order-1">

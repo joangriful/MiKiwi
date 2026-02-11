@@ -66,6 +66,8 @@ class OrderController extends Controller
             'shipping_address.city' => 'required|string',
             'shipping_address.postal_code' => 'required|string',
             'shipping_address.country' => 'required|string',
+            'dni' => 'required|string',
+            'billing_address' => 'nullable|array',
             'payment_method' => 'required|string',
             'payment_intent_id' => 'nullable|string',
             'pickup_point_id' => 'nullable|exists:pickup_points,id',
@@ -90,17 +92,26 @@ class OrderController extends Controller
                 }
             }
 
-            DB::transaction(function () use ($request, $cartData, $paymentStatus) {
+            $totalAmount = $cartData['total'];
+            $coupon = session('coupon');
+            if ($coupon) {
+                $totalAmount = max(0, $totalAmount - $coupon['discount']);
+            }
+
+            DB::transaction(function () use ($request, $cartData, $paymentStatus, $totalAmount) {
+                $shippingSnapshot = $request->shipping_address;
+                $shippingSnapshot['dni'] = $request->dni;
+
                 $order = Order::create([
                     'user_id' => Auth::id(),
                     'order_number' => 'ORD-' . strtoupper(Str::random(10)),
                     'status' => 'pending',
-                    'total_amount' => $cartData['total'],
+                    'total_amount' => $totalAmount,
                     'payment_status' => $paymentStatus,
                     'payment_method' => $request->payment_method,
                     'payment_id' => $request->payment_intent_id,
-                    'shipping_address_snapshot' => $request->shipping_address,
-                    'billing_address_snapshot' => $request->shipping_address,
+                    'shipping_address_snapshot' => $shippingSnapshot,
+                    'billing_address_snapshot' => $request->billing_address ?? $shippingSnapshot,
                     'pickup_point_id' => $request->pickup_point_id,
                     'notes' => $request->notes ?? null,
                 ]);

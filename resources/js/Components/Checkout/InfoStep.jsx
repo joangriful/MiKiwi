@@ -2,16 +2,40 @@ import React, { useEffect } from 'react';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 
-export default function InfoStep({ data, setData, onNext, onBack, user }) {
+export default function InfoStep({ data, setData, onNext, onBack, user, errors }) {
+    const spanishPostalcodes = {
+        '28': 'Madrid',
+        '08': 'Barcelona',
+        '41': 'Sevilla',
+        '46': 'Valencia',
+        '29': 'Málaga',
+        '30': 'Murcia',
+        '07': 'Palma de Mallorca',
+        '50': 'Zaragoza',
+        '35': 'Las Palmas de Gran Canaria',
+        '38': 'Santa Cruz de Tenerife'
+    };
 
     // Auto-fill form if user data exists and fields are empty
     useEffect(() => {
         if (user) {
             if (!data.first_name) setData('first_name', user.name || '');
             if (!data.email) setData('email', user.email || '');
-            // Load more user data if available from a profile/address standard
+            if (!data.dni) setData('dni', user.dni || '');
         }
     }, [user]);
+
+    const handlePostalCodeChange = (e) => {
+        const value = e.target.value;
+        setData('postal_code', value);
+
+        if (value.length >= 2) {
+            const prefix = value.substring(0, 2);
+            if (spanishPostalcodes[prefix]) {
+                setData('city', spanishPostalcodes[prefix]);
+            }
+        }
+    };
 
     const handleChange = (e) => {
         setData(e.target.name, e.target.value);
@@ -63,18 +87,42 @@ export default function InfoStep({ data, setData, onNext, onBack, user }) {
                     className="mt-1 block w-full"
                     required
                 />
+                {errors.email && <div className="text-red-500 text-xs mt-1">{errors.email}</div>}
             </div>
 
-            <div>
-                <InputLabel htmlFor="phone" value="Teléfono" />
-                <TextInput
-                    id="phone"
-                    name="phone"
-                    value={data.phone}
-                    onChange={handleChange}
-                    className="mt-1 block w-full"
-                    required
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <InputLabel htmlFor="dni" value="DNI / NIE" />
+                    <TextInput
+                        id="dni"
+                        name="dni"
+                        value={data.dni}
+                        onChange={handleChange}
+                        className="mt-1 block w-full"
+                        placeholder="12345678X"
+                        required
+                    />
+                    {errors.dni && <div className="text-red-500 text-xs mt-1">{errors.dni}</div>}
+                </div>
+                <div>
+                    <InputLabel htmlFor="phone" value="Teléfono" />
+                    <div className="flex mt-1">
+                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                            {data.phone?.startsWith('+') ? '' : '+34'}
+                        </span>
+                        <TextInput
+                            id="phone"
+                            name="phone"
+                            value={data.phone}
+                            onChange={handleChange}
+                            className="block w-full rounded-l-none"
+                            placeholder="600 000 000"
+                            required
+                        />
+                    </div>
+                    {errors.phone && <div className="text-red-500 text-xs mt-1">{errors.phone}</div>}
+                    <p className="text-[10px] text-gray-400 mt-1 italic">Detectamos automáticamente el país por el prefijo.</p>
+                </div>
             </div>
 
             <div className="pt-4 border-t">
@@ -110,7 +158,7 @@ export default function InfoStep({ data, setData, onNext, onBack, user }) {
                                 id="postal_code"
                                 name="postal_code"
                                 value={data.postal_code}
-                                onChange={handleChange}
+                                onChange={handlePostalCodeChange}
                                 className="mt-1 block w-full"
                                 required
                             />

@@ -58,6 +58,8 @@ Route::prefix('cart')->group(function () {
     Route::post('/add', [CartController::class, 'store'])->name('cart.add');
     Route::patch('/update/{id}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/remove/{id}', [CartController::class, 'destroy'])->name('cart.remove');
+    Route::post('/coupon', [App\Http\Controllers\CouponController::class, 'apply'])->name('cart.coupon.apply');
+    Route::delete('/coupon', [App\Http\Controllers\CouponController::class, 'remove'])->name('cart.coupon.remove');
 });
 
 /*
@@ -151,23 +153,31 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 Route::get('/formulario-reclamaciones', function () {
-    return Inertia::render('ClaimsForm'); })->name('claims.form');
+    return Inertia::render('ClaimsForm');
+})->name('claims.form');
 Route::get('/politica-privacidad', function () {
-    return Inertia::render('PrivacyPolicy'); })->name('privacy.policy');
+    return Inertia::render('PrivacyPolicy');
+})->name('privacy.policy');
 
 Route::prefix('configurador')->group(function () {
     Route::get('/', function () {
-        return Inertia::render('Configurador/Home'); })->name('configurador.home');
+        return Inertia::render('Configurador/Home');
+    })->name('configurador.home');
     Route::get('/index', function () {
-        return Inertia::render('Configurador/Index'); })->name('configurador.index');
+        return Inertia::render('Configurador/Index');
+    })->name('configurador.index');
     Route::get('/collections', function () {
-        return Inertia::render('Configurador/Collections'); })->name('configurador.collections');
+        return Inertia::render('Configurador/Collections');
+    })->name('configurador.collections');
     Route::get('/quiz', function () {
-        return Inertia::render('Configurador/Quiz'); })->name('configurador.quiz');
+        return Inertia::render('Configurador/Quiz');
+    })->name('configurador.quiz');
     Route::get('/munecas', function () {
-        return Inertia::render('DollConfigurator'); })->name('configurador.dolls');
+        return Inertia::render('DollConfigurator');
+    })->name('configurador.dolls');
     Route::get('/cart', function () {
-        return Inertia::render('Cart'); })->name('cart.view');
+        return Inertia::render('Cart');
+    })->name('cart.view');
 });
 
 Route::get('/doll_config_test', function () {
