@@ -49,11 +49,46 @@ const PagesGridView = ({
                         className="grid gap-8 pb-10"
                         style={{ gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` }}
                     >
-                        {SelectedPages.map((item) => (
-                            <PreviewContainer key={item.path} title={item.name}>
-                                <item.Component />
-                            </PreviewContainer>
-                        ))}
+                        {SelectedPages.map((item) => {
+                            let props = {};
+                            if (item.name === 'ProductPage') {
+                                props = {
+                                    product: {
+                                        id: 1,
+                                        name: 'Producto de Ejemplo',
+                                        slug: 'producto-ejemplo',
+                                        description: 'Descripción simulada para la vista previa del componente.',
+                                        base_price: 50,
+                                        image_url: null,
+                                        category_id: 1
+                                    },
+                                    accessories: [],
+                                    relatedProducts: []
+                                };
+                            } else if (item.name === 'Products') {
+                                props = {
+                                    products: {
+                                        data: Array(6).fill({
+                                            id: 1,
+                                            name: 'Producto Demo',
+                                            slug: 'producto-demo',
+                                            base_price: 99.99,
+                                            description: 'Descripción corta.',
+                                            image_url: null
+                                        }),
+                                        links: []
+                                    },
+                                    categories: [{ id: 1, name: 'Categoría Demo' }],
+                                    filters: {}
+                                };
+                            }
+
+                            return (
+                                <PreviewContainer key={item.path} title={item.name}>
+                                    <item.Component {...props} />
+                                </PreviewContainer>
+                            );
+                        })}
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)] text-gray-400">

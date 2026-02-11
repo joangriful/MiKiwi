@@ -40,6 +40,8 @@ Route::get('/dashboard', function () {
 */
 
 // Catálogo Principal
+Route::get('/productos', [ProductController::class, 'index'])->name('products.index');
+Route::redirect('/products', '/productos'); // Alias for english url
 Route::get('/colecciones', [ColeccionesController::class, 'index'])->name('colecciones');
 
 // Ver Producto Individual
@@ -103,6 +105,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // Profile image and banner uploads
+    Route::post('/profile/image', [ProfileController::class, 'updateProfileImage'])->name('profile.image.update');
+    Route::post('/profile/banner', [ProfileController::class, 'updateBanner'])->name('profile.banner.update');
 
     // Perfil visual
     Route::get('/perfil', function () {
@@ -138,11 +144,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
         $users = \App\Models\User::all(['id', 'name', 'email', 'username', 'role', 'created_at']);
         $heroImages = \App\Models\HeroImage::orderBy('created_at', 'desc')->get();
 
+        // Fetch categories for Products Manager
+        $categories = \App\Models\Category::where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
         return Inertia::render('ComponentsManager', [
             'views' => $views,
             'defaultSettings' => $defaultSettings,
             'users' => $users,
-            'heroImages' => $heroImages
+            'heroImages' => $heroImages,
+            'categories' => $categories
         ]);
     })->name('components.manager');
 
@@ -150,14 +162,38 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/users/{user}/toggle-role', [App\Http\Controllers\UserController::class, 'toggleAdmin'])->name('users.toggleRole');
     Route::post('/content/hero/upload', [App\Http\Controllers\ContentController::class, 'uploadHeroImages'])->name('content.hero.upload');
     Route::delete('/content/hero/{heroImage}', [App\Http\Controllers\ContentController::class, 'deleteHeroImage'])->name('content.hero.delete');
+    
+    // Product Management
+    Route::post('/products/upload', [App\Http\Controllers\ProductManagerController::class, 'uploadProduct'])->name('products.upload');
+    Route::put('/products/{product}', [App\Http\Controllers\ProductManagerController::class, 'updateProduct'])->name('products.update');
+    Route::delete('/products/{product}', [App\Http\Controllers\ProductManagerController::class, 'deleteProduct'])->name('products.delete');
+    
+    // Newsletter
+    Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 });
 
 Route::get('/formulario-reclamaciones', function () {
     return Inertia::render('ClaimsForm');
+<<<<<<< HEAD
 })->name('claims.form');
 Route::get('/politica-privacidad', function () {
     return Inertia::render('PrivacyPolicy');
 })->name('privacy.policy');
+=======
+})->name('formulario.reclamaciones');
+
+Route::get('/politica-cookies', function () {
+    return Inertia::render('CookiePolicy');
+})->name('politica.cookies');
+
+Route::get('/politica-privacidad', function () {
+    return Inertia::render('PrivacyPolicy');
+})->name('politica.privacidad');
+
+Route::get('/sobre-nosotros', function () {
+    return Inertia::render('AboutUs');
+})->name('sobre.nosotros');
+>>>>>>> 1bfc2a7c9a53466d324d50f43afab6305a433166
 
 Route::prefix('configurador')->group(function () {
     Route::get('/', function () {
