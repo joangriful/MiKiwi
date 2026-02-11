@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Services\CloudinaryService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +14,12 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    protected $cloudinaryService;
+
+    public function __construct(CloudinaryService $cloudinaryService)
+    {
+        $this->cloudinaryService = $cloudinaryService;
+    }
     /**
      * Display the user's profile form.
      */
@@ -59,5 +66,89 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    /**
+     * Update the user's profile image.
+     */
+    public function updateProfileImage(Request $request)
+    {
+        $request->validate([
+            'image' => ['required', 'image', 'mimes:jpeg,jpg,png', 'max:5120'], // 5MB max
+        ]);
+
+        try {
+            $user = $request->user();
+
+            // Delete old image from Cloudinary if exists
+            if ($user->profile_photo_public_id) {
+                $this->cloudinaryService->deleteImage($user->profile_photo_public_id);
+            }
+
+            // Upload new image to Cloudinary
+            $cloudinaryResponse = $this->cloudinaryService->uploadImage(
+                $request->file('image'),
+                'profile_photos'
+            );
+
+            // Update user record
+            $user->update([
+                'profile_photo_url' => $cloudinaryResponse['secure_url'],
+                'profile_photo_public_id' => $cloudinaryResponse['public_id'],
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'profile_photo_url' => $cloudinaryResponse['secure_url'],
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Profile image upload failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al subir la imagen. Por favor, inténtalo de nuevo.'
+            ], 500);
+        }
+    }
+
+    /**
+     * Update the user's banner image.
+     */
+    public function updateBanner(Request $request)
+    {
+        $request->validate([
+            'image' => ['required', 'image', 'mimes:jpeg,jpg,png', 'max:10240'], // 10MB max
+        ]);
+
+        try {
+            $user = $request->user();
+
+            // Delete old banner from Cloudinary if exists
+            if ($user->banner_public_id) {
+                $this->cloudinaryService->deleteImage($user->banner_public_id);
+            }
+
+            // Upload new banner to Cloudinary
+            $cloudinaryResponse = $this->cloudinaryService->uploadImage(
+                $request->file('image'),
+                'profile_banners'
+            );
+
+            // Update user record
+            $user->update([
+                'banner_url' => $cloudinaryResponse['secure_url'],
+                'banner_public_id' => $cloudinaryResponse['public_id'],
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'banner_url' => $cloudinaryResponse['secure_url'],
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Banner upload failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al subir el banner. Por favor, inténtalo de nuevo.'
+            ], 500);
+        }
     }
 }

@@ -1,19 +1,19 @@
 import { useState } from 'react';
 
-export default function ProductCardInfo() {
+export default function ProductCardInfo({ name, description, price }) {
     const [rating, setRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
-    const reviewsCount = 120; // Fictitious review count
+    const reviewsCount = 120; // Placeholder until we have real reviews
 
     return (
         <div className="flex-1 flex flex-col p-4 bg-white text-left justify-between">
             <div>
                 {/* Product Name */}
-                <h3 className="text-lg font-bold text-gray-900 mb-2 truncate">Kiwi Pack Premium</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2 truncate" title={name}>{name}</h3>
 
                 {/* Description */}
-                <p className="text-sm text-gray-500 leading-snug line-clamp-3 mb-4">
-                    Kiwis frescos selección premium. Directos de nuestros huertos a tu mesa, garantizando el mejor sabor y frescura.
+                <p className="text-sm text-gray-500 leading-snug line-clamp-3 mb-4" title={description}>
+                    {description || 'Sin descripción disponible.'}
                 </p>
             </div>
 
@@ -38,7 +38,9 @@ export default function ProductCardInfo() {
 
                 {/* Price */}
                 <div>
-                    <span className="font-bold text-xl text-gray-900">$14.99</span>
+                    <span className="font-bold text-xl text-gray-900">
+                        {new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(price)}
+                    </span>
                 </div>
             </div>
         </div>
