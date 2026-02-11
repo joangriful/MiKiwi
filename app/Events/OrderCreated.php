@@ -15,23 +15,13 @@ class OrderCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $order; // Variable pública para que los listeners accedan
+
     /**
      * Create a new event instance.
      */
-    public function __construct(public Order $order)
+    public function __construct(Order $order)
     {
-        //
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
-    public function broadcastOn(): array
-    {
-        return [
-            new PrivateChannel('channel-name'),
-        ];
+        $this->order = $order;
     }
 }

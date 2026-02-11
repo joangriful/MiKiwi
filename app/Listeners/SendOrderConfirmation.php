@@ -19,13 +19,13 @@ class SendOrderConfirmation
     /**
      * Handle the event.
      */
-    public function handle(OrderCreated $event): void
+    public function handle(OrderCreated $event)
     {
-        // En un escenario real, aquí enviaríamos el email. 
-        // Descomenta y crea el Mailable cuando estés listo:
-        // \Illuminate\Support\Facades\Mail::to($event->order->user->email)
-        //     ->send(new \App\Mail\OrderConfirmation($event->order));
+        $user = $event->order->user;
         
-        \Illuminate\Support\Facades\Log::info("Confirmación de pedido enviada para: " . $event->order->order_number);
+        // Aquí iría el envío real. Por ahora deja el comentario o un log.
+        // Mail::to($user)->send(new OrderConfirmationMail($event->order));
+        
+        \Log::info("Enviando confirmación de pedido #{$event->order->id} a {$user->email}");
     }
 }

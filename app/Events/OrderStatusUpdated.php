@@ -13,25 +13,14 @@ use App\Models\Order;
 
 class OrderStatusUpdated
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     */
-    public function __construct(public Order $order)
-    {
-        //
-    }
+    public $order;
+    public $oldStatus; // Opcional, útil para logs
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
-    public function broadcastOn(): array
+    public function __construct(Order $order, $oldStatus = null)
     {
-        return [
-            new PrivateChannel('channel-name'),
-        ];
+        $this->order = $order;
+        $this->oldStatus = $oldStatus;
     }
 }

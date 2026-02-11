@@ -19,13 +19,12 @@ class UpdateInventory
     /**
      * Handle the event.
      */
-    public function handle(OrderCreated $event): void
+    public function handle(OrderCreated $event)
     {
+        // Recorremos los items del pedido y restamos stock
         foreach ($event->order->items as $item) {
-            // Reducimos el stock del producto
+            // Asumiendo que tienes una relación 'product' en el modelo OrderItem
             $item->product->decrement('stock_quantity', $item->quantity);
         }
-
-        \Illuminate\Support\Facades\Log::info("Inventario actualizado para el pedido: " . $event->order->order_number);
     }
 }
