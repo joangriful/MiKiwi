@@ -3,92 +3,45 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserAddress;
+use App\Http\Requests\StoreAddressRequest; // ¡Importante!
+use App\Http\Requests\UpdateAddressRequest; // ¡Importante!
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
-
 
 class UserAddressController extends Controller
 {
-    // Listar direcciones del usuario
     public function index()
     {
-        $addresses = UserAddress::where('user_id', Auth::id())
-            ->orderByDesc('is_default')
-            ->get();
-
-        return Inertia::render('Profile/Addresses/Index', [
-            'addresses' => $addresses
-        ]);
+        return auth()->user()->addresses;
     }
 
-    // Guardar nueva dirección
-    public function store(Request $request)
+    // Inyectamos StoreAddressRequest
+    public function store(StoreAddressRequest $request)
     {
-        $data = $request->validate([
-            'alias' => 'nullable|string|max:50',
-            'full_name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:30',
-            'street_address' => 'required|string|max:255',
-            'city' => 'required|string|max:100',
-            'postal_code' => 'required|string|max:20',
-            'country' => 'required|string|max:100',
-            'is_default' => 'boolean',
-        ]);
+        // $request->validated() devuelve solo los datos limpios y seguros
+        $address = auth()->user()->addresses()->create($request->validated());
 
-        // Si es principal, desmarcar las demás
-        if (!empty($data['is_default'])) {
-            UserAddress::where('user_id', Auth::id())
-                ->update(['is_default' => false]);
-        }
-
-        UserAddress::create([
-            'user_id' => Auth::id(),
-            ...$data,
-        ]);
-
-        return back()->with('success', 'Dirección guardada correctamente');
+        return response()->json($address, 201);
     }
 
-    // Actualizar dirección
-    public function update(Request $request, UserAddress $address)
+    // Inyectamos UpdateAddressRequest
+    public function update(UpdateAddressRequest $request, UserAddress $address)
     {
-        $this->authorizeAddress($address);
+        // Autorización (Policy creada en Etapa 2)
+        $this->authorize('update', $address);
 
-        $data = $request->validate([
-            'alias' => 'nullable|string|max:50',
-            'full_name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:30',
-            'street_address' => 'required|string|max:255',
-            'city' => 'required|string|max:100',
-            'postal_code' => 'required|string|max:20',
-            'country' => 'required|string|max:100',
-            'is_default' => 'boolean',
-        ]);
+        $address->update($request->validated());
 
-        if (!empty($data['is_default'])) {
-            UserAddress::where('user_id', Auth::id())
-                ->update(['is_default' => false]);
-        }
-
-        $address->update($data);
-
-        return back()->with('success', 'Dirección actualizada');
+        return response()->json($address);
     }
 
     // Eliminar dirección
     public function destroy(UserAddress $address)
     {
-        $this->authorizeAddress($address);
+        // Autorización (Policy creada en Etapa 2)
+        $this->authorize('delete', $address);
 
         $address->delete();
 
-        return back()->with('success', 'Dirección eliminada');
-    }
-
-    // 🔐 Asegurarse de que la dirección es del usuario
-    private function authorizeAddress(UserAddress $address)
-    {
-        abort_if($address->user_id !== Auth::id(), 403);
+        return response()->json(['message' => 'Dirección eliminada']);
     }
 }
