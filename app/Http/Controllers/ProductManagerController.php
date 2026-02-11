@@ -1,0 +1,161 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Product;
+use App\Services\CloudinaryService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+
+class ProductManagerController extends Controller
+{
+    protected $cloudinaryService;
+
+    public function __construct(CloudinaryService $cloudinaryService)
+    {
+        $this->cloudinaryService = $cloudinaryService;
+    }
+
+    public function uploadProduct(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'sku' => 'nullable|string|unique:products,sku',
+            'category_id' => 'nullable|uuid|exists:categories,id',
+            'description' => 'nullable|string',
+            'base_price' => 'required|numeric|min:0',
+            'stock_quantity' => 'nullable|integer|min:0',
+            'product_type' => 'required|in:simple,configurable,component',
+            'is_adult_only' => 'boolean',
+            'is_active' => 'boolean',
+            'images' => 'nullable|array',
+            'images.*' => 'image|max:10240', // Max 10MB per image
+        ]);
+
+        try {
+            $imageUrls = [];
+            $primaryImageUrl = null;
+
+            // Upload images to Cloudinary
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $index => $image) {
+                    $cloudinaryResponse = $this->cloudinaryService->uploadImage(
+                        $image,
+                        'products'
+                    );
+
+                    $imageUrl = $cloudinaryResponse['secure_url'];
+                    $imageUrls[] = $imageUrl;
+
+                    // First image becomes primary
+                    if ($index === 0) {
+                        $primaryImageUrl = $imageUrl;
+                    }
+                }
+            }
+
+            // Generate slug from name
+            $slug = Str::slug($validated['name']);
+            
+            // Ensure unique slug
+            $originalSlug = $slug;
+            $counter = 1;
+            while (Product::where('slug', $slug)->exists()) {
+                $slug = $originalSlug . '-' . $counter;
+                $counter++;
+            }
+
+            // Create product
+            $product = Product::create([
+                'name' => $validated['name'],
+                'slug' => $slug,
+                'sku' => $validated['sku'] ?? null,
+                'category_id' => $validated['category_id'] ?? null,
+                'description' => $validated['description'] ?? null,
+                'base_price' => $validated['base_price'],
+                'stock_quantity' => $validated['stock_quantity'] ?? null,
+                'product_type' => $validated['product_type'],
+                'is_adult_only' => $validated['is_adult_only'] ?? true,
+                'is_active' => $validated['is_active'] ?? true,
+                'image_url' => $primaryImageUrl,
+                'images' => !empty($imageUrls) ? $imageUrls : null,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Producto creado correctamente',
+                'product' => $product
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error uploading product: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al crear el producto: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateProduct(Request $request, Product $product)
+    {
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'sku' => 'sometimes|string|unique:products,sku,' . $product->id,
+            'category_id' => 'nullable|uuid|exists:categories,id',
+            'description' => 'nullable|string',
+            'base_price' => 'sometimes|numeric|min:0',
+            'stock_quantity' => 'nullable|integer|min:0',
+            'product_type' => 'sometimes|in:simple,configurable,component',
+            'is_adult_only' => 'boolean',
+            'is_active' => 'boolean',
+        ]);
+
+        try {
+            if (isset($validated['name']) && $validated['name'] !== $product->name) {
+                $slug = Str::slug($validated['name']);
+                $originalSlug = $slug;
+                $counter = 1;
+                while (Product::where('slug', $slug)->where('id', '!=', $product->id)->exists()) {
+                    $slug = $originalSlug . '-' . $counter;
+                    $counter++;
+                }
+                $validated['slug'] = $slug;
+            }
+
+            $product->update($validated);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Producto actualizado correctamente',
+                'product' => $product
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error updating product: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar el producto'
+            ], 500);
+        }
+    }
+
+    public function deleteProduct(Product $product)
+    {
+        try {
+            $product->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Producto eliminado correctamente'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error deleting product: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar el producto'
+            ], 500);
+        }
+    }
+}

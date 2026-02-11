@@ -19,7 +19,11 @@ class User extends Authenticatable
         'dni',
         'birth_date',
         'role',
-        'is_active'
+        'is_active',
+        'profile_photo_url',
+        'profile_photo_public_id',
+        'banner_url',
+        'banner_public_id'
     ];
 
     protected $casts = [

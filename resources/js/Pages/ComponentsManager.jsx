@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import DollManager from '../Components/DollManager/DollManager';
 import { Head } from '@inertiajs/react';
 import Header from '../Components/Common/Header';
+import SubHeader from '../Components/Common/SubHeader';
 import ManagerHeader from '../Components/ComponentsManager/ManagerHeader';
 import ManagerSidebar from '../Components/ComponentsManager/ManagerSidebar';
 import SingleComponentView from '../Components/ComponentsManager/SingleComponentView';
 import PagesGridView from '../Components/ComponentsManager/PagesGridView';
 import UsersManager from '../Components/ComponentsManager/UsersManager';
 import ContentManager from '../Components/ComponentsManager/ContentManager';
+import ProductsManager from '../Components/ComponentsManager/ProductsManager';
 import { useComponentsManager } from '../Components/ComponentsManager/useComponentsManager';
 
-export default function ComponentsManager({ views, defaultSettings, users, heroImages }) {
+export default function ComponentsManager({ views, defaultSettings, users, heroImages, categories }) {
     const [activeManager, setActiveManager] = useState('components'); // 'components' | 'doll' | 'users' | 'content'
 
     const {
@@ -45,10 +47,16 @@ export default function ComponentsManager({ views, defaultSettings, users, heroI
             {/* Main Site Header */}
             <Header />
 
+            {/* SubHeader with Manager Navigation */}
+            <SubHeader
+                isManager={true}
+                activeManager={activeManager}
+                setActiveManager={setActiveManager}
+            />
+
             {/* Unified Manager Header */}
             <ManagerHeader
                 activeManager={activeManager}
-                setActiveManager={setActiveManager}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
                 onSaveDefaults={handleSaveDollDefaults}
@@ -102,6 +110,10 @@ export default function ComponentsManager({ views, defaultSettings, users, heroI
 
                 {activeManager === 'content' && (
                     <ContentManager heroImages={heroImages} />
+                )}
+
+                {activeManager === 'products' && (
+                    <ProductsManager categories={categories} />
                 )}
             </div>
         </div>
