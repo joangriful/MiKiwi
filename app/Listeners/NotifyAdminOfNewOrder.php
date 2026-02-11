@@ -21,7 +21,12 @@ class NotifyAdminOfNewOrder
      */
     public function handle(OrderCreated $event): void
     {
-        // Log::info("Notifying admin of new order: {$event->order->order_number}");
-        // Enviar notificación a administradores
+        // Notificar a los administradores (ejemplo usando un Log o Notification)
+        // \Illuminate\Support\Facades\Notification::send(
+        //     \App\Models\User::where('role', 'admin')->get(), 
+        //     new \App\Notifications\NewOrderAdminNotification($event->order)
+        // );
+
+        \Illuminate\Support\Facades\Log::info("Administrador notificado para el pedido: " . $event->order->order_number);
     }
 }
