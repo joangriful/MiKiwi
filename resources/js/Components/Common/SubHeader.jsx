@@ -1,8 +1,8 @@
 import { Link } from '@inertiajs/react';
 
-export default function SubHeader({ isManager = false, activeManager, setActiveManager }) {
+export default function SubHeader({ isManager = false, activeManager, setActiveManager, transparent = false }) {
     if (isManager) {
-        // Manager Mode: Show Components, Doll Manager, Users, Contenido tabs
+        // Manager Mode: Show Components, Doll Manager, Users, Media, Productos tabs
         return (
             <div className="bg-primary py-1.5 border-b border-black/10">
                 <div className="container mx-auto flex justify-center">
@@ -49,7 +49,18 @@ export default function SubHeader({ isManager = false, activeManager, setActiveM
                                         : 'text-black hover:text-white hover:font-bold'
                                         }`}
                                 >
-                                    Contenido
+                                    Media
+                                </button>
+                            </li>
+                            <li>
+                                <button
+                                    onClick={() => setActiveManager('products')}
+                                    className={`text-sm font-medium transition-all uppercase tracking-wider ${activeManager === 'products'
+                                        ? 'text-black font-bold'
+                                        : 'text-black hover:text-white hover:font-bold'
+                                        }`}
+                                >
+                                    Productos
                                 </button>
                             </li>
                         </ul>
@@ -59,43 +70,43 @@ export default function SubHeader({ isManager = false, activeManager, setActiveM
         );
     }
 
-    // Regular Mode: Show Colecciones, Configurador, Resonancia links
+    // Regular Mode: Show Juguetes, Muñecas, Conócete links
     return (
-        <div className="bg-primary py-1.5 border-b border-black/10">
-            <div className="container mx-auto flex justify-center">
+        <div className={`${transparent ? 'absolute top-[60px] z-20 w-full bg-transparent border-none' : 'bg-primary py-1.5 border-b border-black/10'}`}>
+            <div className={`container mx-auto flex justify-center ${transparent ? 'py-4' : ''}`}>
                 <nav>
                     <ul className="flex gap-8">
                         <li>
                             <Link
-                                href="/configurador/collections"
-                                className="relative text-black font-medium text-sm hover:text-white transition-colors uppercase tracking-wider after:content-[attr(data-text)] after:h-0 after:visibility-hidden after:overflow-hidden after:user-select-none after:pointer-events-none after:font-bold after:block"
-                                data-text="Colecciones"
+                                href="/productos"
+                                className={`relative font-medium text-sm transition-colors uppercase tracking-wider after:content-[attr(data-text)] after:h-0 after:visibility-hidden after:overflow-hidden after:user-select-none after:pointer-events-none after:font-bold after:block ${transparent ? 'text-white hover:text-gray-200' : 'text-black hover:text-white'}`}
+                                data-text="Juguetes"
                                 onMouseEnter={(e) => e.currentTarget.style.fontWeight = 'bold'}
                                 onMouseLeave={(e) => e.currentTarget.style.fontWeight = 'medium'}
                             >
-                                Colecciones
+                                Juguetes
                             </Link>
                         </li>
                         <li>
                             <Link
                                 href="/configurador/wizard"
-                                className="relative text-black font-medium text-sm hover:text-white transition-colors uppercase tracking-wider after:content-[attr(data-text)] after:h-0 after:visibility-hidden after:overflow-hidden after:user-select-none after:pointer-events-none after:font-bold after:block"
-                                data-text="Configurador"
+                                className={`relative font-medium text-sm transition-colors uppercase tracking-wider after:content-[attr(data-text)] after:h-0 after:visibility-hidden after:overflow-hidden after:user-select-none after:pointer-events-none after:font-bold after:block ${transparent ? 'text-white hover:text-gray-200' : 'text-black hover:text-white'}`}
+                                data-text="Muñecas"
                                 onMouseEnter={(e) => e.currentTarget.style.fontWeight = 'bold'}
                                 onMouseLeave={(e) => e.currentTarget.style.fontWeight = 'medium'}
                             >
-                                Configurador
+                                Muñecas
                             </Link>
                         </li>
                         <li>
                             <Link
                                 href="/calibracion"
-                                className="relative text-black font-medium text-sm hover:text-white transition-colors uppercase tracking-wider after:content-[attr(data-text)] after:h-0 after:visibility-hidden after:overflow-hidden after:user-select-none after:pointer-events-none after:font-bold after:block"
-                                data-text="Resonancia"
+                                className={`relative font-medium text-sm transition-colors uppercase tracking-wider after:content-[attr(data-text)] after:h-0 after:visibility-hidden after:overflow-hidden after:user-select-none after:pointer-events-none after:font-bold after:block ${transparent ? 'text-white hover:text-gray-200' : 'text-black hover:text-white'}`}
+                                data-text="Conócete"
                                 onMouseEnter={(e) => e.currentTarget.style.fontWeight = 'bold'}
                                 onMouseLeave={(e) => e.currentTarget.style.fontWeight = 'medium'}
                             >
-                                Resonancia
+                                Conócete
                             </Link>
                         </li>
                     </ul>

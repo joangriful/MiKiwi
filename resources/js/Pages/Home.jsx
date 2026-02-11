@@ -4,10 +4,14 @@ import { Head, Link } from '@inertiajs/react';
 
 export default function Home({ heroImages = [] }) {
     return (
-        <ConfiguradorLayout>
+        <ConfiguradorLayout transparentSubHeader={true}>
             <Head title="Home | Configurator" />
 
             {/* --- HERO: ECLIPSE --- */}
+            {/* Added pt-[60px] to account for header height if needed, but since subheader is transparent/absolute, we want content to be under it. 
+                Actually, if subheader is absolute top-0, it sits on top of the hero. 
+                The hero already has h-[calc(100vh-60px)] which is good. settings seems fine.
+            */}
             <section className="relative h-[calc(100vh-60px)] flex items-center justify-center overflow-hidden bg-white cursor-default select-none">
                 {/* Background Image */}
                 {heroImages.length > 0 && (
@@ -35,33 +39,6 @@ export default function Home({ heroImages = [] }) {
 
                 <div className="absolute bottom-[50px] left-1/2 -translate-x-1/2 text-[0.6rem] uppercase tracking-[4px] font-black text-[var(--border)] animate-pulse">
                     Deslizar para descubrir
-                </div>
-            </section>
-
-            {/* --- IDENTITY CALIBRATION --- */}
-            <section className="px-[5%] py-[150px] bg-[#fdfdfd] border-y border-[var(--border)]">
-                <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-[100px] items-center">
-                    <div>
-                        <h2 className="font-sugo text-[3rem] md:text-[4.5rem] leading-[1.1] mb-[40px] font-black text-[var(--text-main)]">
-                            Identidad Sónica.
-                        </h2>
-                        <p className="text-[1.1rem] text-[var(--text-muted)] leading-[1.8] mb-[50px]">
-                            Cada individuo posee una huella de resonancia única. Nuestro sistema de calibración utiliza algoritmos avanzados para materializar tu perfil sensorial en una pieza única de ingeniería.
-                        </p>
-                        <Link
-                            href="/configurador/quiz"
-                            className="inline-block text-[0.75rem] font-black uppercase tracking-[4px] border-b-2 border-[var(--color-primary)] pb-2 hover:border-[var(--text-main)] transition-all"
-                        >
-                            Iniciar Calibración MIKIWI ID
-                        </Link>
-                    </div>
-                    <div className="relative aspect-square flex items-center justify-center">
-                        <div className="absolute inset-0 border border-[var(--border)] rounded-full animate-pulse-ring"></div>
-                        <div className="absolute inset-[15%] border border-[var(--border)] rounded-full animate-pulse-ring" style={{ animationDelay: '1s' }}></div>
-                        <div className="w-[40%] h-[40%] bg-white border border-[var(--border)] rounded-full shadow-[0_20px_60px_rgba(0,0,0,0.05)] flex items-center justify-center z-10">
-                            <span className="text-[0.6rem] font-black tracking-[4px] text-[var(--text-main)] uppercase">Resonancia</span>
-                        </div>
-                    </div>
                 </div>
             </section>
 

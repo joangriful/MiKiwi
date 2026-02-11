@@ -18,82 +18,119 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        // ========================================
-        // 1. CATEGORÍAS RAÍZ (Principales)
-        // ========================================
+        // Desactivar restricciones de clave foránea para limpiar la tabla
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Category::truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $munecas = Category::firstOrCreate(
-            ['slug' => 'munecas-realistas'],
-            ['name' => 'Muñecas Realistas', 'is_active' => true, 'parent_id' => null]
-        );
+        $categories = [
+            // 1. Estimulación Externa
+            [
+                'name' => 'Ondas de Presión',
+                'description' => 'Succionadores de clítoris y estimuladores de aire pulsado.'
+            ],
+            [
+                'name' => 'Vibradores Externos',
+                'description' => 'Balas vibradoras, varitas (Wands) de masaje y estimuladores de contacto.'
+            ],
+            [
+                'name' => 'Estimuladores de Pezones',
+                'description' => 'Pinzas, ventosas y vibradores específicos.'
+            ],
 
-        $juguetes = Category::firstOrCreate(
-            ['slug' => 'juguetes-intimos'],
-            ['name' => 'Juguetes Íntimos', 'is_active' => true, 'parent_id' => null]
-        );
+            // 2. Estimulación Interna
+            [
+                'name' => 'Estimuladores de Punto G',
+                'description' => 'Juguetes con curvatura específica para masaje interno.'
+            ],
+            [
+                'name' => 'Dildos',
+                'description' => 'Juguetes de penetración sin vibración (silicona, vidrio, metal).'
+            ],
+            [
+                'name' => 'Arneses y Strapless',
+                'description' => 'Accesorios para penetración compartida.'
+            ],
+            [
+                'name' => 'Salud Íntima',
+                'description' => 'Ejercitadores de suelo pélvico y bolas chinas.'
+            ],
 
-        $lubricantes = Category::firstOrCreate(
-            ['slug' => 'lubricantes'],
-            ['name' => 'Lubricantes', 'is_active' => true, 'parent_id' => null]
-        );
+            // 3. Estimulación de Pene y Testículos
+            [
+                'name' => 'Masturbadores',
+                'description' => 'Manuales, automáticos y fundas (sleeves).'
+            ],
+            [
+                'name' => 'Anillos Vibradores',
+                'description' => 'Para erección y estimulación compartida.'
+            ],
+            [
+                'name' => 'Bombas de Vacío',
+                'description' => 'Salud sexual y estimulación física.'
+            ],
+            [
+                'name' => 'Estimuladores de Próstata',
+                'description' => 'Específicamente diseñados para el masaje interno del punto P.'
+            ],
 
-        $lenceria = Category::firstOrCreate(
-            ['slug' => 'lenceria'],
-            ['name' => 'Lencería', 'is_active' => true, 'parent_id' => null]
-        );
+            // 4. Estimulación Anal
+            [
+                'name' => 'Plugs Anal',
+                'description' => 'De diferentes tamaños, materiales y pesos.'
+            ],
+            [
+                'name' => 'Dilatadores y Kits de Inicio',
+                'description' => 'Para una exploración progresiva y segura.'
+            ],
+            [
+                'name' => 'Cuentas y Bolas Anales',
+                'description' => 'Para sensaciones de extracción y movimiento.'
+            ],
 
-        $componentes = Category::firstOrCreate(
-            ['slug' => 'componentes'],
-            ['name' => 'Componentes', 'is_active' => true, 'parent_id' => null]
-        );
+            // 5. BDSM, Fetiche y Juego de Poder
+            [
+                'name' => 'Cuero y Textil',
+                'description' => 'Arneses, máscaras, muñequeras y lencería funcional.'
+            ],
+            [
+                'name' => 'Impacto',
+                'description' => 'Látigos, palas (paddles), fustas y azotes.'
+            ],
+            [
+                'name' => 'Restricción',
+                'description' => 'Esposas, cuerdas (shibari), mordazas y vendas para los ojos.'
+            ],
+            [
+                'name' => 'Sensaciones',
+                'description' => 'Cera fría, plumas y estimuladores térmicos.'
+            ],
 
-        // ========================================
-        // 2. SUBCATEGORÍAS - Muñecas
-        // ========================================
+            // 6. Cosmética y Cuidado
+            [
+                'name' => 'Lubricantes',
+                'description' => 'Base agua, silicona y naturales.'
+            ],
+            [
+                'name' => 'Cuidado del Cuerpo',
+                'description' => 'Aceites de masaje, geles de efecto frío/calor y feromonas.'
+            ],
+            [
+                'name' => 'Higiene',
+                'description' => 'Limpiadores específicos para juguetes.'
+            ],
+        ];
 
-        Category::firstOrCreate(
-            ['slug' => 'munecas-premium'],
-            ['name' => 'Muñecas Premium', 'is_active' => true, 'parent_id' => $munecas->id]
-        );
+        foreach ($categories as $catData) {
+            Category::create([
+                'name' => $catData['name'],
+                'slug' => \Str::slug($catData['name']),
+                'description' => $catData['description'],
+                'is_active' => true,
+                'parent_id' => null,
+            ]);
+        }
 
-        Category::firstOrCreate(
-            ['slug' => 'munecas-basicas'],
-            ['name' => 'Muñecas Básicas', 'is_active' => true, 'parent_id' => $munecas->id]
-        );
-
-        // ========================================
-        // 3. SUBCATEGORÍAS - Juguetes Íntimos
-        // ========================================
-
-        Category::firstOrCreate(
-            ['slug' => 'vibradores'],
-            ['name' => 'Vibradores', 'is_active' => true, 'parent_id' => $juguetes->id]
-        );
-
-        Category::firstOrCreate(
-            ['slug' => 'dildos'],
-            ['name' => 'Dildos', 'is_active' => true, 'parent_id' => $juguetes->id]
-        );
-
-        Category::firstOrCreate(
-            ['slug' => 'anillos-vibradores'],
-            ['name' => 'Anillos Vibradores', 'is_active' => true, 'parent_id' => $juguetes->id]
-        );
-
-        // ========================================
-        // 4. SUBCATEGORÍAS - Lubricantes
-        // ========================================
-
-        Category::firstOrCreate(
-            ['slug' => 'base-agua'],
-            ['name' => 'Base Agua', 'is_active' => true, 'parent_id' => $lubricantes->id]
-        );
-
-        Category::firstOrCreate(
-            ['slug' => 'base-silicona'],
-            ['name' => 'Base Silicona', 'is_active' => true, 'parent_id' => $lubricantes->id]
-        );
-
-        $this->command->info('✅ Categorías verificadas/creadas');
+        $this->command->info('✅ Nuevas categorías (lista plana) creadas correctamente');
     }
 }
