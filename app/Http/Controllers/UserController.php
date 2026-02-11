@@ -16,10 +16,18 @@ class UserController extends Controller
 
     public function toggleAdmin(User $user)
     {
-        // Prevent self-demotion if desired, but for now just toggle
-        $newRole = $user->role === 'admin' ? 'customer' : 'admin';
-        $user->update(['role' => $newRole]);
+        // Verificación rápida de seguridad (o usa una Policy si prefieres)
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'No tienes permisos para realizar esta acción.');
+        }
 
-        return back()->with('success', 'User role updated successfully.');
+        // Cambiar estado
+        $user->role = ($user->role === 'admin') ? 'user' : 'admin';
+        $user->save();
+
+        return response()->json([
+            'message' => 'Rol de usuario actualizado correctamente.',
+            'user' => $user
+        ]);
     }
 }
