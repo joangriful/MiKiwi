@@ -18,7 +18,6 @@ class User extends Authenticatable
         'password',
         'dni',
         'birth_date',
-        'role',
         'is_active',
         'profile_photo_url',
         'profile_photo_public_id',
