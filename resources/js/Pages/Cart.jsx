@@ -41,8 +41,11 @@ function CheckoutContent({
 
         try {
             // 1. Create Payment Intent on backend
+            // Get the actual total after shipping and coupons
+            const dynamicTotal = total - (formData.coupon_code && cart.coupon ? cart.coupon.discount : 0);
+
             const { data: intentData } = await axios.post(route('payment-intent.create'), {
-                amount: cart.total,
+                amount: Math.round(dynamicTotal * 100) / 100, // Ensure normalized total
             });
 
             // 2. Confirm payment on frontend
@@ -205,9 +208,16 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
     };
 
     // Calculate dynamic totals
+    const shippingCosts = {
+        standard: 3.99,
+        pickup: 2.99
+    };
     const subtotal = parseFloat(cart.total);
-    const shippingCost = 3.99;
-    const total = subtotal + (step > 2 ? (step === 3 ? 0 : shippingCost) : 0);
+    const shippingCost = shippingCosts[data.shipping_method] || 0;
+
+    // The total should show the shipping cost only if we've reached the shipping step (3) or payment (4)
+    // Actually, users expect to see the total including shipping as soon as they select it.
+    const total = subtotal + (step >= 3 ? shippingCost : 0);
 
     return (
         <Elements stripe={finalStripePromise}>

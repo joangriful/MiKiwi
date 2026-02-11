@@ -41,4 +41,10 @@ return [
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
     ],
 
+    'correos' => [
+        'base_url' => env('CORREOS_BASE_URL', 'https://api.correos.es'),
+        'client_id' => env('CORREOS_CLIENT_ID'),
+        'client_secret' => env('CORREOS_CLIENT_SECRET'),
+    ],
+
 ];
