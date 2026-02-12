@@ -12,7 +12,7 @@ import ContentManager from '../Components/ComponentsManager/ContentManager';
 import ProductsManager from '../Components/ComponentsManager/ProductsManager';
 import { useComponentsManager } from '../Components/ComponentsManager/useComponentsManager';
 
-export default function ComponentsManager({ views, defaultSettings, users, heroImages, categories }) {
+export default function ComponentsManager({ views, defaultSettings, users, heroImages, categories, products }) {
     const [activeManager, setActiveManager] = useState('components'); // 'components' | 'doll' | 'users' | 'content'
 
     const {
@@ -113,7 +113,7 @@ export default function ComponentsManager({ views, defaultSettings, users, heroI
                 )}
 
                 {activeManager === 'products' && (
-                    <ProductsManager categories={categories} />
+                    <ProductsManager categories={categories} products={products} />
                 )}
             </div>
         </div>

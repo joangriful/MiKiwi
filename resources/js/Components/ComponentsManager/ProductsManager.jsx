@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import UploadProduct from './UploadProduct';
+import ProductsList from './ProductsList';
 
-export default function ProductsManager({ categories }) {
+export default function ProductsManager({ categories, products }) {
     const [activeSection, setActiveSection] = useState('upload');
 
     const sections = [
@@ -24,8 +25,8 @@ export default function ProductsManager({ categories }) {
                             key={section.id}
                             onClick={() => setActiveSection(section.id)}
                             className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${activeSection === section.id
-                                    ? 'bg-blue-50 text-blue-700'
-                                    : 'text-gray-700 hover:bg-gray-100'
+                                ? 'bg-blue-50 text-blue-700'
+                                : 'text-gray-700 hover:bg-gray-100'
                                 }`}
                         >
                             <span className="material-symbols-outlined text-base">{section.icon}</span>
@@ -41,9 +42,7 @@ export default function ProductsManager({ categories }) {
                     <UploadProduct categories={categories} />
                 )}
                 {activeSection === 'list' && (
-                    <div className="flex items-center justify-center h-full text-gray-400">
-                        <p>Lista de productos - Próximamente</p>
-                    </div>
+                    <ProductsList products={products} />
                 )}
             </main>
         </div>
