@@ -3,7 +3,9 @@ import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-export default function UploadProduct({ categories = [] }) {
+export default function UploadProduct({ categories = [], initialData = null, onCancel }) {
+    const isEdit = !!initialData;
+
     const [formData, setFormData] = useState({
         name: '',
         sku: '',
@@ -18,6 +20,30 @@ export default function UploadProduct({ categories = [] }) {
 
     const [existingImagesText, setExistingImagesText] = useState(''); // IDs or URLs
     const [uploading, setUploading] = useState(false);
+
+    // Pre-fill form on edit
+    React.useEffect(() => {
+        if (initialData) {
+            setFormData({
+                name: initialData.name || '',
+                sku: initialData.sku || '',
+                category_id: initialData.category_id || '',
+                description: initialData.description || '',
+                base_price: initialData.base_price || '',
+                stock_quantity: initialData.stock_quantity || '',
+                product_type: initialData.product_type || 'simple',
+                is_adult_only: !!initialData.is_adult_only,
+                is_active: !!initialData.is_active,
+            });
+
+            // Handle images array
+            if (Array.isArray(initialData.images)) {
+                setExistingImagesText(initialData.images.join('\n'));
+            } else if (initialData.image_url) {
+                setExistingImagesText(initialData.image_url);
+            }
+        }
+    }, [initialData]);
 
     // Handle form field changes
     const handleChange = (e) => {
@@ -52,47 +78,45 @@ export default function UploadProduct({ categories = [] }) {
         setUploading(true);
 
         try {
-            const submitData = new FormData();
+            // Prepare submission data as a plain object for JSON
+            const submitData = {
+                ...formData,
+                existing_images: existingImagesText.trim()
+                    ? existingImagesText.split('\n').map(l => l.trim()).filter(l => l !== '')
+                    : []
+            };
 
-            // Add form fields
-            Object.keys(formData).forEach(key => {
-                if (formData[key] !== '') {
-                    submitData.append(key, formData[key]);
-                }
-            });
+            const routeName = isEdit ? 'products.update' : 'products.upload';
+            const routeParams = isEdit ? initialData.id : {};
 
-            // Add existing images from text area
-            if (existingImagesText.trim()) {
-                const existingImagesArray = existingImagesText
-                    .split('\n')
-                    .map(line => line.trim())
-                    .filter(line => line !== '');
-
-                existingImagesArray.forEach((img, index) => {
-                    submitData.append(`existing_images[${index}]`, img);
-                });
-            }
-
-            router.post(route('products.upload'), submitData, {
+            router.visit(route(routeName, routeParams), {
+                method: isEdit ? 'put' : 'post',
+                data: submitData,
                 onSuccess: () => {
-                    toast.success('✓ Producto creado correctamente');
-                    // Reset form
-                    setFormData({
-                        name: '',
-                        sku: '',
-                        category_id: '',
-                        description: '',
-                        base_price: '',
-                        stock_quantity: '',
-                        product_type: 'simple',
-                        is_adult_only: true,
-                        is_active: true,
-                    });
-                    setExistingImagesText('');
+                    toast.success(isEdit ? '✓ Producto actualizado' : '✓ Producto creado correctamente');
+                    if (!isEdit) {
+                        // Reset form
+                        setFormData({
+                            name: '',
+                            sku: '',
+                            category_id: '',
+                            description: '',
+                            base_price: '',
+                            stock_quantity: '',
+                            product_type: 'simple',
+                            is_adult_only: true,
+                            is_active: true,
+                        });
+                        setExistingImagesText('');
+                    } else {
+                        // Go back to list after edit
+                        if (onCancel) onCancel();
+                    }
                 },
                 onError: (errors) => {
                     console.error('Upload errors:', errors);
-                    toast.error('Error al crear el producto. Revise los campos.');
+                    const errorMsg = Object.values(errors).flat().join(' ') || 'Ocurrió un error';
+                    toast.error(`Error: ${errorMsg}`);
                 },
                 onFinish: () => setUploading(false)
             });
@@ -108,8 +132,12 @@ export default function UploadProduct({ categories = [] }) {
         <div className="h-full overflow-y-auto">
             <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-8 space-y-8">
                 <div className="border-b border-gray-200 pb-4">
-                    <h2 className="text-2xl font-bold text-gray-800">Subir Nuevo Producto</h2>
-                    <p className="text-sm text-gray-500 mt-1">Complete los campos para crear un nuevo producto</p>
+                    <h2 className="text-2xl font-bold text-gray-800">
+                        {isEdit ? 'Editar Producto' : 'Subir Nuevo Producto'}
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                        {isEdit ? `Editando: ${formData.name}` : 'Complete los campos para crear un nuevo producto'}
+                    </p>
                 </div>
 
                 {/* Images Selection Section (Only Links/IDs now) */}
@@ -300,26 +328,36 @@ export default function UploadProduct({ categories = [] }) {
 
                 {/* Submit Button */}
                 <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setFormData({
-                                name: '',
-                                sku: '',
-                                category_id: '',
-                                description: '',
-                                base_price: '',
-                                stock_quantity: '',
-                                product_type: 'simple',
-                                is_adult_only: true,
-                                is_active: true,
-                            });
-                            setExistingImagesText('');
-                        }}
-                        className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                        Limpiar
-                    </button>
+                    {isEdit ? (
+                        <button
+                            type="button"
+                            onClick={onCancel}
+                            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                            Cancelar
+                        </button>
+                    ) : (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setFormData({
+                                    name: '',
+                                    sku: '',
+                                    category_id: '',
+                                    description: '',
+                                    base_price: '',
+                                    stock_quantity: '',
+                                    product_type: 'simple',
+                                    is_adult_only: true,
+                                    is_active: true,
+                                });
+                                setExistingImagesText('');
+                            }}
+                            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                            Limpiar
+                        </button>
+                    )}
                     <button
                         type="submit"
                         disabled={uploading}
@@ -328,12 +366,12 @@ export default function UploadProduct({ categories = [] }) {
                         {uploading ? (
                             <>
                                 <span className="material-symbols-outlined animate-spin text-sm">refresh</span>
-                                Subiendo...
+                                {isEdit ? 'Guardando...' : 'Subiendo...'}
                             </>
                         ) : (
                             <>
-                                <span className="material-symbols-outlined text-sm">upload</span>
-                                Crear Producto
+                                <span className="material-symbols-outlined text-sm">{isEdit ? 'save' : 'upload'}</span>
+                                {isEdit ? 'Guardar Cambios' : 'Crear Producto'}
                             </>
                         )}
                     </button>

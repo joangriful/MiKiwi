@@ -10,16 +10,19 @@ class CloudinaryService
 {
     public function __construct()
     {
-        Configuration::instance([
-            'cloud' => [
-                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                'api_key' => env('CLOUDINARY_API_KEY'),
-                'api_secret' => env('CLOUDINARY_API_SECRET'),
-            ],
-            'url' => [
-                'secure' => true
-            ]
-        ]);
+        $cloudName = env('CLOUDINARY_CLOUD_NAME');
+        if ($cloudName) {
+            Configuration::instance([
+                'cloud' => [
+                    'cloud_name' => $cloudName,
+                    'api_key' => env('CLOUDINARY_API_KEY'),
+                    'api_secret' => env('CLOUDINARY_API_SECRET'),
+                ],
+                'url' => [
+                    'secure' => true
+                ]
+            ]);
+        }
     }
 
     public function listDollParts()
@@ -271,6 +274,7 @@ class CloudinaryService
         }
 
         // Generate URL from Public ID
-        return "https://res.cloudinary.com/" . env('CLOUDINARY_CLOUD_NAME') . "/image/upload/f_auto,q_auto/" . $idOrUrl;
+        $cloudName = env('CLOUDINARY_CLOUD_NAME', 'dqwwonjie'); // Use a realistic default or empty
+        return "https://res.cloudinary.com/{$cloudName}/image/upload/f_auto,q_auto/" . $idOrUrl;
     }
 }

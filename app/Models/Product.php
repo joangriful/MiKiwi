@@ -21,6 +21,7 @@ class Product extends Model
         'stock_quantity',
         'product_type',
         'is_adult_only',
+        'image_url',
         'images',
     ];
 

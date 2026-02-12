@@ -93,8 +93,8 @@ export default function ProductsList({ products = [] }) {
                                 </td>
                                 <td className="px-6 py-4">
                                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border ${product.is_active
-                                            ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
-                                            : 'bg-gray-50 text-gray-600 border-gray-200'
+                                        ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                                        : 'bg-gray-50 text-gray-600 border-gray-200'
                                         }`}>
                                         {product.is_active ? 'Activo' : 'Inactivo'}
                                     </span>
@@ -102,8 +102,9 @@ export default function ProductsList({ products = [] }) {
                                 <td className="px-6 py-4 text-right">
                                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <button
+                                            onClick={() => onEdit(product)}
                                             className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                            title="Editar (Próximamente)"
+                                            title="Editar"
                                         >
                                             <span className="material-symbols-outlined text-lg">edit</span>
                                         </button>

@@ -111,6 +111,8 @@ class ProductManagerController extends Controller
             'product_type' => 'sometimes|in:simple,configurable,component',
             'is_adult_only' => 'boolean',
             'is_active' => 'boolean',
+            'existing_images' => 'nullable|array',
+            'existing_images.*' => 'string',
         ]);
 
         try {
@@ -123,6 +125,19 @@ class ProductManagerController extends Controller
                     $counter++;
                 }
                 $validated['slug'] = $slug;
+            }
+
+            // Image handling
+            if ($request->has('existing_images')) {
+                $imageUrls = [];
+                foreach ($request->input('existing_images') as $img) {
+                    if (!empty(trim($img))) {
+                        $imageUrls[] = $this->cloudinaryService->getImageUrl(trim($img));
+                    }
+                }
+
+                $validated['images'] = !empty($imageUrls) ? $imageUrls : null;
+                $validated['image_url'] = !empty($imageUrls) ? $imageUrls[0] : null;
             }
 
             $product->update($validated);
