@@ -11,5 +11,6 @@ class HeroImage extends Model
         'url',
         'width',
         'height',
+        'type',
     ];
 }

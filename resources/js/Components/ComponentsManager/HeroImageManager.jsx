@@ -2,7 +2,12 @@ import React, { useState, useRef } from 'react';
 import { router } from '@inertiajs/react';
 import Toast from '../Common/Toast';
 
-export default function HeroImageManager({ images = [] }) {
+export default function HeroImageManager({
+    images = [],
+    title = "Imágenes del Hero",
+    description = "Gestiona las imágenes de fondo del hero principal",
+    uploadType = "home"
+}) {
     const [isDragging, setIsDragging] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [toast, setToast] = useState(null);
@@ -49,6 +54,7 @@ export default function HeroImageManager({ images = [] }) {
         setUploading(true);
         const formData = new FormData();
         files.forEach(file => formData.append('images[]', file));
+        formData.append('type', uploadType);
 
         router.post(route('content.hero.upload'), formData, {
             preserveScroll: true,
@@ -89,8 +95,8 @@ export default function HeroImageManager({ images = [] }) {
             )}
 
             <div className="mb-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Imágenes del Hero</h3>
-                <p className="text-sm text-gray-500">Gestiona las imágenes de fondo del hero principal</p>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">{title}</h3>
+                <p className="text-sm text-gray-500">{description}</p>
             </div>
 
             {/* Images Grid with Upload Card */}
@@ -102,8 +108,8 @@ export default function HeroImageManager({ images = [] }) {
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     className={`relative aspect-video rounded-lg overflow-hidden border-2 border-dashed transition-all cursor-pointer ${isDragging
-                            ? 'border-[#99b849] bg-[#99b849]/10'
-                            : 'border-gray-300 bg-gray-50 hover:border-[#99b849] hover:bg-gray-100'
+                        ? 'border-[#99b849] bg-[#99b849]/10'
+                        : 'border-gray-300 bg-gray-50 hover:border-[#99b849] hover:bg-gray-100'
                         }`}
                     onClick={() => !uploading && fileInputRef.current?.click()}
                 >

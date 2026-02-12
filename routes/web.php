@@ -186,6 +186,23 @@ Route::get('/sobre-nosotros', function () {
     return Inertia::render('AboutUs');
 })->name('sobre.nosotros');
 
+Route::get('/aviso-legal', function () {
+    return Inertia::render('LegalNotice');
+})->name('legal.notice');
+
+Route::get('/mapa-del-sitio', function () {
+    return Inertia::render('Sitemap');
+})->name('sitemap');
+
+Route::get('/sostenibilidad', function () {
+    $heroImages = \App\Models\HeroImage::where('type', 'sustainability')
+        ->orderBy('created_at', 'desc')
+        ->get();
+    return Inertia::render('Sustainability', [
+        'heroImages' => $heroImages
+    ]);
+})->name('sustainability');
+
 Route::prefix('configurador')->group(function () {
     Route::get('/', function () {
         return Inertia::render('Configurador/Home'); })->name('configurador.home');

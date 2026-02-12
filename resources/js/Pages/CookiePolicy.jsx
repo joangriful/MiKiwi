@@ -11,7 +11,10 @@ export default function CookiePolicy() {
             <Header />
 
             <main className="flex-1 w-full max-w-4xl mx-auto py-16 px-6 md:px-12">
-                <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-900 border-b border-gray-100 pb-6">Política de Cookies</h1>
+                <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-900 border-b border-gray-100 pb-6 flex items-center gap-3">
+                    <img src="/assets/icons/cookies.svg" alt="Cookies" className="w-8 h-8 md:w-10 md:h-10" />
+                    Política de Cookies
+                </h1>
 
                 <div className="space-y-8 text-sm md:text-base leading-relaxed text-gray-600">
                     <section>

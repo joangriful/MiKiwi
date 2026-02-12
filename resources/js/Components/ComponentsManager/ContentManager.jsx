@@ -17,8 +17,8 @@ export default function ContentManager({ heroImages }) {
                     <button
                         onClick={() => setActiveSection('hero')}
                         className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeSection === 'hero'
-                                ? 'bg-[#99b849]/10 text-[#99b849]'
-                                : 'text-gray-600 hover:bg-gray-50'
+                            ? 'bg-[#99b849]/10 text-[#99b849]'
+                            : 'text-gray-600 hover:bg-gray-50'
                             }`}
                     >
                         <span className="material-symbols-outlined text-[18px]">image</span>
@@ -30,7 +30,23 @@ export default function ContentManager({ heroImages }) {
             {/* Main Content */}
             <div className="flex-1 overflow-auto">
                 {activeSection === 'hero' && (
-                    <HeroImageManager images={heroImages} />
+                    <div className="flex flex-col gap-8 pb-10">
+                        {/* Home Hero Images */}
+                        <HeroImageManager
+                            images={heroImages.filter(img => img.type === 'home' || !img.type)}
+                            title="Imágenes del Hero (Home)"
+                            description="Gestiona las imágenes de fondo del hero principal"
+                            uploadType="home"
+                        />
+
+                        {/* Sustainability Hero Images */}
+                        <HeroImageManager
+                            images={heroImages.filter(img => img.type === 'sustainability')}
+                            title="Imágenes del Hero (Sostenibilidad)"
+                            description="Gestiona las imágenes del hero de la página de sostenibilidad"
+                            uploadType="sustainability"
+                        />
+                    </div>
                 )}
             </div>
         </div>

@@ -21,16 +21,18 @@ class ContentController extends Controller
         $request->validate([
             'images' => 'required|array',
             'images.*' => 'image|max:10240', // Max 10MB per image
+            'type' => 'nullable|string|in:home,sustainability', // Validate type
         ]);
 
         try {
             $uploadedImages = [];
+            $type = $request->input('type', 'home');
 
             foreach ($request->file('images') as $image) {
                 // Upload to Cloudinary
                 $cloudinaryResponse = $this->cloudinaryService->uploadImage(
                     $image,
-                    'hero_images'
+                    'hero_images/' . $type
                 );
 
                 // Store in database
@@ -39,6 +41,7 @@ class ContentController extends Controller
                     'url' => $cloudinaryResponse['secure_url'],
                     'width' => $cloudinaryResponse['width'] ?? null,
                     'height' => $cloudinaryResponse['height'] ?? null,
+                    'type' => $type,
                 ]);
 
                 $uploadedImages[] = $heroImage;
