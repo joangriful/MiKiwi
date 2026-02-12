@@ -14,7 +14,8 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
     };
 
     const updateQuantity = (id, quantity) => {
-        if (quantity < 1) return;
+        if (quantity < 0) return;
+
         patch(route('cart.update', id), {
             quantity: quantity
         }, {
@@ -85,9 +86,9 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                 <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Cesta de Compra</h2>
                 <Link
                     href={route('colecciones')}
-                    className="text-sm font-medium text-primary hover:text-primary-dark flex items-center gap-1"
+                    className="flex justify-center items-center px-4 py-2 border-2 border-gray-100 rounded-xl text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-primary hover:border-primary/20 transition-all duration-300 group"
                 >
-                    <span>&larr;</span> Volver a la tienda
+                    <span className="mr-2 group-hover:-translate-x-1 transition-transform">&larr;</span> Volver a la tienda
                 </Link>
             </div>
 

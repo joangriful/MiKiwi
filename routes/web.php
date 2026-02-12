@@ -60,6 +60,8 @@ Route::prefix('cart')->group(function () {
     Route::post('/add', [CartController::class, 'store'])->name('cart.add');
     Route::patch('/update/{id}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/remove/{id}', [CartController::class, 'destroy'])->name('cart.remove');
+    Route::post('/coupon', [App\Http\Controllers\CouponController::class, 'apply'])->name('cart.coupon.apply');
+    Route::delete('/coupon', [App\Http\Controllers\CouponController::class, 'remove'])->name('cart.coupon.remove');
 });
 
 /*
@@ -103,7 +105,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     // Profile image and banner uploads
     Route::post('/profile/image', [ProfileController::class, 'updateProfileImage'])->name('profile.image.update');
     Route::post('/profile/banner', [ProfileController::class, 'updateBanner'])->name('profile.banner.update');
@@ -160,12 +162,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/users/{user}/toggle-role', [App\Http\Controllers\UserController::class, 'toggleAdmin'])->name('users.toggleRole');
     Route::post('/content/hero/upload', [App\Http\Controllers\ContentController::class, 'uploadHeroImages'])->name('content.hero.upload');
     Route::delete('/content/hero/{heroImage}', [App\Http\Controllers\ContentController::class, 'deleteHeroImage'])->name('content.hero.delete');
-    
+
     // Product Management
     Route::post('/products/upload', [App\Http\Controllers\ProductManagerController::class, 'uploadProduct'])->name('products.upload');
     Route::put('/products/{product}', [App\Http\Controllers\ProductManagerController::class, 'updateProduct'])->name('products.update');
     Route::delete('/products/{product}', [App\Http\Controllers\ProductManagerController::class, 'deleteProduct'])->name('products.delete');
-    
+
     // Newsletter
     Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 });
@@ -205,17 +207,23 @@ Route::get('/sostenibilidad', function () {
 
 Route::prefix('configurador')->group(function () {
     Route::get('/', function () {
-        return Inertia::render('Configurador/Home'); })->name('configurador.home');
+        return Inertia::render('Configurador/Home');
+    })->name('configurador.home');
     Route::get('/index', function () {
-        return Inertia::render('Configurador/Index'); })->name('configurador.index');
+        return Inertia::render('Configurador/Index');
+    })->name('configurador.index');
     Route::get('/collections', function () {
-        return Inertia::render('Configurador/Collections'); })->name('configurador.collections');
+        return Inertia::render('Configurador/Collections');
+    })->name('configurador.collections');
     Route::get('/quiz', function () {
-        return Inertia::render('Configurador/Quiz'); })->name('configurador.quiz');
+        return Inertia::render('Configurador/Quiz');
+    })->name('configurador.quiz');
     Route::get('/munecas', function () {
-        return Inertia::render('DollConfigurator'); })->name('configurador.dolls');
+        return Inertia::render('DollConfigurator');
+    })->name('configurador.dolls');
     Route::get('/cart', function () {
-        return Inertia::render('Cart'); })->name('cart.view');
+        return Inertia::render('Cart');
+    })->name('cart.view');
 });
 
 Route::get('/doll_config_test', function () {

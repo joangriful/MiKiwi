@@ -33,6 +33,7 @@ class CartController extends Controller
             'popularProducts' => $popularProducts,
             'pageTitle' => 'Carrito de Compras - MiKiwi',
             'stripeKey' => config('services.stripe.key'),
+            'coupon' => session('coupon'),
         ]);
     }
 
@@ -82,27 +83,35 @@ class CartController extends Controller
      * 
      * @param Request $request
      * @param string $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, string $id)
     {
         try {
             $validated = $request->validate([
-                'quantity' => 'required|integer|min:1'
+                'quantity' => 'required|integer|min:0'
             ]);
 
-            $cart = $this->cartService->updateQuantity($id, $validated['quantity']);
+            if ($validated['quantity'] <= 0) {
+                $this->cartService->removeFromCart($id);
+                return redirect()->back()->with('success', 'Producto eliminado');
+            }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Cantidad actualizada',
-                'cart' => $cart
-            ]);
+            $this->cartService->updateQuantity($id, $validated['quantity']);
+
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Cantidad actualizada'
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Cantidad actualizada');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 400);
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
+            }
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 
@@ -110,45 +119,43 @@ class CartController extends Controller
      * Eliminar producto del carrito
      * 
      * @param string $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(string $id)
     {
         try {
-            $cart = $this->cartService->removeFromCart($id);
+            $this->cartService->removeFromCart($id);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Producto eliminado del carrito',
-                'cart' => $cart
-            ]);
+            return redirect()->back()->with('success', 'Producto eliminado del carrito');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 400);
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 
     /**
      * Vaciar el carrito
      * 
-     * @return \Illuminate\Http\JsonResponse
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function clear()
+    public function clear(Request $request)
     {
         try {
             $this->cartService->clearCart();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Carrito vaciado'
-            ]);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Carrito vaciado'
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Carrito vaciado');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 400);
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
+            }
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
@@ -13,34 +13,23 @@ import Footer from '@/Components/Common/Footer';
 // Load Stripe outside of component to avoid recreation
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY || '');
 
-function CheckoutContent({ cart, popularProducts, auth, stripeKey, nextStep, prevStep, step, subtotal, shippingCost, total }) {
+function CheckoutContent({
+    cart,
+    auth,
+    step,
+    nextStep,
+    prevStep,
+    formData,
+    setFormData,
+    formPost,
+    formProcessing,
+    formTransform,
+    formErrors,
+    popularProducts
+}) {
     const stripe = useStripe();
     const elements = useElements();
-    const [isProcessing, setIsProcessing] = useState(false);
-
-    const { data, setData, post, processing, transform, errors } = useForm({
-        // Info Step
-        first_name: '',
-        last_name: '',
-        email: '',
-        phone: '',
-        address: '',
-        city: '',
-        postal_code: '',
-        country: '',
-
-        // Shipping Step
-        shipping_method: 'standard',
-        pickup_point_id: null,
-
-        // Payment Step
-        payment_method: 'card',
-        payment_intent_id: null,
-        billing_same_as_shipping: true,
-
-        // Items
-        items: cart.items || []
-    });
+    const [isInternalProcessing, setIsInternalProcessing] = useState(false);
 
     const handleSubmitOrder = async () => {
         if (!stripe || !elements) {
@@ -48,12 +37,15 @@ function CheckoutContent({ cart, popularProducts, auth, stripeKey, nextStep, pre
             return;
         }
 
-        setIsProcessing(true);
+        setIsInternalProcessing(true);
 
         try {
             // 1. Create Payment Intent on backend
+            // Get the actual total after shipping and coupons
+            const dynamicTotal = total - (formData.coupon_code && cart.coupon ? cart.coupon.discount : 0);
+
             const { data: intentData } = await axios.post(route('payment-intent.create'), {
-                amount: cart.total,
+                amount: Math.round(dynamicTotal * 100) / 100, // Ensure normalized total
             });
 
             // 2. Confirm payment on frontend
@@ -61,13 +53,13 @@ function CheckoutContent({ cart, popularProducts, auth, stripeKey, nextStep, pre
                 payment_method: {
                     card: elements.getElement(CardElement),
                     billing_details: {
-                        name: `${data.first_name} ${data.last_name}`,
-                        email: data.email,
-                        phone: data.phone,
+                        name: `${formData.first_name} ${formData.last_name}`,
+                        email: formData.email,
+                        phone: formData.phone,
                         address: {
-                            line1: data.address,
-                            city: data.city,
-                            postal_code: data.postal_code,
+                            line1: formData.address,
+                            city: formData.city,
+                            postal_code: formData.postal_code,
                             country: 'ES',
                         }
                     },
@@ -76,13 +68,13 @@ function CheckoutContent({ cart, popularProducts, auth, stripeKey, nextStep, pre
 
             if (result.error) {
                 alert(result.error.message);
-                setIsProcessing(false);
+                setIsInternalProcessing(false);
                 return;
             }
 
             // 3. Payment successful, submit order to backend
             if (result.paymentIntent.status === 'succeeded') {
-                transform((data) => ({
+                formTransform((data) => ({
                     ...data,
                     payment_intent_id: result.paymentIntent.id,
                     shipping_address: {
@@ -92,17 +84,26 @@ function CheckoutContent({ cart, popularProducts, auth, stripeKey, nextStep, pre
                         city: data.city,
                         postal_code: data.postal_code,
                         country: data.country,
+                    },
+                    dni: data.dni,
+                    billing_address: data.billing_same_as_shipping ? null : {
+                        full_name: `${data.first_name} ${data.last_name}`,
+                        phone: data.phone,
+                        street_address: data.billing_address.address,
+                        city: data.billing_address.city,
+                        postal_code: data.billing_address.postal_code,
+                        country: data.billing_address.country,
                     }
                 }));
 
-                post(route('orders.store'), {
-                    onFinish: () => setIsProcessing(false),
+                formPost(route('orders.store'), {
+                    onFinish: () => setIsInternalProcessing(false),
                 });
             }
         } catch (error) {
             console.error('Order submission error:', error);
             alert('Hubo un error al procesar tu pedido. Por favor, inténtalo de nuevo.');
-            setIsProcessing(false);
+            setIsInternalProcessing(false);
         }
     };
 
@@ -117,51 +118,111 @@ function CheckoutContent({ cart, popularProducts, auth, stripeKey, nextStep, pre
             )}
             {step === 2 && (
                 <InfoStep
-                    data={data}
-                    setData={setData}
+                    data={formData}
+                    setData={setFormData}
                     onNext={nextStep}
                     onBack={prevStep}
                     user={auth.user}
+                    errors={formErrors}
                 />
             )}
             {step === 3 && (
                 <ShippingStep
-                    data={data}
-                    setData={setData}
+                    data={formData}
+                    setData={setFormData}
                     onNext={nextStep}
                     onBack={prevStep}
                 />
             )}
             {step === 4 && (
                 <PaymentStep
-                    data={data}
-                    setData={setData}
+                    data={formData}
+                    setData={setFormData}
                     onSubmit={handleSubmitOrder}
                     onBack={prevStep}
-                    processing={processing || isProcessing}
+                    processing={formProcessing || isInternalProcessing}
                 />
             )}
         </div>
     );
 }
 
-export default function Cart({ cart = { items: [], total: 0 }, auth = { user: null }, popularProducts = [], stripeKey }) {
+export default function Cart({ cart = { items: [], total: 0 }, auth = { user: null }, popularProducts = [], stripeKey, coupon }) {
     const finalStripePromise = stripeKey ? loadStripe(stripeKey) : stripePromise;
     const [step, setStep] = useState(1);
+
+    const { data, setData, post, processing, transform, errors, delete: destroy } = useForm({
+        // Info Step
+        first_name: '',
+        last_name: '',
+        email: '',
+        phone: '',
+        dni: '',
+        address: '',
+        city: '',
+        postal_code: '',
+        country: 'España',
+
+        // Shipping Step
+        shipping_method: 'standard',
+        pickup_point_id: null,
+
+        // Payment Step
+        payment_method: 'card',
+        payment_intent_id: null,
+        billing_same_as_shipping: true,
+        billing_address: {
+            address: '',
+            city: '',
+            postal_code: '',
+            country: 'España',
+        },
+
+        // Coupon
+        coupon_code: '',
+
+        // Items
+        items: cart.items || []
+    });
 
     const nextStep = () => setStep((prev) => prev + 1);
     const prevStep = () => setStep((prev) => prev - 1);
 
+    const applyCoupon = () => {
+        post(route('cart.coupon.apply'), {
+            preserveScroll: true,
+            onSuccess: () => setData('coupon_code', ''),
+        });
+    };
+
+    const removeCoupon = () => {
+        destroy(route('cart.coupon.remove'), {
+            preserveScroll: true,
+        });
+    };
+
+    const handleRemoveItem = (itemId) => {
+        destroy(route('cart.remove', itemId), {
+            preserveScroll: true,
+        });
+    };
+
     // Calculate dynamic totals
+    const shippingCosts = {
+        standard: 3.99,
+        pickup: 2.99
+    };
     const subtotal = parseFloat(cart.total);
-    const shippingCost = 3.99;
-    const total = subtotal + (step > 2 ? (step === 3 ? 0 : shippingCost) : 0);
+    const shippingCost = shippingCosts[data.shipping_method] || 0;
+
+    // The total should show the shipping cost only if we've reached the shipping step (3) or payment (4)
+    // Actually, users expect to see the total including shipping as soon as they select it.
+    const total = subtotal + (step >= 3 ? shippingCost : 0);
 
     return (
         <Elements stripe={finalStripePromise}>
             <div className="min-h-screen flex flex-col bg-white">
                 <Head title="Checkout - MiKiwi" />
-
                 <Header user={auth.user} />
 
                 <main className="flex-grow flex flex-col md:flex-row w-full max-w-screen-2xl mx-auto px-4 md:px-0 lg:px-0">
@@ -189,15 +250,17 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
 
                         <CheckoutContent
                             cart={cart}
-                            popularProducts={popularProducts}
                             auth={auth}
-                            stripeKey={stripeKey}
+                            step={step}
                             nextStep={nextStep}
                             prevStep={prevStep}
-                            step={step}
-                            subtotal={subtotal}
-                            shippingCost={shippingCost}
-                            total={total}
+                            formData={data}
+                            setFormData={setData}
+                            formPost={post}
+                            formProcessing={processing}
+                            formTransform={transform}
+                            formErrors={errors}
+                            popularProducts={popularProducts}
                         />
                     </div>
 
@@ -228,6 +291,15 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                                                 <span className="absolute -top-1 -right-1 bg-gray-800 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">
                                                     {item.quantity}
                                                 </span>
+                                                <button
+                                                    onClick={() => handleRemoveItem(item.product_id)}
+                                                    className="absolute bottom-0 right-0 bg-red-500 text-white p-1 rounded-tl-lg hover:bg-red-600 transition-colors"
+                                                    title="Eliminar del carrito"
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
                                             </div>
                                             <div className="flex-1">
                                                 <h4 className="text-sm font-medium text-gray-900 leading-tight">{item.product.name}</h4>
@@ -243,16 +315,55 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                                 )}
                             </div>
 
-                            <div className="space-y-4 pt-8 border-t border-gray-200">
+                            <div className="mt-8 pt-8 border-t border-gray-200">
+                                <label className="text-xs uppercase tracking-widest font-bold text-gray-400 mb-2 block">CUPÓN DE DESCUENTO</label>
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        placeholder="Código del cupón"
+                                        className="flex-1 text-sm border-gray-200 rounded-lg focus:ring-primary focus:border-primary"
+                                        value={data.coupon_code}
+                                        onChange={(e) => setData('coupon_code', e.target.value)}
+                                    />
+                                    <button
+                                        onClick={applyCoupon}
+                                        className="px-4 py-2 bg-gray-800 text-white text-xs font-bold rounded-lg hover:bg-gray-700 transition-all"
+                                    >
+                                        Aplicar
+                                    </button>
+                                </div>
+                                {coupon && (
+                                    <div className="mt-3 flex justify-between items-center bg-green-50 p-2 rounded-lg border border-green-100">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs font-bold text-green-700">{coupon.code}</span>
+                                            <span className="text-[10px] text-green-600">(-{coupon.type === 'percent' ? `${coupon.value}%` : `${coupon.value} €`})</span>
+                                        </div>
+                                        <button onClick={removeCoupon} className="text-red-500 hover:text-red-700">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="space-y-4 pt-8 border-t border-gray-200 mt-6">
                                 <div className="flex justify-between text-gray-600">
                                     <span className="text-sm">Subtotal</span>
                                     <span className="font-medium">{subtotal.toFixed(2)} €</span>
                                 </div>
 
+                                {coupon && (
+                                    <div className="flex justify-between text-green-600 font-medium">
+                                        <span className="text-sm">Descuento ({coupon.code})</span>
+                                        <span>-{coupon.discount.toFixed(2)} €</span>
+                                    </div>
+                                )}
+
                                 <div className="flex justify-between text-gray-600">
                                     <span className="text-sm">Envío</span>
                                     <span className="font-medium">
-                                        {step > 2 ? `${shippingCost.toFixed(2)} €` : 'Gratis'}
+                                        {step > 2 ? `${shippingCost.toFixed(2)} €` : 'Calculado en el siguiente paso'}
                                     </span>
                                 </div>
 
@@ -262,7 +373,7 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                                         <p className="text-[10px] text-gray-400 uppercase font-semibold">Incluye IVA</p>
                                     </div>
                                     <span className="text-3xl font-extrabold text-primary">
-                                        {total.toFixed(2)} €
+                                        {(total - (coupon ? coupon.discount : 0)).toFixed(2)} €
                                     </span>
                                 </div>
                             </div>
