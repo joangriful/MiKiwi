@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Exceptions\CartEmptyException;
+use App\Exceptions\InvalidOrderException;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Support\Str;
 
 class OrderService
 {
-    protected $orderRepository;
+    protected OrderRepositoryInterface $orderRepository;
 
-    protected $productRepository;
+    protected ProductRepositoryInterface $productRepository;
 
-    protected $cartService;
+    protected CartService $cartService;
 
     public function __construct(
         OrderRepositoryInterface $orderRepository,
@@ -60,13 +62,8 @@ class OrderService
                 'quantity' => $item['quantity'],
                 'unit_price' => $product->base_price,
                 'subtotal' => $subtotal,
-                'product_snapshot' => [
-                    'name' => $product->name,
-                    'sku' => $product->sku,
-                    'description' => $product->description,
-                    'images' => $product->images,
-                    'accessories' => $item['accessories'] ?? [],
-                ],
+                'product_name_snapshot' => $product->name,
+                'sku_snapshot' => $product->sku ?? 'SKU-GENERICO',
             ];
 
             $totalAmount += $subtotal;
@@ -84,6 +81,11 @@ class OrderService
             'billing_address_snapshot' => $billingAddress ?? $shippingAddress,
             'items' => $orderItems,
         ]);
+
+        // Reducir stock de productos
+        foreach ($cart['items'] as $item) {
+            $item['product']->decrement('stock_quantity', $item['quantity']);
+        }
 
         // Vaciar el carrito
         $this->cartService->clearCart();

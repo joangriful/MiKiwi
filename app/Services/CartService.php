@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Exceptions\InsufficientStockException;
+use App\Exceptions\ProductNotFoundException;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Support\Facades\Session;
 
 class CartService
 {
-    protected $productRepository;
+    protected ProductRepositoryInterface $productRepository;
 
-    protected $cartSessionKey = 'shopping_cart';
+    protected string $cartSessionKey = 'shopping_cart';
 
     public function __construct(ProductRepositoryInterface $productRepository)
     {
