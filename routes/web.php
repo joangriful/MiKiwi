@@ -150,6 +150,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->get(['id', 'name']);
 
         $products = \App\Models\Product::with('category:id,name')
+            ->whereNotNull('image_url')
+            ->where('image_url', 'not like', '%placehold.co%')
             ->orderBy('created_at', 'desc')
             ->get();
 

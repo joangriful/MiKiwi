@@ -33,6 +33,7 @@ class ProductManagerController extends Controller
             'images.*' => 'image|max:10240', // Max 10MB per image
             'existing_images' => 'nullable|array',
             'existing_images.*' => 'string',
+            'hover_image_input' => 'nullable|string',
         ]);
 
         try {
@@ -58,6 +59,14 @@ class ProductManagerController extends Controller
                     $imageUrls[] = $cloudinaryResponse['secure_url'];
                 }
             }
+
+            // Process Hover Image
+            $hoverImageUrl = null;
+            if ($request->filled('hover_image_input')) {
+                $hoverImageUrl = $this->cloudinaryService->getImageUrl(trim($request->input('hover_image_input')));
+            }
+
+
 
             // First image becomes primary
             if (!empty($imageUrls)) {
@@ -88,6 +97,7 @@ class ProductManagerController extends Controller
                 'is_adult_only' => $validated['is_adult_only'] ?? true,
                 'is_active' => $validated['is_active'] ?? true,
                 'image_url' => $primaryImageUrl,
+                'hover_image_url' => $hoverImageUrl,
                 'images' => !empty($imageUrls) ? $imageUrls : null,
             ]);
 
@@ -113,6 +123,7 @@ class ProductManagerController extends Controller
             'is_active' => 'boolean',
             'existing_images' => 'nullable|array',
             'existing_images.*' => 'string',
+            'hover_image_input' => 'nullable|string',
         ]);
 
         try {
@@ -138,6 +149,11 @@ class ProductManagerController extends Controller
 
                 $validated['images'] = !empty($imageUrls) ? $imageUrls : null;
                 $validated['image_url'] = !empty($imageUrls) ? $imageUrls[0] : null;
+            }
+
+            if ($request->has('hover_image_input')) {
+                $val = trim($request->input('hover_image_input'));
+                $validated['hover_image_url'] = !empty($val) ? $this->cloudinaryService->getImageUrl($val) : null;
             }
 
             $product->update($validated);
