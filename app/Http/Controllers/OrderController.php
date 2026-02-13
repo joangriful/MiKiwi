@@ -80,7 +80,7 @@ class OrderController extends Controller
 
         $cartData = $this->cartService->getCart();
         if ($cartData['item_count'] === 0) {
-            return back()->with('error', 'El carrito está vacío.');
+            throw new CartEmptyException('checkout');
         }
 
         try {
