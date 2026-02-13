@@ -150,10 +150,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->get(['id', 'name']);
 
         $products = \App\Models\Product::with('category:id,name')
-            ->whereNotNull('image_url')
-            ->where('image_url', 'not like', '%placehold.co%')
+            ->where('image_url', 'like', '%cloudinary%')
             ->orderBy('created_at', 'desc')
             ->get();
+
+        \Illuminate\Support\Facades\Log::info('Admin Products Count: ' . $products->count());
 
         return Inertia::render('ComponentsManager', [
             'views' => $views,
@@ -161,7 +162,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'users' => $users,
             'heroImages' => $heroImages,
             'categories' => $categories,
-            'products' => $products
+            'products' => $products,
+            'debugCount' => $products->count()
         ]);
     })->name('components.manager');
 
