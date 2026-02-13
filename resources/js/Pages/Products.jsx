@@ -27,10 +27,10 @@ export default function Products({ products, categories, filters }) {
 
                     {/* Product Grid */}
                     <div className="flex-1">
-                        {products.data.length > 0 ? (
+                        {products?.data && products.data.length > 0 ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-6 gap-y-10 justify-items-center md:justify-items-start">
-                                {products.data.map((product) => (
-                                    <ProductCard key={product.id} product={product} />
+                                {products.data.map((product, index) => (
+                                    <ProductCard key={product.id || `prod-${index}`} product={product} />
                                 ))}
                             </div>
                         ) : (
@@ -46,7 +46,7 @@ export default function Products({ products, categories, filters }) {
                         )}
 
                         {/* Pagination */}
-                        {products.links && products.links.length > 3 && (
+                        {products?.links && products.links.length > 3 && (
                             <div className="mt-12 flex justify-center">
                                 <div className="flex flex-wrap gap-2 justify-center">
                                     {products.links.map((link, key) => (

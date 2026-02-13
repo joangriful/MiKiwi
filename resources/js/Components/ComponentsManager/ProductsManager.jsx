@@ -1,13 +1,27 @@
 import React, { useState } from 'react';
 import UploadProduct from './UploadProduct';
+import ProductsList from './ProductsList';
 
-export default function ProductsManager({ categories }) {
+export default function ProductsManager({ categories, products }) {
     const [activeSection, setActiveSection] = useState('upload');
+    const [editingProduct, setEditingProduct] = useState(null);
 
     const sections = [
         { id: 'upload', label: 'Subir Producto', icon: 'upload' },
         { id: 'list', label: 'Lista de Productos', icon: 'list' },
     ];
+
+    const handleEdit = (product) => {
+        setEditingProduct(product);
+        setActiveSection('upload');
+    };
+
+    const handleTabChange = (sectionId) => {
+        if (sectionId === 'upload') {
+            setEditingProduct(null); // Reset if going to "New Product"
+        }
+        setActiveSection(sectionId);
+    };
 
     return (
         <div className="flex flex-1 overflow-hidden h-full relative">
@@ -22,10 +36,10 @@ export default function ProductsManager({ categories }) {
                     {sections.map(section => (
                         <button
                             key={section.id}
-                            onClick={() => setActiveSection(section.id)}
+                            onClick={() => handleTabChange(section.id)}
                             className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${activeSection === section.id
-                                    ? 'bg-blue-50 text-blue-700'
-                                    : 'text-gray-700 hover:bg-gray-100'
+                                ? 'bg-blue-50 text-blue-700'
+                                : 'text-gray-700 hover:bg-gray-100'
                                 }`}
                         >
                             <span className="material-symbols-outlined text-base">{section.icon}</span>
@@ -38,12 +52,14 @@ export default function ProductsManager({ categories }) {
             {/* Main Content Area */}
             <main className="flex-1 bg-white overflow-hidden relative">
                 {activeSection === 'upload' && (
-                    <UploadProduct categories={categories} />
+                    <UploadProduct
+                        categories={categories}
+                        initialData={editingProduct}
+                        onCancel={() => setActiveSection('list')}
+                    />
                 )}
                 {activeSection === 'list' && (
-                    <div className="flex items-center justify-center h-full text-gray-400">
-                        <p>Lista de productos - Próximamente</p>
-                    </div>
+                    <ProductsList products={products} onEdit={handleEdit} />
                 )}
             </main>
         </div>

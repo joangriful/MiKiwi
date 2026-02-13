@@ -31,33 +31,42 @@ class ProductManagerController extends Controller
             'is_active' => 'boolean',
             'images' => 'nullable|array',
             'images.*' => 'image|max:10240', // Max 10MB per image
+            'existing_images' => 'nullable|array',
+            'existing_images.*' => 'string',
         ]);
 
         try {
             $imageUrls = [];
             $primaryImageUrl = null;
 
-            // Upload images to Cloudinary
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $index => $image) {
-                    $cloudinaryResponse = $this->cloudinaryService->uploadImage(
-                        $image,
-                        'products'
-                    );
-
-                    $imageUrl = $cloudinaryResponse['secure_url'];
-                    $imageUrls[] = $imageUrl;
-
-                    // First image becomes primary
-                    if ($index === 0) {
-                        $primaryImageUrl = $imageUrl;
+            // 1. Process existing Cloudinary IDs or URLs
+            if ($request->has('existing_images')) {
+                foreach ($request->input('existing_images') as $img) {
+                    if (!empty(trim($img))) {
+                        $imageUrls[] = $this->cloudinaryService->getImageUrl(trim($img));
                     }
                 }
             }
 
+            // 2. Upload new images to Cloudinary
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $cloudinaryResponse = $this->cloudinaryService->uploadImage(
+                        $image,
+                        'products'
+                    );
+                    $imageUrls[] = $cloudinaryResponse['secure_url'];
+                }
+            }
+
+            // First image becomes primary
+            if (!empty($imageUrls)) {
+                $primaryImageUrl = $imageUrls[0];
+            }
+
             // Generate slug from name
             $slug = Str::slug($validated['name']);
-            
+
             // Ensure unique slug
             $originalSlug = $slug;
             $counter = 1;
@@ -82,18 +91,11 @@ class ProductManagerController extends Controller
                 'images' => !empty($imageUrls) ? $imageUrls : null,
             ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Producto creado correctamente',
-                'product' => $product
-            ]);
+            return redirect()->back()->with('success', 'Producto creado correctamente');
 
         } catch (\Exception $e) {
             Log::error('Error uploading product: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al crear el producto: ' . $e->getMessage()
-            ], 500);
+            return redirect()->back()->with('error', 'Error al crear el producto: ' . $e->getMessage());
         }
     }
 
@@ -109,6 +111,8 @@ class ProductManagerController extends Controller
             'product_type' => 'sometimes|in:simple,configurable,component',
             'is_adult_only' => 'boolean',
             'is_active' => 'boolean',
+            'existing_images' => 'nullable|array',
+            'existing_images.*' => 'string',
         ]);
 
         try {
@@ -123,20 +127,26 @@ class ProductManagerController extends Controller
                 $validated['slug'] = $slug;
             }
 
+            // Image handling
+            if ($request->has('existing_images')) {
+                $imageUrls = [];
+                foreach ($request->input('existing_images') as $img) {
+                    if (!empty(trim($img))) {
+                        $imageUrls[] = $this->cloudinaryService->getImageUrl(trim($img));
+                    }
+                }
+
+                $validated['images'] = !empty($imageUrls) ? $imageUrls : null;
+                $validated['image_url'] = !empty($imageUrls) ? $imageUrls[0] : null;
+            }
+
             $product->update($validated);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Producto actualizado correctamente',
-                'product' => $product
-            ]);
+            return redirect()->back()->with('success', 'Producto actualizado correctamente');
 
         } catch (\Exception $e) {
             Log::error('Error updating product: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al actualizar el producto'
-            ], 500);
+            return redirect()->back()->with('error', 'Error al actualizar el producto');
         }
     }
 
@@ -145,17 +155,11 @@ class ProductManagerController extends Controller
         try {
             $product->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Producto eliminado correctamente'
-            ]);
+            return redirect()->back()->with('success', 'Producto eliminado correctamente');
 
         } catch (\Exception $e) {
             Log::error('Error deleting product: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al eliminar el producto'
-            ], 500);
+            return redirect()->back()->with('error', 'Error al eliminar el producto');
         }
     }
 }

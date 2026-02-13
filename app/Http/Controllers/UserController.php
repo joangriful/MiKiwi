@@ -22,12 +22,9 @@ class UserController extends Controller
         }
 
         // Cambiar estado
-        $user->role = ($user->role === 'admin') ? 'user' : 'admin';
+        $user->role = ($user->role === 'admin') ? 'customer' : 'admin';
         $user->save();
 
-        return response()->json([
-            'message' => 'Rol de usuario actualizado correctamente.',
-            'user' => $user
-        ]);
+        return redirect()->back()->with('success', 'Rol de usuario actualizado correctamente.');
     }
 }

@@ -149,12 +149,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->orderBy('name')
             ->get(['id', 'name']);
 
+        $products = \App\Models\Product::with('category:id,name')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return Inertia::render('ComponentsManager', [
             'views' => $views,
             'defaultSettings' => $defaultSettings,
             'users' => $users,
             'heroImages' => $heroImages,
-            'categories' => $categories
+            'categories' => $categories,
+            'products' => $products
         ]);
     })->name('components.manager');
 
