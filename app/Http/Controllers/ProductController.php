@@ -46,4 +46,52 @@ class ProductController extends Controller
             abort(404, 'Producto no encontrado');
         }
     }
+    /**
+     * Listado de productos con filtros
+     */
+    public function index(\Illuminate\Http\Request $request)
+    {
+        $query = Product::where('is_active', true);
+
+        // Filtrar por categoría
+        if ($request->has('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        // Filtrar por rango de precio
+        if ($request->has('min_price')) {
+            $query->where('base_price', '>=', $request->min_price);
+        }
+        if ($request->has('max_price')) {
+            $query->where('base_price', '<=', $request->max_price);
+        }
+
+        // Ordenar
+        $sort = $request->input('sort', 'newest');
+        switch ($sort) {
+            case 'price_asc':
+                $query->orderBy('base_price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('base_price', 'desc');
+                break;
+            case 'name_asc':
+                $query->orderBy('name', 'asc');
+                break;
+            default: // newest
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        $products = $query->paginate(12)->withQueryString();
+
+        // Obtener categorías para el sidebar (solo las que tienen productos activos sería ideal, pero dejémoslo simple por ahora)
+        $categories = \App\Models\Category::where('is_active', true)->orderBy('name')->get();
+
+        return Inertia::render('Products', [
+            'products' => $products,
+            'categories' => $categories,
+            'filters' => $request->only(['category', 'min_price', 'max_price', 'sort']),
+        ]);
+    }
 }

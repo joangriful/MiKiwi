@@ -260,4 +260,21 @@ class CloudinaryService
             throw $e;
         }
     }
+
+    /**
+     * Get the secure URL for a public ID if it's not already a full URL
+     * 
+     * @param string $idOrUrl
+     * @return string
+     */
+    public function getImageUrl($idOrUrl)
+    {
+        if (filter_var($idOrUrl, FILTER_VALIDATE_URL)) {
+            return $idOrUrl;
+        }
+
+        // Generate URL from Public ID
+        $cloudName = env('CLOUDINARY_CLOUD_NAME', 'dqwwonjie'); // Use a realistic default or empty
+        return "https://res.cloudinary.com/{$cloudName}/image/upload/f_auto,q_auto/" . $idOrUrl;
+    }
 }

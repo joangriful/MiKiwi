@@ -28,11 +28,26 @@ class CartController extends Controller
             ->limit(8)
             ->get();
 
+        $couponData = session('coupon');
+        \Log::info("CartController::index - Coupon in session: " . json_encode($couponData));
+        
+        if ($couponData) {
+            $coupon = \App\Models\Coupon::where('code', $couponData['code'])->first();
+            if ($coupon && $coupon->isValid()) {
+                $couponData['discount'] = $coupon->calculateDiscount($cart['total']);
+                session(['coupon' => $couponData]); // Update session with new discount
+            } else {
+                session()->forget('coupon'); // Remove invalid coupon
+                $couponData = null;
+            }
+        }
+
         return Inertia::render('Cart', [
             'cart' => $cart,
             'popularProducts' => $popularProducts,
             'pageTitle' => 'Carrito de Compras - MiKiwi',
             'stripeKey' => config('services.stripe.key'),
+            'coupon' => $couponData,
         ]);
     }
 
@@ -89,7 +104,10 @@ class CartController extends Controller
                 'quantity' => 'required|integer|min:1',
             ]);
 
-            $cart = $this->cartService->updateQuantity($id, $validated['quantity']);
+            if ($validated['quantity'] <= 0) {
+                $this->cartService->removeFromCart($id);
+                return redirect()->back()->with('success', 'Producto eliminado');
+            }
 
             return response()->json([
                 'success' => true,
@@ -112,7 +130,7 @@ class CartController extends Controller
     public function destroy(string $id)
     {
         try {
-            $cart = $this->cartService->removeFromCart($id);
+            $this->cartService->removeFromCart($id);
 
             return response()->json([
                 'success' => true,
@@ -132,7 +150,7 @@ class CartController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function clear()
+    public function clear(Request $request)
     {
         try {
             $this->cartService->clearCart();

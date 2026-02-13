@@ -16,7 +16,7 @@ export default function FooterLinks() {
             <div>
                 <h3 className="font-bold text-base mb-3 text-green-400">Compañía</h3>
                 <ul className="space-y-2 text-xs text-gray-400">
-                    <li><a href="#" className="hover:text-white transition-colors">Sobre Nosotros</a></li>
+                    <li><Link href="/sobre-nosotros" className="hover:text-white transition-colors">Sobre Nosotros</Link></li>
                     <li><a href="#" className="hover:text-white transition-colors">Sostenibilidad</a></li>
                     <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
                     <li><a href="#" className="hover:text-white transition-colors">Contacto</a></li>
@@ -27,7 +27,7 @@ export default function FooterLinks() {
                 <h3 className="font-bold text-base mb-3 text-green-400">Legal</h3>
                 <ul className="space-y-2 text-xs text-gray-400">
                     <li><a href="#" className="hover:text-white transition-colors">Aviso Legal</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">Política de Cookies</a></li>
+                    <li><Link href="/politica-cookies" className="hover:text-white transition-colors">Política de Cookies</Link></li>
                     <li><a href="#" className="hover:text-white transition-colors">Condiciones de Contratación</a></li>
                     <li><Link href="/formulario-reclamaciones" className="hover:text-white transition-colors">Formulario de Reclamaciones</Link></li>
                 </ul>

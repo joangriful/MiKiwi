@@ -49,11 +49,57 @@ const PagesGridView = ({
                         className="grid gap-8 pb-10"
                         style={{ gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` }}
                     >
-                        {SelectedPages.map((item) => (
-                            <PreviewContainer key={item.path} title={item.name}>
-                                <item.Component />
-                            </PreviewContainer>
-                        ))}
+                        {SelectedPages.map((item) => {
+                            let props = {};
+                            if (item.name === 'ProductPage') {
+                                props = {
+                                    product: {
+                                        id: 1,
+                                        name: 'Kiwi Gold Premium',
+                                        slug: 'kiwi-gold-premium',
+                                        description: 'Nuestra variedad más dulce y jugosa. Cargada de vitamina C.',
+                                        base_price: 12.50,
+                                        image_url: '/assets/img/product_example/main.png',
+                                        category_id: 1
+                                    },
+                                    accessories: [],
+                                    relatedProducts: [
+                                        { id: 2, name: 'Kiwi Verde', slug: 'kiwi-verde', base_price: 8.99, description: 'Sabor intenso y refrescante.', image_url: null },
+                                        { id: 3, name: 'Mix Bayas', slug: 'mix-bayas', base_price: 15.00, description: 'Combinación perfecta.', image_url: null },
+                                        { id: 4, name: 'Zumo Fresh', slug: 'zumo-fresh', base_price: 4.50, description: '100% natural.', image_url: null },
+                                    ]
+                                };
+                            } else if (item.name === 'Products') {
+                                props = {
+                                    products: {
+                                        data: Array(6).fill({
+                                            id: 1,
+                                            name: 'Producto Demo',
+                                            slug: 'producto-demo',
+                                            base_price: 99.99,
+                                            description: 'Descripción corta.',
+                                            image_url: null
+                                        }),
+                                        links: []
+                                    },
+                                    categories: [
+                                        { id: 1, name: 'Femenino' },
+                                        { id: 2, name: 'Masculino' },
+                                        { id: 3, name: 'Parejas' },
+                                        { id: 4, name: 'Cosmética' },
+                                        { id: 5, name: 'Sets' },
+                                        { id: 6, name: 'Cuidado' }
+                                    ],
+                                    filters: {}
+                                };
+                            }
+
+                            return (
+                                <PreviewContainer key={item.path} title={item.name}>
+                                    <item.Component {...props} />
+                                </PreviewContainer>
+                            );
+                        })}
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)] text-gray-400">

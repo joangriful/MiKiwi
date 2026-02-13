@@ -18,14 +18,10 @@ class OrderService
 
     protected CartService $cartService;
 
-    public function __construct(
-        OrderRepositoryInterface $orderRepository,
-        ProductRepositoryInterface $productRepository,
-        CartService $cartService
-    ) {
-        $this->orderRepository = $orderRepository;
-        $this->productRepository = $productRepository;
-        $this->cartService = $cartService;
+    // Inyección de dependencia de la Acción
+    public function __construct(CreateOrder $createOrderAction)
+    {
+        $this->createOrderAction = $createOrderAction;
     }
 
     /**

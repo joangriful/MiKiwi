@@ -81,14 +81,14 @@ const PartCarousel = ({ category, items, selectedItem, onSelect, index, id, sele
                 <div className="flex items-center gap-3">
                     {/* Chevron (Simple Triangle) */}
                     <svg
-                        className={`w-4 h-4 text-white/70 group-hover:text-blue-400 transition-transform duration-200 ${isOpen ? 'rotate-90' : 'rotate-0'}`}
+                        className={`w-4 h-4 text-gray-900/70 group-hover:text-blue-400 transition-transform duration-200 ${isOpen ? 'rotate-90' : 'rotate-0'}`}
                         fill="currentColor"
                         viewBox="0 0 20 20"
                     >
                         <path d="M6 6L14 10L6 14V6Z" />
                     </svg>
 
-                    <span className="text-sm font-bold text-white group-hover:text-blue-400 uppercase tracking-wider transition-colors">
+                    <span className="text-sm font-bold text-gray-900 group-hover:text-blue-400 uppercase tracking-wider transition-colors">
                         {category}
                     </span>
                 </div>

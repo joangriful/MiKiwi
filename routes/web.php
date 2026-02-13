@@ -38,6 +38,8 @@ Route::get('/dashboard', function () {
 */
 
 // Catálogo Principal
+Route::get('/productos', [ProductController::class, 'index'])->name('products.index');
+Route::redirect('/products', '/productos'); // Alias for english url
 Route::get('/colecciones', [ColeccionesController::class, 'index'])->name('colecciones');
 
 // Ver Producto Individual
@@ -56,6 +58,8 @@ Route::prefix('cart')->group(function () {
     Route::post('/add', [CartController::class, 'store'])->name('cart.add');
     Route::patch('/update/{id}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/remove/{id}', [CartController::class, 'destroy'])->name('cart.remove');
+    Route::post('/coupon', [App\Http\Controllers\CouponController::class, 'apply'])->name('cart.coupon.apply');
+    Route::delete('/coupon', [App\Http\Controllers\CouponController::class, 'remove'])->name('cart.coupon.remove');
 });
 
 /*
@@ -100,6 +104,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Profile image and banner uploads
+    Route::post('/profile/image', [ProfileController::class, 'updateProfileImage'])->name('profile.image.update');
+    Route::post('/profile/banner', [ProfileController::class, 'updateBanner'])->name('profile.banner.update');
+
     // Perfil visual
     Route::get('/perfil', function () {
         return Inertia::render('perfil');
@@ -135,6 +143,18 @@ Route::middleware(['auth', 'admin'])->group(function () {
         $users = \App\Models\User::all(['id', 'name', 'email', 'username', 'role', 'created_at']);
         $heroImages = \App\Models\HeroImage::orderBy('created_at', 'desc')->get();
 
+        // Fetch categories for Products Manager
+        $categories = \App\Models\Category::where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $products = \App\Models\Product::with('category:id,name')
+            ->where('image_url', 'like', '%cloudinary%')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        \Illuminate\Support\Facades\Log::info('Admin Products Count: ' . $products->count());
+
         return Inertia::render('ComponentsManager', [
             'views' => $views,
             'defaultSettings' => $defaultSettings,
@@ -147,6 +167,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/users/{user}/toggle-role', [App\Http\Controllers\UserController::class, 'toggleAdmin'])->name('users.toggleRole');
     Route::post('/content/hero/upload', [App\Http\Controllers\ContentController::class, 'uploadHeroImages'])->name('content.hero.upload');
     Route::delete('/content/hero/{heroImage}', [App\Http\Controllers\ContentController::class, 'deleteHeroImage'])->name('content.hero.delete');
+
+    // Product Management
+    Route::post('/products/upload', [App\Http\Controllers\ProductManagerController::class, 'uploadProduct'])->name('products.upload');
+    Route::put('/products/{product}', [App\Http\Controllers\ProductManagerController::class, 'updateProduct'])->name('products.update');
+    Route::delete('/products/{product}', [App\Http\Controllers\ProductManagerController::class, 'deleteProduct'])->name('products.delete');
+
+    // Newsletter
+    Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 });
 
 Route::get('/formulario-reclamaciones', function () {

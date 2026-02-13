@@ -23,16 +23,22 @@ class OrderController extends Controller
 
     public function __construct(CartService $cartService, StripeService $stripeService)
     {
-        $this->cartService = $cartService;
-        $this->stripeService = $stripeService;
+        // 1. Validar (ocurre automáticamente antes de llegar aquí)
+        // 2. Ejecutar la lógica de negocio
+        
+        // No necesitamos try-catch si las excepciones de la Etapa 1 tienen método render()
+        $order = $orderService->createOrder(
+            $request->user(), 
+            $request->validated()
+        );
+
+        return response()->json($order, 201);
     }
 
-    /**
-     * Create a Stripe PaymentIntent
-     */
-    public function createPaymentIntent()
+    public function show(Order $order)
     {
-        $cartData = $this->cartService->getCart();
+        // Autorizar (Policy creada en Etapa 2)
+        $this->authorize('view', $order);
 
         if ($cartData['item_count'] === 0) {
             return response()->json(['error' => 'El carrito está vacío.'], 400);

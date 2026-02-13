@@ -2,21 +2,6 @@ import React, { Suspense } from 'react';
 import ErrorBoundary from './ErrorBoundary';
 
 const SingleComponentView = ({ selectedComponentPath, SelectedSingleComponent }) => {
-    if (!selectedComponentPath) {
-        return (
-            <div className="flex-1 flex items-center justify-center h-full text-gray-400">
-                <div className="text-center">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-gray-300">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
-                        </svg>
-                    </div>
-                    <h3 className="text-gray-500 font-medium">Select a component to view</h3>
-                </div>
-            </div>
-        );
-    }
-
     const [bgColor, setBgColor] = React.useState('bg-gray-100');
     const [contextMenu, setContextMenu] = React.useState(null);
 
@@ -50,6 +35,21 @@ const SingleComponentView = ({ selectedComponentPath, SelectedSingleComponent })
         { label: 'Dark Grey', value: 'bg-gray-800' },
         { label: 'Black', value: 'bg-black' },
     ];
+
+    if (!selectedComponentPath) {
+        return (
+            <div className="flex-1 flex items-center justify-center h-full text-gray-400">
+                <div className="text-center">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-gray-300">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                        </svg>
+                    </div>
+                    <h3 className="text-gray-500 font-medium">Select a component to view</h3>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div

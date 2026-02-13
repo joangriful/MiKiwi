@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Category;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,7 +21,19 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CategorySeeder::class,
         ]);
+        
+        // --- VALIDACIÓN CRÍTICA ---
+        // Forzamos a Laravel a refrescar la lectura de categorías creadas justo arriba
+        $categoriesExist = Category::exists();
+
+        if (!$categoriesExist) {
+            $this->command->error("❌ ERROR: CategorySeeder terminó pero la tabla sigue vacía.");
+            $this->command->info("Reintentando contar por DB directa: " . DB::table('categories')->count());
+            return; 
+        }
+        $this->command->info("✅ Categorías detectadas correctamente.");
         $this->command->newLine();
+        // --------------------------
 
         $this->command->info('📍 Fase 2: Creando productos del catálogo...');
         $this->call([
