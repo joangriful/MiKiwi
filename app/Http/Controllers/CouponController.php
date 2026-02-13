@@ -17,15 +17,28 @@ class CouponController extends Controller
 
     public function apply(Request $request)
     {
+        \Log::info("CouponController::apply called with code: " . $request->code);
+
         $request->validate([
             'code' => 'required|string|exists:coupons,code',
         ]);
 
         $coupon = Coupon::where('code', $request->code)->first();
 
-        if (!$coupon || !$coupon->isValid()) {
-            return redirect()->back()->withErrors(['coupon' => 'El cupón no es válido o ha expirado.']);
+        if (!$coupon) {
+            \Log::info("Coupon validation failed: Code not found: {$request->code}");
+            return redirect()->route('cart.index')->withErrors(['coupon' => 'El cupón no es válido.']);
         }
+
+        if (!$coupon->isValid()) {
+            \Log::info("Coupon validation failed: Invalid or expired: {$request->code}");
+            return redirect()->route('cart.index')->withErrors(['coupon' => 'El cupón ha expirado o no es válido.']);
+        }
+
+        $cartTotal = $this->cartService->getCart()['total'];
+        $discount = $coupon->calculateDiscount($cartTotal);
+        
+        \Log::info("Coupon valid. Total: $cartTotal, Discount: $discount");
 
         // Store coupon in session via CartService (or directly for now)
         session([
@@ -33,11 +46,13 @@ class CouponController extends Controller
                 'code' => $coupon->code,
                 'type' => $coupon->type,
                 'value' => $coupon->value,
-                'discount' => $coupon->calculateDiscount($this->cartService->getCart()['total']),
+                'discount' => $discount,
             ]
         ]);
+        
+        \Log::info("Coupon stored in session. Session data: " . json_encode(session('coupon')));
 
-        return redirect()->back()->with('success', 'Cupón aplicado correctamente.');
+        return redirect()->route('cart.index')->with('success', 'Cupón aplicado correctamente.');
     }
 
     public function remove()

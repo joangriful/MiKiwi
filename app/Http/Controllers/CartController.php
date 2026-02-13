@@ -28,12 +28,26 @@ class CartController extends Controller
             ->limit(8)
             ->get();
 
+        $couponData = session('coupon');
+        \Log::info("CartController::index - Coupon in session: " . json_encode($couponData));
+        
+        if ($couponData) {
+            $coupon = \App\Models\Coupon::where('code', $couponData['code'])->first();
+            if ($coupon && $coupon->isValid()) {
+                $couponData['discount'] = $coupon->calculateDiscount($cart['total']);
+                session(['coupon' => $couponData]); // Update session with new discount
+            } else {
+                session()->forget('coupon'); // Remove invalid coupon
+                $couponData = null;
+            }
+        }
+
         return Inertia::render('Cart', [
             'cart' => $cart,
             'popularProducts' => $popularProducts,
             'pageTitle' => 'Carrito de Compras - MiKiwi',
             'stripeKey' => config('services.stripe.key'),
-            'coupon' => session('coupon'),
+            'coupon' => $couponData,
         ]);
     }
 

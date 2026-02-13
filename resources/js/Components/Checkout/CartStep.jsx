@@ -20,7 +20,7 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
     const updateQuantity = (id, quantity) => {
         if (quantity < 0) return;
 
-        patch(
+        router.patch(
             route("cart.update", id),
             {
                 quantity: quantity,
@@ -233,23 +233,7 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                     </ul>
                 </div>
 
-                <div className="mt-10 flex flex-col items-end pt-8 border-t border-gray-100">
-                    <div className="flex items-center gap-4 mb-6">
-                        <span className="text-gray-500 uppercase text-xs font-bold tracking-widest">
-                            Total Provisional
-                        </span>
-                        <span className="text-3xl font-black text-gray-900">
-                            {parseFloat(cart.total).toFixed(2)} €
-                        </span>
-                    </div>
 
-                    <button
-                        onClick={onNext}
-                        className="w-full md:w-auto px-12 py-4 bg-primary text-white font-black rounded-xl hover:bg-primary-dark shadow-xl shadow-green-100 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 text-lg"
-                    >
-                        Pagar Pedido
-                    </button>
-                </div>
             </div>
 
             <RenderPopularProducts />
