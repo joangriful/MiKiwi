@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Repositories\Interfaces\OrderRepositoryInterface;
@@ -33,13 +35,13 @@ class OrderService
         $cart = $this->cartService->getCart();
 
         if (empty($cart['items'])) {
-            throw new \Exception('El carrito está vacío.');
+            throw new CartEmptyException('checkout');
         }
 
         // Validar stock de todos los productos
         $stockValidation = $this->cartService->validateCartStock();
         if (! $stockValidation['valid']) {
-            throw new \Exception('Error de stock: '.implode(', ', $stockValidation['errors']));
+            throw new \RuntimeException('Error de stock: '.implode(', ', $stockValidation['errors']));
         }
 
         // Generar número de pedido único
@@ -109,7 +111,7 @@ class OrderService
         $order = $this->orderRepository->findByOrderNumber($orderNumber);
 
         if (! $order) {
-            throw new \Exception('Pedido no encontrado.');
+            throw new InvalidOrderException('not_found', $orderNumber);
         }
 
         return [
@@ -127,7 +129,7 @@ class OrderService
         $validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 
         if (! in_array($status, $validStatuses)) {
-            throw new \Exception('Estado de pedido inválido.');
+            throw new InvalidOrderException('invalid_status');
         }
 
         return $this->orderRepository->updateStatus($orderId, $status);
