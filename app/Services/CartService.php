@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
+use App\Exceptions\InsufficientStockException;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Support\Facades\Session;
 
@@ -57,7 +60,7 @@ class CartService
         $product = $this->productRepository->getActiveBySlug($productSlug);
 
         if (! $product) {
-            throw new \Exception('Producto no encontrado o inactivo.');
+            throw new ProductNotFoundException($productSlug);
         }
 
         // Validar stock disponible
@@ -78,7 +81,12 @@ class CartService
 
             // Validar stock total
             if ($product->stock_quantity < $newQuantity) {
-                throw new \Exception("Stock insuficiente. Disponible: {$product->stock_quantity}");
+                throw new InsufficientStockException(
+                    productName: $product->name,
+                    availableStock: $product->stock_quantity,
+                    requestedQuantity: $newQuantity,
+                    productIdentifier: $product->sku ?? $product->id
+                );
             }
 
             $cart[$product->id]['quantity'] = $newQuantity;
@@ -102,19 +110,24 @@ class CartService
     public function updateQuantity(string $productId, int $quantity): array
     {
         if ($quantity < 1) {
-            throw new \Exception('La cantidad debe ser al menos 1.');
+            throw new \InvalidArgumentException('La cantidad debe ser al menos 1.');
         }
 
         $cart = Session::get($this->cartSessionKey, []);
 
         if (! isset($cart[$productId])) {
-            throw new \Exception('Producto no encontrado en el carrito.');
+            throw new \RuntimeException('Producto no encontrado en el carrito.');
         }
 
         // Validar stock
         $product = $this->productRepository->getActiveBySlug($cart[$productId]['slug']);
         if ($product && $product->stock_quantity < $quantity) {
-            throw new \Exception("Stock insuficiente. Disponible: {$product->stock_quantity}");
+            throw new InsufficientStockException(
+                productName: $product->name,
+                availableStock: $product->stock_quantity,
+                requestedQuantity: $quantity,
+                productIdentifier: $product->sku ?? $product->id
+            );
         }
 
         $cart[$productId]['quantity'] = $quantity;

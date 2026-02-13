@@ -97,14 +97,4 @@ class InsufficientStockException extends Exception
             $this->getCode()
         );
     }
-
-    public function report(): void
-    {
-        \Log::warning('Insufficient stock detected', [
-            'product_name' => $this->productName,
-            'product_identifier' => $this->productIdentifier,
-            'available' => $this->availableStock,
-            'requested' => $this->requestedQuantity,
-        ]);
-    }
 }
