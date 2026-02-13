@@ -19,6 +19,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
     });
 
     const [existingImagesText, setExistingImagesText] = useState(''); // IDs or URLs
+    const [hoverImageText, setHoverImageText] = useState('');
     const [uploading, setUploading] = useState(false);
 
     // Pre-fill form on edit
@@ -41,6 +42,12 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                 setExistingImagesText(initialData.images.join('\n'));
             } else if (initialData.image_url) {
                 setExistingImagesText(initialData.image_url);
+            }
+
+            if (initialData.hover_image_url) {
+                setHoverImageText(initialData.hover_image_url);
+            } else {
+                setHoverImageText('');
             }
         }
     }, [initialData]);
@@ -83,7 +90,8 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                 ...formData,
                 existing_images: existingImagesText.trim()
                     ? existingImagesText.split('\n').map(l => l.trim()).filter(l => l !== '')
-                    : []
+                    : [],
+                hover_image_input: hoverImageText.trim()
             };
 
             const routeName = isEdit ? 'products.update' : 'products.upload';
@@ -108,6 +116,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                             is_active: true,
                         });
                         setExistingImagesText('');
+                        setHoverImageText('');
                     } else {
                         // Go back to list after edit
                         if (onCancel) onCancel();
@@ -163,6 +172,23 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                             <strong>Nota importante:</strong> La primera línea se utilizará como la <strong>imagen principal</strong> del producto. Asegúrate de que el Public ID sea correcto.
                         </p>
                     </div>
+                </div>
+
+                {/* Hover Image Section */}
+                <div className="space-y-4">
+                    <div className="border-b border-gray-100 pb-2">
+                        <label className="block text-sm font-semibold text-gray-700">
+                            Imagen al hacer Hover (Opcional)
+                        </label>
+                        <p className="text-xs text-gray-400 mt-1">URL o Public ID de la imagen que se mostrará al pasar el ratón.</p>
+                    </div>
+                    <input
+                        type="text"
+                        value={hoverImageText}
+                        onChange={(e) => setHoverImageText(e.target.value)}
+                        placeholder="Ej: hero_images/hover_variant o https://..."
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm bg-gray-50/50"
+                    />
                 </div>
 
                 {/* Basic Information */}
@@ -352,6 +378,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                                     is_active: true,
                                 });
                                 setExistingImagesText('');
+                                setHoverImageText('');
                             }}
                             className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                         >

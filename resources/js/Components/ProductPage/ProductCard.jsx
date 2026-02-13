@@ -17,11 +17,20 @@ export default function ProductCard({ product }) {
             {/* Image Container */}
             <div className="relative aspect-[4/5] bg-[#F7F7F7] rounded-2xl overflow-hidden mb-4">
                 {product.image_url ? (
-                    <img
-                        src={product.image_url}
-                        alt={product.name}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
+                    <>
+                        <img
+                            src={product.image_url}
+                            alt={product.name}
+                            className={`w-full h-full object-cover transition-transform duration-700 ${!product.hover_image_url ? 'group-hover:scale-105' : ''}`}
+                        />
+                        {product.hover_image_url && (
+                            <img
+                                src={product.hover_image_url}
+                                alt={`${product.name} hover`}
+                                className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+                            />
+                        )}
+                    </>
                 ) : (
                     <ProductImagePlaceholder />
                 )}

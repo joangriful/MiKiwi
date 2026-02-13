@@ -22,6 +22,7 @@ class Product extends Model
         'product_type',
         'is_adult_only',
         'image_url',
+        'hover_image_url',
         'images',
     ];
 
