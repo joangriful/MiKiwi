@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -8,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class StoreAddressRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Determina si el usuario está autorizado
      */
     public function authorize(): bool
     {
@@ -16,9 +18,7 @@ class StoreAddressRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * Reglas de validación para crear dirección
      */
     public function rules(): array
     {
@@ -35,7 +35,7 @@ class StoreAddressRequest extends FormRequest
     }
 
     /**
-     * Mensajes de error en español
+     * Mensajes de error personalizados en español
      */
     public function messages(): array
     {
@@ -43,9 +43,29 @@ class StoreAddressRequest extends FormRequest
             'full_name.required' => 'El nombre completo es obligatorio.',
             'full_name.max' => 'El nombre no puede tener más de :max caracteres.',
             'street_address.required' => 'La dirección es obligatoria.',
+            'street_address.max' => 'La dirección no puede tener más de :max caracteres.',
             'city.required' => 'La ciudad es obligatoria.',
+            'city.max' => 'La ciudad no puede tener más de :max caracteres.',
             'postal_code.required' => 'El código postal es obligatorio.',
+            'postal_code.max' => 'El código postal no puede tener más de :max caracteres.',
             'country.required' => 'El país es obligatorio.',
+            'country.max' => 'El país no puede tener más de :max caracteres.',
+            'alias.max' => 'El alias no puede tener más de :max caracteres.',
+            'phone.max' => 'El teléfono no puede tener más de :max caracteres.',
+            'is_default.boolean' => 'El valor debe ser verdadero o falso.',
+        ];
+    }
+
+    /**
+     * Atributos personalizados para mensajes
+     */
+    public function attributes(): array
+    {
+        return [
+            'full_name' => 'nombre completo',
+            'street_address' => 'dirección',
+            'postal_code' => 'código postal',
+            'is_default' => 'dirección predeterminada',
         ];
     }
 }
