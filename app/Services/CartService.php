@@ -62,7 +62,12 @@ class CartService
 
         // Validar stock disponible
         if ($product->stock_quantity < $quantity) {
-            throw new \Exception("Stock insuficiente. Disponible: {$product->stock_quantity}");
+            throw new InsufficientStockException(
+                productName: $product->name,
+                availableStock: $product->stock_quantity,
+                requestedQuantity: $quantity,
+                productIdentifier: $product->sku ?? $product->id
+            );
         }
 
         $cart = Session::get($this->cartSessionKey, []);
