@@ -12,6 +12,7 @@ class Order extends Model
     use HasFactory, HasUuids, SoftDeletes;
 
     protected $fillable = [
+        'user_id',
         'order_number',
         'status',
         'total_amount',

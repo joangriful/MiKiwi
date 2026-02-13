@@ -36,8 +36,8 @@ class EloquentOrderRepository implements OrderRepositoryInterface
                         'product_id' => $item['product_id'],
                         'quantity' => $item['quantity'],
                         'unit_price' => $item['unit_price'],
-                        'subtotal' => $item['subtotal'],
-                        'product_snapshot' => $item['product_snapshot'] ?? null,
+                        'product_name_snapshot' => $item['product_name_snapshot'] ?? 'Producto sin nombre',
+                        'sku_snapshot' => $item['sku_snapshot'] ?? 'SKU-GENERICO',
                     ]);
                 }
             }
