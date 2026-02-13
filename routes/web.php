@@ -205,6 +205,14 @@ Route::get('/sostenibilidad', function () {
     ]);
 })->name('sustainability');
 
+Route::get('/formulario-reclamaciones', function () {
+    return Inertia::render('ClaimsForm');
+})->name('claims.form');
+
+Route::get('/politica-privacidad', function () {
+    return Inertia::render('PrivacyPolicy');
+})->name('privacy.policy');
+
 Route::prefix('configurador')->group(function () {
     Route::get('/', function () {
         return Inertia::render('Configurador/Home');

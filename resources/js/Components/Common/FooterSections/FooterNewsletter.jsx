@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
-import Toast from '../Toast';
+import Toast from '../Toast'; // Check if this component exists
 
 export default function FooterNewsletter() {
     const [email, setEmail] = useState('');

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import ProductImagePlaceholder from './ProductImagePlaceholder';
 import ProductCardInfo from './ProductCardInfo';
-
 import { Link } from '@inertiajs/react';
 
 export default function ProductCard({ product }) {
