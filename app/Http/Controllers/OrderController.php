@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
+use App\Exceptions\CartEmptyException;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Services\CartService;
@@ -14,9 +17,9 @@ use Inertia\Inertia;
 
 class OrderController extends Controller
 {
-    protected $cartService;
+    protected CartService $cartService;
 
-    protected $stripeService;
+    protected StripeService $stripeService;
 
     public function __construct(CartService $cartService, StripeService $stripeService)
     {
