@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
 import { toast } from 'react-toastify';
 
-export default function ProductsList({ products = [], onEdit }) {
-    console.log('ProductsList received products:', products);
+export default function ProductsList({ products = [], onEdit, debugCount }) {
+    console.log('ProductsList received products:', products, 'DebugCount:', debugCount);
     const [searchTerm, setSearchTerm] = useState('');
     const [deletingId, setDeletingId] = useState(null);
 
@@ -42,7 +42,7 @@ export default function ProductsList({ products = [], onEdit }) {
                     />
                 </div>
                 <div className="text-xs text-gray-500 font-medium">
-                    Total: {filteredProducts.length} productos
+                    Total: {filteredProducts.length} productos (Raw prop: {products?.length}, Debug Count: {debugCount})
                 </div>
             </div>
 

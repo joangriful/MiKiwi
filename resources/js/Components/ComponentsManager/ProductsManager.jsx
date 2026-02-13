@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import UploadProduct from './UploadProduct';
 import ProductsList from './ProductsList';
 
-export default function ProductsManager({ categories, products }) {
-    const [activeSection, setActiveSection] = useState('upload');
+export default function ProductsManager({ categories, products, debugCount }) {
+    console.log('ProductsManager received products:', products, 'DebugCount:', debugCount);
+    const [activeSection, setActiveSection] = useState('list');
     const [editingProduct, setEditingProduct] = useState(null);
 
     const sections = [
@@ -59,7 +60,7 @@ export default function ProductsManager({ categories, products }) {
                     />
                 )}
                 {activeSection === 'list' && (
-                    <ProductsList products={products} onEdit={handleEdit} />
+                    <ProductsList products={products} onEdit={handleEdit} debugCount={debugCount} />
                 )}
             </main>
         </div>

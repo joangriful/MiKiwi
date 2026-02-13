@@ -5,8 +5,18 @@ import Footer from '@/Components/Common/Footer';
 import { ProductCard, FilterMenu } from '@/Components';
 import { useState } from 'react';
 
-export default function Products({ products, categories, filters }) {
+export default function Products({ products, categories: initialCategories, filters }) {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+    // Definición de las 6 categorías maestras para el rediseño
+    const categories = [
+        { id: 1, name: 'Femenino' },
+        { id: 2, name: 'Masculino' },
+        { id: 3, name: 'Parejas' },
+        { id: 4, name: 'Cosmética' },
+        { id: 5, name: 'Sets' },
+        { id: 6, name: 'Cuidado' }
+    ];
 
     return (
         <div className="min-h-screen flex flex-col bg-[#FDFDFD] text-gray-900 font-sans selection:bg-[#99b849]/30">
@@ -34,10 +44,14 @@ export default function Products({ products, categories, filters }) {
                         className="group flex items-center gap-3 bg-white border border-gray-100 px-8 py-4 rounded-full shadow-sm hover:shadow-md transition-all active:scale-95"
                     >
                         <span className="material-symbols-outlined text-gray-900 text-xl transition-transform group-hover:rotate-12">tune</span>
-                        <span className="text-sm font-bold uppercase tracking-widest text-gray-900">Filtrar</span>
-                        {filters.category && (
-                            <span className="w-2 h-2 bg-[#99b849] rounded-full"></span>
-                        )}
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm font-bold uppercase tracking-widest text-gray-900">Filtrar</span>
+                            {Object.values(filters).filter(Boolean).length > 0 && (
+                                <span className="flex items-center justify-center bg-[#99b849] text-white text-[10px] w-5 h-5 rounded-full font-bold animate-in zoom-in duration-300">
+                                    {Object.values(filters).filter(Boolean).length}
+                                </span>
+                            )}
+                        </div>
                     </button>
                 </div>
 
