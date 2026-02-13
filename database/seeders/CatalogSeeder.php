@@ -13,7 +13,7 @@ class CatalogSeeder extends Seeder
     {
         // 1. TUS CATEGORÍAS (Mantenemos las tuyas y agregamos 'Componentes')
         $catDolls = Category::create(['name' => 'Muñecas', 'slug' => 'dolls']);
-        $catToys  = Category::create(['name' => 'Accesorios', 'slug' => 'toys']);
+        $catToys = Category::create(['name' => 'Accesorios', 'slug' => 'toys']);
         $catComponents = Category::create(['name' => 'Componentes', 'slug' => 'components']); // Nueva para piezas
 
         // 2. TU PRODUCTO SIMPLE (Lubricante)
@@ -67,11 +67,11 @@ class CatalogSeeder extends Seeder
 
         // 5. NUEVO: LA RELACIÓN PIVOTE (La magia del configurador)
         // Esto permite que cuando llames al Repo, 'Elsa' traiga sus opciones.
-        
+
         // Opción A: Si tienes la relación 'accessories' en el Modelo Product
         if (method_exists($elsa, 'accessories')) {
             $elsa->accessories()->attach([$ojosAzules->id, $pelucaRubia->id]);
-        } 
+        }
         // Opción B: Inserción manual en la tabla pivote (si no has definido la relación aún)
         else {
             // Asegúrate que la tabla se llame 'product_accessories' o la que hayas definido

@@ -22,7 +22,7 @@ class UserPolicy
      */
     public function view(User $authenticatedUser, User $targetUser): bool
     {
-        return $authenticatedUser->id === $targetUser->id 
+        return $authenticatedUser->id === $targetUser->id
             || $authenticatedUser->role === 'admin';
     }
 
@@ -39,7 +39,7 @@ class UserPolicy
      */
     public function update(User $authenticatedUser, User $targetUser): bool
     {
-        return $authenticatedUser->id === $targetUser->id 
+        return $authenticatedUser->id === $targetUser->id
             || $authenticatedUser->role === 'admin';
     }
 

@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Category extends Model
 {
@@ -16,7 +16,8 @@ class Category extends Model
         'is_active' => 'boolean',
     ];
 
-    public function scopeActive($query) {
+    public function scopeActive($query)
+    {
         return $query->where('is_active', true);
     }
 
@@ -40,7 +41,8 @@ class Category extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function parent() {
+    public function parent()
+    {
         return $this->belongsTo(self::class, 'parent_id');
     }
 
@@ -49,7 +51,8 @@ class Category extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function children() {
+    public function children()
+    {
         return $this->hasMany(self::class, 'parent_id');
     }
 }

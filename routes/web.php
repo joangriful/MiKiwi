@@ -1,20 +1,17 @@
 <?php
 
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ColeccionesController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
+// 👇 IMPORTAMOS LOS CONTROLADORES DE LA TIENDA
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\File;
-use Inertia\Inertia;
+use App\Http\Controllers\UserAddressController;
 use App\Services\CloudinaryService;
 use Illuminate\Support\Facades\Cache;
-
-// 👇 IMPORTAMOS LOS CONTROLADORES DE LA TIENDA
-use App\Http\Controllers\ColeccionesController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\UserAddressController;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,8 +21,9 @@ use App\Http\Controllers\UserAddressController;
 
 Route::get('/', function () {
     $heroImages = \App\Models\HeroImage::orderBy('created_at', 'desc')->get();
+
     return Inertia::render('Home', [
-        'heroImages' => $heroImages
+        'heroImages' => $heroImages,
     ]);
 })->name('home');
 
@@ -127,11 +125,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
         $cacheDuration = app()->environment('local') ? 5 : 3600;
 
         $views = Cache::remember('doll_parts_cloudinary', $cacheDuration, function () {
-            $service = new CloudinaryService();
+            $service = new CloudinaryService;
+
             return $service->listDollParts();
         });
 
-        $settingsController = new App\Http\Controllers\DollSettingsController();
+        $settingsController = new App\Http\Controllers\DollSettingsController;
         $defaultSettings = $settingsController->getSettings();
         $users = \App\Models\User::all(['id', 'name', 'email', 'username', 'role', 'created_at']);
         $heroImages = \App\Models\HeroImage::orderBy('created_at', 'desc')->get();
@@ -140,7 +139,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'views' => $views,
             'defaultSettings' => $defaultSettings,
             'users' => $users,
-            'heroImages' => $heroImages
+            'heroImages' => $heroImages,
         ]);
     })->name('components.manager');
 
@@ -151,37 +150,47 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 Route::get('/formulario-reclamaciones', function () {
-    return Inertia::render('ClaimsForm'); })->name('claims.form');
+    return Inertia::render('ClaimsForm');
+})->name('claims.form');
 Route::get('/politica-privacidad', function () {
-    return Inertia::render('PrivacyPolicy'); })->name('privacy.policy');
+    return Inertia::render('PrivacyPolicy');
+})->name('privacy.policy');
 
 Route::prefix('configurador')->group(function () {
     Route::get('/', function () {
-        return Inertia::render('Configurador/Home'); })->name('configurador.home');
+        return Inertia::render('Configurador/Home');
+    })->name('configurador.home');
     Route::get('/index', function () {
-        return Inertia::render('Configurador/Index'); })->name('configurador.index');
+        return Inertia::render('Configurador/Index');
+    })->name('configurador.index');
     Route::get('/collections', function () {
-        return Inertia::render('Configurador/Collections'); })->name('configurador.collections');
+        return Inertia::render('Configurador/Collections');
+    })->name('configurador.collections');
     Route::get('/quiz', function () {
-        return Inertia::render('Configurador/Quiz'); })->name('configurador.quiz');
+        return Inertia::render('Configurador/Quiz');
+    })->name('configurador.quiz');
     Route::get('/munecas', function () {
-        return Inertia::render('DollConfigurator'); })->name('configurador.dolls');
+        return Inertia::render('DollConfigurator');
+    })->name('configurador.dolls');
     Route::get('/cart', function () {
-        return Inertia::render('Cart'); })->name('cart.view');
+        return Inertia::render('Cart');
+    })->name('cart.view');
 });
 
 Route::get('/doll_config_test', function () {
     $cacheDuration = app()->environment('local') ? 5 : 3600;
     $views = Cache::remember('doll_parts_cloudinary', $cacheDuration, function () {
-        $service = new CloudinaryService();
+        $service = new CloudinaryService;
+
         return $service->listDollParts();
     });
-    $settingsController = new App\Http\Controllers\DollSettingsController();
+    $settingsController = new App\Http\Controllers\DollSettingsController;
     $defaultSettings = $settingsController->getSettings();
+
     return Inertia::render('DollConfigTest', [
         'views' => $views,
-        'defaultSettings' => $defaultSettings
+        'defaultSettings' => $defaultSettings,
     ]);
 })->name('doll.config.test');
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

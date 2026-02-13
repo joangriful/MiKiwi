@@ -9,7 +9,9 @@ use Illuminate\Support\Str;
 class OrderService
 {
     protected $orderRepository;
+
     protected $productRepository;
+
     protected $cartService;
 
     public function __construct(
@@ -25,19 +27,19 @@ class OrderService
     /**
      * Crear pedido desde el carrito
      */
-    public function createOrderFromCart(string $userId, array $shippingAddress, array $billingAddress = null, string $paymentMethod = 'pending'): array
+    public function createOrderFromCart(string $userId, array $shippingAddress, ?array $billingAddress = null, string $paymentMethod = 'pending'): array
     {
         // Validar que el carrito tenga productos
         $cart = $this->cartService->getCart();
-        
+
         if (empty($cart['items'])) {
-            throw new \Exception("El carrito está vacío.");
+            throw new \Exception('El carrito está vacío.');
         }
 
         // Validar stock de todos los productos
         $stockValidation = $this->cartService->validateCartStock();
-        if (!$stockValidation['valid']) {
-            throw new \Exception("Error de stock: " . implode(', ', $stockValidation['errors']));
+        if (! $stockValidation['valid']) {
+            throw new \Exception('Error de stock: '.implode(', ', $stockValidation['errors']));
         }
 
         // Generar número de pedido único
@@ -50,7 +52,7 @@ class OrderService
         foreach ($cart['items'] as $item) {
             $product = $item['product'];
             $subtotal = $product->base_price * $item['quantity'];
-            
+
             $orderItems[] = [
                 'product_id' => $product->id,
                 'quantity' => $item['quantity'],
@@ -61,8 +63,8 @@ class OrderService
                     'sku' => $product->sku,
                     'description' => $product->description,
                     'images' => $product->images,
-                    'accessories' => $item['accessories'] ?? []
-                ]
+                    'accessories' => $item['accessories'] ?? [],
+                ],
             ];
 
             $totalAmount += $subtotal;
@@ -78,7 +80,7 @@ class OrderService
             'payment_method' => $paymentMethod,
             'shipping_address_snapshot' => $shippingAddress,
             'billing_address_snapshot' => $billingAddress ?? $shippingAddress,
-            'items' => $orderItems
+            'items' => $orderItems,
         ]);
 
         // Vaciar el carrito
@@ -87,7 +89,7 @@ class OrderService
         return [
             'success' => true,
             'order' => $order,
-            'order_number' => $orderNumber
+            'order_number' => $orderNumber,
         ];
     }
 
@@ -106,14 +108,14 @@ class OrderService
     {
         $order = $this->orderRepository->findByOrderNumber($orderNumber);
 
-        if (!$order) {
-            throw new \Exception("Pedido no encontrado.");
+        if (! $order) {
+            throw new \Exception('Pedido no encontrado.');
         }
 
         return [
             'order' => $order,
             'items' => $order->items,
-            'user' => $order->user
+            'user' => $order->user,
         ];
     }
 
@@ -123,9 +125,9 @@ class OrderService
     public function updateOrderStatus(string $orderId, string $status): bool
     {
         $validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
-        
-        if (!in_array($status, $validStatuses)) {
-            throw new \Exception("Estado de pedido inválido.");
+
+        if (! in_array($status, $validStatuses)) {
+            throw new \Exception('Estado de pedido inválido.');
         }
 
         return $this->orderRepository->updateStatus($orderId, $status);
@@ -137,7 +139,7 @@ class OrderService
     protected function generateOrderNumber(): string
     {
         do {
-            $orderNumber = 'MK-' . date('Ymd') . '-' . strtoupper(Str::random(6));
+            $orderNumber = 'MK-'.date('Ymd').'-'.strtoupper(Str::random(6));
             $exists = $this->orderRepository->findByOrderNumber($orderNumber);
         } while ($exists);
 

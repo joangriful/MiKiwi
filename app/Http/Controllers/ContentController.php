@@ -44,9 +44,10 @@ class ContentController extends Controller
                 $uploadedImages[] = $heroImage;
             }
 
-            return back()->with('success', count($uploadedImages) . ' imagen(es) subida(s) correctamente');
+            return back()->with('success', count($uploadedImages).' imagen(es) subida(s) correctamente');
         } catch (\Exception $e) {
-            Log::error('Error uploading hero images: ' . $e->getMessage());
+            Log::error('Error uploading hero images: '.$e->getMessage());
+
             return back()->withErrors(['error' => 'Error al subir las imágenes']);
         }
     }
@@ -62,7 +63,8 @@ class ContentController extends Controller
 
             return back()->with('success', 'Imagen eliminada correctamente');
         } catch (\Exception $e) {
-            Log::error('Error deleting hero image: ' . $e->getMessage());
+            Log::error('Error deleting hero image: '.$e->getMessage());
+
             return back()->withErrors(['error' => 'Error al eliminar la imagen']);
         }
     }

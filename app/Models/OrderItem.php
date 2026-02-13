@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class OrderItem extends Model
 {
@@ -13,7 +12,7 @@ class OrderItem extends Model
 
     protected $fillable = [
         'order_id',
-        'product_id',      
+        'product_id',
         'product_name_snapshot',
         'sku_snapshot',
         'quantity',
@@ -30,7 +29,8 @@ class OrderItem extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function order() {
+    public function order()
+    {
         return $this->belongsTo(Order::class);
     }
 
@@ -39,7 +39,8 @@ class OrderItem extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function product() {
+    public function product()
+    {
         return $this->belongsTo(Product::class);
     }
 }

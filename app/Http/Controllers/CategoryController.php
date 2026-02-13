@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CategoryService;
 use App\Models\Category;
+use App\Services\CategoryService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Inertia\Inertia;
 
@@ -18,8 +18,8 @@ class CategoryController extends Controller
 
     /**
      * Mostrar productos de una categoría específica
-     * 
-     * @param Category $category - Laravel resolverá automáticamente por slug
+     *
+     * @param  Category  $category  - Laravel resolverá automáticamente por slug
      * @return \Inertia\Response
      */
     public function show(Category $category)
@@ -33,7 +33,7 @@ class CategoryController extends Controller
                 'products' => $categoryData['products'],
                 'subcategories' => $categoryData['subcategories'],
                 'breadcrumbs' => $categoryData['breadcrumbs'],
-                'pageTitle' => $category->name . ' - MiKiwi'
+                'pageTitle' => $category->name.' - MiKiwi',
             ]);
         } catch (ModelNotFoundException $e) {
             abort(404, 'Categoría no encontrada');

@@ -4,18 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\Product;
 use App\Services\CartService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
-use Illuminate\Support\Str;
 use App\Services\StripeService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class OrderController extends Controller
 {
     protected $cartService;
+
     protected $stripeService;
 
     public function __construct(CartService $cartService, StripeService $stripeService)
@@ -37,6 +37,7 @@ class OrderController extends Controller
 
         try {
             $intent = $this->stripeService->createPaymentIntent($cartData['total']);
+
             return response()->json([
                 'clientSecret' => $intent->client_secret,
             ]);
@@ -51,6 +52,7 @@ class OrderController extends Controller
         if ($cartData['item_count'] === 0) {
             return redirect()->route('colecciones');
         }
+
         return Inertia::render('Checkout/Create', [
             'cart' => $cartData['items'],
             'total' => $cartData['total'],
@@ -72,7 +74,7 @@ class OrderController extends Controller
         ]);
 
         $cartValidation = $this->cartService->validateCartStock();
-        if (!$cartValidation['valid']) {
+        if (! $cartValidation['valid']) {
             return back()->with('error', implode(' ', $cartValidation['errors']));
         }
 
@@ -93,7 +95,7 @@ class OrderController extends Controller
             DB::transaction(function () use ($request, $cartData, $paymentStatus) {
                 $order = Order::create([
                     'user_id' => Auth::id(),
-                    'order_number' => 'ORD-' . strtoupper(Str::random(10)),
+                    'order_number' => 'ORD-'.strtoupper(Str::random(10)),
                     'status' => 'pending',
                     'total_amount' => $cartData['total'],
                     'payment_status' => $paymentStatus,
@@ -122,7 +124,7 @@ class OrderController extends Controller
 
             return redirect()->route('orders.success')->with('success', '¡Pedido realizado con éxito!');
         } catch (\Exception $e) {
-            return back()->with('error', 'Error al procesar: ' . $e->getMessage());
+            return back()->with('error', 'Error al procesar: '.$e->getMessage());
         }
     }
 
@@ -134,6 +136,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::where('user_id', Auth::id())->with('items')->latest()->get();
+
         return Inertia::render('Profile/Orders', ['orders' => $orders]);
     }
 }

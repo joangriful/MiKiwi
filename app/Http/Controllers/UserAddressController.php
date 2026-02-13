@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-
 class UserAddressController extends Controller
 {
     // Listar direcciones del usuario
@@ -18,7 +17,7 @@ class UserAddressController extends Controller
             ->get();
 
         return Inertia::render('Profile/Addresses/Index', [
-            'addresses' => $addresses
+            'addresses' => $addresses,
         ]);
     }
 
@@ -37,7 +36,7 @@ class UserAddressController extends Controller
         ]);
 
         // Si es principal, desmarcar las demás
-        if (!empty($data['is_default'])) {
+        if (! empty($data['is_default'])) {
             UserAddress::where('user_id', Auth::id())
                 ->update(['is_default' => false]);
         }
@@ -66,7 +65,7 @@ class UserAddressController extends Controller
             'is_default' => 'boolean',
         ]);
 
-        if (!empty($data['is_default'])) {
+        if (! empty($data['is_default'])) {
             UserAddress::where('user_id', Auth::id())
                 ->update(['is_default' => false]);
         }

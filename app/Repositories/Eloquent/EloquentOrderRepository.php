@@ -2,8 +2,8 @@
 
 namespace App\Repositories\Eloquent;
 
-use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Models\Order;
+use App\Repositories\Interfaces\OrderRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -73,8 +73,8 @@ class EloquentOrderRepository implements OrderRepositoryInterface
     public function updateStatus(string $orderId, string $status): bool
     {
         $order = Order::find($orderId);
-        
-        if (!$order) {
+
+        if (! $order) {
             return false;
         }
 

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\ProductService;
 use App\Models\Product;
+use App\Services\ProductService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Inertia\Inertia;
 
@@ -18,8 +18,8 @@ class ProductController extends Controller
 
     /**
      * Mostrar detalles de un producto
-     * 
-     * @param Product $product - Laravel resolverá automáticamente por slug
+     *
+     * @param  Product  $product  - Laravel resolverá automáticamente por slug
      * @return \Inertia\Response
      */
     public function show(Product $product)
@@ -40,7 +40,7 @@ class ProductController extends Controller
                 'product' => $productData['product'],
                 'accessories' => $productData['accessories'],
                 'relatedProducts' => $relatedProducts,
-                'pageTitle' => $product->name . ' - MiKiwi'
+                'pageTitle' => $product->name.' - MiKiwi',
             ]);
         } catch (ModelNotFoundException $e) {
             abort(404, 'Producto no encontrado');
