@@ -82,7 +82,14 @@ const PagesGridView = ({
                                         }),
                                         links: []
                                     },
-                                    categories: [{ id: 1, name: 'Categoría Demo' }],
+                                    categories: [
+                                        { id: 1, name: 'Femenino' },
+                                        { id: 2, name: 'Masculino' },
+                                        { id: 3, name: 'Parejas' },
+                                        { id: 4, name: 'Cosmética' },
+                                        { id: 5, name: 'Sets' },
+                                        { id: 6, name: 'Cuidado' }
+                                    ],
                                     filters: {}
                                 };
                             }
