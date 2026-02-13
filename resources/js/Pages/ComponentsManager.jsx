@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import DollManager from '../Components/DollManager/DollManager';
 import { Head } from '@inertiajs/react';
-import Header from '../Components/Common/Header';
-import SubHeader from '../Components/Common/SubHeader';
 import ManagerHeader from '../Components/ComponentsManager/ManagerHeader';
 import ManagerSidebar from '../Components/ComponentsManager/ManagerSidebar';
 import SingleComponentView from '../Components/ComponentsManager/SingleComponentView';
@@ -43,16 +41,6 @@ export default function ComponentsManager({ views, defaultSettings, users, heroI
     return (
         <div className="h-screen flex flex-col bg-white font-sans overflow-hidden select-none cursor-default">
             <Head title="Components Manager" />
-
-            {/* Main Site Header */}
-            <Header />
-
-            {/* SubHeader with Manager Navigation */}
-            <SubHeader
-                isManager={true}
-                activeManager={activeManager}
-                setActiveManager={setActiveManager}
-            />
 
             {/* Unified Manager Header */}
             <ManagerHeader

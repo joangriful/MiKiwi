@@ -55,15 +55,19 @@ const PagesGridView = ({
                                 props = {
                                     product: {
                                         id: 1,
-                                        name: 'Producto de Ejemplo',
-                                        slug: 'producto-ejemplo',
-                                        description: 'Descripción simulada para la vista previa del componente.',
-                                        base_price: 50,
-                                        image_url: null,
+                                        name: 'Kiwi Gold Premium',
+                                        slug: 'kiwi-gold-premium',
+                                        description: 'Nuestra variedad más dulce y jugosa. Cargada de vitamina C.',
+                                        base_price: 12.50,
+                                        image_url: '/assets/img/product_example/main.png',
                                         category_id: 1
                                     },
                                     accessories: [],
-                                    relatedProducts: []
+                                    relatedProducts: [
+                                        { id: 2, name: 'Kiwi Verde', slug: 'kiwi-verde', base_price: 8.99, description: 'Sabor intenso y refrescante.', image_url: null },
+                                        { id: 3, name: 'Mix Bayas', slug: 'mix-bayas', base_price: 15.00, description: 'Combinación perfecta.', image_url: null },
+                                        { id: 4, name: 'Zumo Fresh', slug: 'zumo-fresh', base_price: 4.50, description: '100% natural.', image_url: null },
+                                    ]
                                 };
                             } else if (item.name === 'Products') {
                                 props = {
