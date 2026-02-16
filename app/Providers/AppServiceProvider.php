@@ -14,6 +14,7 @@ use App\Repositories\Interfaces\HeroImageRepositoryInterface;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Repositories\Interfaces\UserAddressRepositoryInterface;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        // ... (existing register code)
         // Product Repository
         $this->app->bind(
             ProductRepositoryInterface::class,
@@ -54,6 +56,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Schema::defaultStringLength(191);
         Vite::prefetch(concurrency: 3);
     }
 }

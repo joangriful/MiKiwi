@@ -13,15 +13,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::table('coupons')->insert([
-            'code' => 'PROMO100',
-            'type' => 'percent',
-            'value' => 100.00,
-            'is_active' => true,
-            'expires_at' => Carbon::now()->addYear(), // Valid for 1 year
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ]);
+        if (!DB::table('coupons')->where('code', 'PROMO100')->exists()) {
+            DB::table('coupons')->insert([
+                'code' => 'PROMO100',
+                'type' => 'percent',
+                'value' => 100.00,
+                'is_active' => true,
+                'expires_at' => Carbon::now()->addYear(), // Valid for 1 year
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
     }
 
     /**

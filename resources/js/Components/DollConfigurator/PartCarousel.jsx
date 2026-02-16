@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PartOption from './PartOption';
 
-const PartCarousel = ({ category, items, selectedItem, onSelect, index, id, selectionLabel }) => {
+const PartCarousel = ({ category, items, selectedItem, onSelect, index, id, selectionLabel, partPositions, currentView, onSavePosition, ...props }) => {
     const [isOpen, setIsOpen] = useState(index === 0);
 
     // Keyboard Navigation Handler
@@ -126,6 +126,12 @@ const PartCarousel = ({ category, items, selectedItem, onSelect, index, id, sele
                                     onSelect={onSelect}
                                     onKeyDown={(e) => handleKeyDown(e, item)}
                                     selectionLabel={selectionLabel}
+                                    showImages={props.showImages}
+                                    onEdit={props.onEdit ? (part) => props.onEdit(category, part) : undefined}
+                                    partPositions={partPositions}
+                                    currentView={currentView}
+                                    category={category}
+                                    onSavePosition={onSavePosition}
                                 />
                             </div>
                         ))}

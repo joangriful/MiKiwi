@@ -3,7 +3,7 @@ import PartCarousel from './PartCarousel';
 
 const DEFAULT_ORDER = ['pelo', 'ojos', 'cejas', 'boca', 'nariz', 'orejas', 'manos', 'pies', 'vientre', 'pechos', 'vello', 'ropa'];
 
-const PartSelector = memo(({ parts, selectedParts, onSelect, sectionOrder, selectionLabel }) => {
+const PartSelector = memo(({ parts, selectedParts, onSelect, sectionOrder, selectionLabel, partPositions, currentView, onSavePosition, ...props }) => {
     const sortedParts = useMemo(() => {
         const orderToUse = (sectionOrder && sectionOrder.length > 0) ? sectionOrder : DEFAULT_ORDER;
 
@@ -31,6 +31,11 @@ const PartSelector = memo(({ parts, selectedParts, onSelect, sectionOrder, selec
                         selectedItem={selectedParts[category]}
                         onSelect={(item) => onSelect(category, item)}
                         selectionLabel={selectionLabel}
+                        showImages={props.showImages}
+                        onEdit={props.onEdit}
+                        partPositions={partPositions}
+                        currentView={currentView}
+                        onSavePosition={onSavePosition}
                     />
                 ))}
 

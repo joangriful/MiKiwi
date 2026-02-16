@@ -10,7 +10,7 @@ import ContentManager from '../Components/ComponentsManager/ContentManager';
 import ProductsManager from '../Components/ComponentsManager/ProductsManager';
 import { useComponentsManager } from '../Components/ComponentsManager/useComponentsManager';
 
-export default function ComponentsManager({ views, defaultSettings, users, heroImages, categories, products, debugCount }) {
+export default function ComponentsManager({ views, defaultSettings, partPositions, users, heroImages, categories, products, debugCount }) {
     console.log('ComponentsManager received products:', products, 'DebugCount:', debugCount);
     const [activeManager, setActiveManager] = useState('components'); // 'components' | 'doll' | 'users' | 'content'
     console.log('Active Manager:', activeManager);
@@ -66,8 +66,8 @@ export default function ComponentsManager({ views, defaultSettings, users, heroI
                             key={tab.id}
                             onClick={() => setActiveManager(tab.id)}
                             className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-colors ${activeManager === tab.id
-                                    ? 'border-blue-600 text-blue-600 font-medium'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                ? 'border-blue-600 text-blue-600 font-medium'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                 }`}
                         >
                             <span className="material-symbols-outlined text-lg">{tab.icon}</span>
@@ -116,7 +116,7 @@ export default function ComponentsManager({ views, defaultSettings, users, heroI
                 )}
 
                 {activeManager === 'doll' && (
-                    <DollManager ref={dollManagerRef} views={views} defaultSettings={defaultSettings} />
+                    <DollManager ref={dollManagerRef} views={views} defaultSettings={defaultSettings} partPositions={partPositions} />
                 )}
 
                 {activeManager === 'users' && (

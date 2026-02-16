@@ -1,28 +1,23 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
 import DollDefaultConfigurator from './DollDefaultConfigurator';
+import DollPartConfigurator from './DollPartConfigurator';
 import DollZoomConfigurator from './DollZoomConfigurator';
 import DollSectionOrderConfigurator from './DollSectionOrderConfigurator';
 import axios from 'axios';
 
-const DollManager = forwardRef(({ views, defaultSettings }, ref) => {
+const DollManager = forwardRef(({ views, defaultSettings, partPositions: initialPartPositions }, ref) => {
     const [activeSection, setActiveSection] = useState('default_images');
 
     // Master State for all defaults
-    // Expected structure: { selections: { front:..., back:... }, zoom: { x, y, w, h }, sectionOrder: [] }
     const [fullSettings, setFullSettings] = useState(() => {
-        // Migration logic for existing data (if it's old flat format)
-        // If defaultSettings has 'selections' key, it's new format.
-        // If not, assume it's the old format (selections directly)
         let initialSettings = {};
-
         if (defaultSettings && !defaultSettings.selections && (defaultSettings.front || defaultSettings.back || Object.keys(defaultSettings).length > 0)) {
             initialSettings = {
                 selections: defaultSettings,
-                zoom: { x: 0, y: 0, w: 1, h: 1 }, // Default full view
+                zoom: { x: 0, y: 0, w: 1, h: 1 },
                 sectionOrder: []
             };
         } else {
-            // Default clean state
             initialSettings = {
                 selections: defaultSettings?.selections || { front: {}, back: {} },
                 zoom: defaultSettings?.zoom || { x: 0, y: 0, w: 1, h: 1 },
@@ -32,8 +27,35 @@ const DollManager = forwardRef(({ views, defaultSettings }, ref) => {
         return initialSettings;
     });
 
+    // Lifted Part Positions State (Single Source of Truth)
+    const [partPositions, setPartPositions] = useState(initialPartPositions || {});
+
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState(null);
+
+    // Optimistic Position Update Handler
+    const handlePositionUpdate = (data) => {
+        const key = `${data.view}|${data.category}|${data.part_id}`;
+
+        // Optimistic Update
+        const oldPositions = { ...partPositions };
+        setPartPositions(prev => ({
+            ...prev,
+            [key]: { x: data.x, y: data.y, scale: data.scale }
+        }));
+
+        axios.post(route('doll.settings.savePosition'), data)
+            .then(() => {
+                setMessage({ type: 'success', text: 'Posición guardada correctamente' });
+            })
+            .catch(err => {
+                console.error(err);
+                // Revert on failure
+                setPartPositions(oldPositions);
+                const msg = err.response?.data?.message || err.message || 'Error desconocido';
+                setMessage({ type: 'error', text: `Error al guardar: ${msg}` });
+            });
+    };
 
     const saveSettings = async () => {
         setSaving(true);
@@ -47,9 +69,18 @@ const DollManager = forwardRef(({ views, defaultSettings }, ref) => {
             console.error(error);
         } finally {
             setSaving(false);
-            setTimeout(() => setMessage(null), 3000);
         }
     };
+
+    // Auto-dismiss message
+    useEffect(() => {
+        if (message) {
+            const timer = setTimeout(() => {
+                setMessage(null);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [message]);
 
     useImperativeHandle(ref, () => ({
         save: saveSettings
@@ -69,7 +100,8 @@ const DollManager = forwardRef(({ views, defaultSettings }, ref) => {
     };
 
     const sections = [
-        { id: 'default_images', label: 'Default Images' },
+        { id: 'default_images', label: 'Default Doll' },
+        { id: 'preview_parts', label: 'Preview Doll Parts' },
         { id: 'default_zoom', label: 'Default Zoom' },
         { id: 'section_order', label: 'Section Order' },
     ];
@@ -78,7 +110,7 @@ const DollManager = forwardRef(({ views, defaultSettings }, ref) => {
         <div className="flex flex-1 overflow-hidden h-full relative">
             {/* Global Message Toast */}
             {message && (
-                <div className={`absolute top-4 right-4 px-4 py-2 rounded shadow-lg z-50 transition-opacity duration-300 ${message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                <div className={`absolute bottom-4 right-4 px-4 py-2 rounded shadow-lg z-50 transition-opacity duration-300 ${message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                     {message.text}
                 </div>
             )}
@@ -114,6 +146,16 @@ const DollManager = forwardRef(({ views, defaultSettings }, ref) => {
                         currentSelections={fullSettings.selections}
                         onSelectionChange={updateSelections}
                         saving={saving}
+                        partPositions={partPositions} // Passed down lifted state
+                    />
+                )}
+                {activeSection === 'preview_parts' && (
+                    <DollPartConfigurator
+                        views={views}
+                        saving={saving}
+                        setMessage={setMessage}
+                        partPositions={partPositions}       // Pass lifted state
+                        onSavePosition={handlePositionUpdate} // Pass update handler
                     />
                 )}
                 {activeSection === 'default_zoom' && (
@@ -131,11 +173,9 @@ const DollManager = forwardRef(({ views, defaultSettings }, ref) => {
                         currentOrder={fullSettings.sectionOrder}
                         onSave={(order) => {
                             updateSectionOrder(order);
-                            // For this one, we might want to trigger save immediately or just update state?
-                            // Plan says global save, so just update state.
                         }}
                         saving={saving}
-                        message={message} // Keep passing message to this one if it handles its own UI or remove
+                        message={message}
                     />
                 )}
             </main>

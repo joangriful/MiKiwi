@@ -154,9 +154,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
         \Illuminate\Support\Facades\Log::info('Admin Products Count: ' . $products->count());
 
+        $partPositions = $settingsController->getAllPartPositions();
+
         return Inertia::render('ComponentsManager', [
             'views' => $views,
             'defaultSettings' => $defaultSettings,
+            'partPositions' => $partPositions,
             'users' => $users,
             'heroImages' => $heroImages,
             'products' => $products,
@@ -164,6 +167,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     })->name('components.manager');
 
     Route::post('/doll-settings', [App\Http\Controllers\DollSettingsController::class, 'saveSettings'])->name('doll.settings.save');
+    Route::get('/doll-settings/positions', [App\Http\Controllers\DollSettingsController::class, 'getPartPositions'])->name('doll.settings.positions');
+    Route::post('/doll-settings/position', [App\Http\Controllers\DollSettingsController::class, 'savePartPosition'])->name('doll.settings.savePosition');
     Route::post('/users/{user}/toggle-role', [App\Http\Controllers\UserController::class, 'toggleAdmin'])->name('users.toggleRole');
     Route::post('/content/hero/upload', [App\Http\Controllers\ContentController::class, 'uploadHeroImages'])->name('content.hero.upload');
     Route::delete('/content/hero/{heroImage}', [App\Http\Controllers\ContentController::class, 'deleteHeroImage'])->name('content.hero.delete');
@@ -239,10 +244,12 @@ Route::get('/doll_config_test', function () {
     });
     $settingsController = new App\Http\Controllers\DollSettingsController;
     $defaultSettings = $settingsController->getSettings();
+    $partPositions = $settingsController->getAllPartPositions();
 
     return Inertia::render('DollConfigTest', [
         'views' => $views,
         'defaultSettings' => $defaultSettings,
+        'partPositions' => $partPositions,
     ]);
 })->name('doll.config.test');
 

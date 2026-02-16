@@ -1,16 +1,20 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
+import axios from 'axios';
 import PreviewArea from '@/Components/DollConfigurator/PreviewArea';
 import PartSelector from '@/Components/DollConfigurator/PartSelector';
 import CloseUp from '@/Components/DollConfigurator/CloseUp';
 import OptionsBar from '@/Components/DollConfigurator/OptionsBar';
 import Header from '@/Components/Common/Header';
 
-export default function DollConfigTest({ views, defaultSettings }) {
+export default function DollConfigTest({ views, defaultSettings, partPositions: initialPartPositions }) {
     const [allSelections, setAllSelections] = useState({ front: {}, back: {} });
     const [currentView, setCurrentView] = useState('front');
     const [zoomLevel, setZoomLevel] = useState(100);
     const [viewportInfo, setViewportInfo] = useState(null);
+
+    // Lifted State for Positions (Optimistic UI)
+    const [partPositions, setPartPositions] = useState(initialPartPositions || {});
 
     // Resizable layout state
     const [topSectionHeight, setTopSectionHeight] = useState(65); // Percentage
@@ -18,8 +22,28 @@ export default function DollConfigTest({ views, defaultSettings }) {
 
     const handleDragStart = (e) => {
         isDraggingRef.current = true;
-        // Prevent default browser behavior (text selection, etc.)
-        // e.preventDefault(); // Using touch-action: none equivalent via 'touch-none' class on container
+    };
+
+    const handleSavePosition = (data) => {
+        const key = `${data.view}|${data.category}|${data.part_id}`;
+
+        // Optimistic Update
+        const oldPositions = { ...partPositions };
+        setPartPositions(prev => ({
+            ...prev,
+            [key]: { x: data.x, y: data.y, scale: data.scale }
+        }));
+
+        axios.post(route('doll.settings.savePosition'), data)
+            .then(() => {
+                console.log('Position saved successfully');
+            })
+            .catch(err => {
+                console.error(err);
+                // Revert on failure
+                setPartPositions(oldPositions);
+                alert(`Error al guardar: ${err.response?.data?.message || err.message}`);
+            });
     };
 
     useEffect(() => {
@@ -86,13 +110,9 @@ export default function DollConfigTest({ views, defaultSettings }) {
 
     const availableParts = useMemo(() => {
         if (!views) {
-            console.log('DollConfigTest - No views:', views);
             return {};
         }
-        const parts = views[currentView] || {};
-        console.log('DollConfigTest - availableParts for', currentView, ':', parts);
-        console.log('DollConfigTest - Object.keys:', Object.keys(parts));
-        return parts;
+        return views[currentView] || {};
     }, [views, currentView]);
 
     const handleSelectPart = (category, item) => {
@@ -157,6 +177,7 @@ export default function DollConfigTest({ views, defaultSettings }) {
                                     viewportInfo={viewportInfo}
                                     onViewportChange={setViewportInfo}
                                     className="bg-white"
+                                    partPositions={partPositions} // Lifted State
                                 />
                             </div>
                         </div>
@@ -213,6 +234,10 @@ export default function DollConfigTest({ views, defaultSettings }) {
                             selectedParts={selectedParts}
                             onSelect={handleSelectPart}
                             sectionOrder={sectionOrder}
+                            showImages={true}
+                            partPositions={partPositions} // Lifted State
+                            currentView={currentView}
+                            onSavePosition={handleSavePosition} // Optimistic Handler
                         />
                     </div>
                 </div>

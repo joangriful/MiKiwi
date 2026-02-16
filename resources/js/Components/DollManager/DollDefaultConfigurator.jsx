@@ -4,7 +4,7 @@ import CloseUp from '@/Components/DollConfigurator/CloseUp';
 import PartSelector from '@/Components/DollConfigurator/PartSelector';
 import OptionsBar from '@/Components/DollConfigurator/OptionsBar';
 
-export default function DollDefaultConfigurator({ views, currentSelections, onSelectionChange, saving }) {
+export default function DollDefaultConfigurator({ views, currentSelections, onSelectionChange, saving, partPositions }) {
     const [currentView, setCurrentView] = useState('front');
     const [viewportInfo, setViewportInfo] = useState({ visible: false });
     const [zoomLevel, setZoomLevel] = useState(100);
@@ -71,6 +71,7 @@ export default function DollDefaultConfigurator({ views, currentSelections, onSe
                                 selectedParts={selectedParts}
                                 viewportInfo={viewportInfo}
                                 onViewportChange={setViewportInfo}
+                                partPositions={partPositions}
                             />
                         </div>
 
@@ -103,6 +104,9 @@ export default function DollDefaultConfigurator({ views, currentSelections, onSe
                         selectedParts={selectedParts}
                         onSelect={handleSelectPart}
                         selectionLabel="DEFAULT"
+                        showImages={true}
+                        partPositions={partPositions}
+                        currentView={currentView}
                     />
                 </div>
             </div>
