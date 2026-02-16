@@ -20,7 +20,7 @@ export default function Products({ products, categories: initialCategories, filt
 
     return (
         <div className="min-h-screen flex flex-col bg-[#FDFDFD] text-gray-900 font-sans selection:bg-[#99b849]/30">
-            <Head title="Explore Luxury - MiKiwi" />
+            <Head title="Nuestros Productos - MIKIWI" />
 
             <Header />
 
@@ -31,7 +31,7 @@ export default function Products({ products, categories: initialCategories, filt
                         <span className="text-[10px] font-bold tracking-[0.3em] text-[#99b849] uppercase block animate-in fade-in slide-in-from-bottom-2 duration-700">
                             Curated Selection
                         </span>
-                        <h1 className="text-5xl md:text-7xl font-bold text-gray-900 tracking-tighter leading-none">
+                        <h1 className="text-5xl md:text-7xl font-bold text-gray-900 tracking-widest leading-none">
                             Nuestros <br />Productos<span className="text-[#99b849]">.</span>
                         </h1>
                         <p className="text-gray-400 text-lg max-w-md font-light">
