@@ -51,22 +51,57 @@ const PagesGridView = ({
                     >
                         {SelectedPages.map((item) => {
                             let props = {};
+                            let ComponentToRender = item.Component;
+                            
                             if (item.name === 'ProductPage') {
+                                // Use preview version without Header/Footer
+                                ComponentToRender = React.lazy(() => 
+                                    import('../../Pages/ProductPage').then(module => ({ 
+                                        default: module.ProductPagePreview 
+                                    }))
+                                );
                                 props = {
                                     product: {
                                         id: 1,
-                                        name: 'Kiwi Gold Premium',
-                                        slug: 'kiwi-gold-premium',
-                                        description: 'Nuestra variedad más dulce y jugosa. Cargada de vitamina C.',
+                                        name: 'Producto de Ejemplo',
+                                        slug: 'producto-ejemplo',
+                                        description: 'Este es un ejemplo de producto para previsualización en el gestor de componentes.',
                                         base_price: 12.50,
-                                        image_url: '/assets/img/product_example/main.png',
-                                        category_id: 1
+                                        image_url: 'https://via.placeholder.com/400x500/99b849/ffffff?text=Producto+Demo',
+                                        category_id: 1,
+                                        category: { id: 1, name: 'Femenino' },
+                                        stock_quantity: 100,
+                                        is_active: true
                                     },
                                     accessories: [],
                                     relatedProducts: [
-                                        { id: 2, name: 'Kiwi Verde', slug: 'kiwi-verde', base_price: 8.99, description: 'Sabor intenso y refrescante.', image_url: null },
-                                        { id: 3, name: 'Mix Bayas', slug: 'mix-bayas', base_price: 15.00, description: 'Combinación perfecta.', image_url: null },
-                                        { id: 4, name: 'Zumo Fresh', slug: 'zumo-fresh', base_price: 4.50, description: '100% natural.', image_url: null },
+                                        { 
+                                            id: 2, 
+                                            name: 'Producto Relacionado 1', 
+                                            slug: 'producto-1', 
+                                            base_price: 8.99, 
+                                            description: 'Descripción del producto relacionado 1.', 
+                                            image_url: 'https://via.placeholder.com/300x400/6b7280/ffffff?text=Producto+1',
+                                            category: { id: 1, name: 'Femenino' }
+                                        },
+                                        { 
+                                            id: 3, 
+                                            name: 'Producto Relacionado 2', 
+                                            slug: 'producto-2', 
+                                            base_price: 15.00, 
+                                            description: 'Descripción del producto relacionado 2.', 
+                                            image_url: 'https://via.placeholder.com/300x400/6b7280/ffffff?text=Producto+2',
+                                            category: { id: 2, name: 'Masculino' }
+                                        },
+                                        { 
+                                            id: 4, 
+                                            name: 'Producto Relacionado 3', 
+                                            slug: 'producto-3', 
+                                            base_price: 4.50, 
+                                            description: 'Descripción del producto relacionado 3.', 
+                                            image_url: 'https://via.placeholder.com/300x400/6b7280/ffffff?text=Producto+3',
+                                            category: { id: 4, name: 'Cosmética' }
+                                        },
                                     ]
                                 };
                             } else if (item.name === 'Products') {
@@ -96,7 +131,7 @@ const PagesGridView = ({
 
                             return (
                                 <PreviewContainer key={item.path} title={item.name}>
-                                    <item.Component {...props} />
+                                    <ComponentToRender {...props} />
                                 </PreviewContainer>
                             );
                         })}

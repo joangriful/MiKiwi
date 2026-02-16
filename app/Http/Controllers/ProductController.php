@@ -37,7 +37,7 @@ class ProductController extends Controller
                 ->take(4)
                 ->get();
 
-            return Inertia::render('Product/Show', [
+            return Inertia::render('ProductPage', [
                 'product' => $productData['product'],
                 'accessories' => $productData['accessories'],
                 'relatedProducts' => $relatedProducts,
