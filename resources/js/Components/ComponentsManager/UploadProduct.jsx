@@ -1,8 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
+import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-export default function UploadProduct({ categories = [] }) {
+export default function UploadProduct({ categories = [], initialData = null, onCancel }) {
+    const isEdit = !!initialData;
+
     const [formData, setFormData] = useState({
         name: '',
         sku: '',
@@ -15,10 +18,39 @@ export default function UploadProduct({ categories = [] }) {
         is_active: true,
     });
 
-    const [images, setImages] = useState([]);
-    const [imagePreviews, setImagePreviews] = useState([]);
+    const [existingImagesText, setExistingImagesText] = useState(''); // IDs or URLs
+    const [hoverImageText, setHoverImageText] = useState('');
     const [uploading, setUploading] = useState(false);
-    const [dragActive, setDragActive] = useState(false);
+
+    // Pre-fill form on edit
+    React.useEffect(() => {
+        if (initialData) {
+            setFormData({
+                name: initialData.name || '',
+                sku: initialData.sku || '',
+                category_id: initialData.category_id || '',
+                description: initialData.description || '',
+                base_price: initialData.base_price || '',
+                stock_quantity: initialData.stock_quantity || '',
+                product_type: initialData.product_type || 'simple',
+                is_adult_only: !!initialData.is_adult_only,
+                is_active: !!initialData.is_active,
+            });
+
+            // Handle images array
+            if (Array.isArray(initialData.images)) {
+                setExistingImagesText(initialData.images.join('\n'));
+            } else if (initialData.image_url) {
+                setExistingImagesText(initialData.image_url);
+            }
+
+            if (initialData.hover_image_url) {
+                setHoverImageText(initialData.hover_image_url);
+            } else {
+                setHoverImageText('');
+            }
+        }
+    }, [initialData]);
 
     // Handle form field changes
     const handleChange = (e) => {
@@ -34,81 +66,6 @@ export default function UploadProduct({ categories = [] }) {
         const timestamp = Date.now().toString().slice(-6);
         const random = Math.random().toString(36).substring(2, 6).toUpperCase();
         setFormData(prev => ({ ...prev, sku: `PRD-${timestamp}-${random}` }));
-    };
-
-    // Handle image uploads
-    const handleImageChange = (files) => {
-        const fileArray = Array.from(files);
-
-        // Validate file types
-        const validFiles = fileArray.filter(file => {
-            if (!['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(file.type)) {
-                toast.error(`${file.name} no es una imagen válida`);
-                return false;
-            }
-            if (file.size > 10 * 1024 * 1024) {
-                toast.error(`${file.name} es demasiado grande (máx 10MB)`);
-                return false;
-            }
-            return true;
-        });
-
-        if (validFiles.length === 0) return;
-
-        // Add to images array
-        setImages(prev => [...prev, ...validFiles]);
-
-        // Create previews
-        validFiles.forEach(file => {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreviews(prev => [...prev, { file: file.name, url: reader.result }]);
-            };
-            reader.readAsDataURL(file);
-        });
-    };
-
-    // Drag and drop handlers
-    const handleDrag = useCallback((e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (e.type === 'dragenter' || e.type === 'dragover') {
-            setDragActive(true);
-        } else if (e.type === 'dragleave') {
-            setDragActive(false);
-        }
-    }, []);
-
-    const handleDrop = useCallback((e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setDragActive(false);
-
-        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-            handleImageChange(e.dataTransfer.files);
-        }
-    }, []);
-
-    // Remove image
-    const removeImage = (index) => {
-        setImages(prev => prev.filter((_, i) => i !== index));
-        setImagePreviews(prev => prev.filter((_, i) => i !== index));
-    };
-
-    // Reorder images
-    const moveImage = (fromIndex, toIndex) => {
-        setImages(prev => {
-            const newImages = [...prev];
-            const [moved] = newImages.splice(fromIndex, 1);
-            newImages.splice(toIndex, 0, moved);
-            return newImages;
-        });
-        setImagePreviews(prev => {
-            const newPreviews = [...prev];
-            const [moved] = newPreviews.splice(fromIndex, 1);
-            newPreviews.splice(toIndex, 0, moved);
-            return newPreviews;
-        });
     };
 
     // Submit form
@@ -128,50 +85,54 @@ export default function UploadProduct({ categories = [] }) {
         setUploading(true);
 
         try {
-            const submitData = new FormData();
+            // Prepare submission data as a plain object for JSON
+            const submitData = {
+                ...formData,
+                existing_images: existingImagesText.trim()
+                    ? existingImagesText.split('\n').map(l => l.trim()).filter(l => l !== '')
+                    : [],
+                hover_image_input: hoverImageText.trim()
+            };
 
-            // Add form fields
-            Object.keys(formData).forEach(key => {
-                if (formData[key] !== '') {
-                    submitData.append(key, formData[key]);
-                }
-            });
+            const routeName = isEdit ? 'products.update' : 'products.upload';
+            const routeParams = isEdit ? initialData.id : {};
 
-            // Add images
-            images.forEach((image, index) => {
-                submitData.append(`images[${index}]`, image);
-            });
-
-            const response = await axios.post(route('products.upload'), submitData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
+            router.visit(route(routeName, routeParams), {
+                method: isEdit ? 'put' : 'post',
+                data: submitData,
+                onSuccess: () => {
+                    toast.success(isEdit ? '✓ Producto actualizado' : '✓ Producto creado correctamente');
+                    if (!isEdit) {
+                        // Reset form
+                        setFormData({
+                            name: '',
+                            sku: '',
+                            category_id: '',
+                            description: '',
+                            base_price: '',
+                            stock_quantity: '',
+                            product_type: 'simple',
+                            is_adult_only: true,
+                            is_active: true,
+                        });
+                        setExistingImagesText('');
+                        setHoverImageText('');
+                    } else {
+                        // Go back to list after edit
+                        if (onCancel) onCancel();
+                    }
                 },
+                onError: (errors) => {
+                    console.error('Upload errors:', errors);
+                    const errorMsg = Object.values(errors).flat().join(' ') || 'Ocurrió un error';
+                    toast.error(`Error: ${errorMsg}`);
+                },
+                onFinish: () => setUploading(false)
             });
 
-            if (response.data.success) {
-                toast.success('✓ Producto creado correctamente');
-
-                // Reset form
-                setFormData({
-                    name: '',
-                    sku: '',
-                    category_id: '',
-                    description: '',
-                    base_price: '',
-                    stock_quantity: '',
-                    product_type: 'simple',
-                    is_adult_only: true,
-                    is_active: true,
-                });
-                setImages([]);
-                setImagePreviews([]);
-            } else {
-                toast.error(response.data.message || 'Error al crear el producto');
-            }
         } catch (error) {
             console.error('Upload error:', error);
-            toast.error(error.response?.data?.message || 'Error al crear el producto');
-        } finally {
+            toast.error('Error al procesar la solicitud');
             setUploading(false);
         }
     };
@@ -180,86 +141,54 @@ export default function UploadProduct({ categories = [] }) {
         <div className="h-full overflow-y-auto">
             <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-8 space-y-8">
                 <div className="border-b border-gray-200 pb-4">
-                    <h2 className="text-2xl font-bold text-gray-800">Subir Nuevo Producto</h2>
-                    <p className="text-sm text-gray-500 mt-1">Complete los campos para crear un nuevo producto</p>
+                    <h2 className="text-2xl font-bold text-gray-800">
+                        {isEdit ? 'Editar Producto' : 'Subir Nuevo Producto'}
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                        {isEdit ? `Editando: ${formData.name}` : 'Complete los campos para crear un nuevo producto'}
+                    </p>
                 </div>
 
-                {/* Images Upload Section */}
+                {/* Images Selection Section (Only Links/IDs now) */}
                 <div className="space-y-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                        Imágenes del Producto
-                    </label>
-
-                    {/* Drag & Drop Zone */}
-                    <div
-                        className={`border-2 border-dashed rounded-lg p-8 text-center transition-all ${dragActive
-                            ? 'border-blue-500 bg-blue-50'
-                            : 'border-gray-300 hover:border-gray-400'
-                            }`}
-                        onDragEnter={handleDrag}
-                        onDragLeave={handleDrag}
-                        onDragOver={handleDrag}
-                        onDrop={handleDrop}
-                    >
-                        <input
-                            type="file"
-                            id="image-upload"
-                            multiple
-                            accept="image/*"
-                            onChange={(e) => handleImageChange(e.target.files)}
-                            className="hidden"
-                        />
-                        <label htmlFor="image-upload" className="cursor-pointer">
-                            <span className="material-symbols-outlined text-4xl text-gray-400 mb-2 block">upload</span>
-                            <p className="text-gray-600 font-medium">Arrastra imágenes aquí o haz click para seleccionar</p>
-                            <p className="text-sm text-gray-400 mt-1">JPG, PNG o WEBP (máx 10MB)</p>
+                    <div className="border-b border-gray-100 pb-2">
+                        <label className="block text-sm font-semibold text-gray-700">
+                            Imágenes del Producto (Cloudinary)
                         </label>
+                        <p className="text-xs text-gray-400 mt-1">Añade los Public IDs o URLs de las imágenes que ya están en Cloudinary.</p>
                     </div>
 
-                    {/* Image Previews */}
-                    {imagePreviews.length > 0 && (
-                        <div className="grid grid-cols-4 gap-4">
-                            {imagePreviews.map((preview, index) => (
-                                <div key={index} className="relative group">
-                                    <img
-                                        src={preview.url}
-                                        alt={`Preview ${index + 1}`}
-                                        className="w-full h-32 object-cover rounded-lg border border-gray-200"
-                                    />
-                                    {index === 0 && (
-                                        <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
-                                            Principal
-                                        </div>
-                                    )}
-                                    <button
-                                        type="button"
-                                        onClick={() => removeImage(index)}
-                                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                                    >
-                                        <span className="material-symbols-outlined text-sm">close</span>
-                                    </button>
-                                    {index > 0 && (
-                                        <button
-                                            type="button"
-                                            onClick={() => moveImage(index, index - 1)}
-                                            className="absolute bottom-2 left-2 bg-white text-gray-700 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow"
-                                        >
-                                            <span className="material-symbols-outlined text-sm">arrow_back</span>
-                                        </button>
-                                    )}
-                                    {index < imagePreviews.length - 1 && (
-                                        <button
-                                            type="button"
-                                            onClick={() => moveImage(index, index + 1)}
-                                            className="absolute bottom-2 right-2 bg-white text-gray-700 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow"
-                                        >
-                                            <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                                        </button>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                    <textarea
+                        value={existingImagesText}
+                        onChange={(e) => setExistingImagesText(e.target.value)}
+                        placeholder="Ej: hero_images/yo4cilvlpkvjbcpeqqkj&#10;O: https://res.cloudinary.com/...&#10;(Uno por línea)"
+                        rows={5}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none font-mono text-sm bg-gray-50/50"
+                    />
+
+                    <div className="flex items-start gap-2 text-blue-600 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                        <span className="material-symbols-outlined text-sm mt-0.5">info</span>
+                        <p className="text-xs">
+                            <strong>Nota importante:</strong> La primera línea se utilizará como la <strong>imagen principal</strong> del producto. Asegúrate de que el Public ID sea correcto.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Hover Image Section */}
+                <div className="space-y-4">
+                    <div className="border-b border-gray-100 pb-2">
+                        <label className="block text-sm font-semibold text-gray-700">
+                            Imagen al hacer Hover (Opcional)
+                        </label>
+                        <p className="text-xs text-gray-400 mt-1">URL o Public ID de la imagen que se mostrará al pasar el ratón.</p>
+                    </div>
+                    <input
+                        type="text"
+                        value={hoverImageText}
+                        onChange={(e) => setHoverImageText(e.target.value)}
+                        placeholder="Ej: hero_images/hover_variant o https://..."
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm bg-gray-50/50"
+                    />
                 </div>
 
                 {/* Basic Information */}
@@ -425,27 +354,37 @@ export default function UploadProduct({ categories = [] }) {
 
                 {/* Submit Button */}
                 <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setFormData({
-                                name: '',
-                                sku: '',
-                                category_id: '',
-                                description: '',
-                                base_price: '',
-                                stock_quantity: '',
-                                product_type: 'simple',
-                                is_adult_only: true,
-                                is_active: true,
-                            });
-                            setImages([]);
-                            setImagePreviews([]);
-                        }}
-                        className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                        Limpiar
-                    </button>
+                    {isEdit ? (
+                        <button
+                            type="button"
+                            onClick={onCancel}
+                            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                            Cancelar
+                        </button>
+                    ) : (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setFormData({
+                                    name: '',
+                                    sku: '',
+                                    category_id: '',
+                                    description: '',
+                                    base_price: '',
+                                    stock_quantity: '',
+                                    product_type: 'simple',
+                                    is_adult_only: true,
+                                    is_active: true,
+                                });
+                                setExistingImagesText('');
+                                setHoverImageText('');
+                            }}
+                            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                            Limpiar
+                        </button>
+                    )}
                     <button
                         type="submit"
                         disabled={uploading}
@@ -454,12 +393,12 @@ export default function UploadProduct({ categories = [] }) {
                         {uploading ? (
                             <>
                                 <span className="material-symbols-outlined animate-spin text-sm">refresh</span>
-                                Subiendo...
+                                {isEdit ? 'Guardando...' : 'Subiendo...'}
                             </>
                         ) : (
                             <>
-                                <span className="material-symbols-outlined text-sm">upload</span>
-                                Crear Producto
+                                <span className="material-symbols-outlined text-sm">{isEdit ? 'save' : 'upload'}</span>
+                                {isEdit ? 'Guardar Cambios' : 'Crear Producto'}
                             </>
                         )}
                     </button>

@@ -1,65 +1,78 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
-use Illuminate\Auth\Access\Response;
 use App\Models\User;
+use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Solo admins pueden ver listado completo
      */
     public function viewAny(User $user): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, User $model): bool
-    {
-        return $user->id === $model->id || $user->role === 'admin';
-    }
-
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, User $model): bool
-    {
-        return $user->id === $model->id || $user->role === 'admin';
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, User $model): bool
     {
         return $user->role === 'admin';
     }
 
     /**
-     * Determine whether the user can restore the model.
+     * Ver perfil: propio o si es admin
      */
-    public function restore(User $user, User $model): bool
+    public function view(User $authenticatedUser, User $targetUser): bool
     {
-        return false;
+        return $authenticatedUser->id === $targetUser->id
+            || $authenticatedUser->role === 'admin';
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
+     * Crear usuarios: solo admins
      */
-    public function forceDelete(User $user, User $model): bool
+    public function create(User $user): bool
     {
-        return false;
+        return $user->role === 'admin';
+    }
+
+    /**
+     * Editar: propio perfil o admin
+     */
+    public function update(User $authenticatedUser, User $targetUser): bool
+    {
+        return $authenticatedUser->id === $targetUser->id
+            || $authenticatedUser->role === 'admin';
+    }
+
+    /**
+     * - Solo admins pueden
+     * - No auto-degradarse
+     */
+    public function toggleAdmin(User $authenticatedUser, User $targetUser): Response
+    {
+        if ($authenticatedUser->role !== 'admin') {
+            return Response::deny('Solo los administradores pueden cambiar roles.');
+        }
+
+        if ($authenticatedUser->id === $targetUser->id) {
+            return Response::deny('No puedes quitarte tu propio rol de admin.');
+        }
+
+        return Response::allow();
+    }
+
+    /**
+     * Eliminar: solo admin (no auto-eliminarse)
+     */
+    public function delete(User $authenticatedUser, User $targetUser): Response
+    {
+        if ($authenticatedUser->id === $targetUser->id) {
+            return Response::deny('No puedes eliminar tu propia cuenta.');
+        }
+
+        if ($authenticatedUser->role !== 'admin') {
+            return Response::deny('No tienes permisos para eliminar usuarios.');
+        }
+
+        return Response::allow();
     }
 }

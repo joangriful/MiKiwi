@@ -9,8 +9,8 @@ const PreviewContainer = ({ children, title }) => {
         console.log('[PreviewContainer] URL Guess:', title, '->', lower);
         // Route Mappings based on web.php
         const routes = {
-            'product': '/product',
-            'productpage': '/product', // Explicit match for ProductPage.jsx
+            'product': '/producto/kiwi-gold-premium',
+            'productpage': '/producto/kiwi-gold-premium', // Explicit match for ProductPage.jsx
             'welcome': '/',
             'perfil': '/perfil',
             'colecciones': '/colecciones',

@@ -6,12 +6,20 @@ use App\Models\UserAddress;
 use App\Http\Requests\StoreAddressRequest; // ¡Importante!
 use App\Http\Requests\UpdateAddressRequest; // ¡Importante!
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class UserAddressController extends Controller
 {
     public function index()
     {
-        return auth()->user()->addresses;
+        $addresses = UserAddress::where('user_id', Auth::id())
+            ->orderByDesc('is_default')
+            ->get();
+
+        return Inertia::render('Profile/Addresses/Index', [
+            'addresses' => $addresses,
+        ]);
     }
 
     // Inyectamos StoreAddressRequest
@@ -20,7 +28,18 @@ class UserAddressController extends Controller
         // $request->validated() devuelve solo los datos limpios y seguros
         $address = auth()->user()->addresses()->create($request->validated());
 
-        return response()->json($address, 201);
+        // Si es principal, desmarcar las demás
+        if (! empty($data['is_default'])) {
+            UserAddress::where('user_id', Auth::id())
+                ->update(['is_default' => false]);
+        }
+
+        UserAddress::create([
+            'user_id' => Auth::id(),
+            ...$data,
+        ]);
+
+        return back()->with('success', 'Dirección guardada correctamente');
     }
 
     // Inyectamos UpdateAddressRequest
@@ -31,7 +50,14 @@ class UserAddressController extends Controller
 
         $address->update($request->validated());
 
-        return response()->json($address);
+        if (! empty($data['is_default'])) {
+            UserAddress::where('user_id', Auth::id())
+                ->update(['is_default' => false]);
+        }
+
+        $address->update($data);
+
+        return back()->with('success', 'Dirección actualizada');
     }
 
     // Eliminar dirección

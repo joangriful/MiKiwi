@@ -2,8 +2,8 @@
 
 namespace App\Repositories\Eloquent;
 
-use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Models\Order;
+use App\Repositories\Interfaces\OrderRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -36,8 +36,8 @@ class EloquentOrderRepository implements OrderRepositoryInterface
                         'product_id' => $item['product_id'],
                         'quantity' => $item['quantity'],
                         'unit_price' => $item['unit_price'],
-                        'subtotal' => $item['subtotal'],
-                        'product_snapshot' => $item['product_snapshot'] ?? null,
+                        'product_name_snapshot' => $item['product_name_snapshot'] ?? 'Producto sin nombre',
+                        'sku_snapshot' => $item['sku_snapshot'] ?? 'SKU-GENERICO',
                     ]);
                 }
             }
@@ -73,8 +73,8 @@ class EloquentOrderRepository implements OrderRepositoryInterface
     public function updateStatus(string $orderId, string $status): bool
     {
         $order = Order::find($orderId);
-        
-        if (!$order) {
+
+        if (! $order) {
             return false;
         }
 

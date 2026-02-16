@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use Stripe\Stripe;
-use Stripe\PaymentIntent;
 use Illuminate\Support\Facades\Config;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 
 class StripeService
 {
@@ -16,9 +16,9 @@ class StripeService
     /**
      * Create a new PaymentIntent
      *
-     * @param float $amount Amount in EUR
-     * @param string $currency Currency (default: eur)
-     * @param array $metadata Additional metadata
+     * @param  float  $amount  Amount in EUR
+     * @param  string  $currency  Currency (default: eur)
+     * @param  array  $metadata  Additional metadata
      * @return PaymentIntent
      */
     public function createPaymentIntent($amount, $currency = 'eur', $metadata = [])
@@ -36,7 +36,7 @@ class StripeService
     /**
      * Retrieve a PaymentIntent by its ID
      *
-     * @param string $id
+     * @param  string  $id
      * @return PaymentIntent
      */
     public function getPaymentIntent($id)

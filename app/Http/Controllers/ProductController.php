@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\ProductService;
 use App\Models\Product;
+use App\Services\ProductService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Inertia\Inertia;
 
@@ -18,8 +18,8 @@ class ProductController extends Controller
 
     /**
      * Mostrar detalles de un producto
-     * 
-     * @param Product $product - Laravel resolverá automáticamente por slug
+     *
+     * @param  Product  $product  - Laravel resolverá automáticamente por slug
      * @return \Inertia\Response
      */
     public function show(Product $product)
@@ -32,15 +32,16 @@ class ProductController extends Controller
             $relatedProducts = Product::where('category_id', $product->category_id)
                 ->where('id', '!=', $product->id)
                 ->where('is_active', true)
+                ->with('category') // Eager load category
                 ->inRandomOrder()
                 ->take(4)
                 ->get();
 
-            return Inertia::render('Product/Show', [
+            return Inertia::render('ProductPage', [
                 'product' => $productData['product'],
                 'accessories' => $productData['accessories'],
                 'relatedProducts' => $relatedProducts,
-                'pageTitle' => $product->name . ' - MiKiwi'
+                'pageTitle' => $product->name.' - MiKiwi',
             ]);
         } catch (ModelNotFoundException $e) {
             abort(404, 'Producto no encontrado');
@@ -53,9 +54,21 @@ class ProductController extends Controller
     {
         $query = Product::where('is_active', true);
 
-        // Filtrar por categoría
+        // Filtrar por categoría (Incluyendo subcategorías de forma recursiva)
         if ($request->has('category')) {
-            $query->where('category_id', $request->category);
+            $categoryIds = \App\Models\Category::where('id', $request->category)
+                ->orWhere('parent_id', $request->category)
+                ->pluck('id');
+            
+            $query->whereIn('category_id', $categoryIds);
+        }
+
+        // Filtrar por subcategoría específica
+        if ($request->has('subCategory')) {
+            $subCategory = \App\Models\Category::where('name', $request->subCategory)->first();
+            if ($subCategory) {
+                $query->where('category_id', $subCategory->id);
+            }
         }
 
         // Filtrar por rango de precio
@@ -85,13 +98,19 @@ class ProductController extends Controller
 
         $products = $query->paginate(12)->withQueryString();
 
-        // Obtener categorías para el sidebar (solo las que tienen productos activos sería ideal, pero dejémoslo simple por ahora)
-        $categories = \App\Models\Category::where('is_active', true)->orderBy('name')->get();
+        // Obtener categorías con sus hijos para el sidebar
+        $categories = \App\Models\Category::root()
+            ->where('is_active', true)
+            ->with(['children' => function($q) {
+                $q->where('is_active', true)->orderBy('name');
+            }])
+            ->orderBy('name')
+            ->get();
 
         return Inertia::render('Products', [
             'products' => $products,
             'categories' => $categories,
-            'filters' => $request->only(['category', 'min_price', 'max_price', 'sort']),
+            'filters' => $request->only(['category', 'subCategory', 'min_price', 'max_price', 'sort']),
         ]);
     }
 }

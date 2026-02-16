@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -7,7 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class LoginRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Determina si el usuario está autorizado
      */
     public function authorize(): bool
     {
@@ -15,16 +17,36 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * Reglas de validación para login API
      */
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
+            'email' => 'required|string|email',
             'password' => 'required|string',
-            'device_name' => 'nullable|string', // Útil si usas Sanctum
+        ];
+    }
+
+    /**
+     * Mensajes de error en español
+     */
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'El email es obligatorio.',
+            'email.email' => 'El email no tiene un formato válido.',
+            'password.required' => 'La contraseña es obligatoria.',
+        ];
+    }
+
+    /**
+     * Atributos personalizados
+     */
+    public function attributes(): array
+    {
+        return [
+            'email' => 'correo electrónico',
+            'password' => 'contraseña',
         ];
     }
 }

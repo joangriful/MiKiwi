@@ -24,19 +24,19 @@ class ProductService
     {
         $product = $this->productRepository->getActiveBySlug($slug);
 
-        if (!$product) {
-            throw new ModelNotFoundException("Producto no encontrado o inactivo.");
+        if (! $product) {
+            throw new ModelNotFoundException('Producto no encontrado o inactivo.');
         }
 
-        // Aquí podríamos añadir lógica extra. 
+        // Aquí podríamos añadir lógica extra.
         // Por ejemplo, verificar si el usuario es adulto para ver productos +18.
         // Pero por ahora devolvemos el producto y sus accesorios limpios.
 
         return [
             'product' => $product,
-            // Los accesorios ya vienen cargados por el repositorio, 
+            // Los accesorios ya vienen cargados por el repositorio,
             // pero si queremos asegurarnos o filtrarlos, lo hacemos aquí.
-            'accessories' => $product->accessories 
+            'accessories' => $product->accessories,
         ];
     }
 }

@@ -1,69 +1,89 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Orders;
 
-use App\Models\User;
-use App\Models\Order;
-use App\Models\Product;
 use App\Events\OrderCreated;
+use App\Exceptions\CartEmptyException;
 use App\Exceptions\InsufficientStockException;
-use App\Exceptions\ProductNotFoundException;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Services\CartService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CreateOrder
 {
-    public function handle(User $user, array $data)
+    protected CartService $cartService;
+
+    public function __construct(CartService $cartService)
     {
-        // Usamos DB::transaction para que si algo falla (ej. stock), 
-        // NO se cree el pedido a medias. Todo o nada.
-        return DB::transaction(function () use ($user, $data) {
-            
-            $totalAmount = 0;
-            $orderItems = [];
+        $this->cartService = $cartService;
+    }
 
-            // 1. Validar Stock y Calcular Total
-            foreach ($data['items'] as $item) {
-                $product = Product::find($item['product_id']);
+    public function execute(array $data): Order
+    {
+        $cart = $this->cartService->getCart();
 
-                if (!$product) {
-                    throw new ProductNotFoundException();
-                }
+        if (empty($cart['items'])) {
+            throw new CartEmptyException('checkout');
+        }
 
-                if ($product->stock_quantity < $item['quantity']) {
-                    throw new InsufficientStockException();
-                }
-
-                // Preparamos los datos para guardar después
-                $orderItems[] = [
-                    'product_id' => $product->id,
-                    'product_name_snapshot' => $product->name,
-                    'sku_snapshot' => $product->sku,
-                    'quantity' => $item['quantity'],
-                    'unit_price' => $product->base_price, // Guardamos el precio al momento de la compra
-                ];
-
-                $totalAmount += $product->base_price * $item['quantity'];
+        // Validar stock
+        foreach ($cart['items'] as $item) {
+            $product = $item['product'];
+            if ($product->stock_quantity < $item['quantity']) {
+                throw new InsufficientStockException(
+                    $product->name,
+                    $product->stock_quantity,
+                    $item['quantity'],
+                    $product->sku ?? $product->id
+                );
             }
+        }
 
-            // 2. Crear el Pedido
+        return DB::transaction(function () use ($data, $cart) {
             $order = Order::create([
-                'user_id' => $user->id,
+                'user_id' => Auth::id(),
+                'order_number' => $this->generateOrderNumber(),
                 'status' => 'pending',
-                'total_amount' => $totalAmount,
-                'shipping_address_id' => $data['shipping_address_id'],
+                'total_amount' => $cart['total'],
+                'payment_status' => 'pending',
+                'payment_method' => $data['payment_method'],
+                'payment_id' => $data['payment_intent_id'] ?? null,
+                'shipping_address_snapshot' => $data['shipping_address'],
+                'billing_address_snapshot' => $data['shipping_address'],
+                'pickup_point_id' => $data['pickup_point_id'] ?? null,
+                'notes' => $data['notes'] ?? null,
             ]);
 
-            // 3. Guardar los Items
-            // Usamos la relación items() definida en el modelo Order
-            $order->items()->createMany($orderItems);
+            foreach ($cart['items'] as $item) {
+                $product = $item['product'];
 
-            // 4. Disparar el Evento (Esto activa los Listeners de la Etapa 3)
-            // - Restar Stock
-            // - Enviar Email
-            // - Notificar Admin
-            OrderCreated::dispatch($order);
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'product_name_snapshot' => $product->name,
+                    'sku_snapshot' => $product->sku ?? 'SKU-GENERICO',
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $product->base_price,
+                ]);
+
+                $product->decrement('stock_quantity', $item['quantity']);
+            }
+
+            $this->cartService->clearCart();
+
+            event(new OrderCreated($order));
 
             return $order;
         });
+    }
+
+    protected function generateOrderNumber(): string
+    {
+        return 'MK-'.date('Ymd').'-'.strtoupper(Str::random(6));
     }
 }

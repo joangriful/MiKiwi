@@ -2,8 +2,8 @@
 
 namespace App\Repositories\Eloquent;
 
-use App\Repositories\Interfaces\CategoryRepositoryInterface;
 use App\Models\Category;
+use App\Repositories\Interfaces\CategoryRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 
 class EloquentCategoryRepository implements CategoryRepositoryInterface
@@ -50,8 +50,8 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
     public function getChildCategories(string $categoryId): Collection
     {
         $category = Category::find($categoryId);
-        
-        return $category ? $category->children()->active()->get() : new Collection();
+
+        return $category ? $category->children()->active()->get() : new Collection;
     }
 
     /**
@@ -60,8 +60,8 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
     public function getCategoryProductsPaginated(string $categoryId, int $perPage = 12)
     {
         $category = Category::find($categoryId);
-        
-        if (!$category) {
+
+        if (! $category) {
             return null;
         }
 

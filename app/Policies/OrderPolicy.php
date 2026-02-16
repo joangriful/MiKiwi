@@ -1,23 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
-use Illuminate\Auth\Access\Response;
 use App\Models\Order;
 use App\Models\User;
+use Illuminate\Auth\Access\Response;
 
 class OrderPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Determina si el usuario puede ver el listado de todos los pedidos
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determina si el usuario puede ver un pedido específico
      */
     public function view(User $user, Order $order): bool
     {
@@ -25,42 +27,42 @@ class OrderPolicy
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determina si el usuario puede crear pedidos
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determina si el usuario puede actualizar un pedido
      */
     public function update(User $user, Order $order): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determina si el usuario puede cancelar un pedido
+     */
+    public function cancel(User $user, Order $order): Response
+    {
+        if ($user->id !== $order->user_id && $user->role !== 'admin') {
+            return Response::deny('No puedes cancelar este pedido.');
+        }
+
+        if (! in_array($order->status, ['pending', 'processing'])) {
+            return Response::deny('No se puede cancelar un pedido ya enviado o entregado.');
+        }
+
+        return Response::allow();
+    }
+
+    /**
+     * Determina si el usuario puede eliminar un pedido
      */
     public function delete(User $user, Order $order): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Order $order): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Order $order): bool
-    {
-        return false;
+        return $user->role === 'admin';
     }
 }

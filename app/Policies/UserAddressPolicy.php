@@ -1,66 +1,59 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
-use Illuminate\Auth\Access\Response;
-use App\Models\UserAddress;
 use App\Models\User;
+use App\Models\UserAddress;
 
 class UserAddressPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Determina si el usuario puede ver el listado de direcciones
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determina si el usuario puede ver una dirección específica
      */
-    public function view(User $user, UserAddress $userAddress): bool
+    public function view(User $user, UserAddress $address): bool
     {
-        return $user->id === $userAddress->user_id;
+        return $user->id === $address->user_id;
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determina si el usuario puede crear direcciones
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determina si el usuario puede actualizar una dirección
      */
-    public function update(User $user, UserAddress $userAddress): bool
+    public function update(User $user, UserAddress $address): bool
     {
-        return $user->id === $userAddress->user_id;
+        return $user->id === $address->user_id;
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determina si el usuario puede eliminar una dirección
      */
-    public function delete(User $user, UserAddress $userAddress): bool
+    public function delete(User $user, UserAddress $address): bool
     {
-        return $user->id === $userAddress->user_id;
+        return $user->id === $address->user_id;
     }
 
     /**
-     * Determine whether the user can restore the model.
+     * Determina si el usuario puede establecer una dirección como predeterminada
      */
-    public function restore(User $user, UserAddress $userAddress): bool
+    public function setDefault(User $user, UserAddress $address): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, UserAddress $userAddress): bool
-    {
-        return false;
+        return $user->id === $address->user_id;
     }
 }

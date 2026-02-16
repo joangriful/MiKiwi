@@ -2,76 +2,110 @@ import React from 'react';
 import { Head, Link } from '@inertiajs/react';
 import Header from '@/Components/Common/Header';
 import Footer from '@/Components/Common/Footer';
-import ProductFilters from '@/Components/ProductPage/ProductFilters';
-import ProductCard from '@/Components/ProductPage/ProductCard';
+import { ProductCard, FilterMenu } from '@/Components';
+import { useState } from 'react';
 
-export default function Products({ products, categories, filters }) {
+export default function Products({ products, categories = [], filters }) {
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+
     return (
-        <div className="min-h-screen flex flex-col bg-white text-gray-900 font-sans">
-            <Head title="Productos - MiKiwi" />
+        <div className="min-h-screen flex flex-col bg-[#FDFDFD] text-gray-900 font-sans selection:bg-[#99b849]/30">
+            <Head title="Nuestros Productos - MIKIWI" />
 
             <Header />
 
-            <main className="flex-grow container mx-auto px-6 py-8">
-                {/* Breadcrumbs or Title */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">Nuestros Productos</h1>
-                    <p className="text-gray-500 mt-2">Explora nuestra selección premium</p>
+            <main className="flex-grow py-20 px-6 max-w-[1600px] mx-auto w-full">
+                {/* Minimalist Header */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
+                    <div className="space-y-4">
+                        <span className="text-[10px] font-bold tracking-[0.3em] text-[#99b849] uppercase block animate-in fade-in slide-in-from-bottom-2 duration-700">
+                            Curated Selection
+                        </span>
+                        <h1 className="text-5xl md:text-7xl font-bold text-gray-900 tracking-widest leading-none">
+                            Nuestros <br />Productos<span className="text-[#99b849]">.</span>
+                        </h1>
+                        <p className="text-gray-400 text-lg max-w-md font-light">
+                            Ingeniería sensorial de precisión diseñada para elevar tu experiencia de introspección habitual.
+                        </p>
+                    </div>
+
+                    <button
+                        onClick={() => setIsFilterOpen(true)}
+                        className="group flex items-center gap-3 bg-white border border-gray-100 px-8 py-4 rounded-full shadow-sm hover:shadow-md transition-all active:scale-95"
+                    >
+                        <span className="material-symbols-outlined text-gray-900 text-xl transition-transform group-hover:rotate-12">tune</span>
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm font-bold uppercase tracking-widest text-gray-900">Filtrar</span>
+                            {Object.values(filters).filter(Boolean).length > 0 && (
+                                <span className="flex items-center justify-center bg-[#99b849] text-white text-[10px] w-5 h-5 rounded-full font-bold animate-in zoom-in duration-300">
+                                    {Object.values(filters).filter(Boolean).length}
+                                </span>
+                            )}
+                        </div>
+                    </button>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-8">
-                    {/* Sidebar Filters */}
-                    <aside className="w-full md:w-64 shrink-0">
-                        <ProductFilters categories={categories} filters={filters} />
-                    </aside>
+                {/* Filter Sidebar replaced by Overlay Menu */}
+                <FilterMenu
+                    isOpen={isFilterOpen}
+                    onClose={() => setIsFilterOpen(false)}
+                    categories={categories}
+                    filters={filters}
+                />
 
-                    {/* Product Grid */}
-                    <div className="flex-1">
-                        {products.data.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-6 gap-y-10 justify-items-center md:justify-items-start">
-                                {products.data.map((product) => (
-                                    <ProductCard key={product.id} product={product} />
+                {/* Refined Product Grid */}
+                <div className="w-full">
+                    {products?.data && products.data.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16">
+                            {products.data.map((product, index) => (
+                                <div
+                                    key={product.id || `prod-${index}`}
+                                    className="animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both"
+                                    style={{ animationDelay: `${index * 100}ms` }}
+                                >
+                                    <ProductCard product={product} />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-40 bg-[#F9F9F9] rounded-[40px] border border-dashed border-gray-200">
+                            <span className="material-symbols-outlined text-6xl text-gray-200 mb-6">inventory_2</span>
+                            <p className="text-gray-400 text-xl font-light">Sin resultados para tu búsqueda.</p>
+                            <Link
+                                href={route('products.index')}
+                                className="mt-8 inline-flex items-center gap-2 text-black font-bold uppercase tracking-widest text-xs border-b-2 border-black pb-1 hover:text-gray-600 hover:border-gray-400 transition-all"
+                            >
+                                Reestablecer Filtros
+                            </Link>
+                        </div>
+                    )}
+
+                    {/* Refined Pagination */}
+                    {products?.links && products.links.length > 3 && (
+                        <div className="mt-32 flex justify-center pb-20">
+                            <div className="flex flex-wrap gap-3 justify-center">
+                                {products.links.map((link, key) => (
+                                    link.url === null ? (
+                                        <div
+                                            key={key}
+                                            className="w-12 h-12 flex items-center justify-center text-gray-300 text-xs font-bold"
+                                            dangerouslySetInnerHTML={{ __html: link.label }}
+                                        />
+                                    ) : (
+                                        <Link
+                                            key={key}
+                                            href={link.url}
+                                            className={`w-12 h-12 flex items-center justify-center rounded-full text-xs font-bold transition-all ${link.active
+                                                ? 'bg-black text-white shadow-xl shadow-black/10'
+                                                : 'text-gray-400 hover:text-black hover:bg-gray-100'
+                                                }`}
+                                            dangerouslySetInnerHTML={{ __html: link.label }}
+                                        />
+                                    )
                                 ))}
                             </div>
-                        ) : (
-                            <div className="text-center py-20 bg-gray-50 rounded-lg">
-                                <p className="text-gray-500 text-lg">No se encontraron productos con estos filtros.</p>
-                                <Link
-                                    href={route('products.index')}
-                                    className="text-blue-600 font-medium hover:underline mt-2 inline-block"
-                                >
-                                    Limpiar filtros
-                                </Link>
-                            </div>
-                        )}
-
-                        {/* Pagination */}
-                        {products.links && products.links.length > 3 && (
-                            <div className="mt-12 flex justify-center">
-                                <div className="flex flex-wrap gap-2 justify-center">
-                                    {products.links.map((link, key) => (
-                                        link.url === null ? (
-                                            <div
-                                                key={key}
-                                                className="px-4 py-2 border border-gray-200 text-gray-400 rounded-md text-sm"
-                                                dangerouslySetInnerHTML={{ __html: link.label }}
-                                            />
-                                        ) : (
-                                            <Link
-                                                key={key}
-                                                href={link.url}
-                                                className={`px-4 py-2 border rounded-md text-sm transition-colors ${link.active
-                                                    ? 'bg-blue-600 text-white border-blue-600'
-                                                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                                                    }`}
-                                                dangerouslySetInnerHTML={{ __html: link.label }}
-                                            />
-                                        )
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </div>
             </main>
 

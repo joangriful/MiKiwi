@@ -1,31 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Listeners;
 
 use App\Events\OrderCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
-class SendOrderConfirmation
+class SendOrderConfirmation implements ShouldQueue
 {
-    /**
-     * Create the event listener.
-     */
-    public function __construct()
+    public function handle(OrderCreated $event): void
     {
-        //
-    }
+        $order = $event->order;
 
-    /**
-     * Handle the event.
-     */
-    public function handle(OrderCreated $event)
-    {
-        $user = $event->order->user;
-        
-        // Aquí iría el envío real. Por ahora deja el comentario o un log.
-        // Mail::to($user)->send(new OrderConfirmationMail($event->order));
-        
-        \Log::info("Enviando confirmación de pedido #{$event->order->id} a {$user->email}");
+        // Aquí se enviaría el email de confirmación
+        // Mail::to($order->user->email)->send(new OrderConfirmationMail($order));
+
+        \Illuminate\Support\Facades\Log::info('Order confirmation email sent', [
+            'order_id' => $order->id,
+            'order_number' => $order->order_number,
+        ]);
     }
 }

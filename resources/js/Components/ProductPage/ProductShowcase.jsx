@@ -3,8 +3,8 @@ import ImageCarouselVertical from './ImageCarouselVertical';
 import MainProductImage from './MainProductImage';
 import ProductInfo from './ProductInfo';
 
-export default function ProductShowcase() {
-    const images = [
+export default function ProductShowcase({ product }) {
+    const images = product?.image_url ? [product.image_url] : [
         '/assets/img/product_example/main.png',
         '/assets/img/product_example/profile.png',
     ];
@@ -29,7 +29,7 @@ export default function ProductShowcase() {
 
                 {/* Right: Info */}
                 <div className="w-1/3 min-w-[300px]">
-                    <ProductInfo />
+                    <ProductInfo product={product} />
                 </div>
             </div>
         </section>

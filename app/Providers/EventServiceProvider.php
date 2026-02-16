@@ -1,33 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
+use App\Events\OrderCreated;
+use App\Events\OrderStatusUpdated;
+use App\Events\ProductLowStock;
+use App\Events\UserRegistered;
+use App\Listeners\NotifyAdminOfNewOrder;
+use App\Listeners\SendOrderConfirmation;
+use App\Listeners\UpdateInventory;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
-    /**
-     * The event to listener mappings for the application.
-     *
-     * @var array<class-string, array<int, class-string>>
-     */
     protected $listen = [
-        \App\Events\OrderCreated::class => [
-            \App\Listeners\UpdateInventory::class,
-            \App\Listeners\SendOrderConfirmation::class,
-            \App\Listeners\NotifyAdminOfNewOrder::class,
+        OrderCreated::class => [
+            SendOrderConfirmation::class,
+            UpdateInventory::class,
+            NotifyAdminOfNewOrder::class,
         ],
-        \App\Events\OrderStatusUpdated::class => [
-            // Listeners futuros aquí
-        ],
+        OrderStatusUpdated::class => [],
+        ProductLowStock::class => [],
+        UserRegistered::class => [],
     ];
 
-    /**
-     * Register any events for your application.
-     */
     public function boot(): void
     {
-        parent::boot();
+        //
+    }
+
+    public function shouldDiscoverEvents(): bool
+    {
+        return true;
     }
 }

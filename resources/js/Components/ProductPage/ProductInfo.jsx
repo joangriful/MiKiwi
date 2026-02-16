@@ -1,8 +1,8 @@
-export default function ProductInfo() {
+export default function ProductInfo({ product }) {
     return (
         <div className="h-full w-full flex flex-col p-6 overflow-y-auto">
             <div className="flex justify-between items-start mb-2">
-                <h1 className="text-3xl font-bold text-gray-800">Kiwi Premium</h1>
+                <h1 className="text-3xl font-bold text-gray-800">{product?.name || 'Kiwi Premium'}</h1>
                 <span className="material-symbols-outlined text-gray-400 hover:text-red-500 cursor-pointer">favorite</span>
             </div>
 
@@ -15,10 +15,15 @@ export default function ProductInfo() {
                 <span className="text-gray-500 text-sm ml-2">(128 reviews)</span>
             </div>
 
-            <div className="text-2xl font-bold text-gray-900 mb-6">$4.99 <span className="text-sm font-normal text-gray-500">/ pack</span></div>
+            <div className="text-2xl font-bold text-gray-900 mb-6">
+                {product?.base_price ?
+                    new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(product.base_price)
+                    : '$4.99'}
+                <span className="text-sm font-normal text-gray-500"> / pack</span>
+            </div>
 
             <p className="text-gray-600 mb-6 leading-relaxed">
-                Frescos, jugosos y llenos de vitamina C. Nuestros kiwis son seleccionados a mano para asegurar la mejor calidad en tu mesa. Perfectos para desayunos saludables.
+                {product?.description || 'Frescos, jugosos y llenos de vitamina C. Nuestros kiwis son seleccionados a mano para asegurar la mejor calidad en tu mesa. Perfectos para desayunos saludables.'}
             </p>
 
             <div className="mt-auto flex gap-4">

@@ -37,8 +37,8 @@ class CategoryService
     {
         $category = $this->categoryRepository->getActiveBySlug($slug);
 
-        if (!$category) {
-            throw new ModelNotFoundException("Categoría no encontrada o inactiva.");
+        if (! $category) {
+            throw new ModelNotFoundException('Categoría no encontrada o inactiva.');
         }
 
         // Obtener productos paginados de la categoría
@@ -51,7 +51,7 @@ class CategoryService
             'category' => $category,
             'products' => $products,
             'subcategories' => $subcategories,
-            'breadcrumbs' => $this->buildBreadcrumbs($category)
+            'breadcrumbs' => $this->buildBreadcrumbs($category),
         ];
     }
 
@@ -67,7 +67,7 @@ class CategoryService
             array_unshift($breadcrumbs, [
                 'name' => $current->name,
                 'slug' => $current->slug,
-                'url' => route('categories.show', $current->slug)
+                'url' => route('categories.show', $current->slug),
             ]);
             $current = $current->parent;
         }

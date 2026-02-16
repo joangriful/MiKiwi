@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
@@ -148,7 +148,10 @@ function CheckoutContent({
 }
 
 export default function Cart({ cart = { items: [], total: 0 }, auth = { user: null }, popularProducts = [], stripeKey, coupon }) {
-    const finalStripePromise = stripeKey ? loadStripe(stripeKey) : stripePromise;
+    console.log('Cart received stripeKey:', stripeKey);
+    const finalStripePromise = useMemo(() => {
+        return stripeKey ? loadStripe(stripeKey) : stripePromise;
+    }, [stripeKey]);
     const [step, setStep] = useState(1);
 
     const { data, setData, post, processing, transform, errors, delete: destroy } = useForm({
@@ -376,6 +379,15 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                                         {(total - (coupon ? coupon.discount : 0)).toFixed(2)} €
                                     </span>
                                 </div>
+
+                                {step === 1 && (
+                                    <button
+                                        onClick={nextStep}
+                                        className="w-full mt-6 px-12 py-4 bg-primary text-white font-black rounded-xl hover:bg-primary-dark shadow-xl shadow-green-100 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 text-lg"
+                                    >
+                                        Pagar Pedido
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>

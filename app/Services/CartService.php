@@ -1,14 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
+use App\Exceptions\InsufficientStockException;
+use App\Exceptions\ProductNotFoundException;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Support\Facades\Session;
 
 class CartService
 {
-    protected $productRepository;
-    protected $cartSessionKey = 'shopping_cart';
+    protected ProductRepositoryInterface $productRepository;
+
+    protected string $cartSessionKey = 'shopping_cart';
 
     public function __construct(ProductRepositoryInterface $productRepository)
     {
@@ -24,10 +29,28 @@ class CartService
         $items = [];
         $total = 0;
 
+        if (empty($cart)) {
+            return [
+                'items' => [],
+                'total' => 0,
+                'item_count' => 0,
+            ];
+        }
+
+        // 1. Recolectar todos los slugs
+        $slugs = array_map(function ($item) {
+            return $item['slug'];
+        }, $cart);
+
+        // 2. Obtener todos los productos en una sola consulta
+        $products = $this->productRepository->getActiveBySlugs(array_unique($slugs));
+        $productsBySlug = $products->keyBy('slug');
+
+        // 3. Reconstruir el carrito
         foreach ($cart as $productId => $item) {
-            // Obtener datos actualizados del producto
-            $product = $this->productRepository->getActiveBySlug($item['slug']);
-            
+            // Buscar el producto en la colección cargada
+            $product = $productsBySlug->get($item['slug']);
+
             if ($product) {
                 $subtotal = $product->base_price * $item['quantity'];
                 $items[] = [
@@ -35,7 +58,7 @@ class CartService
                     'product' => $product,
                     'quantity' => $item['quantity'],
                     'accessories' => $item['accessories'] ?? [],
-                    'subtotal' => $subtotal
+                    'subtotal' => $subtotal,
                 ];
                 $total += $subtotal;
             }
@@ -44,7 +67,7 @@ class CartService
         return [
             'items' => $items,
             'total' => $total,
-            'item_count' => count($items)
+            'item_count' => count($items),
         ];
     }
 
@@ -55,13 +78,18 @@ class CartService
     {
         $product = $this->productRepository->getActiveBySlug($productSlug);
 
-        if (!$product) {
-            throw new \Exception("Producto no encontrado o inactivo.");
+        if (! $product) {
+            throw new ProductNotFoundException($productSlug);
         }
 
         // Validar stock disponible
         if ($product->stock_quantity < $quantity) {
-            throw new \Exception("Stock insuficiente. Disponible: {$product->stock_quantity}");
+            throw new InsufficientStockException(
+                productName: $product->name,
+                availableStock: $product->stock_quantity,
+                requestedQuantity: $quantity,
+                productIdentifier: $product->sku ?? $product->id
+            );
         }
 
         $cart = Session::get($this->cartSessionKey, []);
@@ -69,19 +97,24 @@ class CartService
         // Si el producto ya existe, actualizar cantidad
         if (isset($cart[$product->id])) {
             $newQuantity = $cart[$product->id]['quantity'] + $quantity;
-            
+
             // Validar stock total
             if ($product->stock_quantity < $newQuantity) {
-                throw new \Exception("Stock insuficiente. Disponible: {$product->stock_quantity}");
+                throw new InsufficientStockException(
+                    productName: $product->name,
+                    availableStock: $product->stock_quantity,
+                    requestedQuantity: $newQuantity,
+                    productIdentifier: $product->sku ?? $product->id
+                );
             }
-            
+
             $cart[$product->id]['quantity'] = $newQuantity;
         } else {
             // Agregar nuevo producto
             $cart[$product->id] = [
                 'slug' => $product->slug,
                 'quantity' => $quantity,
-                'accessories' => $accessories
+                'accessories' => $accessories,
             ];
         }
 
@@ -96,19 +129,24 @@ class CartService
     public function updateQuantity(string $productId, int $quantity): array
     {
         if ($quantity < 1) {
-            throw new \Exception("La cantidad debe ser al menos 1.");
+            throw new \InvalidArgumentException('La cantidad debe ser al menos 1.');
         }
 
         $cart = Session::get($this->cartSessionKey, []);
 
-        if (!isset($cart[$productId])) {
-            throw new \Exception("Producto no encontrado en el carrito.");
+        if (! isset($cart[$productId])) {
+            throw new \RuntimeException('Producto no encontrado en el carrito.');
         }
 
         // Validar stock
         $product = $this->productRepository->getActiveBySlug($cart[$productId]['slug']);
         if ($product && $product->stock_quantity < $quantity) {
-            throw new \Exception("Stock insuficiente. Disponible: {$product->stock_quantity}");
+            throw new InsufficientStockException(
+                productName: $product->name,
+                availableStock: $product->stock_quantity,
+                requestedQuantity: $quantity,
+                productIdentifier: $product->sku ?? $product->id
+            );
         }
 
         $cart[$productId]['quantity'] = $quantity;
@@ -146,6 +184,7 @@ class CartService
     public function getItemCount(): int
     {
         $cart = Session::get($this->cartSessionKey, []);
+
         return array_sum(array_column($cart, 'quantity'));
     }
 
@@ -159,8 +198,8 @@ class CartService
 
         foreach ($cart as $productId => $item) {
             $product = $this->productRepository->getActiveBySlug($item['slug']);
-            
-            if (!$product) {
+
+            if (! $product) {
                 $errors[] = "Producto {$item['slug']} ya no está disponible.";
             } elseif ($product->stock_quantity < $item['quantity']) {
                 $errors[] = "Stock insuficiente para {$product->name}. Disponible: {$product->stock_quantity}";
@@ -169,7 +208,7 @@ class CartService
 
         return [
             'valid' => empty($errors),
-            'errors' => $errors
+            'errors' => $errors,
         ];
     }
 }

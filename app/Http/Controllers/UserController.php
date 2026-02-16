@@ -3,31 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class UserController extends Controller
 {
     public function index()
     {
+        $this->authorize('viewAny', User::class);
+
         $users = User::all(['id', 'name', 'email', 'username', 'role', 'created_at']);
-        return response()->json($users); // Or return Inertia render if used directly
+
+        return response()->json($users);
     }
 
     public function toggleAdmin(User $user)
     {
-        // Verificación rápida de seguridad (o usa una Policy si prefieres)
-        if (auth()->user()->role !== 'admin') {
-            abort(403, 'No tienes permisos para realizar esta acción.');
-        }
+        $this->authorize('toggleAdmin', $user);  // ← Protección activa
 
-        // Cambiar estado
-        $user->role = ($user->role === 'admin') ? 'user' : 'admin';
-        $user->save();
+        $newRole = $user->role === 'admin' ? 'customer' : 'admin';
+        $user->update(['role' => $newRole]);
 
-        return response()->json([
-            'message' => 'Rol de usuario actualizado correctamente.',
-            'user' => $user
-        ]);
+        return back()->with('success', 'Rol actualizado');
     }
 }
