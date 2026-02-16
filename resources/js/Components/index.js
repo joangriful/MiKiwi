@@ -10,5 +10,4 @@ export { default as ProductImagePlaceholder } from './ProductPage/ProductImagePl
 export { default as ProductCardInfo } from './ProductPage/ProductCardInfo';
 export { default as ProductShowcase } from './ProductPage/ProductShowcase';
 export { default as RelatedProductsSection } from './ProductPage/RelatedProductsSection';
-export { default as Home } from './Home/Home';
 
