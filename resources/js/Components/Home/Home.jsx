@@ -263,7 +263,7 @@ const Home = () => {
 
     return (
         <div className="home-container">
-            <Head title="MiKiwi | V6 Global Sensory Luxury" />
+            <Head title="MIKIWI - Página Oficial" />
 
             {/* 1. HERO SECTION */}
             <section className="hero-side" ref={heroRef}>
@@ -300,12 +300,18 @@ const Home = () => {
                     <p style={{ marginBottom: '40px', color: 'var(--text-muted)', opacity: 0.7 }}>
                         Analizaremos tu respuesta somática para recomendarte el núcleo de resonancia perfecto.
                     </p>
-                    <Link href="#" className="btn-v6">Iniciar Calibración</Link>
-                </div>
+                    <a
+                        href="http://127.0.0.1:8000/configurador/quiz"
+                        className="btn-v6"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Iniciar Calibración
+                    </a>                </div>
             </section >
 
             {/* 3. FEATURED PRODUCTS */}
-            < section className="curation-section" >
+            <section className="curation-section">
                 <div className="curation-header">
                     <h2>Productos Destacados.</h2>
                     <p style={{ textAlign: 'right', maxWidth: '300px', color: 'var(--text-muted)' }}>
@@ -315,19 +321,45 @@ const Home = () => {
 
                 <div className="product-gallery">
                     {[
-                        { tag: 'H-01 // DEPTH', name: 'Void Sphere', desc: 'Gravedad sensorial pura.', color: 'var(--color-primary)' },
-                        { tag: 'H-02 // VISION', name: 'Aura Lens', desc: 'Filtración de espectro.', color: 'var(--color-secondary)' },
-                        { tag: 'H-03 // WAVE', name: 'Zen Flow', desc: 'Frecuencia rítmica.', color: 'var(--text-main)', opacity: 0.1 },
-                        { tag: 'H-04 // CORE', name: 'Neural Core', desc: 'Sincronía total.', border: true }
+                        {
+                            tag: 'INTIMIDAD COMPARTIDA',
+                            name: 'Conexión en Pareja',
+                            desc: 'Explora nuevas dimensiones de placer juntos.',
+                            image: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771237740/eroteca_plugs_q8kgy8.webp'
+                        },
+                        {
+                            tag: 'RITUALES DE AMOR PROPIO',
+                            name: 'Bienestar y Autocuidado',
+                            desc: 'Descubre una nueva forma de cuidar de ti mismo.',
+                            image: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771237736/claim-envios-img_ljob1v.webp'
+                        },
+                        {
+                            tag: 'ESTADO DE VIBRACIÓN',
+                            name: 'Zen Flow',
+                            desc: 'Frecuencia rítmica.',
+                            image: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771237736/claim-garantia-img_e0t3s2.webp'
+                        },
+                        {
+                            tag: 'INGENIERÍA DEL DESEO',
+                            name: 'Vanguardia y Tecnología',
+                            desc: 'Descubre los productos más innovadores del mercado.',
+                            image: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771238940/portadaplatanomelon-1547046722_iqly7v.avif'
+                        }
+
                     ].map((prod, i) => (
                         <div key={i} className="product-item">
                             <span className="product-tag">{prod.tag}</span>
                             <div className="product-img-box">
-                                {prod.border ? (
-                                    <div style={{ width: '60px', height: '120px', border: '1px solid var(--border)', borderRadius: '50px' }}></div>
-                                ) : (
-                                    <div style={{ width: i === 2 ? '120px' : (i === 1 ? '100px' : '80px'), height: i === 2 ? '10px' : (i === 1 ? '100px' : '80px'), background: prod.color, borderRadius: i === 1 ? '10px' : '50%', filter: i < 2 ? 'blur(20px)' : 'none', opacity: prod.opacity || 0.4 }}></div>
-                                )}
+                                <img
+                                    src={prod.image}
+                                    alt={prod.name}
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        borderRadius: '8px'
+                                    }}
+                                />
                             </div>
                             <h3 style={{ fontFamily: 'var(--font-head)', fontSize: '2rem' }}>{prod.name}</h3>
                             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{prod.desc}</p>
@@ -336,9 +368,18 @@ const Home = () => {
                 </div>
 
                 <div className="collections-btn-wrap">
-                    <Link href="#" className="btn-v6">Ver Colecciones</Link>
+                    <a
+                        href="http://127.0.0.1:8000/productos"
+                        className="btn-v6"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Ver Productos
+                    </a>
                 </div>
-            </section >
+            </section>
+
+
 
             {/* 4. PREMIUM ATELIER */}
             < section className="premium-atelier" >
@@ -357,7 +398,7 @@ const Home = () => {
                         </div>
                         <div className="config-item">
                             <span>ID SYNC</span>
-                            <p>ELITE-01</p>
+                            <p>ELITE</p>
                         </div>
                         <div className="config-item">
                             <span>FINISH</span>
@@ -400,7 +441,6 @@ const Home = () => {
                         </div>
 
                         <div className="scroll-indicator" data-scroll-reveal>
-                            <span>Scroll</span>
                             <div className="line"></div>
                         </div>
                     </section>
@@ -427,7 +467,7 @@ const Home = () => {
                                             <div className="feature-pills">
                                                 {col.pills.map((pill, j) => <span key={j} className="pill">{pill}</span>)}
                                             </div>
-                                            <Link href="#" className="card-link">Explorar Colección</Link>
+                                            <Link href="http://127.0.0.1:8000/productos" className="card-link">Explorar Colección</Link>
                                         </div>
                                     </article>
                                 </li>
