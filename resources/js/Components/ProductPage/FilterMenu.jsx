@@ -5,16 +5,6 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
     // Local state to store changes before applying
     const [localFilters, setLocalFilters] = useState(filters);
 
-    // Definición de subcategorías por categoría
-    const subCategoriesMap = {
-        'Femenino': ['Succión y Aire', 'Vibradores Internos', 'Estimulación Externa'],
-        'Masculino': ['Masturbadores', 'Masaje de Próstata', 'Anillos Vibradores'],
-        'Parejas': ['Control a Distancia', 'Juguetes Compartidos', 'Accesorios de Juego'],
-        'Cosmética': ['Lubricantes Base Agua', 'Aceites y Velas', 'Geles Estimulantes'],
-        'Sets': ['Kits Principiantes', 'Packs de Regalo', 'Kits de Viaje'],
-        'Cuidado': ['Limpieza e Higiene', 'Cables y Recambios', 'Fundas y Guardado']
-    };
-
     // Al cambiar la categoría principal, reseteamos la subcategoría
     const handleCategoryClick = (category) => {
         const isSelected = localFilters.category === category.id;
@@ -22,7 +12,9 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
             ...prev,
             category: isSelected ? null : category.id,
             categoryName: isSelected ? null : category.name,
-            subCategory: null
+            subCategory: null,
+            // Guardamos los hijos para mostrarlos
+            activeChildren: isSelected ? [] : (category.children || [])
         }));
     };
 
@@ -30,6 +22,18 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
     useEffect(() => {
         if (isOpen) {
             setLocalFilters(filters);
+
+            // Si hay una categoría seleccionada, buscamos sus hijos
+            if (filters.category) {
+                const activeCat = categories.find(c => String(c.id) === String(filters.category));
+                if (activeCat) {
+                    setLocalFilters(prev => ({
+                        ...prev,
+                        activeChildren: activeCat.children || []
+                    }));
+                }
+            }
+
             // Block scroll
             document.body.style.overflow = 'hidden';
         } else {
@@ -37,7 +41,7 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
             document.body.style.overflow = 'unset';
         }
         return () => { document.body.style.overflow = 'unset'; };
-    }, [isOpen, filters]);
+    }, [isOpen, filters, categories]);
 
     if (!isOpen) return null;
 
@@ -121,18 +125,18 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
                         </div>
 
                         {/* Sub-categories (Conditional) */}
-                        {localFilters.categoryName && subCategoriesMap[localFilters.categoryName] && (
+                        {localFilters.activeChildren && localFilters.activeChildren.length > 0 && (
                             <div className="flex flex-wrap gap-2 animate-in fade-in slide-in-from-top-2 duration-300 bg-gray-50/50 p-4 rounded-[2rem] border border-gray-100">
-                                {subCategoriesMap[localFilters.categoryName].map((sub) => (
+                                {localFilters.activeChildren.map((sub) => (
                                     <button
-                                        key={sub}
-                                        onClick={() => updateLocalFilter({ subCategory: localFilters.subCategory === sub ? null : sub })}
-                                        className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border ${localFilters.subCategory === sub
-                                                ? 'bg-[#99b849] text-white border-[#99b849] shadow-md shadow-[#99b849]/20'
-                                                : 'bg-white text-gray-400 border-gray-200 hover:border-black hover:text-black'
+                                        key={sub.id}
+                                        onClick={() => updateLocalFilter({ subCategory: localFilters.subCategory === sub.name ? null : sub.name })}
+                                        className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border ${localFilters.subCategory === sub.name
+                                            ? 'bg-[#99b849] text-white border-[#99b849] shadow-md shadow-[#99b849]/20'
+                                            : 'bg-white text-gray-400 border-gray-200 hover:border-black hover:text-black'
                                             }`}
                                     >
-                                        {sub}
+                                        {sub.name}
                                     </button>
                                 ))}
                             </div>

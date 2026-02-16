@@ -54,9 +54,21 @@ class ProductController extends Controller
     {
         $query = Product::where('is_active', true);
 
-        // Filtrar por categoría
+        // Filtrar por categoría (Incluyendo subcategorías de forma recursiva)
         if ($request->has('category')) {
-            $query->where('category_id', $request->category);
+            $categoryIds = \App\Models\Category::where('id', $request->category)
+                ->orWhere('parent_id', $request->category)
+                ->pluck('id');
+            
+            $query->whereIn('category_id', $categoryIds);
+        }
+
+        // Filtrar por subcategoría específica
+        if ($request->has('subCategory')) {
+            $subCategory = \App\Models\Category::where('name', $request->subCategory)->first();
+            if ($subCategory) {
+                $query->where('category_id', $subCategory->id);
+            }
         }
 
         // Filtrar por rango de precio
@@ -86,15 +98,19 @@ class ProductController extends Controller
 
         $products = $query->paginate(12)->withQueryString();
 
-        // Obtener categorías para el sidebar (Cached)
-        $categories = \Illuminate\Support\Facades\Cache::remember('sidebar_categories', 3600, function () {
-            return \App\Models\Category::where('is_active', true)->orderBy('name')->get();
-        });
+        // Obtener categorías con sus hijos para el sidebar
+        $categories = \App\Models\Category::root()
+            ->where('is_active', true)
+            ->with(['children' => function($q) {
+                $q->where('is_active', true)->orderBy('name');
+            }])
+            ->orderBy('name')
+            ->get();
 
         return Inertia::render('Products', [
             'products' => $products,
             'categories' => $categories,
-            'filters' => $request->only(['category', 'min_price', 'max_price', 'sort']),
+            'filters' => $request->only(['category', 'subCategory', 'min_price', 'max_price', 'sort']),
         ]);
     }
 }
