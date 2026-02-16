@@ -32,6 +32,7 @@ class ProductController extends Controller
             $relatedProducts = Product::where('category_id', $product->category_id)
                 ->where('id', '!=', $product->id)
                 ->where('is_active', true)
+                ->with('category') // Eager load category
                 ->inRandomOrder()
                 ->take(4)
                 ->get();
@@ -85,8 +86,10 @@ class ProductController extends Controller
 
         $products = $query->paginate(12)->withQueryString();
 
-        // Obtener categorías para el sidebar (solo las que tienen productos activos sería ideal, pero dejémoslo simple por ahora)
-        $categories = \App\Models\Category::where('is_active', true)->orderBy('name')->get();
+        // Obtener categorías para el sidebar (Cached)
+        $categories = \Illuminate\Support\Facades\Cache::remember('sidebar_categories', 3600, function () {
+            return \App\Models\Category::where('is_active', true)->orderBy('name')->get();
+        });
 
         return Inertia::render('Products', [
             'products' => $products,

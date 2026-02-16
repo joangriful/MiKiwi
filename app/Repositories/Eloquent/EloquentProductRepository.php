@@ -19,6 +19,14 @@ class EloquentProductRepository implements ProductRepositoryInterface
             ->first();
     }
 
+    public function getActiveBySlugs(array $slugs): Collection
+    {
+        return Product::active()
+            ->whereIn('slug', $slugs)
+            ->with(['category', 'accessories'])
+            ->get();
+    }
+
     public function getAccessories(string $productId): Collection
     {
         $product = Product::find($productId);

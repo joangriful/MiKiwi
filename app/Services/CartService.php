@@ -29,9 +29,27 @@ class CartService
         $items = [];
         $total = 0;
 
+        if (empty($cart)) {
+            return [
+                'items' => [],
+                'total' => 0,
+                'item_count' => 0,
+            ];
+        }
+
+        // 1. Recolectar todos los slugs
+        $slugs = array_map(function ($item) {
+            return $item['slug'];
+        }, $cart);
+
+        // 2. Obtener todos los productos en una sola consulta
+        $products = $this->productRepository->getActiveBySlugs(array_unique($slugs));
+        $productsBySlug = $products->keyBy('slug');
+
+        // 3. Reconstruir el carrito
         foreach ($cart as $productId => $item) {
-            // Obtener datos actualizados del producto
-            $product = $this->productRepository->getActiveBySlug($item['slug']);
+            // Buscar el producto en la colección cargada
+            $product = $productsBySlug->get($item['slug']);
 
             if ($product) {
                 $subtotal = $product->base_price * $item['quantity'];
