@@ -149,7 +149,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->get(['id', 'name']);
 
         $products = \App\Models\Product::with('category:id,name')
-            ->where('image_url', 'like', '%cloudinary%')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -160,6 +159,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'defaultSettings' => $defaultSettings,
             'users' => $users,
             'heroImages' => $heroImages,
+            'products' => $products,
         ]);
     })->name('components.manager');
 
