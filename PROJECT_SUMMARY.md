@@ -46,6 +46,162 @@ Desarrollar una plataforma e-commerce completa que permite:
 - **Gestión de Rutas:** Ziggy (route helpers Laravel → JS)
 - **Dev Environment:** Concurrent (Laravel server + Vite + Queue + Logs)
 
+---
+
+## 🔗 Inertia.js - El Puente Frontend-Backend
+
+### ¿Qué es Inertia.js?
+
+**Inertia.js** es un framework moderno que permite construir **Single Page Applications (SPAs)** clásicas usando el enfoque tradicional de **server-side routing** pero con toda la experiencia de usuario de una aplicación de una sola página.
+
+**En términos simples:** Inertia.js es el pegamento que conecta Laravel (backend) con React (frontend), eliminando la necesidad de construir una API REST completa.
+
+### Filosofía
+
+En lugar de:
+1. ❌ Crear endpoints API en Laravel (`/api/products`)
+2. ❌ Hacer fetch desde React
+3. ❌ Manejar estados de carga, errores, autenticación en ambos lados
+
+Inertia permite:
+1. ✅ Definir rutas web normales en Laravel (`/products`)
+2. ✅ Retornar componentes React directamente desde controllers
+3. ✅ Compartir datos del servidor a React sin serialización manual
+
+### Cómo lo Usamos en MiKiwi
+
+#### 1. **Rutas Web (no API)**
+```php
+// routes/web.php
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/configurador', [DollConfigController::class, 'show'])->name('configurador');
+```
+
+#### 2. **Controllers Retornan Componentes React**
+```php
+// app/Http/Controllers/ProductController.php
+public function index()
+{
+    return Inertia::render('Products/Index', [
+        'products' => Product::with('category')->paginate(12),
+        'categories' => Category::all(),
+    ]);
+}
+```
+
+#### 3. **Componentes React Reciben Props**
+```jsx
+// resources/js/Pages/Products/Index.jsx
+export default function Index({ products, categories }) {
+    return (
+        <div>
+            <h1>Products</h1>
+            {products.data.map(product => (
+                <ProductCard key={product.id} product={product} />
+            ))}
+        </div>
+    );
+}
+```
+
+### Ventajas en Nuestro Proyecto
+
+1. **No Duplicación de Validación** - Una sola fuente de verdad en Laravel
+2. **Autenticación Simplificada** - Sanctum + middleware, sin tokens manuales
+3. **SEO Friendly** - Server-side rendering inicial
+4. **Navegación Instantánea** - Sin recargas de página
+5. **Código Más Limpio** - Sin boilerplate de API REST
+6. **Shared Data** - Variables globales (user, flash messages) disponibles en todas las páginas
+
+### Características Clave Usadas
+
+#### **Shared Data (Datos Compartidos)**
+```php
+// app/Http/Middleware/HandleInertiaRequests.php
+public function share(Request $request)
+{
+    return array_merge(parent::share($request), [
+        'auth' => [
+            'user' => $request->user(),
+        ],
+        'flash' => [
+            'message' => fn () => $request->session()->get('message'),
+        ],
+    ]);
+}
+```
+
+Estos datos están disponibles en **todos** los componentes React automáticamente.
+
+#### **Form Helper (Ziggy Routes)**
+```jsx
+import { router } from '@inertiajs/react';
+
+// Navegación programática
+router.visit(route('products.show', product.id));
+
+// Formularios con manejo de errores automático
+router.post(route('cart.add'), { product_id: 5 });
+```
+
+#### **Lazy Loading / Partial Reloads**
+```jsx
+// Solo recargar ciertos datos sin refrescar toda la página
+router.reload({ only: ['products'] });
+```
+
+#### **Persistent Layouts**
+```jsx
+// resources/js/Layouts/AppLayout.jsx
+export default function AppLayout({ children }) {
+    return (
+        <div>
+            <Header />
+            <main>{children}</main>
+            <Footer />
+        </div>
+    );
+}
+
+// En las páginas
+Index.layout = page => <AppLayout>{page}</AppLayout>;
+```
+
+El layout se mantiene entre navegaciones, solo cambia el contenido.
+
+### Flujo Completo de una Request
+
+1. **Usuario hace clic** en "Ver Productos"
+2. **Inertia intercepta** el clic (previene recarga)
+3. **AJAX Request** a `/products` con header `X-Inertia`
+4. **Laravel responde** con JSON:
+   ```json
+   {
+     "component": "Products/Index",
+     "props": {
+       "products": [...],
+       "categories": [...]
+     }
+   }
+   ```
+5. **React renderiza** el componente `Products/Index.jsx` con esas props
+6. **URL actualizada** en el navegador sin recarga
+7. **Historial preserved** (botón atrás funciona)
+
+### Archivos Clave en el Proyecto
+
+- `resources/js/app.jsx` - Setup de Inertia
+- `app/Http/Middleware/HandleInertiaRequests.php` - Shared data
+- `resources/js/Pages/` - Todas las páginas Inertia
+- `routes/web.php` - Rutas que retornan componentes Inertia
+
+### En Resumen
+
+**Inertia.js** nos permite escribir código como si fuera una aplicación tradicional de Laravel con Blade, pero obtenemos toda la interactividad y experiencia de usuario de React. Es lo mejor de ambos mundos:
+- 🚀 **SPA moderna** sin complejidad de configurar API REST
+- 🔧 **Laravel tradicional** sin sacrificar experiencia de usuario
+- 💡 **Un solo lenguaje** de routing (Laravel), sin duplicación
+
 ### Herramientas de Desarrollo
 - **Linting PHP:** Laravel Pint
 - **Testing:** PHPUnit
