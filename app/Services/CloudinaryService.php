@@ -262,6 +262,31 @@ class CloudinaryService
     }
 
     /**
+     * List all images in the products folder
+     * 
+     * @param string $folder
+     * @return array
+     */
+    public function listProductImages(string $folder = 'products')
+    {
+        $search = new SearchApi;
+        try {
+            $expression = "resource_type:image";
+            if ($folder && $folder !== 'all' && $folder !== 'ROOT') {
+                $expression .= " AND folder:$folder/*";
+            }
+            
+            $result = $search->expression($expression)
+                ->maxResults(500)
+                ->execute();
+            return $result['resources'] ?? [];
+        } catch (\Exception $e) {
+            \Log::error("Cloudinary product search failed: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
      * Get the secure URL for a public ID if it's not already a full URL
      * 
      * @param string $idOrUrl

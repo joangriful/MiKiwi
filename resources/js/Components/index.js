@@ -1,6 +1,6 @@
 export { default as Header } from './Common/Header';
 export { default as Footer } from './Common/Footer';
-export { default as ImageCarouselVertical } from './ProductPage/ImageCarouselVertical';
+export { default as ProductImageCarousel } from './ProductPage/ProductImageCarousel';
 export { default as MainProductImage } from './ProductPage/MainProductImage';
 export { default as ProductInfo } from './ProductPage/ProductInfo';
 export { default as ProductGridSection } from './ProductPage/ProductGridSection';

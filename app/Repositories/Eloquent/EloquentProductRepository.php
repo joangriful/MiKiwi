@@ -15,7 +15,9 @@ class EloquentProductRepository implements ProductRepositoryInterface
     {
         return Product::active()
             ->where('slug', $slug)
-            ->with(['category', 'accessories', 'reviews'])
+            ->with(['category' => function($q) {
+                $q->with('parent');
+            }, 'accessories', 'reviews'])
             ->first();
     }
 
