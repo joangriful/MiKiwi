@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import PartOption from './PartOption';
 
-const PartCarousel = ({ category, items, selectedItem, onSelect, index, id, selectionLabel, partPositions, currentView, onSavePosition, ...props }) => {
-    const [isOpen, setIsOpen] = useState(index === 0);
+const PartCarousel = ({ category, items, selectedItem, onSelect, index, id, selectionLabel, partPositions, currentView, onSavePosition, isOpen, onToggle, ...props }) => {
 
     // Keyboard Navigation Handler
     const handleKeyDown = (e, item) => {
@@ -74,7 +73,7 @@ const PartCarousel = ({ category, items, selectedItem, onSelect, index, id, sele
     return (
         <div id={id} className="mb-2 last:mb-24 scroll-mt-4 border-b border-gray-100 last:border-0">
             <button
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={onToggle}
                 className="w-full flex items-center justify-between text-left py-3 px-2 rounded-lg transition-colors group focus:outline-none"
                 aria-expanded={isOpen}
             >

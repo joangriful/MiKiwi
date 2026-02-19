@@ -4,6 +4,12 @@ import PartCarousel from './PartCarousel';
 const DEFAULT_ORDER = ['pelo', 'ojos', 'cejas', 'boca', 'nariz', 'orejas', 'manos', 'pies', 'vientre', 'pechos', 'vello', 'ropa'];
 
 const PartSelector = memo(({ parts, selectedParts, onSelect, sectionOrder, selectionLabel, partPositions, currentView, onSavePosition, ...props }) => {
+    // Manage which category is open (Exclusive Accordion)
+    const [openCategory, setOpenCategory] = React.useState(() => {
+        const order = (sectionOrder && sectionOrder.length > 0) ? sectionOrder : DEFAULT_ORDER;
+        return Object.keys(parts).sort((a, b) => order.indexOf(a.toLowerCase()) - order.indexOf(b.toLowerCase()))[0];
+    });
+
     const sortedParts = useMemo(() => {
         const orderToUse = (sectionOrder && sectionOrder.length > 0) ? sectionOrder : DEFAULT_ORDER;
 
@@ -36,6 +42,8 @@ const PartSelector = memo(({ parts, selectedParts, onSelect, sectionOrder, selec
                         partPositions={partPositions}
                         currentView={currentView}
                         onSavePosition={onSavePosition}
+                        isOpen={openCategory === category}
+                        onToggle={() => setOpenCategory(openCategory === category ? null : category)}
                     />
                 ))}
 

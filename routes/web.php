@@ -206,6 +206,46 @@ Route::get('/sostenibilidad', function () {
     ]);
 })->name('sustainability');
 
+Route::get('/nuestros-kiwis', function () {
+    return Inertia::render('NuestrosKiwis');
+})->name('nuestros-kiwis');
+
+Route::get('/packs-regalo', function () {
+    return Inertia::render('GiftPacks');
+})->name('packs-regalo');
+
+Route::get('/suscripciones', function () {
+    return Inertia::render('Subscriptions');
+})->name('suscripciones');
+
+Route::get('/ofertas', function () {
+    return Inertia::render('Offers');
+})->name('ofertas');
+
+Route::get('/compania', function () {
+    return Inertia::render('Company');
+})->name('compania');
+
+Route::get('/blog', function () {
+    return Inertia::render('Blog');
+})->name('blog');
+
+Route::get('/contacto', function () {
+    return Inertia::render('Contact');
+})->name('contacto');
+
+Route::get('/sobre-nosotros', function () {
+    return Inertia::render('AboutUs');
+})->name('about-us');
+
+Route::get('/politica-cookies', function () {
+    return Inertia::render('CookiePolicy');
+})->name('cookie.policy');
+
+Route::get('/condiciones-contratacion', function () {
+    return Inertia::render('TermsOfContract');
+})->name('terms.contract');
+
 Route::get('/formulario-reclamaciones', function () {
     return Inertia::render('ClaimsForm');
 })->name('claims.form');
@@ -213,6 +253,10 @@ Route::get('/formulario-reclamaciones', function () {
 Route::get('/politica-privacidad', function () {
     return Inertia::render('PrivacyPolicy');
 })->name('privacy.policy');
+
+Route::get('/terminos-uso', function () {
+    return Inertia::render('TermsOfUse');
+})->name('terms.use');
 
 Route::prefix('configurador')->group(function () {
     Route::get('/', function () {
@@ -253,4 +297,4 @@ Route::get('/doll_config_test', function () {
     ]);
 })->name('doll.config.test');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
