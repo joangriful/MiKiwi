@@ -71,7 +71,7 @@ export const usePartOptimization = ({ item, partPositions, currentView, category
         let src = '';
         let style = {};
 
-        if (optimization.useCrop) {
+        if (optimization.useCrop && !isEditing) {
             const { x, y, w, h } = optimization.cropParams;
             const f = (n) => n.toFixed(4);
             const cropTransform = `c_crop,fl_region_relative,g_north_west,x_${f(x)},y_${f(y)},w_${f(w)},h_${f(h)}`;
@@ -84,15 +84,18 @@ export const usePartOptimization = ({ item, partPositions, currentView, category
                 transform: 'none'
             };
         } else {
-            // Full Image
-            const w = isEditing ? 'w_500' : 'w_300';
+            // Full Image or fallback
+            // During editing, we use a fixed width transformation but handle translation/scale via CSS
+            const w = isEditing ? 'w_800' : 'w_400';
             src = getCloudinaryUrl(sourceUrl, { transformations: `${w},f_auto,q_auto` });
 
-            // Apply Transform
+            // Apply Transform via CSS
             if (config) {
+                // We use translate3d for hardware acceleration
                 style = {
                     transform: `translate3d(${config.x / 5}%, ${config.y / 5}%, 0) scale(${config.scale})`,
-                    transformOrigin: 'center center'
+                    transformOrigin: 'center center',
+                    willChange: 'transform'
                 };
             }
         }
