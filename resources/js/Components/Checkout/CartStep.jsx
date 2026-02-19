@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useForm, router } from "@inertiajs/react";
+import { optimizeImageUrl } from "@/Utils/imageUrl";
 
 export default function CartStep({ cart, onNext, popularProducts = [] }) {
     const { delete: destroy, patch, processing } = useForm();
@@ -52,13 +53,16 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                     >
                         <div className="relative aspect-square w-full bg-gray-50 rounded-xl overflow-hidden mb-3 border border-gray-100 group-hover:border-indigo-200 transition-colors">
                             <img
-                                src={
+                                src={optimizeImageUrl(
                                     Array.isArray(product.images) &&
                                     product.images.length > 0
                                         ? product.images[0]
-                                        : "https://via.placeholder.com/150"
-                                }
+                                        : "https://via.placeholder.com/150",
+                                    { width: 300, height: 300 }
+                                )}
                                 alt={product.name}
+                                loading="lazy"
+                                decoding="async"
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                         </div>
@@ -145,7 +149,7 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                                 <div className="flex items-center space-x-6">
                                     <div className="w-24 h-24 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100">
                                         <img
-                                            src={(() => {
+                                            src={optimizeImageUrl((() => {
                                                 try {
                                                     const images =
                                                         typeof item.product
@@ -164,8 +168,10 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                                                 } catch (e) {
                                                     return "https://via.placeholder.com/150";
                                                 }
-                                            })()}
+                                            })(), { width: 300, height: 300 })}
                                             alt={item.product.name}
+                                            loading="lazy"
+                                            decoding="async"
                                             className="w-full h-full object-cover"
                                         />
                                     </div>

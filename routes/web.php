@@ -20,11 +20,7 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    $heroImages = \App\Models\HeroImage::orderBy('created_at', 'desc')->get();
-
-    return Inertia::render('Home', [
-        'heroImages' => $heroImages,
-    ]);
+    return Inertia::render('Home');
 })->name('home');
 
 Route::get('/dashboard', function () {
@@ -152,8 +148,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->orderBy('created_at', 'desc')
             ->get();
 
-        \Illuminate\Support\Facades\Log::info('Admin Products Count: ' . $products->count());
-
         $partPositions = $settingsController->getAllPartPositions();
 
         return Inertia::render('ComponentsManager', [
@@ -201,8 +195,9 @@ Route::get('/sostenibilidad', function () {
     $heroImages = \App\Models\HeroImage::where('type', 'sustainability')
         ->orderBy('created_at', 'desc')
         ->get();
+
     return Inertia::render('Sustainability', [
-        'heroImages' => $heroImages
+        'heroImages' => $heroImages,
     ]);
 })->name('sustainability');
 

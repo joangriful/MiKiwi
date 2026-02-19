@@ -43,7 +43,7 @@ class CartService
         }, $cart);
 
         // 2. Obtener todos los productos en una sola consulta
-        $products = $this->productRepository->getActiveBySlugs(array_unique($slugs));
+        $products = $this->productRepository->getActiveBySlugsForCart(array_unique($slugs));
         $productsBySlug = $products->keyBy('slug');
 
         // 3. Reconstruir el carrito
@@ -76,7 +76,7 @@ class CartService
      */
     public function addToCart(string $productSlug, int $quantity = 1, array $accessories = []): array
     {
-        $product = $this->productRepository->getActiveBySlug($productSlug);
+        $product = $this->productRepository->getActiveBySlugForCart($productSlug);
 
         if (! $product) {
             throw new ProductNotFoundException($productSlug);
@@ -139,7 +139,7 @@ class CartService
         }
 
         // Validar stock
-        $product = $this->productRepository->getActiveBySlug($cart[$productId]['slug']);
+        $product = $this->productRepository->getActiveBySlugForCart($cart[$productId]['slug']);
         if ($product && $product->stock_quantity < $quantity) {
             throw new InsufficientStockException(
                 productName: $product->name,
@@ -196,8 +196,19 @@ class CartService
         $cart = Session::get($this->cartSessionKey, []);
         $errors = [];
 
+        if (empty($cart)) {
+            return [
+                'valid' => true,
+                'errors' => [],
+            ];
+        }
+
+        $products = $this->productRepository
+            ->getActiveBySlugsForCart(array_unique(array_column($cart, 'slug')))
+            ->keyBy('slug');
+
         foreach ($cart as $productId => $item) {
-            $product = $this->productRepository->getActiveBySlug($item['slug']);
+            $product = $products->get($item['slug']);
 
             if (! $product) {
                 $errors[] = "Producto {$item['slug']} ya no está disponible.";

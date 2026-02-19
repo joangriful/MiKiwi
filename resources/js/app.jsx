@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import '../css/app.css';
 import '../css/typography.css';
 import '../css/colores.css';
@@ -7,8 +8,8 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { LanguageProvider } from './Contexts/LanguageContext';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
+const GlobalToastContainer = lazy(() => import('@/Components/Common/GlobalToastContainer'));
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -17,26 +18,23 @@ createInertiaApp({
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.jsx`,
-            import.meta.glob('./Pages/**/*.jsx'),
+            import.meta.glob([
+                './Pages/**/*.jsx',
+                '!./Pages/**/Partials/**/*.jsx',
+            ]),
         ),
     setup({ el, App, props }) {
         const root = createRoot(el);
+        const hasAuthenticatedUser = Boolean(props.initialPage?.props?.auth?.user);
 
         root.render(
             <LanguageProvider>
                 <App {...props} />
-                <ToastContainer
-                    position="bottom-right"
-                    autoClose={3000}
-                    hideProgressBar={false}
-                    newestOnTop
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="colored"
-                />
+                {hasAuthenticatedUser ? (
+                    <Suspense fallback={null}>
+                        <GlobalToastContainer />
+                    </Suspense>
+                ) : null}
             </LanguageProvider>
         );
     },

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 export default function Header() {
     const { auth } = usePage().props;
     const user = auth?.user;
+    const isAdmin = String(user?.role || '').toLowerCase() === 'admin';
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const searchInputRef = useRef(null);
     const searchContainerRef = useRef(null);
@@ -31,7 +32,7 @@ export default function Header() {
     return (
         <div className="flex items-center justify-between px-6 bg-black h-[60px] shadow-md">
             {/* Left: Logo */}
-            <Link href={route('home')} className="flex items-center h-full py-[5px] pl-[5px]">
+            <Link href={route('home')} prefetch className="flex items-center h-full py-[5px] pl-[5px]">
                 <img
                     src="/assets/icons/mikiwi_logo.svg"
                     alt="MiKiwi Logo"
@@ -62,19 +63,19 @@ export default function Header() {
                     </button>
                 </div>
 
-                <Link href="/perfil" className="hover:opacity-80 transition-opacity">
+                <Link href="/perfil" prefetch className="hover:opacity-80 transition-opacity">
                     <span className="material-symbols-outlined text-white text-2xl">person</span>
                 </Link>
 
-                {user?.role === 'admin' && (
+                {isAdmin && (
                     <Link href="/components-manager" className="hover:opacity-80 transition-opacity">
                         <img src="/assets/icons/manager.svg" alt="Manager" className="h-6 w-6 invert brightness-0" />
                     </Link>
                 )}
 
-                <button className="hover:opacity-80 transition-opacity relative">
+                <Link href={route('cart.index')} prefetch className="hover:opacity-80 transition-opacity relative">
                     <img src="/assets/icons/cart.svg" alt="Cart" className="h-6 w-6 invert brightness-0" />
-                </button>
+                </Link>
             </div>
         </div>
     );

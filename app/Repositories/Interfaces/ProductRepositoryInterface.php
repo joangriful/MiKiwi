@@ -10,7 +10,11 @@ interface ProductRepositoryInterface
 {
     public function getActiveBySlug(string $slug): ?Product;
 
+    public function getActiveBySlugForCart(string $slug): ?Product;
+
     public function getActiveBySlugs(array $slugs): Collection;
+
+    public function getActiveBySlugsForCart(array $slugs): Collection;
 
     public function getAccessories(string $productId): Collection;
 

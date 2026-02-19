@@ -25,10 +25,10 @@ class OrderController extends Controller
     {
         // 1. Validar (ocurre automáticamente antes de llegar aquí)
         // 2. Ejecutar la lógica de negocio
-        
+
         // No necesitamos try-catch si las excepciones de la Etapa 1 tienen método render()
         $order = $orderService->createOrder(
-            $request->user(), 
+            $request->user(),
             $request->validated()
         );
 
@@ -144,7 +144,11 @@ class OrderController extends Controller
 
     public function index()
     {
-        $orders = Order::where('user_id', Auth::id())->with('items')->latest()->get();
+        $orders = Order::where('user_id', Auth::id())
+            ->with('items')
+            ->latest()
+            ->paginate(20)
+            ->withQueryString();
 
         return Inertia::render('Profile/Orders', ['orders' => $orders]);
     }

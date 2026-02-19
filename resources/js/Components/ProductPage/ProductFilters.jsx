@@ -6,7 +6,11 @@ export default function ProductFilters({ categories, filters }) {
         router.get(
             route('products.index'),
             { ...filters, category: categoryId },
-            { preserveState: true }
+            {
+                preserveState: true,
+                preserveScroll: true,
+                only: ['products', 'filters'],
+            }
         );
     };
 

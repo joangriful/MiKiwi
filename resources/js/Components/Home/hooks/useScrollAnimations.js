@@ -2,6 +2,9 @@ import { useEffect } from 'react';
 
 export default function useScrollAnimations() {
     useEffect(() => {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
         // Magnetic buttons
         const magneticBtns = document.querySelectorAll('[data-magnetic]');
         const handleMagneticMove = (e) => {
@@ -15,60 +18,64 @@ export default function useScrollAnimations() {
             e.currentTarget.style.transform = 'translate(0, 0)';
         };
 
-        magneticBtns.forEach(btn => {
-            btn.addEventListener('mousemove', handleMagneticMove);
-            btn.addEventListener('mouseleave', handleMagneticLeave);
-        });
+        if (supportsHover) {
+            magneticBtns.forEach(btn => {
+                btn.addEventListener('mousemove', handleMagneticMove);
+                btn.addEventListener('mouseleave', handleMagneticLeave);
+            });
+        }
 
-        // Kinetic BG parallax & Hero animations
-        const handleScroll = () => {
+        const kineticBgs = document.querySelectorAll('.kinetic-bg, .kinetic-bg-2');
+        const capsule = document.querySelector('.hero-capsule-float');
+        const collectionsHero = document.getElementById('collections-hero');
+        const revealEls = collectionsHero ? collectionsHero.querySelectorAll('[data-scroll-reveal]') : [];
+        const gallerySection = document.querySelector('.gallery-section');
+        const galleryHeader = gallerySection ? gallerySection.querySelector('.gallery-header') : null;
+        const galleryCards = gallerySection ? gallerySection.querySelectorAll('.gallery-card') : [];
+
+        let rafId = null;
+        let pending = false;
+
+        const runScrollEffects = () => {
+            pending = false;
+
             const scrollY = window.scrollY;
             const windowHeight = window.innerHeight;
 
-            // Kinetic backgrounds
-            const kineticBgs = document.querySelectorAll('.kinetic-bg, .kinetic-bg-2');
-            kineticBgs.forEach((bg, index) => {
-                const speed = index === 0 ? 0.3 : 0.15;
-                bg.style.transform = `translate(-50%, calc(-50% + ${scrollY * speed}px))`;
-            });
+            if (!prefersReducedMotion) {
+                kineticBgs.forEach((bg, index) => {
+                    const speed = index === 0 ? 0.3 : 0.15;
+                    bg.style.transform = `translate(-50%, calc(-50% + ${scrollY * speed}px))`;
+                });
+            }
 
-            // Capsule sidebar behavior
-            const capsule = document.querySelector('.hero-capsule-float');
             if (capsule) {
                 if (scrollY > windowHeight * 0.3) capsule.classList.add('capsule-sidebar');
                 else capsule.classList.remove('capsule-sidebar');
             }
 
-            // Collections Hero animations
-            const collectionsHero = document.getElementById('collections-hero');
             if (collectionsHero) {
                 const rect = collectionsHero.getBoundingClientRect();
                 const heroCenter = rect.top + rect.height / 2;
                 const viewportCenter = windowHeight / 2;
                 const progress = Math.max(0, 1 - (Math.abs(heroCenter - viewportCenter) / windowHeight));
 
-                const revealEls = collectionsHero.querySelectorAll('[data-scroll-reveal]');
                 revealEls.forEach(el => {
-                    const delay = parseInt(el.dataset.delay) || 0;
+                    const delay = parseInt(el.dataset.delay || '0', 10) || 0;
                     const threshold = 0.3 + (delay / 2000);
                     if (progress > threshold) el.classList.add('visible');
                     else if (progress < threshold - 0.15) el.classList.remove('visible');
                 });
             }
 
-            // Gallery reveal
-            const gallerySection = document.querySelector('.gallery-section');
             if (gallerySection) {
-                const header = gallerySection.querySelector('.gallery-header');
-                const cards = gallerySection.querySelectorAll('.gallery-card');
-
-                if (header) {
-                    const rect = header.getBoundingClientRect();
-                    if (rect.top < windowHeight * 0.85) header.classList.add('visible');
-                    else header.classList.remove('visible');
+                if (galleryHeader) {
+                    const rect = galleryHeader.getBoundingClientRect();
+                    if (rect.top < windowHeight * 0.85) galleryHeader.classList.add('visible');
+                    else galleryHeader.classList.remove('visible');
                 }
 
-                cards.forEach(card => {
+                galleryCards.forEach(card => {
                     const rect = card.getBoundingClientRect();
                     if (rect.top < windowHeight * 0.9) card.classList.add('visible');
                     else card.classList.remove('visible');
@@ -76,15 +83,28 @@ export default function useScrollAnimations() {
             }
         };
 
+        const handleScroll = () => {
+            if (pending) {
+                return;
+            }
+            pending = true;
+            rafId = requestAnimationFrame(runScrollEffects);
+        };
+
         window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll(); // Initial check
+        runScrollEffects();
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
-            magneticBtns.forEach(btn => {
-                btn.removeEventListener('mousemove', handleMagneticMove);
-                btn.removeEventListener('mouseleave', handleMagneticLeave);
-            });
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+            }
+            if (supportsHover) {
+                magneticBtns.forEach(btn => {
+                    btn.removeEventListener('mousemove', handleMagneticMove);
+                    btn.removeEventListener('mouseleave', handleMagneticLeave);
+                });
+            }
         };
     }, []);
 }

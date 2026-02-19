@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PickupPoint;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class PickupPointController extends Controller
 {
@@ -19,45 +20,61 @@ class PickupPointController extends Controller
      */
     public function index(Request $request)
     {
-        // Try to get real-time terminals if service is configured
-        if (config('services.correos.client_id')) {
-            $filters = [];
-            if ($request->has('city'))
-                $filters['poblacion'] = $request->city;
-            if ($request->has('postal_code'))
-                $filters['codPostal'] = $request->postal_code;
+        $city = (string) $request->query('city', '');
+        $postalCode = (string) $request->query('postal_code', '');
+        $cacheKey = 'pickup_points_index_'.md5($city.'|'.$postalCode);
+        $cacheTtl = (int) config('services.correos.pickup_cache_ttl', 300);
 
-            $externalTerminals = $this->correosService->getTerminals($filters);
-
-            if (!empty($externalTerminals)) {
-                $syncPoints = [];
-                foreach ($externalTerminals as $ext) {
-                    // Sync with local DB to ensure we have a valid local ID for the order
-                    $localPoint = PickupPoint::updateOrCreate(
-                        ['address' => $ext['address'], 'postal_code' => $ext['postal_code']],
-                        [
-                            'name' => $ext['name'],
-                            'city' => $ext['city'],
-                            'is_active' => true
-                        ]
-                    );
-                    $syncPoints[] = $localPoint;
+        return Cache::remember($cacheKey, $cacheTtl, function () use ($city, $postalCode) {
+            // Try to get real-time terminals if service is configured
+            if (config('services.correos.client_id')) {
+                $filters = [];
+                if ($city !== '') {
+                    $filters['poblacion'] = $city;
                 }
-                return response()->json($syncPoints);
+                if ($postalCode !== '') {
+                    $filters['codPostal'] = $postalCode;
+                }
+
+                $externalTerminals = $this->correosService->getTerminals($filters);
+
+                if (! empty($externalTerminals)) {
+                    $syncPoints = [];
+                    foreach (array_slice($externalTerminals, 0, 50) as $ext) {
+                        // Sync with local DB to ensure we have a valid local ID for the order
+                        $localPoint = PickupPoint::updateOrCreate(
+                            ['address' => $ext['address'], 'postal_code' => $ext['postal_code']],
+                            [
+                                'name' => $ext['name'],
+                                'city' => $ext['city'],
+                                'is_active' => true,
+                            ]
+                        );
+                        $syncPoints[] = $localPoint;
+                    }
+
+                    return response()->json($syncPoints);
+                }
             }
-        }
 
-        // Fallback to local database if no credentials or no results
-        $query = PickupPoint::where('is_active', true);
+            // Fallback to local database if no credentials or no results
+            $query = PickupPoint::where('is_active', true);
 
-        if ($request->has('city')) {
-            $query->where('city', 'like', '%'.$request->city.'%');
-        }
+            if ($city !== '') {
+                $query->where('city', 'like', '%'.$city.'%');
+            }
 
-        if ($request->has('postal_code')) {
-            $query->where('postal_code', 'like', '%'.$request->postal_code.'%');
-        }
+            if ($postalCode !== '') {
+                $query->where('postal_code', 'like', '%'.$postalCode.'%');
+            }
 
-        return response()->json($query->get());
+            return response()->json(
+                $query
+                    ->select(['id', 'name', 'address', 'city', 'postal_code'])
+                    ->orderBy('name')
+                    ->limit(50)
+                    ->get()
+            );
+        });
     }
 }

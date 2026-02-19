@@ -2,6 +2,7 @@ import { useState } from 'react';
 import ProductImagePlaceholder from './ProductImagePlaceholder';
 import ProductCardInfo from './ProductCardInfo';
 import { Link } from '@inertiajs/react';
+import { optimizeImageUrl } from '@/Utils/imageUrl';
 
 export default function ProductCard({ product }) {
     const [isLiked, setIsLiked] = useState(false);
@@ -11,6 +12,7 @@ export default function ProductCard({ product }) {
     return (
         <Link
             href={route('products.show', product.slug)}
+            prefetch
             className="w-full flex flex-col bg-white group relative transition-all duration-300 hover:-translate-y-1"
         >
             {/* Image Container */}
@@ -18,14 +20,18 @@ export default function ProductCard({ product }) {
                 {product.image_url ? (
                     <>
                         <img
-                            src={product.image_url}
+                            src={optimizeImageUrl(product.image_url, { width: 640, height: 800 })}
                             alt={product.name}
+                            loading="lazy"
+                            decoding="async"
                             className={`w-full h-full object-cover transition-transform duration-700 ${!product.hover_image_url ? 'group-hover:scale-105' : ''}`}
                         />
                         {product.hover_image_url && (
                             <img
-                                src={product.hover_image_url}
+                                src={optimizeImageUrl(product.hover_image_url, { width: 640, height: 800 })}
                                 alt={`${product.name} hover`}
+                                loading="lazy"
+                                decoding="async"
                                 className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-700"
                             />
                         )}

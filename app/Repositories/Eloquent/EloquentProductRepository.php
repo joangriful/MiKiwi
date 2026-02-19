@@ -11,13 +11,34 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class EloquentProductRepository implements ProductRepositoryInterface
 {
+    protected array $cartColumns = [
+        'id',
+        'slug',
+        'name',
+        'sku',
+        'base_price',
+        'stock_quantity',
+        'images',
+        'image_url',
+        'hover_image_url',
+    ];
+
     public function getActiveBySlug(string $slug): ?Product
     {
         return Product::active()
             ->where('slug', $slug)
-            ->with(['category' => function($q) {
+            ->select(['id', 'slug', 'category_id', 'name', 'description', 'base_price', 'stock_quantity', 'images', 'image_url', 'hover_image_url'])
+            ->with(['category' => function ($q) {
                 $q->with('parent');
-            }, 'accessories', 'reviews'])
+            }, 'accessories'])
+            ->first();
+    }
+
+    public function getActiveBySlugForCart(string $slug): ?Product
+    {
+        return Product::active()
+            ->where('slug', $slug)
+            ->select($this->cartColumns)
             ->first();
     }
 
@@ -26,6 +47,14 @@ class EloquentProductRepository implements ProductRepositoryInterface
         return Product::active()
             ->whereIn('slug', $slugs)
             ->with(['category', 'accessories'])
+            ->get();
+    }
+
+    public function getActiveBySlugsForCart(array $slugs): Collection
+    {
+        return Product::active()
+            ->whereIn('slug', $slugs)
+            ->select($this->cartColumns)
             ->get();
     }
 

@@ -15,7 +15,14 @@ return [
     |
     */
 
-    'default' => env('CACHE_STORE', 'database'),
+    'default' => env(
+        'CACHE_STORE',
+        env('APP_ENV') === 'testing'
+            ? 'array'
+            : (env('APP_ENV') === 'local'
+            ? (env('REDIS_HOST') ? 'redis' : 'file')
+            : (env('REDIS_HOST') ? 'redis' : 'database'))
+    ),
 
     /*
     |--------------------------------------------------------------------------
@@ -94,8 +101,9 @@ return [
         'failover' => [
             'driver' => 'failover',
             'stores' => [
+                'redis',
+                'file',
                 'database',
-                'array',
             ],
         ],
 

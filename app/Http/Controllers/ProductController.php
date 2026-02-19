@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Services\ProductService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -29,17 +30,18 @@ class ProductController extends Controller
             $productData = $this->productService->getProductDetails($product->slug);
 
             // Obtener productos relacionados de la misma categoría
-            $relatedProducts = Product::where('category_id', $product->category_id)
-                ->where('id', '!=', $product->id)
-                ->where('is_active', true)
-                ->with('category') // Eager load category
-                ->inRandomOrder()
-                ->take(4)
-                ->get();
+            $relatedProducts = Cache::remember("related_products_{$product->id}", 900, function () use ($product) {
+                return Product::where('category_id', $product->category_id)
+                    ->where('id', '!=', $product->id)
+                    ->where('is_active', true)
+                    ->select(['id', 'slug', 'name', 'description', 'base_price', 'image_url', 'hover_image_url'])
+                    ->orderByDesc('created_at')
+                    ->take(4)
+                    ->get();
+            });
 
             return Inertia::render('ProductPage', [
                 'product' => $productData['product'],
-                'accessories' => $productData['accessories'],
                 'relatedProducts' => $relatedProducts,
                 'pageTitle' => $product->name.' - MiKiwi',
             ]);
@@ -47,19 +49,21 @@ class ProductController extends Controller
             abort(404, 'Producto no encontrado');
         }
     }
+
     /**
      * Listado de productos con filtros
      */
     public function index(\Illuminate\Http\Request $request)
     {
-        $query = Product::where('is_active', true);
+        $query = Product::where('is_active', true)
+            ->select(['id', 'slug', 'name', 'description', 'base_price', 'image_url', 'hover_image_url']);
 
         // Filtrar por categoría (Incluyendo subcategorías de forma recursiva)
         if ($request->has('category')) {
             $categoryIds = \App\Models\Category::where('id', $request->category)
                 ->orWhere('parent_id', $request->category)
                 ->pluck('id');
-            
+
             $query->whereIn('category_id', $categoryIds);
         }
 
@@ -96,20 +100,17 @@ class ProductController extends Controller
                 break;
         }
 
-        $products = $query->paginate(12)->withQueryString();
-
-        // Obtener categorías con sus hijos para el sidebar
-        $categories = \App\Models\Category::root()
-            ->where('is_active', true)
-            ->with(['children' => function($q) {
-                $q->where('is_active', true)->orderBy('name');
-            }])
-            ->orderBy('name')
-            ->get();
-
         return Inertia::render('Products', [
-            'products' => $products,
-            'categories' => $categories,
+            'products' => fn () => $query->paginate(12)->withQueryString(),
+            'categories' => fn () => Cache::remember('products_sidebar_categories', 900, function () {
+                return \App\Models\Category::root()
+                    ->where('is_active', true)
+                    ->with(['children' => function ($q) {
+                        $q->where('is_active', true)->orderBy('name');
+                    }])
+                    ->orderBy('name')
+                    ->get();
+            }),
             'filters' => $request->only(['category', 'subCategory', 'min_price', 'max_price', 'sort']),
         ]);
     }

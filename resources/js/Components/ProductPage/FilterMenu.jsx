@@ -50,17 +50,27 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
     };
 
     const handleApply = () => {
+        const { activeChildren, categoryName, ...requestFilters } = localFilters;
+
         router.get(
             route('products.index'),
-            localFilters,
-            { preserveState: true }
+            requestFilters,
+            {
+                preserveState: true,
+                preserveScroll: true,
+                only: ['products', 'filters'],
+            }
         );
         onClose();
     };
 
     const handleClear = () => {
         setLocalFilters({});
-        router.get(route('products.index'));
+        router.get(route('products.index'), {}, {
+            preserveState: true,
+            preserveScroll: true,
+            only: ['products', 'filters'],
+        });
         onClose();
     };
 

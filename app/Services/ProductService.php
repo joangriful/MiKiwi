@@ -34,9 +34,6 @@ class ProductService
 
         return [
             'product' => $product,
-            // Los accesorios ya vienen cargados por el repositorio,
-            // pero si queremos asegurarnos o filtrarlos, lo hacemos aquí.
-            'accessories' => $product->accessories,
         ];
     }
 }

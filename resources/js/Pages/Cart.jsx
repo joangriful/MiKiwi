@@ -1,17 +1,13 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { lazy, Suspense, useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
-import axios from 'axios';
 import CartStep from '@/Components/Checkout/CartStep';
 import InfoStep from '@/Components/Checkout/InfoStep';
 import ShippingStep from '@/Components/Checkout/ShippingStep';
-import PaymentStep from '@/Components/Checkout/PaymentStep';
 import Header from '@/Components/Common/Header';
 import Footer from '@/Components/Common/Footer';
+import { optimizeImageUrl } from '@/Utils/imageUrl';
 
-// Load Stripe outside of component to avoid recreation
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY || '');
+const PaymentWithStripe = lazy(() => import('@/Components/Checkout/PaymentWithStripe'));
 
 function CheckoutContent({
     cart,
@@ -25,88 +21,10 @@ function CheckoutContent({
     formProcessing,
     formTransform,
     formErrors,
-    popularProducts
+    popularProducts,
+    stripeKey,
+    total,
 }) {
-    const stripe = useStripe();
-    const elements = useElements();
-    const [isInternalProcessing, setIsInternalProcessing] = useState(false);
-
-    const handleSubmitOrder = async () => {
-        if (!stripe || !elements) {
-            console.error('Stripe not loaded');
-            return;
-        }
-
-        setIsInternalProcessing(true);
-
-        try {
-            // 1. Create Payment Intent on backend
-            // Get the actual total after shipping and coupons
-            const dynamicTotal = total - (formData.coupon_code && cart.coupon ? cart.coupon.discount : 0);
-
-            const { data: intentData } = await axios.post(route('payment-intent.create'), {
-                amount: Math.round(dynamicTotal * 100) / 100, // Ensure normalized total
-            });
-
-            // 2. Confirm payment on frontend
-            const result = await stripe.confirmCardPayment(intentData.clientSecret, {
-                payment_method: {
-                    card: elements.getElement(CardElement),
-                    billing_details: {
-                        name: `${formData.first_name} ${formData.last_name}`,
-                        email: formData.email,
-                        phone: formData.phone,
-                        address: {
-                            line1: formData.address,
-                            city: formData.city,
-                            postal_code: formData.postal_code,
-                            country: 'ES',
-                        }
-                    },
-                },
-            });
-
-            if (result.error) {
-                alert(result.error.message);
-                setIsInternalProcessing(false);
-                return;
-            }
-
-            // 3. Payment successful, submit order to backend
-            if (result.paymentIntent.status === 'succeeded') {
-                formTransform((data) => ({
-                    ...data,
-                    payment_intent_id: result.paymentIntent.id,
-                    shipping_address: {
-                        full_name: `${data.first_name} ${data.last_name}`,
-                        phone: data.phone,
-                        street_address: data.address,
-                        city: data.city,
-                        postal_code: data.postal_code,
-                        country: data.country,
-                    },
-                    dni: data.dni,
-                    billing_address: data.billing_same_as_shipping ? null : {
-                        full_name: `${data.first_name} ${data.last_name}`,
-                        phone: data.phone,
-                        street_address: data.billing_address.address,
-                        city: data.billing_address.city,
-                        postal_code: data.billing_address.postal_code,
-                        country: data.billing_address.country,
-                    }
-                }));
-
-                formPost(route('orders.store'), {
-                    onFinish: () => setIsInternalProcessing(false),
-                });
-            }
-        } catch (error) {
-            console.error('Order submission error:', error);
-            alert('Hubo un error al procesar tu pedido. Por favor, inténtalo de nuevo.');
-            setIsInternalProcessing(false);
-        }
-    };
-
     return (
         <div className="w-full">
             {step === 1 && (
@@ -135,23 +53,25 @@ function CheckoutContent({
                 />
             )}
             {step === 4 && (
-                <PaymentStep
-                    data={formData}
-                    setData={setFormData}
-                    onSubmit={handleSubmitOrder}
-                    onBack={prevStep}
-                    processing={formProcessing || isInternalProcessing}
-                />
+                <Suspense fallback={null}>
+                    <PaymentWithStripe
+                        stripeKey={stripeKey}
+                        formData={formData}
+                        setFormData={setFormData}
+                        onBack={prevStep}
+                        formPost={formPost}
+                        formTransform={formTransform}
+                        formProcessing={formProcessing}
+                        total={total}
+                        cart={cart}
+                    />
+                </Suspense>
             )}
         </div>
     );
 }
 
 export default function Cart({ cart = { items: [], total: 0 }, auth = { user: null }, popularProducts = [], stripeKey, coupon }) {
-    console.log('Cart received stripeKey:', stripeKey);
-    const finalStripePromise = useMemo(() => {
-        return stripeKey ? loadStripe(stripeKey) : stripePromise;
-    }, [stripeKey]);
     const [step, setStep] = useState(1);
 
     const { data, setData, post, processing, transform, errors, delete: destroy } = useForm({
@@ -223,7 +143,6 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
     const total = subtotal + (step >= 3 ? shippingCost : 0);
 
     return (
-        <Elements stripe={finalStripePromise}>
             <div className="min-h-screen flex flex-col bg-white">
                 <Head title="Checkout - MiKiwi" />
                 <Header user={auth.user} />
@@ -264,6 +183,8 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                             formTransform={transform}
                             formErrors={errors}
                             popularProducts={popularProducts}
+                            stripeKey={stripeKey}
+                            total={total}
                         />
                     </div>
 
@@ -278,7 +199,7 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                                         <div key={item.product_id} className="flex gap-4 items-center">
                                             <div className="relative w-20 h-20 flex-shrink-0 bg-white rounded-lg border border-gray-100 overflow-hidden shadow-sm">
                                                 <img
-                                                    src={(() => {
+                                                    src={optimizeImageUrl((() => {
                                                         try {
                                                             const images = typeof item.product.images === 'string'
                                                                 ? JSON.parse(item.product.images)
@@ -287,8 +208,10 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                                                         } catch (e) {
                                                             return 'https://via.placeholder.com/150';
                                                         }
-                                                    })()}
+                                                    })(), { width: 300, height: 300 })}
                                                     alt={item.product.name}
+                                                    loading="lazy"
+                                                    decoding="async"
                                                     className="w-full h-full object-cover"
                                                 />
                                                 <span className="absolute -top-1 -right-1 bg-gray-800 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">
@@ -394,6 +317,5 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                 </main>
                 <Footer />
             </div>
-        </Elements>
     );
 }

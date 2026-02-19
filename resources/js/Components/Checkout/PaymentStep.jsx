@@ -69,8 +69,8 @@ export default function PaymentStep({ data, setData, onSubmit, onBack, processin
                                 <span className="font-bold text-gray-900 text-lg">Tarjeta Bancaria</span>
                             </div>
                             <div className="flex items-center space-x-2">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-4 grayscale hover:grayscale-0 transition-all opacity-60" />
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-6 grayscale hover:grayscale-0 transition-all opacity-60" />
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" loading="lazy" decoding="async" className="h-4 grayscale hover:grayscale-0 transition-all opacity-60" />
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" loading="lazy" decoding="async" className="h-6 grayscale hover:grayscale-0 transition-all opacity-60" />
                                 <div className="w-[1px] h-4 bg-gray-200 mx-2"></div>
                                 <span className="text-[10px] font-bold text-gray-400">AMEX, JCB...</span>
                             </div>
@@ -99,13 +99,13 @@ export default function PaymentStep({ data, setData, onSubmit, onBack, processin
                 {/* Coming Soon Options */}
                 <div className="grid grid-cols-2 gap-4">
                     <div className="border border-gray-100 p-4 rounded-xl flex items-center bg-gray-50/50 opacity-60 grayscale cursor-not-allowed">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" className="h-4 mr-3" />
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" loading="lazy" decoding="async" className="h-4 mr-3" />
                         <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Próximamente</span>
                     </div>
                     <div className="border border-gray-100 p-4 rounded-xl flex items-center bg-gray-50/50 opacity-60 grayscale cursor-not-allowed">
                         <div className="flex gap-2 mr-3">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg" alt="Apple Pay" className="h-4" />
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay" className="h-4" />
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg" alt="Apple Pay" loading="lazy" decoding="async" className="h-4" />
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay" loading="lazy" decoding="async" className="h-4" />
                         </div>
                         <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Próximamente</span>
                     </div>

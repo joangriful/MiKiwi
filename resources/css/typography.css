@@ -8,37 +8,39 @@
    Since 'Agrandir' is often a premium font, I will use a high-end geometric sans-serif (Inter/Mulish) 
    and prioritize Agrandir if the user provides it later. 
 */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Mulish:wght@200..900&display=swap');
-
 /* Sugo Pro Display - Comprehensive Local Fonts */
 @font-face {
     font-family: 'Sugo Pro Display';
     src: url('/fonts/Sugo-Pro-Display-Thin-trial.ttf') format('truetype');
     font-weight: 100;
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'Sugo Pro Display';
     src: url('/fonts/Sugo-Pro-Display-Light-trial.ttf') format('truetype');
     font-weight: 300;
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'Sugo Pro Display';
     src: url('/fonts/Sugo-Pro-Display-Regular-trial.ttf') format('truetype');
     font-weight: 400;
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'Sugo Pro Display';
     src: url('/fonts/Sugo-Pro-Display-Bold-trial.ttf') format('truetype');
     font-weight: 700;
+    font-display: swap;
 }
 
 /* Typography Utilities */
 :root {
     --font-head: 'Sugo Pro Display', sans-serif;
-    --font-body: 'Mulish', 'Inter', sans-serif;
+    --font-body: 'Avenir Next', Avenir, 'Segoe UI', system-ui, -apple-system, sans-serif;
     /* Agrandir style alternative */
 }
 

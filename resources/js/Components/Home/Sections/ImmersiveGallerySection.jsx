@@ -20,7 +20,7 @@ export default function ImmersiveGallerySection() {
             <div className="gallery-grid">
                 {collections.map((col, i) => (
                     <Link key={i} href="#" className="gallery-card" data-scroll-reveal>
-                        <img src={col.img} alt={col.title} />
+                        <img src={col.img} alt={col.title} loading="lazy" decoding="async" />
                         <div className="gallery-card-content">
                             <span className="gallery-card-tag">{col.tag}</span>
                             <h3 className="gallery-card-title">{col.title}</h3>

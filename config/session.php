@@ -18,7 +18,14 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'database'),
+    'driver' => env(
+        'SESSION_DRIVER',
+        env('APP_ENV') === 'testing'
+            ? 'array'
+            : (env('APP_ENV') === 'local'
+            ? (env('REDIS_HOST') ? 'redis' : 'file')
+            : (env('REDIS_HOST') ? 'redis' : 'database'))
+    ),
 
     /*
     |--------------------------------------------------------------------------
@@ -101,7 +108,7 @@ return [
     |
     */
 
-    'store' => env('SESSION_STORE'),
+    'store' => env('SESSION_STORE', env('REDIS_HOST') ? 'redis' : null),
 
     /*
     |--------------------------------------------------------------------------
@@ -114,7 +121,7 @@ return [
     |
     */
 
-    'lottery' => [2, 100],
+    'lottery' => env('SESSION_DRIVER') === 'database' ? [2, 100] : [0, 100],
 
     /*
     |--------------------------------------------------------------------------

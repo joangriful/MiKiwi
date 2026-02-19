@@ -14,8 +14,11 @@ use App\Repositories\Interfaces\HeroImageRepositoryInterface;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Repositories\Interfaces\UserAddressRepositoryInterface;
+use Illuminate\Database\Connection;
+use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -57,6 +60,16 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
-        Vite::prefetch(concurrency: 3);
+
+        if (config('app.debug') && env('PERF_LOG_SLOW_QUERIES', true)) {
+            DB::whenQueryingForLongerThan((int) env('PERF_SLOW_QUERY_MS', 250), function (Connection $connection, QueryExecuted $event): void {
+                Log::warning('Slow query threshold reached', [
+                    'connection' => $connection->getName(),
+                    'threshold_ms' => (int) env('PERF_SLOW_QUERY_MS', 250),
+                    'sql' => $event->sql,
+                    'time_ms' => $event->time,
+                ]);
+            });
+        }
     }
 }

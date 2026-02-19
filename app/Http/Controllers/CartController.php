@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\CartService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class CartController extends Controller
@@ -23,14 +24,17 @@ class CartController extends Controller
     public function index()
     {
         $cart = $this->cartService->getCart();
-        $popularProducts = \App\Models\Product::where('is_active', true)
-            ->whereIn('product_type', ['configurable', 'simple'])
-            ->limit(8)
-            ->get();
+        $popularProducts = Cache::remember('cart_popular_products', 300, function () {
+            return \App\Models\Product::where('is_active', true)
+                ->whereIn('product_type', ['configurable', 'simple'])
+                ->select(['id', 'slug', 'name', 'base_price', 'images'])
+                ->orderByDesc('created_at')
+                ->limit(8)
+                ->get();
+        });
 
         $couponData = session('coupon');
-        \Log::info("CartController::index - Coupon in session: " . json_encode($couponData));
-        
+
         if ($couponData) {
             $coupon = \App\Models\Coupon::where('code', $couponData['code'])->first();
             if ($coupon && $coupon->isValid()) {
@@ -106,8 +110,11 @@ class CartController extends Controller
 
             if ($validated['quantity'] <= 0) {
                 $this->cartService->removeFromCart($id);
+
                 return redirect()->back()->with('success', 'Producto eliminado');
             }
+
+            $cart = $this->cartService->updateQuantity($id, $validated['quantity']);
 
             return response()->json([
                 'success' => true,
@@ -130,7 +137,7 @@ class CartController extends Controller
     public function destroy(string $id)
     {
         try {
-            $this->cartService->removeFromCart($id);
+            $cart = $this->cartService->removeFromCart($id);
 
             return response()->json([
                 'success' => true,

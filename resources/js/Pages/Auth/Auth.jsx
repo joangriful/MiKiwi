@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import MikiwiLogo from '@/Components/MikiwiLogo';
 
-// Import Form Components
-import LoginForm from '@/Components/Auth/LoginForm';
-import RegisterForm from '@/Components/Auth/RegisterForm';
-import ForgotPasswordForm from '@/Components/Auth/ForgotPasswordForm';
-import ResetPasswordForm from '@/Components/Auth/ResetPasswordForm';
-import ConfirmPasswordForm from '@/Components/Auth/ConfirmPasswordForm';
-import VerifyEmailForm from '@/Components/Auth/VerifyEmailForm';
+const LoginForm = lazy(() => import('@/Components/Auth/LoginForm'));
+const RegisterForm = lazy(() => import('@/Components/Auth/RegisterForm'));
+const ForgotPasswordForm = lazy(() => import('@/Components/Auth/ForgotPasswordForm'));
+const ResetPasswordForm = lazy(() => import('@/Components/Auth/ResetPasswordForm'));
+const ConfirmPasswordForm = lazy(() => import('@/Components/Auth/ConfirmPasswordForm'));
+const VerifyEmailForm = lazy(() => import('@/Components/Auth/VerifyEmailForm'));
 
 export default function Auth({ view, title, subtitle, status, canResetPassword, token, email }) {
 
@@ -69,7 +68,7 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
             <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-xl">
                 {/* Header Section */}
                 <div className="flex flex-col items-center bg-white p-6 pb-2 text-center">
-                    <Link href="/" className="mb-4">
+                    <Link href="/" prefetch className="mb-4">
                         <MikiwiLogo className="h-16 w-16 text-primary" />
                     </Link>
 
@@ -86,7 +85,9 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
 
                 {/* Content Section */}
                 <div className="px-6 py-6 pt-2">
-                    {renderForm()}
+                    <Suspense fallback={null}>
+                        {renderForm()}
+                    </Suspense>
                 </div>
             </div>
 

@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 export default function useStackCards(stackItemsRef, stackContainerRef) {
     useEffect(() => {
-        const stackItems = stackItemsRef.current;
-        if (stackItems.length === 0) return;
+        const initialItems = stackItemsRef.current;
+        if (initialItems.length === 0) return;
 
         const config = {
             perspective: 1600,
@@ -27,34 +27,77 @@ export default function useStackCards(stackItemsRef, stackContainerRef) {
         };
 
         let states = null;
+        let rafId = null;
+
+        const inViewport = (element, viewportHeight) => {
+            if (!element) {
+                return true;
+            }
+            const rect = element.getBoundingClientRect();
+            return rect.bottom > 0 && rect.top < viewportHeight;
+        };
+
+        const buildStates = (items) => {
+            states = items.map((card) => ({
+                current: {
+                    scale: 1,
+                    opacity: 1,
+                    blur: 0,
+                    brightness: 1,
+                    saturation: 1,
+                    translateY: 0,
+                    translateZ: 0,
+                    rotateX: 0,
+                    imageScale: 1,
+                    shadow: 0,
+                },
+                target: {
+                    scale: 1,
+                    opacity: 1,
+                    blur: 0,
+                    brightness: 1,
+                    saturation: 1,
+                    translateY: 0,
+                    translateZ: 0,
+                    rotateX: 0,
+                    imageScale: 1,
+                    shadow: 0,
+                },
+                collectionCard: card.querySelector('.collection-card'),
+                image: card.querySelector('.card-image'),
+            }));
+        };
+
         const adaptiveLerp = (current, target, baseFactor) => {
             const distance = Math.abs(target - current);
             let factor = distance > 50 ? config.lerpFactorSlow : distance > 10 ? baseFactor : config.lerpFactorFast;
             return current + (target - current) * Math.min(factor, 0.2);
         };
 
-        const tick = () => {
+        const renderFrame = () => {
             const stackItems = stackItemsRef.current.filter(Boolean);
             if (stackItems.length === 0) {
-                requestAnimationFrame(tick);
+                pending = false;
                 return;
             }
 
             if (!states || states.length !== stackItems.length) {
-                states = stackItems.map(() => ({
-                    current: { scale: 1, opacity: 1, blur: 0, brightness: 1, saturation: 1, translateY: 0, translateZ: 0, rotateX: 0, imageScale: 1, shadow: 0 },
-                    target: { scale: 1, opacity: 1, blur: 0, brightness: 1, saturation: 1, translateY: 0, translateZ: 0, rotateX: 0, imageScale: 1, shadow: 0 }
-                }));
+                buildStates(stackItems);
             }
 
             const windowHeight = window.innerHeight;
+            if (!inViewport(stackContainerRef.current, windowHeight)) {
+                pending = false;
+                return;
+            }
+
+            const tops = stackItems.map((card) => card.getBoundingClientRect().top);
             const depths = new Array(stackItems.length).fill(0);
 
             for (let i = stackItems.length - 1; i >= 0; i--) {
-                const card = stackItems[i];
                 let overlappingRectTop = windowHeight;
                 if (i < stackItems.length - 1) {
-                    overlappingRectTop = stackItems[i + 1].getBoundingClientRect().top;
+                    overlappingRectTop = tops[i + 1];
                 }
                 const overlapProgress = Math.max(0, Math.min(1, 1 - (overlappingRectTop / windowHeight)));
                 let neighborDepth = i < stackItems.length - 1 ? depths[i + 1] : 0;
@@ -106,7 +149,7 @@ export default function useStackCards(stackItemsRef, stackContainerRef) {
                 if (c.saturation < 0.98) filters.push(`saturate(${c.saturation.toFixed(2)})`);
                 card.style.filter = filters.length ? filters.join(' ') : 'none';
 
-                const collectionCard = card.querySelector('.collection-card');
+                const collectionCard = states[i].collectionCard;
                 if (collectionCard && c.shadow > 0.01) {
                     collectionCard.style.boxShadow = `
                         0 ${(20 + c.shadow * 35).toFixed(1)}px ${(45 + c.shadow * 45).toFixed(1)}px rgba(34, 43, 36, ${(c.shadow * 0.15).toFixed(3)}),
@@ -114,16 +157,24 @@ export default function useStackCards(stackItemsRef, stackContainerRef) {
                     `;
                 }
 
-                const img = card.querySelector('.card-image');
+                const img = states[i].image;
                 if (img) {
-                    const rect = card.getBoundingClientRect();
-                    const cardProgress = 1 - (rect.top / windowHeight);
+                    const cardProgress = 1 - (tops[i] / windowHeight);
                     const parallaxOffset = (Math.max(0, Math.min(1, cardProgress)) - 0.5) * 100;
                     img.style.transform = `translateY(${parallaxOffset}px) scale(${c.imageScale})`;
                 }
             });
 
-            requestAnimationFrame(tick);
+            pending = false;
+        };
+
+        let pending = false;
+        const scheduleRender = () => {
+            if (pending) {
+                return;
+            }
+            pending = true;
+            rafId = requestAnimationFrame(renderFrame);
         };
 
         const stackContainer = stackContainerRef.current;
@@ -133,8 +184,16 @@ export default function useStackCards(stackItemsRef, stackContainerRef) {
             stackContainer.style.transformStyle = 'preserve-3d';
         }
 
-        const animationId = requestAnimationFrame(tick);
+        window.addEventListener('scroll', scheduleRender, { passive: true });
+        window.addEventListener('resize', scheduleRender);
+        scheduleRender();
 
-        return () => cancelAnimationFrame(animationId);
+        return () => {
+            window.removeEventListener('scroll', scheduleRender);
+            window.removeEventListener('resize', scheduleRender);
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+            }
+        };
     }, [stackItemsRef, stackContainerRef]);
 }

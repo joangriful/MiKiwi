@@ -45,6 +45,11 @@ return [
         'base_url' => env('CORREOS_BASE_URL', 'https://api.correos.es'),
         'client_id' => env('CORREOS_CLIENT_ID'),
         'client_secret' => env('CORREOS_CLIENT_SECRET'),
+        'connect_timeout' => (int) env('CORREOS_CONNECT_TIMEOUT', 2),
+        'timeout' => (int) env('CORREOS_TIMEOUT', 4),
+        'retry_times' => (int) env('CORREOS_RETRY_TIMES', 1),
+        'retry_sleep_ms' => (int) env('CORREOS_RETRY_SLEEP_MS', 150),
+        'pickup_cache_ttl' => (int) env('CORREOS_PICKUP_CACHE_TTL', 300),
     ],
 
 ];

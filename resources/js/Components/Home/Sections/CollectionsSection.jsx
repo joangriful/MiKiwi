@@ -61,7 +61,7 @@ export default function CollectionsSection() {
                             <li key={i} className="stack-cards__item" ref={el => stackItemsRef.current[i] = el}>
                                 <article className={`collection-card ${col.alt ? 'alt' : ''}`}>
                                     <div className="card-visual">
-                                        <img src={col.img} alt={col.title} className="card-image" />
+                                        <img src={col.img} alt={col.title} className="card-image" loading="lazy" decoding="async" />
                                     </div>
                                     <div className="card-content">
                                         <span className="card-tag">{col.tag}</span>

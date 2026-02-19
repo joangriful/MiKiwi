@@ -15,6 +15,7 @@ export default function ProductInfo({ product }) {
                     <>
                         <Link
                             href={route('categories.show', parentCategory.slug)}
+                            prefetch
                             className="hover:text-[#99b849] cursor-pointer transition-colors px-1"
                         >
                             {parentCategory.name}
@@ -25,6 +26,7 @@ export default function ProductInfo({ product }) {
                 {currentCategory ? (
                     <Link
                         href={route('categories.show', currentCategory.slug)}
+                        prefetch
                         className="text-[#99b849] hover:text-[#88a441] transition-colors px-1"
                     >
                         {currentCategory.name}

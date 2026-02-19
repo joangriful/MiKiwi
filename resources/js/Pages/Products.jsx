@@ -73,6 +73,7 @@ export default function Products({ products, categories = [], filters }) {
                             <p className="text-gray-400 text-xl font-light">Sin resultados para tu búsqueda.</p>
                             <Link
                                 href={route('products.index')}
+                                prefetch
                                 className="mt-8 inline-flex items-center gap-2 text-black font-bold uppercase tracking-widest text-xs border-b-2 border-black pb-1 hover:text-gray-600 hover:border-gray-400 transition-all"
                             >
                                 Reestablecer Filtros
@@ -95,6 +96,9 @@ export default function Products({ products, categories = [], filters }) {
                                         <Link
                                             key={key}
                                             href={link.url}
+                                            prefetch
+                                            preserveScroll
+                                            only={['products', 'filters']}
                                             className={`w-12 h-12 flex items-center justify-center rounded-full text-xs font-bold transition-all ${link.active
                                                 ? 'bg-black text-white shadow-xl shadow-black/10'
                                                 : 'text-gray-400 hover:text-black hover:bg-gray-100'

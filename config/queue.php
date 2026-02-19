@@ -13,7 +13,12 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'database'),
+    'default' => env(
+        'QUEUE_CONNECTION',
+        in_array(env('APP_ENV'), ['local', 'testing'], true)
+            ? 'sync'
+            : (env('REDIS_HOST') ? 'redis' : 'database')
+    ),
 
     /*
     |--------------------------------------------------------------------------
