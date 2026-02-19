@@ -11,10 +11,22 @@ use App\Events\UserRegistered;
 use App\Listeners\NotifyAdminOfNewOrder;
 use App\Listeners\SendOrderConfirmation;
 use App\Listeners\UpdateInventory;
+use Illuminate\Console\Events\CommandStarting;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
+use RuntimeException;
 
 class EventServiceProvider extends ServiceProvider
 {
+    private const BLOCKED_COMMANDS = [
+        'migrate:fresh',
+        'migrate:install',
+        'migrate:refresh',
+        'migrate:reset',
+        'migrate:rollback',
+        'db:wipe',
+    ];
+
     protected $listen = [
         OrderCreated::class => [
             SendOrderConfirmation::class,
@@ -28,7 +40,13 @@ class EventServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        //
+        Event::listen(CommandStarting::class, static function (CommandStarting $event): void {
+            if (in_array($event->command, self::BLOCKED_COMMANDS, true)) {
+                throw new RuntimeException(
+                    "El comando '{$event->command}' esta bloqueado para proteger la base de datos."
+                );
+            }
+        });
     }
 
     public function shouldDiscoverEvents(): bool
