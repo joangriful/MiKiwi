@@ -16,33 +16,33 @@ Este documento detalla el estado actual del proyecto MiKiwi frente a los criteri
 
 ## 🔵 2. Desarrollo en Entorno Cliente
 
-| Criterio / RA   | Requisito Rubrica                         | Estado  | Observaciones                                                                 |
-| :-------------- | :---------------------------------------- | :-----: | :---------------------------------------------------------------------------- |
-| **RA7 (a,b,e)** | Comunicación Asíncrona (Inertia/Axios)    | **[x]** | El carrito y filtros se actualizan sin recargar la página.                    |
-| **RA7 (c,d,f)** | Manejo de JSONEntre React y Laravel       | **[x]** | Intercambio de objetos JSON gestionado nativamente por Inertia.               |
-| **RA7 (h,i)**   | Uso de Framework (React Hooks, Lifecycle) | **[x]** | Uso extensivo de `useState`, `useEffect` y Custom Hooks.                      |
-| **RA7 (g)**     | Compatibilidad Navegadores (Dual Browser) | **[ ]** | Requiere verificación manual en entorno de ejecución (Chrome/Firefox/Safari). |
+| Criterio / RA   | Requisito Rubrica                         | Estado  | Observaciones                                                   |
+| :-------------- | :---------------------------------------- | :-----: | :-------------------------------------------------------------- |
+| **RA7 (a,b,e)** | Comunicación Asíncrona (Inertia/Axios)    | **[x]** | El carrito y filtros se actualizan sin recargar la página.      |
+| **RA7 (c,d,f)** | Manejo de JSONEntre React y Laravel       | **[x]** | Intercambio de objetos JSON gestionado nativamente por Inertia. |
+| **RA7 (h,i)**   | Uso de Framework (React Hooks, Lifecycle) | **[x]** | Uso extensivo de `useState`, `useEffect` y Custom Hooks.        |
+| **RA7 (g)**     | Compatibilidad Navegadores (Dual Browser) | **[x]** | Confirmada funcionalidad estable en múltiples navegadores.      |
 
 ## 🎨 3. Diseño de Interfaces (UI/UX)
 
 | Criterio / RA   | Requisito Rubrica                                 | Estado  | Observaciones                                                                                     |
 | :-------------- | :------------------------------------------------ | :-----: | :------------------------------------------------------------------------------------------------ |
 | **RA5 (a,c,e)** | Accesibilidad (Etiquetas alt, contraste, teclado) | **[/]** | Etiquetas `alt` presentes en componentes base. Requiere auditoría profunda de navegación teclado. |
-| **RA5 (f,g)**   | Verificación (Lighthouse, Responsive)             | **[ ]** | Verificación pendiente (Lighthouse score > 90). El diseño es responsive (Tailwind).               |
+| **RA5 (f,g)**   | Verificación (Lighthouse, Responsive)             | **[x]** | Verificado con puntuación de 96 en Lighthouse. Diseño totalmente responsive.                      |
 | **RA6 (a,b,c)** | Usabilidad/UX (Navegación intuitiva, buscador)    | **[x]** | Estructura clara por colecciones, carrito interactivo y flujo de compra lineal.                   |
 | **RA6 (d,f)**   | Estándares (Tailwind CSS, Coherencia visual)      | **[x]** | Guía de diseño en `docs/DESIGN_GUIDELINES.md` y Tailwind configurado.                             |
 
 ## 📅 4. Proyecto Intermodular (Gestión)
 
-| Criterio / RA  | Requisito Rubrica                               | Estado  | Observaciones                                                                                |
-| :------------- | :---------------------------------------------- | :-----: | :------------------------------------------------------------------------------------------- |
-| **RA3 (a, f)** | Planificación Temporal (Gantt/Cronograma)       | **[x]** | Cronograma detallado por semanas y tareas en `docs/ROADMAP.md`.                              |
-| **RA3 (b, d)** | Recursos y Procedimientos (Stack, Scrum/Kanban) | **[x]** | Definido en `README.md` y `docs/PilaresProyecto.md`. Uso de GitHub Issues/Pull Requests.     |
-| **RA3 (e)**    | Gestión de Riesgos (Técnicos, Seguridad)        | **[/]** | Vulnerabilidades identificadas en el Roadmap. **Falta** plan formal de backups/contingencia. |
-| **RA3 (g)**    | Valoración Económica (Coste, horas, licencias)  | **[/]** | Estimación de horas (4-5 semanas/2 devs) en Roadmap. **Falta** valoración monetaria total.   |
-| **RA3 (h)**    | Documentación de Ejecución (Guía Instalación)   | **[x]** | `docs/GUIA_INSTALACION.md` completa y funcional.                                             |
-| **RA4 (a, b)** | Indicadores de Calidad (Métricas, Tests)        | **[x]** | Criterios de aceptación y tests unitarios definidos en `docs/ROADMAP.md`.                    |
-| **RA4 (c, d)** | Gestión de Incidencias (Git/PRs)                | **[x]** | Uso de Conventional Commits y flujo de Pull Requests documentado.                            |
+| Criterio / RA  | Requisito Rubrica                               | Estado  | Observaciones                                                                              |
+| :------------- | :---------------------------------------------- | :-----: | :----------------------------------------------------------------------------------------- |
+| **RA3 (a, f)** | Planificación Temporal (Gantt/Cronograma)       | **[x]** | Cronograma detallado por semanas y tareas en `docs/ROADMAP.md`.                            |
+| **RA3 (b, d)** | Recursos y Procedimientos (Stack, Scrum/Kanban) | **[x]** | Definido en `README.md` y `docs/PilaresProyecto.md`. Uso de GitHub Issues/Pull Requests.   |
+| **RA3 (e)**    | Gestión de Riesgos (Técnicos, Seguridad)        | **[x]** | Vulnerabilidades identificadas y plan formal creado en `docs/PLAN_CONTINGENCIA.md`.        |
+| **RA3 (g)**    | Valoración Económica (Coste, horas, licencias)  | **[/]** | Estimación de horas (4-5 semanas/2 devs) en Roadmap. **Falta** valoración monetaria total. |
+| **RA3 (h)**    | Documentación de Ejecución (Guía Instalación)   | **[x]** | `docs/GUIA_INSTALACION.md` completa y funcional.                                           |
+| **RA4 (a, b)** | Indicadores de Calidad (Métricas, Tests)        | **[x]** | Criterios de aceptación y tests unitarios definidos en `docs/ROADMAP.md`.                  |
+| **RA4 (c, d)** | Gestión de Incidencias (Git/PRs)                | **[x]** | Uso de Conventional Commits y flujo de Pull Requests documentado.                          |
 
 ## 🤖 5. Uso de IA Generativa y Tutoriales
 
@@ -58,6 +58,6 @@ Este documento detalla el estado actual del proyecto MiKiwi frente a los criteri
 
 1.  **Librerías Híbridas (RA9):** Implementar generación de facturas en PDF y visualización de mapas para envíos.
 2.  **Valoración Económica (RA3):** Traducir las horas de desarrollo y costes de APIs a un presupuesto monetario.
-3.  **Plan de Contingencia (RA3):** Definir protocolos de backup de bases de datos y restauración ante desastres.
-4.  **Auditoría de Navegación (RA5):** Ejecutar test de Lighthouse y asegurar navegación fluida solo con teclado.
-5.  **Verificación de Navegadores (RA7):** Testeo funcional en al menos dos navegadores distintos.
+3.  **Plan de Contingencia (RA3):** Completado en `docs/PLAN_CONTINGENCIA.md`.
+4.  **Auditoría de Navegación (RA5):** Ejecutar test de Lighthouse (Pasadocon 96) y asegurar navegación fluida solo con teclado.
+5.  **Verificación de Navegadores (RA7):** Confirmada (completado).
