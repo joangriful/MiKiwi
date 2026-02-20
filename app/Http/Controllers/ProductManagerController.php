@@ -121,6 +121,7 @@ class ProductManagerController extends Controller
             'product_type' => 'sometimes|in:simple,configurable,component',
             'is_adult_only' => 'boolean',
             'is_active' => 'boolean',
+            'is_featured' => 'sometimes|boolean',
             'existing_images' => 'nullable|array',
             'existing_images.*' => 'string',
             'hover_image_input' => 'nullable|string',
