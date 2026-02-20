@@ -21,9 +21,17 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     $heroImages = \App\Models\HeroImage::orderBy('created_at', 'desc')->get();
+    
+    // Fetch featured products with category details for the cards
+    $featuredProducts = \App\Models\Product::with('category:id,name')
+        ->where('is_featured', true)
+        ->where('is_active', true)
+        ->orderBy('created_at', 'desc')
+        ->get();
 
     return Inertia::render('Home', [
         'heroImages' => $heroImages,
+        'featuredProducts' => $featuredProducts,
     ]);
 })->name('home');
 

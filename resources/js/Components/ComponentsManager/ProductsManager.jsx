@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import UploadProduct from './UploadProduct';
 import ProductsList from './ProductsList';
+import FeaturedProductsManager from './FeaturedProductsManager';
 
 export default function ProductsManager({ categories, products, debugCount }) {
     console.log('ProductsManager received products:', products, 'DebugCount:', debugCount);
@@ -10,6 +11,7 @@ export default function ProductsManager({ categories, products, debugCount }) {
     const sections = [
         { id: 'upload', label: 'Subir Producto', icon: 'upload' },
         { id: 'list', label: 'Lista de Productos', icon: 'list' },
+        { id: 'featured', label: 'Productos Destacados', icon: 'star' },
     ];
 
     const handleEdit = (product) => {
@@ -61,6 +63,9 @@ export default function ProductsManager({ categories, products, debugCount }) {
                 )}
                 {activeSection === 'list' && (
                     <ProductsList products={products} onEdit={handleEdit} debugCount={debugCount} />
+                )}
+                {activeSection === 'featured' && (
+                    <FeaturedProductsManager products={products} />
                 )}
             </main>
         </div>

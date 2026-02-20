@@ -12,11 +12,11 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
         product.sku?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleDelete = (id) => {
+    const handleDelete = (product) => {
         if (!confirm('¿Estás seguro de que deseas eliminar este producto?')) return;
 
-        setDeletingId(id);
-        router.delete(route('products.delete', id), {
+        setDeletingId(product.id);
+        router.delete(route('products.delete', product.slug), {
             onSuccess: () => {
                 toast.success('Producto eliminado correctamente');
                 setDeletingId(null);
@@ -110,7 +110,7 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
                                             <span className="material-symbols-outlined text-lg">edit</span>
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(product.id)}
+                                            onClick={() => handleDelete(product)}
                                             disabled={deletingId === product.id}
                                             className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                             title="Eliminar"
