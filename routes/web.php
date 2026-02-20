@@ -175,8 +175,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Product Management
     Route::post('/products/upload', [App\Http\Controllers\ProductManagerController::class, 'uploadProduct'])->name('products.upload');
-    Route::put('/products/{product}', [App\Http\Controllers\ProductManagerController::class, 'updateProduct'])->name('products.update');
-    Route::delete('/products/{product}', [App\Http\Controllers\ProductManagerController::class, 'deleteProduct'])->name('products.delete');
+    Route::put('/products/{product:id}', [App\Http\Controllers\ProductManagerController::class, 'updateProduct'])->name('products.update');
+    Route::delete('/products/{product:id}', [App\Http\Controllers\ProductManagerController::class, 'deleteProduct'])->name('products.delete');
 
     // Newsletter
     Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
