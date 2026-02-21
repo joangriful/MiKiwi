@@ -2,7 +2,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { useState, useRef, useEffect } from 'react';
 
 export default function Header() {
-    const { auth } = usePage().props;
+    const { auth, cartCount } = usePage().props;
     const user = auth?.user;
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const searchInputRef = useRef(null);
@@ -72,9 +72,15 @@ export default function Header() {
                     </Link>
                 )}
 
-                <button className="hover:opacity-80 transition-opacity relative">
+                {/* Cart Icon with badge */}
+                <Link href={route('cart.index')} className="hover:opacity-80 transition-opacity relative">
                     <img src="/assets/icons/cart.svg" alt="Cart" className="h-6 w-6 invert brightness-0" />
-                </button>
+                    {cartCount > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-[#99b849] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full leading-none">
+                            {cartCount > 99 ? '99+' : cartCount}
+                        </span>
+                    )}
+                </Link>
             </div>
         </div>
     );

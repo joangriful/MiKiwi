@@ -1,20 +1,95 @@
-import { useState } from 'react';
-import { Link } from '@inertiajs/react';
+import { useState } from "react";
+import { Link, router } from "@inertiajs/react";
+import axios from "axios";
 
 export default function ProductInfo({ product }) {
     const [isFavorite, setIsFavorite] = useState(false);
+    const [quantity, setQuantity] = useState(1);
+    const [notification, setNotification] = useState(null); // 'added' | 'error' | null
+    const [isLoading, setIsLoading] = useState(false);
 
     const parentCategory = product?.category?.parent;
     const currentCategory = product?.category;
 
+    const showNotification = (type) => {
+        setNotification(type);
+        setTimeout(() => setNotification(null), 2500);
+    };
+
+    const handleAddToCart = async () => {
+        if (!product?.slug) return;
+        setIsLoading(true);
+        try {
+            await axios.post(route("cart.add"), {
+                product_slug: product.slug,
+                quantity: quantity,
+            });
+            showNotification("added");
+            setTimeout(() => {
+                router.visit(route("products.index"));
+            }, 1500);
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            showNotification("error");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleBuyNow = async () => {
+        if (!product?.slug) return;
+        setIsLoading(true);
+        try {
+            await axios.post(route("cart.add"), {
+                product_slug: product.slug,
+                quantity: quantity,
+            });
+            router.visit(route("cart.index"));
+        } catch (error) {
+            console.error("Error buying now:", error);
+            showNotification("error");
+            setIsLoading(false);
+        }
+    };
+
     return (
         <div className="h-full w-full flex flex-col pt-2 lg:pt-0">
+            {/* Notification Banner */}
+            <div
+                className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                    notification
+                        ? "max-h-20 mb-4 opacity-100"
+                        : "max-h-0 mb-0 opacity-0"
+                }`}
+            >
+                {notification === "added" && (
+                    <div className="flex items-center gap-3 bg-[#f0f7e6] border border-[#c8e0a0] text-[#4a7a1a] rounded-2xl px-5 py-3">
+                        <span className="material-symbols-outlined text-xl">
+                            check_circle
+                        </span>
+                        <span className="font-semibold text-sm">
+                            ¡Producto añadido al carrito! Redirigiendo…
+                        </span>
+                    </div>
+                )}
+                {notification === "error" && (
+                    <div className="flex items-center gap-3 bg-red-50 border border-red-100 text-red-600 rounded-2xl px-5 py-3">
+                        <span className="material-symbols-outlined text-xl">
+                            error
+                        </span>
+                        <span className="font-semibold text-sm">
+                            Error al añadir el producto. Inténtalo de nuevo.
+                        </span>
+                    </div>
+                )}
+            </div>
+
             {/* Breadcrumbs */}
             <div className="flex items-center gap-2 mb-8 text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400">
                 {parentCategory && (
                     <>
                         <Link
-                            href={route('categories.show', parentCategory.slug)}
+                            href={route("categories.show", parentCategory.slug)}
                             className="hover:text-[#99b849] cursor-pointer transition-colors px-1"
                         >
                             {parentCategory.name}
@@ -24,7 +99,7 @@ export default function ProductInfo({ product }) {
                 )}
                 {currentCategory ? (
                     <Link
-                        href={route('categories.show', currentCategory.slug)}
+                        href={route("categories.show", currentCategory.slug)}
                         className="text-[#99b849] hover:text-[#88a441] transition-colors px-1"
                     >
                         {currentCategory.name}
@@ -37,16 +112,23 @@ export default function ProductInfo({ product }) {
             {/* Title & Favorite */}
             <div className="flex justify-between items-start mb-6">
                 <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight leading-tight uppercase">
-                    {product?.name || 'Kiwi Premium'}
+                    {product?.name || "Kiwi Premium"}
                 </h1>
                 <button
                     onClick={() => setIsFavorite(!isFavorite)}
-                    className={`p-3 rounded-full border transition-all duration-300 ${isFavorite
-                        ? 'bg-red-50 border-red-100 text-red-500 scale-110 shadow-sm'
-                        : 'bg-white border-gray-100 text-gray-300 hover:text-gray-400 hover:border-gray-200'
-                        }`}
+                    className={`p-3 rounded-full border transition-all duration-300 ${
+                        isFavorite
+                            ? "bg-red-50 border-red-100 text-red-500 scale-110 shadow-sm"
+                            : "bg-white border-gray-100 text-gray-300 hover:text-gray-400 hover:border-gray-200"
+                    }`}
                 >
-                    <span className={`material-symbols-outlined text-2xl ${isFavorite ? 'fill-1' : ''}`} style={{ fontVariationSettings: "'FILL' " + (isFavorite ? 1 : 0) }}>
+                    <span
+                        className={`material-symbols-outlined text-2xl ${isFavorite ? "fill-1" : ""}`}
+                        style={{
+                            fontVariationSettings:
+                                "'FILL' " + (isFavorite ? 1 : 0),
+                        }}
+                    >
                         favorite
                     </span>
                 </button>
@@ -55,9 +137,12 @@ export default function ProductInfo({ product }) {
             {/* Price section */}
             <div className="flex items-baseline gap-4 mb-10">
                 <span className="text-4xl font-bold text-gray-900">
-                    {product?.base_price ?
-                        new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(product.base_price)
-                        : '4.99€'}
+                    {product?.base_price
+                        ? new Intl.NumberFormat("es-ES", {
+                              style: "currency",
+                              currency: "EUR",
+                          }).format(product.base_price)
+                        : "4.99€"}
                 </span>
                 {product?.base_price > 50 && (
                     <span className="text-sm text-gray-400 font-medium bg-gray-50 px-3 py-1 rounded-full border border-gray-100 uppercase tracking-widest">
@@ -68,22 +153,63 @@ export default function ProductInfo({ product }) {
 
             {/* Description */}
             <div className="space-y-4 mb-12">
-                <h3 className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-900">Descripción</h3>
+                <h3 className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-900">
+                    Descripción
+                </h3>
                 <p className="text-gray-500 leading-relaxed text-lg font-light">
-                    {product?.description || 'Nuestros productos representan la cumbre de la ingeniería sensorial de MiKiwi. Cada pieza es seleccionada y procesada bajo los estándares más estrictos para garantizar una experiencia de introspección única y pura.'}
+                    {product?.description ||
+                        "Nuestros productos representan la cumbre de la ingeniería sensorial de MiKiwi. Cada pieza es seleccionada y procesada bajo los estándares más estrictos para garantizar una experiencia de introspección única y pura."}
                 </p>
             </div>
 
             {/* Actions */}
-            <div className="mt-auto flex gap-4 pt-8 border-t border-gray-50">
-                <div className="flex items-center bg-gray-50 rounded-2xl border border-gray-100 p-1">
-                    <button className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors font-bold text-lg">-</button>
-                    <span className="w-8 text-center font-bold text-sm text-gray-900">1</span>
-                    <button className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors font-bold text-lg">+</button>
+            <div className="mt-auto flex flex-col gap-3 pt-8 border-t border-gray-50">
+                {/* Quantity + Add to Cart */}
+                <div className="flex gap-4">
+                    {/* Quantity Selector */}
+                    <div className="flex items-center bg-gray-50 rounded-2xl border border-gray-100 p-1">
+                        <button
+                            onClick={() =>
+                                setQuantity((q) => Math.max(1, q - 1))
+                            }
+                            className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors font-bold text-lg"
+                        >
+                            -
+                        </button>
+                        <span className="w-8 text-center font-bold text-sm text-gray-900">
+                            {quantity}
+                        </span>
+                        <button
+                            onClick={() => setQuantity((q) => q + 1)}
+                            className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors font-bold text-lg"
+                        >
+                            +
+                        </button>
+                    </div>
+
+                    {/* Add to Cart Button */}
+                    <button
+                        onClick={handleAddToCart}
+                        disabled={isLoading}
+                        className="flex-1 bg-black text-white rounded-2xl py-4 px-8 font-bold text-xs uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95 shadow-xl shadow-black/10 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                        <span className="material-symbols-outlined text-lg">
+                            shopping_cart
+                        </span>
+                        Añadir al carrito
+                    </button>
                 </div>
-                <button className="flex-1 bg-black text-white rounded-2xl py-4 px-8 font-bold text-xs uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95 shadow-xl shadow-black/10 flex items-center justify-center gap-3">
-                    <span className="material-symbols-outlined text-lg">shopping_cart</span>
-                    Añadir al carrito
+
+                {/* Buy Now Button */}
+                <button
+                    onClick={handleBuyNow}
+                    disabled={isLoading}
+                    className="w-full bg-[#99b849] text-white rounded-2xl py-4 px-8 font-bold text-xs uppercase tracking-[0.2em] hover:bg-[#88a441] transition-all active:scale-95 shadow-xl shadow-green-100 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                    <span className="material-symbols-outlined text-lg">
+                        bolt
+                    </span>
+                    Comprar ahora
                 </button>
             </div>
         </div>
