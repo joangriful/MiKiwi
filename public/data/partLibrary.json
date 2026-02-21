@@ -1,0 +1,103 @@
+{
+    "dolls": [
+        {
+            "id": "nova_custom",
+            "name": "Nova Realista",
+            "description": "Muñeca realista recortada por piezas",
+            "parts": {
+                "head": {
+                    "path": "/images/Cabeza.png",
+                    "thumbnail": "/images/Cabeza.png",
+                    "anchorPoint": {
+                        "x": 0.5,
+                        "y": 0.15
+                    },
+                    "width": 800,
+                    "height": 1000,
+                    "variant": "nova",
+                    "zIndex": 60
+                },
+                "armLeft": {
+                    "path": "/images/BrazoYPechoIzq.png",
+                    "thumbnail": "/images/BrazoYPechoIzq.png",
+                    "anchorPoint": {
+                        "x": 0.4,
+                        "y": 0.35
+                    },
+                    "width": 800,
+                    "height": 1000,
+                    "variant": "nova",
+                    "zIndex": 40
+                },
+                "armRight": {
+                    "path": "/images/BrazoYPechoDerecho.png",
+                    "thumbnail": "/images/BrazoYPechoDerecho.png",
+                    "anchorPoint": {
+                        "x": 0.6,
+                        "y": 0.35
+                    },
+                    "width": 800,
+                    "height": 1000,
+                    "variant": "nova",
+                    "zIndex": 40
+                },
+                "legLeft": {
+                    "path": "/images/PiernaIzq.png",
+                    "thumbnail": "/images/PiernaIzq.png",
+                    "anchorPoint": {
+                        "x": 0.45,
+                        "y": 0.7
+                    },
+                    "width": 800,
+                    "height": 1000,
+                    "variant": "nova",
+                    "zIndex": 20
+                },
+                "legRight": {
+                    "path": "/images/PiernaDerecha.png",
+                    "thumbnail": "/images/PiernaDerecha.png",
+                    "anchorPoint": {
+                        "x": 0.55,
+                        "y": 0.7
+                    },
+                    "width": 800,
+                    "height": 1000,
+                    "variant": "nova",
+                    "zIndex": 20
+                }
+            }
+        }
+    ],
+    "partTypes": [
+        {
+            "id": "head",
+            "name": "CABEZA",
+            "description": "Selecciona el rostro y estilo"
+        },
+        {
+            "id": "torso",
+            "name": "PECHO / BUSTO",
+            "description": "Selecciona el cuerpo y proporciones"
+        },
+        {
+            "id": "armLeft",
+            "name": "BRAZO IZQUIERDO",
+            "description": "Brazo izquierdo"
+        },
+        {
+            "id": "armRight",
+            "name": "BRAZO DERECHO",
+            "description": "Brazo derecho"
+        },
+        {
+            "id": "legLeft",
+            "name": "PIERNA IZQUIERDA",
+            "description": "Pierna izquierda"
+        },
+        {
+            "id": "legRight",
+            "name": "PIERNA DERECHA",
+            "description": "Pierna derecha"
+        }
+    ]
+}
