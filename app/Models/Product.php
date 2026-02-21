@@ -16,6 +16,7 @@ class Product extends Model
         'slug',
         'sku',
         'is_active',
+        'is_featured',
         'description',
         'base_price',
         'stock_quantity',
@@ -31,6 +32,7 @@ class Product extends Model
         'base_price' => 'decimal:2',
         'is_adult_only' => 'boolean',
         'is_active' => 'boolean',
+        'is_featured' => 'boolean',
         'stock_quantity' => 'integer',
     ];
 

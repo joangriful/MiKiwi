@@ -1,20 +1,40 @@
 import React, { useRef } from 'react';
 
-export default function HeroSection() {
+export default function HeroSection({ heroImages }) {
     const heroRef = useRef(null);
 
-    return (
-        <section className="hero-side" ref={heroRef}>
-            <div className="kinetic-bg">MIKIWI</div>
-            <div className="kinetic-bg kinetic-bg-2">THE ORIGIN</div>
+    // Get the first active hero image if available
+    const bgImage = heroImages && heroImages.length > 0 ? heroImages[0].url : null;
 
-            <div className="hero-content" style={{ position: 'relative', zIndex: 100 }}>
-                <h1>MiKiwi.</h1>
-                <p>Trasc endiendo el límite de lo material. Ingeniería sensorial Suiza diseñada para la introspección profunda.</p>
+    return (
+        <section
+            className="hero-side"
+            ref={heroRef}
+            style={{
+                backgroundImage: bgImage ? `url(${bgImage})` : 'none',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+            }}
+        >
+            <div className="hero-content" style={{ position: 'relative', zIndex: 100, marginBottom: '20vh' }}>
+                <p>Trascendiendo el límite de lo material. Ingeniería sensorial Suiza diseñada para la introspección profunda.</p>
             </div>
-            <div className="hero-capsule-float">
-                <div className="capsule-core"></div>
-            </div>
+
+            <img
+                src="/assets/icons/mikiwi_logo.svg"
+                alt="MiKiwi Logo"
+                style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: '5%',
+                    width: 'clamp(120px, 20vw, 320px)',
+                    height: 'auto',
+                    zIndex: 100,
+                    display: 'block'
+                }}
+                className="hero-logo-img"
+            />
         </section>
     );
 }

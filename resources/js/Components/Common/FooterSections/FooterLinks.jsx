@@ -4,35 +4,32 @@ export default function FooterLinks() {
     return (
         <div className="grid grid-cols-3 gap-6 lg:gap-8">
             <div>
-                <h3 className="font-bold text-base mb-3 text-green-400">Tienda</h3>
+                <h3 className="font-bold text-base mb-3 text-[#d697c8]">Tienda</h3>
                 <ul className="space-y-2 text-xs text-gray-400">
-                    <li><Link href="/nuestros-kiwis" className="hover:text-white transition-colors">Nuestros Kiwis</Link></li>
-                    <li><Link href="/packs-regalo" className="hover:text-white transition-colors">Packs Regalo</Link></li>
-                    <li><Link href="/suscripciones" className="hover:text-white transition-colors">Suscripciones</Link></li>
-                    <li><Link href="/ofertas" className="hover:text-white transition-colors">Ofertas</Link></li>
-                    <li><Link href="/compania" className="hover:text-white transition-colors">Compañía</Link></li>
+                    <li><Link href={route('products.index')} className="hover:text-white transition-colors">Mis productos</Link></li>
+                    <li><Link href={route('configurador.dolls')} className="hover:text-white transition-colors">Personalizar muñecas</Link></li>
                 </ul>
             </div>
 
             <div>
-                <h3 className="font-bold text-base mb-3 text-green-400">Sobre Nosotros</h3>
+                <h3 className="font-bold text-base mb-3 text-[#d697c8]">Sobre Nosotros</h3>
                 <ul className="space-y-2 text-xs text-gray-400">
-                    <li><Link href="/sobre-nosotros" className="hover:text-white transition-colors">Sobre Nosotros</Link></li>
-                    <li><Link href="/sostenibilidad" className="hover:text-white transition-colors">Sostenibilidad</Link></li>
-                    <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
-                    <li><Link href="/contacto" className="hover:text-white transition-colors">Contacto</Link></li>
+                    <li><Link href={route('about-us')} className="hover:text-white transition-colors">Sobre Nosotros</Link></li>
+                    <li><Link href={route('sustainability')} className="hover:text-white transition-colors">Sostenibilidad</Link></li>
+                    <li><Link href={route('faq')} className="hover:text-white transition-colors">Preguntas frecuentes</Link></li>
+                    <li><Link href={route('contacto')} className="hover:text-white transition-colors">Contacto</Link></li>
                 </ul>
             </div>
 
             <div>
-                <h3 className="font-bold text-base mb-3 text-green-400">Legal</h3>
+                <h3 className="font-bold text-base mb-3 text-[#d697c8]">Legal</h3>
                 <ul className="space-y-2 text-xs text-gray-400">
-                    <li><Link href="/aviso-legal" className="hover:text-white transition-colors">Aviso Legal</Link></li>
-                    <li><Link href="/politica-privacidad" className="hover:text-white transition-colors">Política de Privacidad</Link></li>
-                    <li><Link href="/terminos-uso" className="hover:text-white transition-colors">Términos de Uso</Link></li>
-                    <li><Link href="/politica-cookies" className="hover:text-white transition-colors">Política de Cookies</Link></li>
-                    <li><Link href="/condiciones-contratacion" className="hover:text-white transition-colors">Condiciones de Contratación</Link></li>
-                    <li><Link href="/formulario-reclamaciones" className="hover:text-white transition-colors">Formulario de Reclamaciones</Link></li>
+                    <li><Link href={route('legal.notice')} className="hover:text-white transition-colors">Aviso Legal</Link></li>
+                    <li><Link href={route('privacy.policy')} className="hover:text-white transition-colors">Política de Privacidad</Link></li>
+                    <li><Link href={route('terms.use')} className="hover:text-white transition-colors">Términos de Uso</Link></li>
+                    <li><Link href={route('cookie.policy')} className="hover:text-white transition-colors">Política de Cookies</Link></li>
+                    <li><Link href={route('terms.contract')} className="hover:text-white transition-colors">Condiciones de Contratación</Link></li>
+                    <li><Link href={route('claims.form')} className="hover:text-white transition-colors">Formulario de Reclamaciones</Link></li>
                 </ul>
             </div>
         </div>

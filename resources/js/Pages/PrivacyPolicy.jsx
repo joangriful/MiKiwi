@@ -1,63 +1,141 @@
 import React from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import Header from '@/Components/Common/Header';
 import Footer from '@/Components/Common/Footer';
 
+const Section = ({ title, children }) => (
+    <section className="mb-10">
+        <h2 className="text-base font-bold text-gray-900 uppercase tracking-widest mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
+            <span className="text-secondary-dark">·</span> {title}
+        </h2>
+        <div className="text-gray-600 text-sm leading-relaxed space-y-3">{children}</div>
+    </section>
+);
+
 export default function PrivacyPolicy() {
     return (
-        <div className="min-h-screen flex flex-col bg-white font-sans select-none cursor-default text-gray-800">
+        <div className="min-h-screen flex flex-col bg-white font-sans text-gray-800">
             <Head title="Política de Privacidad - MiKiwi" />
-
             <Header />
 
-            <main className="flex-1 w-full max-w-4xl mx-auto py-16 px-6 md:px-12">
-                <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-900 border-b border-gray-100 pb-6">Política de Privacidad</h1>
+            <main className="flex-grow container mx-auto px-6 py-16 max-w-3xl">
+                {/* Breadcrumb */}
+                <nav className="text-xs text-gray-400 mb-8 flex items-center gap-2">
+                    <Link href={route('home')} className="hover:text-secondary-dark transition-colors">Inicio</Link>
+                    <span>/</span>
+                    <span className="text-gray-700">Política de Privacidad</span>
+                </nav>
 
-                <div className="space-y-8 text-sm md:text-base leading-relaxed text-gray-600">
-                    <section>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">1. Responsable del Tratamiento</h2>
-                        <p>
-                            MiKiwi Inc. (en adelante, "MiKiwi"), con domicilio social en Av. de la Fruta 123, es el responsable del tratamiento de sus datos personales.
-                            Para cualquier consulta relacionada con la privacidad, puede contactarnos en <span className="text-[#99b849] font-medium">mikiwi.toys@gmail.com</span>.
-                        </p>
-                    </section>
+                <h1 className="text-3xl font-bold mb-2 font-head uppercase tracking-tight text-secondary-dark">
+                    Política de Privacidad
+                </h1>
+                <p className="text-xs text-gray-400 mb-10">Última actualización: Febrero 2026</p>
 
-                    <section>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">2. Finalidad del Tratamiento</h2>
-                        <p className="mb-2">Sus datos personales serán tratados con las siguientes finalidades:</p>
-                        <ul className="list-disc pl-5 space-y-1">
-                            <li>Gestión de pedidos y facturación.</li>
-                            <li>Atención al cliente y gestión de reclamaciones.</li>
-                            <li>Envío de comunicaciones comerciales (si ha otorgado su consentimiento).</li>
-                            <li>Mejora de la experiencia de usuario y análisis web.</li>
-                        </ul>
-                    </section>
+                <Section title="Responsable del Tratamiento">
+                    <p>
+                        MiKiwi (en adelante, "MiKiwi"), con domicilio en Pago Valdeconejos, s/n, 11550 Chipiona, Cádiz, España,
+                        es el Responsable del Tratamiento de tus datos personales.
+                    </p>
+                    <p>
+                        <strong>Correo de contacto para privacidad:</strong> hola@mikiwi.com
+                    </p>
+                </Section>
 
-                    <section>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">3. Base Legitimadora</h2>
-                        <p>
-                            El tratamiento de sus datos se basa en la ejecución del contrato de compraventa, el cumplimiento de obligaciones legales y, en su caso, el consentimiento expreso del usuario.
-                        </p>
-                    </section>
+                <Section title="¿Qué datos recopilamos?">
+                    <p>Los datos personales que podemos recopilar son los siguientes, según la interacción que tengas con nosotros:</p>
+                    <ul className="list-disc pl-5 space-y-1 mt-2">
+                        <li><strong>Datos de identificación:</strong> nombre y apellidos, correo electrónico, teléfono.</li>
+                        <li><strong>Datos de envío:</strong> dirección postal, código postal, ciudad, país.</li>
+                        <li><strong>Datos de pago:</strong> procesados de forma segura por pasarelas de pago certificadas PCI-DSS. MiKiwi no almacena datos de tarjeta.</li>
+                        <li><strong>Datos de navegación:</strong> dirección IP, tipo de navegador, páginas visitadas, cookies de sesión.</li>
+                        <li><strong>Comunicaciones:</strong> mensajes enviados a través del formulario de contacto.</li>
+                    </ul>
+                </Section>
 
-                    <section>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">4. Destinatarios de los Datos</h2>
-                        <p>
-                            Sus datos no serán cedidos a terceros, salvo obligación legal o cuando sea necesario para la prestación del servicio (ej. empresas de transporte).
-                        </p>
-                    </section>
+                <Section title="¿Con qué finalidad tratamos tus datos?">
+                    <p>Tus datos personales son tratados con las siguientes finalidades:</p>
+                    <ul className="list-disc pl-5 space-y-1 mt-2">
+                        <li><strong>Gestión de pedidos:</strong> procesar, gestionar y confirmar tus compras y envíos.</li>
+                        <li><strong>Atención al cliente:</strong> responder a tus consultas, incidencias y reclamaciones.</li>
+                        <li><strong>Marketing:</strong> enviarte comunicaciones comerciales sobre novedades, ofertas y contenidos exclusivos (solo si has dado tu consentimiento).</li>
+                        <li><strong>Mejora del servicio:</strong> análisis estadístico del uso del sitio para mejorar la experiencia de usuario.</li>
+                        <li><strong>Obligaciones legales:</strong> cumplimiento de la normativa fiscal, aduanera y contable.</li>
+                    </ul>
+                </Section>
 
-                    <section>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">5. Derechos del Usuario</h2>
-                        <p>
-                            Puede ejercer sus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad enviando una solicitud a nuestro correo electrónico de contacto.
-                        </p>
-                    </section>
+                <Section title="Bases Jurídicas del Tratamiento">
+                    <ul className="list-disc pl-5 space-y-1">
+                        <li><strong>Ejecución de un contrato:</strong> para procesar tus pedidos y gestionar tu cuenta.</li>
+                        <li><strong>Consentimiento:</strong> para el envío de comunicaciones comerciales y newsletter.</li>
+                        <li><strong>Interés legítimo:</strong> para la prevención del fraude y la seguridad del sitio.</li>
+                        <li><strong>Obligación legal:</strong> para el cumplimiento de obligaciones tributarias y legales.</li>
+                    </ul>
+                </Section>
 
-                    <section className="pt-6 border-t border-gray-100 text-xs text-gray-500">
-                        <p>Última actualización: Enero 2026</p>
-                    </section>
-                </div>
+                <Section title="¿Durante cuánto tiempo conservamos tus datos?">
+                    <p>
+                        Conservamos tus datos durante el tiempo necesario para cumplir con las finalidades para las que fueron recogidos.
+                        En particular:
+                    </p>
+                    <ul className="list-disc pl-5 space-y-1 mt-2">
+                        <li>Los datos de pedidos se conservan durante <strong>5 años</strong> desde la fecha de compra, conforme a la normativa fiscal.</li>
+                        <li>Los datos de newsletter se conservan hasta que retires tu consentimiento.</li>
+                        <li>Los datos de contacto se conservan durante el tiempo necesario para responder a tu solicitud.</li>
+                    </ul>
+                </Section>
+
+                <Section title="¿A quién cedemos tus datos?">
+                    <p>
+                        MiKiwi podrá compartir tus datos con terceros únicamente cuando sea necesario para prestar el servicio:
+                    </p>
+                    <ul className="list-disc pl-5 space-y-1 mt-2">
+                        <li><strong>Empresas de transporte y logística:</strong> para la entrega de tus pedidos.</li>
+                        <li><strong>Pasarelas de pago:</strong> para procesar los pagos de forma segura.</li>
+                        <li><strong>Proveedores de servicios tecnológicos:</strong> alojamiento web, plataformas de correo electrónico y análisis.</li>
+                        <li><strong>Autoridades:</strong> cuando sea requerido por ley o resolución judicial.</li>
+                    </ul>
+                    <p>
+                        Nunca venderemos ni cederemos tus datos a terceros con fines comerciales propios sin tu consentimiento expreso.
+                    </p>
+                </Section>
+
+                <Section title="Tus Derechos">
+                    <p>Como titular de los datos, tienes los siguientes derechos reconocidos por el RGPD:</p>
+                    <ul className="list-disc pl-5 space-y-1 mt-2">
+                        <li><strong>Acceso:</strong> conocer qué datos personales tratamos sobre ti.</li>
+                        <li><strong>Rectificación:</strong> corregir datos inexactos o incompletos.</li>
+                        <li><strong>Supresión ("derecho al olvido"):</strong> solicitar la eliminación de tus datos cuando ya no sean necesarios.</li>
+                        <li><strong>Oposición:</strong> oponerte al tratamiento de tus datos para determinadas finalidades.</li>
+                        <li><strong>Portabilidad:</strong> recibir tus datos en un formato estructurado y de uso común.</li>
+                        <li><strong>Limitación del tratamiento:</strong> solicitar que el tratamiento de tus datos quede restringido.</li>
+                    </ul>
+                    <p>
+                        Para ejercer cualquiera de estos derechos, envíanos un correo a <strong>hola@mikiwi.com</strong> indicando
+                        el derecho que deseas ejercer y adjuntando una copia de tu DNI o documento identificativo.
+                    </p>
+                    <p>
+                        También tienes derecho a presentar una reclamación ante la Agencia Española de Protección de Datos (AEPD):
+                        {' '}<a href="https://www.aepd.es" target="_blank" rel="noopener noreferrer" className="text-secondary-dark font-medium hover:underline">www.aepd.es</a>.
+                    </p>
+                </Section>
+
+                <Section title="Seguridad de los Datos">
+                    <p>
+                        MiKiwi aplica medidas técnicas y organizativas adecuadas para proteger tus datos contra el acceso no autorizado,
+                        la pérdida, la destrucción o la divulgación accidental. El sitio web utiliza cifrado SSL/TLS en todas las
+                        comunicaciones y las contraseñas se almacenan de forma segura mediante funciones de hash.
+                    </p>
+                </Section>
+
+                <Section title="Cookies">
+                    <p>
+                        El Sitio Web utiliza cookies. Para más información sobre cómo las usamos y cómo gestionarlas, consulta
+                        nuestra{' '}
+                        <Link href={route('cookie.policy')} className="text-secondary-dark font-medium hover:underline">
+                            Política de Cookies
+                        </Link>.
+                    </p>
+                </Section>
             </main>
 
             <Footer />
