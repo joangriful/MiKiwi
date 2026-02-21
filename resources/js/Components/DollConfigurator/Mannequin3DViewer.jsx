@@ -130,71 +130,24 @@ export default function Mannequin3DViewer() {
                 </Suspense>
 
                 {/* Overlay Model Selector */}
-                <div className="absolute top-4 right-4 flex flex-col gap-2 max-w-[120px]">
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-white/80 backdrop-blur-sm p-2 rounded-lg text-center shadow-sm">
+                <div className="absolute top-4 right-4 flex flex-col gap-3 max-w-[140px] z-50">
+                    <p className="text-[12px] font-bold text-gray-800 uppercase tracking-widest bg-white/90 backdrop-blur-sm p-3 rounded-xl text-center shadow-lg border border-white/20">
                         Modelos
                     </p>
-                    <div className="flex flex-col gap-2 overflow-y-auto max-h-[400px] p-1">
+                    <div className="flex flex-col gap-3 overflow-y-auto max-h-[70vh] p-1 scrollbar-hide">
                         {availableModels.map((model) => (
                             <button
                                 key={model.id}
                                 onClick={() => setSelectedModel(model)}
-                                className={`group p-2 rounded-xl transition-all border-2 text-center h-16 flex items-center justify-center font-bold text-[10px] uppercase tracking-tighter ${selectedModel.id === model.id
-                                        ? 'bg-black text-white border-black shadow-lg scale-105'
-                                        : 'bg-white text-gray-400 border-white hover:border-gray-200'
+                                className={`group p-4 rounded-2xl transition-all border-2 text-center h-24 flex items-center justify-center font-bold text-xs uppercase tracking-tight ${selectedModel.id === model.id
+                                    ? 'bg-black text-white border-black shadow-2xl scale-105 z-10'
+                                    : 'bg-white/80 backdrop-blur-md text-gray-600 border-white hover:border-black/10 hover:bg-white shadow-sm'
                                     }`}
                             >
                                 {model.name}
                             </button>
                         ))}
                     </div>
-                </div>
-            </div>
-
-            {/* Controls Side Panel */}
-            <div className="w-full lg:w-80 bg-white border-l border-gray-100 flex flex-col shadow-xl z-10 overflow-hidden">
-                <div className="p-6 border-b border-gray-50">
-                    <h2 className="text-sm font-bold uppercase tracking-widest text-black mb-1">Anatomía</h2>
-                    <p className="text-[10px] text-gray-500 font-medium">Ajusta las proporciones del maniquí</p>
-                </div>
-
-                <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                    {Object.entries(bodyParams).map(([key, value]) => (
-                        <div key={key} className="space-y-3">
-                            <div className="flex justify-between items-center">
-                                <label className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">
-                                    {key === 'height' ? 'Altura' :
-                                        key === 'bust' ? 'Busto' :
-                                            key === 'hips' ? 'Caderas' :
-                                                key === 'waist' ? 'Cintura' :
-                                                    key === 'legs' ? 'Piernas' :
-                                                        key === 'shoulders' ? 'Hombros' :
-                                                            key === 'head' ? 'Cabeza' : key}
-                                </label>
-                                <span className="text-[10px] font-mono font-bold text-black bg-gray-100 px-1.5 py-0.5 rounded">
-                                    {Math.round(value * 100)}%
-                                </span>
-                            </div>
-                            <input
-                                type="range"
-                                min="0"
-                                max="1"
-                                step="0.01"
-                                value={value}
-                                onChange={(e) => updateBodyParam(key, e.target.value)}
-                                className="w-full h-1 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-black"
-                            />
-                        </div>
-                    ))}
-                </div>
-
-                <div className="p-6 bg-gray-50 border-t border-gray-100">
-                    <button
-                        onClick={() => setBodyParams({ height: 0.5, bust: 0.5, hips: 0.5, waist: 0.5, legs: 0.5, shoulders: 0.5, head: 0.5 })}
-                        className="w-full py-3 bg-white border border-gray-200 text-black text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-gray-100 transition-colors shadow-sm"
-                    >
-                        Resetear Anatomía
-                    </button>
                 </div>
             </div>
         </div>
