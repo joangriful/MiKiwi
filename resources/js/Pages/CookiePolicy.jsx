@@ -1,179 +1,154 @@
 import React from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import Header from '@/Components/Common/Header';
 import Footer from '@/Components/Common/Footer';
 
+const Section = ({ title, children }) => (
+    <section className="mb-10">
+        <h2 className="text-base font-bold text-gray-900 uppercase tracking-widest mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
+            <span className="text-secondary-dark">·</span> {title}
+        </h2>
+        <div className="text-gray-600 text-sm leading-relaxed space-y-3">{children}</div>
+    </section>
+);
+
+const CookieTable = ({ rows }) => (
+    <div className="overflow-x-auto mt-4">
+        <table className="w-full text-xs border-collapse">
+            <thead>
+                <tr className="bg-gray-50">
+                    <th className="text-left p-3 font-semibold text-gray-700 border border-gray-200">Cookie</th>
+                    <th className="text-left p-3 font-semibold text-gray-700 border border-gray-200">Tipo</th>
+                    <th className="text-left p-3 font-semibold text-gray-700 border border-gray-200">Finalidad</th>
+                    <th className="text-left p-3 font-semibold text-gray-700 border border-gray-200">Duración</th>
+                </tr>
+            </thead>
+            <tbody>
+                {rows.map((row, i) => (
+                    <tr key={i} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                        <td className="p-3 border border-gray-200 font-mono text-gray-600">{row.name}</td>
+                        <td className="p-3 border border-gray-200">{row.type}</td>
+                        <td className="p-3 border border-gray-200">{row.purpose}</td>
+                        <td className="p-3 border border-gray-200">{row.duration}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    </div>
+);
+
 export default function CookiePolicy() {
     return (
-        <div className="min-h-screen flex flex-col bg-white font-sans select-none cursor-default text-gray-800">
+        <div className="min-h-screen flex flex-col bg-white font-sans text-gray-800">
             <Head title="Política de Cookies - MiKiwi" />
-
             <Header />
 
-            <main className="flex-1 w-full max-w-4xl mx-auto py-16 px-6 md:px-12">
-                <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-900 border-b border-gray-100 pb-6 flex items-center gap-3">
-                    <img src="/assets/icons/cookies.svg" alt="Cookies" className="w-8 h-8 md:w-10 md:h-10" />
+            <main className="flex-grow container mx-auto px-6 py-16 max-w-3xl">
+                {/* Breadcrumb */}
+                <nav className="text-xs text-gray-400 mb-8 flex items-center gap-2">
+                    <Link href={route('home')} className="hover:text-secondary-dark transition-colors">Inicio</Link>
+                    <span>/</span>
+                    <span className="text-gray-700">Política de Cookies</span>
+                </nav>
+
+                <h1 className="text-3xl font-bold mb-2 font-head uppercase tracking-tight text-secondary-dark">
                     Política de Cookies
                 </h1>
+                <p className="text-xs text-gray-400 mb-10">Última actualización: Febrero 2026</p>
 
-                <div className="space-y-8 text-sm md:text-base leading-relaxed text-gray-600">
-                    <section>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">¿Qué son las cookies?</h2>
-                        <p>
-                            Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas un sitio web.
-                            Estos archivos permiten que el sitio web recuerde tus acciones y preferencias (como inicio de sesión, idioma,
-                            tamaño de fuente y otras preferencias de visualización) durante un período de tiempo, por lo que no tienes
-                            que volver a configurarlas cada vez que regreses al sitio o navegues de una página a otra.
-                        </p>
-                    </section>
+                <Section title="¿Qué son las cookies?">
+                    <p>
+                        Las cookies son pequeños archivos de texto que los sitios web almacenan en tu dispositivo cuando los visitas.
+                        Su función es recordar información sobre tu visita para que la próxima vez que accedas al sitio resulte más
+                        fácil y útil.
+                    </p>
+                    <p>
+                        Las cookies son totalmente seguras y no contienen información personal a menos que tú la hayas facilitado
+                        al sitio web.
+                    </p>
+                </Section>
 
-                    <section>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">¿Cómo utilizamos las cookies?</h2>
-                        <p className="mb-3">
-                            En MiKiwi, utilizamos cookies para mejorar tu experiencia de navegación y proporcionar funcionalidades
-                            personalizadas. Nuestro uso de cookies se categoriza de la siguiente manera:
-                        </p>
+                <Section title="¿Qué tipos de cookies utilizamos?">
+                    <p>En MiKiwi utilizamos los siguientes tipos de cookies:</p>
 
-                        <div className="space-y-6">
-                            <div>
-                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Cookies Esenciales</h3>
-                                <p>
-                                    Estas cookies son necesarias para el funcionamiento básico del sitio web. Permiten la navegación
-                                    y el uso de funciones básicas como el acceso a áreas seguras del sitio. Sin estas cookies,
-                                    el sitio web no puede funcionar correctamente.
-                                </p>
-                                <ul className="list-disc pl-5 mt-2 space-y-1">
-                                    <li>Gestión de sesiones de usuario</li>
-                                    <li>Autenticación y seguridad</li>
-                                    <li>Carrito de compras</li>
-                                    <li>Preferencias de consentimiento de cookies</li>
-                                </ul>
-                            </div>
-
-                            <div>
-                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Cookies de Rendimiento y Analíticas</h3>
-                                <p>
-                                    Estas cookies recopilan información sobre cómo utilizas nuestro sitio web, como las páginas
-                                    que visitas con más frecuencia y si recibes mensajes de error. Utilizamos esta información
-                                    para mejorar el funcionamiento del sitio web.
-                                </p>
-                                <ul className="list-disc pl-5 mt-2 space-y-1">
-                                    <li>Google Analytics (análisis de tráfico web)</li>
-                                    <li>Métricas de rendimiento del sitio</li>
-                                    <li>Análisis de comportamiento del usuario</li>
-                                </ul>
-                            </div>
-
-                            <div>
-                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Cookies de Funcionalidad</h3>
-                                <p>
-                                    Estas cookies permiten que el sitio web recuerde las elecciones que haces (como tu nombre de
-                                    usuario, idioma o la región en la que te encuentras) y proporcionan características mejoradas
-                                    y más personales.
-                                </p>
-                                <ul className="list-disc pl-5 mt-2 space-y-1">
-                                    <li>Preferencias de idioma</li>
-                                    <li>Configuraciones de visualización</li>
-                                    <li>Personalización de contenido</li>
-                                </ul>
-                            </div>
-
-                            <div>
-                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Cookies de Marketing y Publicidad</h3>
-                                <p>
-                                    Estas cookies se utilizan para ofrecer contenido publicitario más relevante para ti y tus intereses.
-                                    También se utilizan para limitar el número de veces que ves un anuncio y ayudar a medir la efectividad
-                                    de las campañas publicitarias.
-                                </p>
-                                <ul className="list-disc pl-5 mt-2 space-y-1">
-                                    <li>Publicidad dirigida</li>
-                                    <li>Seguimiento de conversiones</li>
-                                    <li>Remarketing</li>
-                                </ul>
-                            </div>
+                    <div className="mt-4 space-y-5">
+                        <div className="bg-gray-50 rounded-lg p-4">
+                            <h3 className="font-bold text-gray-900 mb-1">🔒 Cookies estrictamente necesarias</h3>
+                            <p>Son imprescindibles para el correcto funcionamiento del Sitio Web. Sin ellas, servicios como el carrito de compras, el inicio de sesión o el formulario de pago no funcionarían. No requieren tu consentimiento.</p>
                         </div>
-                    </section>
 
-                    <section>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">Cookies de terceros</h2>
-                        <p className="mb-3">
-                            Algunos de nuestros socios también pueden establecer cookies en tu dispositivo cuando visitas nuestro sitio.
-                            No tenemos control sobre estas cookies de terceros y te recomendamos que revises las políticas de privacidad
-                            de estos servicios:
-                        </p>
-                        <ul className="list-disc pl-5 space-y-1">
-                            <li><span className="font-medium">Google Analytics</span> - Para análisis web y estadísticas de uso</li>
-                            <li><span className="font-medium">Cloudinary</span> - Para gestión y optimización de imágenes</li>
-                            <li><span className="font-medium">Redes sociales</span> - Para integración de contenido social</li>
-                        </ul>
-                    </section>
-
-                    <section>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">¿Cómo gestionar las cookies?</h2>
-                        <p className="mb-3">
-                            Puedes controlar y/o eliminar las cookies según desees. Puedes eliminar todas las cookies que ya están
-                            en tu dispositivo y puedes configurar la mayoría de los navegadores para evitar que se coloquen.
-                            Sin embargo, si haces esto, es posible que tengas que ajustar manualmente algunas preferencias cada vez
-                            que visites un sitio y algunos servicios y funcionalidades pueden no funcionar.
-                        </p>
-
-                        <div className="bg-gray-50 border border-gray-100 rounded-lg p-6 mt-4">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-3">Gestión por navegador:</h3>
-                            <ul className="space-y-2">
-                                <li>
-                                    <span className="font-medium">Chrome:</span>
-                                    <span className="ml-2">Configuración → Privacidad y seguridad → Cookies y otros datos del sitio</span>
-                                </li>
-                                <li>
-                                    <span className="font-medium">Firefox:</span>
-                                    <span className="ml-2">Opciones → Privacidad y seguridad → Cookies y datos del sitio</span>
-                                </li>
-                                <li>
-                                    <span className="font-medium">Safari:</span>
-                                    <span className="ml-2">Preferencias → Privacidad → Gestionar datos de sitios web</span>
-                                </li>
-                                <li>
-                                    <span className="font-medium">Edge:</span>
-                                    <span className="ml-2">Configuración → Cookies y permisos del sitio → Cookies y datos del sitio</span>
-                                </li>
-                            </ul>
+                        <div className="bg-gray-50 rounded-lg p-4">
+                            <h3 className="font-bold text-gray-900 mb-1">📊 Cookies analíticas</h3>
+                            <p>Nos permiten medir y analizar el comportamiento de los usuarios en el Sitio Web (páginas visitadas, tiempo de sesión, etc.) para mejorar el servicio. Solo se instalan con tu consentimiento.</p>
                         </div>
-                    </section>
 
-                    <section>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">Duración de las cookies</h2>
-                        <p className="mb-3">
-                            Las cookies que utilizamos tienen diferentes períodos de duración:
-                        </p>
-                        <ul className="list-disc pl-5 space-y-1">
-                            <li><span className="font-medium">Cookies de sesión:</span> Se eliminan automáticamente cuando cierras el navegador</li>
-                            <li><span className="font-medium">Cookies persistentes:</span> Permanecen en tu dispositivo por un período determinado (generalmente de 1 mes a 2 años)</li>
+                        <div className="bg-gray-50 rounded-lg p-4">
+                            <h3 className="font-bold text-gray-900 mb-1">⚙️ Cookies de funcionalidad</h3>
+                            <p>Recuerdan tus preferencias de usuario (idioma, región, etc.) para personalizar tu experiencia. Solo se instalan con tu consentimiento.</p>
+                        </div>
+
+                        <div className="bg-gray-50 rounded-lg p-4">
+                            <h3 className="font-bold text-gray-900 mb-1">📣 Cookies de marketing y publicidad</h3>
+                            <p>Permiten mostrarte publicidad relevante basada en tus intereses y medir la efectividad de nuestras campañas. Solo se instalan con tu consentimiento.</p>
+                        </div>
+                    </div>
+                </Section>
+
+                <Section title="Listado de cookies utilizadas">
+                    <CookieTable rows={[
+                        { name: 'XSRF-TOKEN', type: 'Necesaria', purpose: 'Protección CSRF en formularios', duration: 'Sesión' },
+                        { name: 'mikiwi_session', type: 'Necesaria', purpose: 'Gestión de sesión de usuario', duration: 'Sesión' },
+                        { name: 'remember_web_*', type: 'Necesaria', purpose: 'Recordar inicio de sesión', duration: '5 años' },
+                        { name: '_ga', type: 'Analítica', purpose: 'Google Analytics - identificar usuarios únicos', duration: '2 años' },
+                        { name: '_ga_*', type: 'Analítica', purpose: 'Google Analytics - distinción de sesiones', duration: '2 años' },
+                        { name: '_gid', type: 'Analítica', purpose: 'Google Analytics - distinción de usuarios', duration: '24 horas' },
+                        { name: 'lang', type: 'Funcionalidad', purpose: 'Preferencia de idioma seleccionada', duration: '1 año' },
+                        { name: 'fbp', type: 'Marketing', purpose: 'Meta Pixel - seguimiento de conversiones', duration: '90 días' },
+                    ]} />
+                </Section>
+
+                <Section title="Cookies de terceros">
+                    <p>
+                        Algunos servicios de terceros que usamos pueden instalar sus propias cookies. No controlamos dichas cookies
+                        y te recomendamos que revises las políticas de privacidad de cada proveedor:
+                    </p>
+                    <ul className="list-disc pl-5 space-y-1 mt-2">
+                        <li><strong>Google Analytics</strong> – Análisis web: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-secondary-dark hover:underline">policies.google.com/privacy</a></li>
+                        <li><strong>Meta Pixel (Facebook/Instagram)</strong> – Publicidad: <a href="https://www.facebook.com/privacy/policy" target="_blank" rel="noopener noreferrer" className="text-secondary-dark hover:underline">facebook.com/privacy</a></li>
+                        <li><strong>Cloudinary</strong> – Gestión de imágenes: <a href="https://cloudinary.com/privacy" target="_blank" rel="noopener noreferrer" className="text-secondary-dark hover:underline">cloudinary.com/privacy</a></li>
+                    </ul>
+                </Section>
+
+                <Section title="¿Cómo gestionar las cookies?">
+                    <p>
+                        Puedes configurar tu navegador para rechazar, eliminar o gestionar las cookies en cualquier momento.
+                        Ten en cuenta que desactivar ciertas cookies puede afectar al funcionamiento del Sitio Web.
+                    </p>
+
+                    <div className="bg-gray-50 border border-gray-100 rounded-lg p-5 mt-4 space-y-2">
+                        <h3 className="text-sm font-semibold text-gray-900 mb-3">Gestión por navegador:</h3>
+                        <ul className="space-y-2">
+                            <li><span className="font-medium">Chrome:</span> <span className="ml-1 text-gray-500">Ajustes → Privacidad y seguridad → Cookies y otros datos del sitio</span></li>
+                            <li><span className="font-medium">Firefox:</span> <span className="ml-1 text-gray-500">Opciones → Privacidad y seguridad → Cookies y datos del sitio</span></li>
+                            <li><span className="font-medium">Safari:</span> <span className="ml-1 text-gray-500">Preferencias → Privacidad → Gestionar datos de sitios web</span></li>
+                            <li><span className="font-medium">Edge:</span> <span className="ml-1 text-gray-500">Configuración → Cookies y permisos del sitio</span></li>
                         </ul>
-                    </section>
+                    </div>
+                </Section>
 
-                    <section>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">Actualizaciones de esta política</h2>
-                        <p>
-                            Podemos actualizar nuestra Política de Cookies ocasionalmente para reflejar cambios en nuestras prácticas
-                            o por otras razones operativas, legales o reglamentarias. Te recomendamos que revises esta página periódicamente
-                            para estar informado sobre nuestro uso de cookies.
-                        </p>
-                    </section>
+                <Section title="Actualizaciones de esta Política">
+                    <p>
+                        MiKiwi puede actualizar esta Política de Cookies en cualquier momento. Los cambios serán publicados en esta
+                        página e indicaremos la fecha de la última actualización. Te recomendamos revisarla periódicamente.
+                    </p>
+                </Section>
 
-                    <section>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">Contacto</h2>
-                        <p>
-                            Si tienes alguna pregunta sobre nuestra Política de Cookies, puedes contactarnos en{' '}
-                            <a href="mailto:mikiwi.toys@gmail.com" className="text-[#99b849] font-medium hover:underline">
-                                mikiwi.toys@gmail.com
-                            </a>
-                        </p>
-                    </section>
-
-                    <section className="pt-6 border-t border-gray-100 text-xs text-gray-500">
-                        <p>Última actualización: Febrero 2026</p>
-                    </section>
-                </div>
+                <Section title="Contacto">
+                    <p>
+                        Para cualquier duda sobre nuestra Política de Cookies, escríbenos a{' '}
+                        <a href="mailto:hola@mikiwi.com" className="text-secondary-dark font-medium hover:underline">hola@mikiwi.com</a>.
+                    </p>
+                </Section>
             </main>
 
             <Footer />

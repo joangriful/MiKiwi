@@ -7,9 +7,8 @@ export default function FooterBottom() {
             <p>&copy; 2026 MiKiwi Inc. Todos los derechos reservados.</p>
             <LanguageSelector />
             <div className="flex gap-6">
-                <a href="#" className="hover:text-white transition-colors">Política de Privacidad</a>
-                <a href="#" className="hover:text-white transition-colors">Términos de Uso</a>
-                <a href="#" className="hover:text-white transition-colors">Mapa del sitio</a>
+                <Link href={route('privacy.policy')} className="hover:text-white transition-colors">Política de Privacidad</Link>
+                <Link href={route('terms.use')} className="hover:text-white transition-colors">Términos de Uso</Link>
             </div>
         </div>
     );
