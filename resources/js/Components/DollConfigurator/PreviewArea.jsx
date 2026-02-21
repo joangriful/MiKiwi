@@ -35,7 +35,7 @@ const LayerImage = ({ layer, partPositions }) => {
         <img
             src={src}
             alt={layer.key}
-            fetchPriority="high"
+            fetchpriority="high"
             className="pointer-events-none select-none"
             style={combinedStyle}
         />
