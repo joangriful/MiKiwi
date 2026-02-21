@@ -21,7 +21,7 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     $heroImages = \App\Models\HeroImage::orderBy('created_at', 'desc')->get();
-    
+
     // Fetch featured products with category details for the cards
     $featuredProducts = \App\Models\Product::with('category:id,name')
         ->where('is_featured', true)
@@ -154,9 +154,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
         // Fetch categories for Products Manager (padres con sus subcategorías)
         $categories = \App\Models\Category::whereNull('parent_id')
             ->where('is_active', true)
-            ->with(['children' => function ($q) {
-                $q->where('is_active', true)->orderBy('name')->select(['id', 'parent_id', 'name']);
-            }])
+            ->with([
+                'children' => function ($q) {
+                    $q->where('is_active', true)->orderBy('name')->select(['id', 'parent_id', 'name']);
+                }
+            ])
             ->orderBy('name')
             ->get(['id', 'parent_id', 'name']);
 
@@ -191,9 +193,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/products/{product:id}', [App\Http\Controllers\ProductManagerController::class, 'updateProduct'])->name('products.update');
     Route::delete('/products/{product:id}', [App\Http\Controllers\ProductManagerController::class, 'deleteProduct'])->name('products.delete');
 
-    // Newsletter
-    Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 });
+
+// Newsletter
+Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
 Route::get('/formulario-reclamaciones', function () {
     return Inertia::render('ClaimsForm');
@@ -239,9 +242,9 @@ Route::get('/compania', function () {
     return Inertia::render('Company');
 })->name('compania');
 
-Route::get('/blog', function () {
-    return Inertia::render('Blog');
-})->name('blog');
+Route::get('/preguntas-frecuentes', function () {
+    return Inertia::render('FAQ');
+})->name('faq');
 
 Route::get('/contacto', function () {
     return Inertia::render('Contact');

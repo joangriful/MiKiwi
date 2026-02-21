@@ -19,7 +19,7 @@ export default function FooterLinks() {
                 <ul className="space-y-2 text-xs text-gray-400">
                     <li><Link href="/sobre-nosotros" className="hover:text-white transition-colors">Sobre Nosotros</Link></li>
                     <li><Link href="/sostenibilidad" className="hover:text-white transition-colors">Sostenibilidad</Link></li>
-                    <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+                    <li><Link href="/preguntas-frecuentes" className="hover:text-white transition-colors">Preguntas frecuentes</Link></li>
                     <li><Link href="/contacto" className="hover:text-white transition-colors">Contacto</Link></li>
                 </ul>
             </div>
