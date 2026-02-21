@@ -143,10 +143,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
         $users = \App\Models\User::all(['id', 'name', 'email', 'username', 'role', 'created_at']);
         $heroImages = \App\Models\HeroImage::orderBy('created_at', 'desc')->get();
 
-        // Fetch categories for Products Manager
-        $categories = \App\Models\Category::where('is_active', true)
+        // Fetch categories for Products Manager (padres con sus subcategorías)
+        $categories = \App\Models\Category::whereNull('parent_id')
+            ->where('is_active', true)
+            ->with(['children' => function ($q) {
+                $q->where('is_active', true)->orderBy('name')->select(['id', 'parent_id', 'name']);
+            }])
             ->orderBy('name')
-            ->get(['id', 'name']);
+            ->get(['id', 'parent_id', 'name']);
 
         $products = \App\Models\Product::with('category:id,name')
             ->orderBy('created_at', 'desc')
@@ -163,6 +167,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'users' => $users,
             'heroImages' => $heroImages,
             'products' => $products,
+            'categories' => $categories,
         ]);
     })->name('components.manager');
 
