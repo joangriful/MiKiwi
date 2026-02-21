@@ -173,7 +173,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
             </div>
 
             {/* Main Layout */}
-            <div className="flex-1 flex flex-col min-[724px]:flex-row min-[724px]:flex-wrap min-[724px]:content-start lg:flex-nowrap bg-gray-50 overflow-hidden cursor-default select-none touch-none relative">
+            <div className="flex-none flex flex-col min-[724px]:flex-row min-[724px]:flex-wrap min-[724px]:content-start lg:flex-nowrap bg-gray-50 cursor-default select-none touch-none relative h-[calc(100vh-150px)] min-h-[650px]">
 
                 {activeTab === 'customize' ? (
                     <>
@@ -263,7 +263,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                         </div>
                     </>
                 ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center bg-white z-30">
+                    <div className="flex-1 w-full h-full flex flex-col items-center justify-center bg-white z-30 relative">
                         <Suspense fallback={
                             <div className="flex flex-col items-center justify-center w-full h-full bg-white">
                                 <div className="w-12 h-12 border-4 border-black/10 border-t-black rounded-full animate-spin mb-4"></div>
