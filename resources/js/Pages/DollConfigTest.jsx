@@ -6,6 +6,7 @@ import PartSelector from '@/Components/DollConfigurator/PartSelector';
 import CloseUp from '@/Components/DollConfigurator/CloseUp';
 import OptionsBar from '@/Components/DollConfigurator/OptionsBar';
 import Header from '@/Components/Common/Header';
+import Footer from '@/Components/Common/Footer';
 
 // Lazy load the correct 3D viewer
 const Mannequin3DViewer = lazy(() => import('@/Components/DollConfigurator/Mannequin3DViewer'));
@@ -141,7 +142,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
     }, [defaultSettings]);
 
     return (
-        <div className="flex flex-col h-screen overflow-hidden bg-white">
+        <div className="flex flex-col min-h-screen bg-white">
             <Head title="Doll Configurator" />
 
             {/* Static Header with Tabs */}
@@ -275,6 +276,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                 )}
 
             </div>
+            <Footer />
         </div>
     );
 }

@@ -7,7 +7,7 @@ export default function FooterLinks() {
                 <h3 className="font-bold text-base mb-3 text-[#d697c8]">Tienda</h3>
                 <ul className="space-y-2 text-xs text-gray-400">
                     <li><Link href={route('products.index')} className="hover:text-white transition-colors">Mis productos</Link></li>
-                    <li><Link href={route('configurador.dolls')} className="hover:text-white transition-colors">Personalizar muñecas</Link></li>
+                    <li><Link href={route('doll.config.test')} className="hover:text-white transition-colors">Personalizar muñecas</Link></li>
                 </ul>
             </div>
 
