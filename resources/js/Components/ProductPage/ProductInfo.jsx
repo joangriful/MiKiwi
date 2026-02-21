@@ -163,50 +163,48 @@ export default function ProductInfo({ product }) {
             </div>
 
             {/* Actions */}
-            <div className="mt-auto flex flex-col gap-3 pt-8 border-t border-gray-50">
-                {/* Quantity + Add to Cart */}
-                <div className="flex gap-4">
-                    {/* Quantity Selector */}
-                    <div className="flex items-center bg-gray-50 rounded-2xl border border-gray-100 p-1">
-                        <button
-                            onClick={() =>
-                                setQuantity((q) => Math.max(1, q - 1))
-                            }
-                            className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors font-bold text-lg"
-                        >
-                            -
-                        </button>
-                        <span className="w-8 text-center font-bold text-sm text-gray-900">
+            <div className="mt-auto flex flex-col gap-4 pt-8 border-t border-gray-50">
+                {/* Quantity Selector */}
+                <div className="flex items-center justify-between bg-gray-50 rounded-2xl border border-gray-100 p-2">
+                    <button
+                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                        className="w-12 h-12 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors font-bold text-xl"
+                    >
+                        -
+                    </button>
+                    <div className="flex flex-col items-center">
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">CANTIDAD</span>
+                        <span className="font-bold text-lg text-gray-900 leading-none">
                             {quantity}
                         </span>
-                        <button
-                            onClick={() => setQuantity((q) => q + 1)}
-                            className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors font-bold text-lg"
-                        >
-                            +
-                        </button>
                     </div>
-
-                    {/* Add to Cart Button */}
                     <button
-                        onClick={handleAddToCart}
-                        disabled={isLoading}
-                        className="flex-1 bg-black text-white rounded-2xl py-4 px-8 font-bold text-xs uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95 shadow-xl shadow-black/10 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
+                        onClick={() => setQuantity((q) => q + 1)}
+                        className="w-12 h-12 flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors font-bold text-xl"
                     >
-                        <span className="material-symbols-outlined text-lg">
-                            shopping_cart
-                        </span>
-                        Añadir al carrito
+                        +
                     </button>
                 </div>
+
+                {/* Add to Cart Button */}
+                <button
+                    onClick={handleAddToCart}
+                    disabled={isLoading}
+                    className="w-full bg-black text-white rounded-2xl py-5 px-8 font-bold text-xs uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95 shadow-xl shadow-black/10 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                    <span className="material-symbols-outlined text-xl">
+                        shopping_cart
+                    </span>
+                    Añadir al carrito
+                </button>
 
                 {/* Buy Now Button */}
                 <button
                     onClick={handleBuyNow}
                     disabled={isLoading}
-                    className="w-full bg-[#99b849] text-white rounded-2xl py-4 px-8 font-bold text-xs uppercase tracking-[0.2em] hover:bg-[#88a441] transition-all active:scale-95 shadow-xl shadow-green-100 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full bg-[#99b849] text-white rounded-2xl py-5 px-8 font-bold text-xs uppercase tracking-[0.2em] hover:bg-[#88a441] transition-all active:scale-95 shadow-xl shadow-green-100 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                    <span className="material-symbols-outlined text-lg">
+                    <span className="material-symbols-outlined text-xl">
                         bolt
                     </span>
                     Comprar ahora

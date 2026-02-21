@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, Link } from '@inertiajs/react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import axios from 'axios';
@@ -25,7 +25,8 @@ function CheckoutContent({
     formProcessing,
     formTransform,
     formErrors,
-    popularProducts
+    popularProducts,
+    total
 }) {
     const stripe = useStripe();
     const elements = useElements();
@@ -264,6 +265,7 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                             formTransform={transform}
                             formErrors={errors}
                             popularProducts={popularProducts}
+                            total={total}
                         />
                     </div>
 
@@ -276,7 +278,7 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                                 {cart.items && cart.items.length > 0 ? (
                                     cart.items.map((item) => (
                                         <div key={item.product_id} className="flex gap-4 items-center">
-                                            <div className="relative w-20 h-20 flex-shrink-0 bg-white rounded-lg border border-gray-100 overflow-hidden shadow-sm">
+                                            <Link href={route('products.show', item.product.slug)} className="relative w-20 h-20 flex-shrink-0 bg-white rounded-lg border border-gray-100 overflow-hidden shadow-sm hover:opacity-80 transition-opacity block">
                                                 <img
                                                     src={(() => {
                                                         try {
@@ -295,17 +297,23 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                                                     {item.quantity}
                                                 </span>
                                                 <button
-                                                    onClick={() => handleRemoveItem(item.product_id)}
-                                                    className="absolute bottom-0 right-0 bg-red-500 text-white p-1 rounded-tl-lg hover:bg-red-600 transition-colors"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        handleRemoveItem(item.product_id);
+                                                    }}
+                                                    className="absolute bottom-0 right-0 bg-red-500 text-white p-1 rounded-tl-lg hover:bg-red-600 transition-colors z-10"
                                                     title="Eliminar del carrito"
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                                     </svg>
                                                 </button>
-                                            </div>
+                                            </Link>
                                             <div className="flex-1">
-                                                <h4 className="text-sm font-medium text-gray-900 leading-tight">{item.product.name}</h4>
+                                                <Link href={route('products.show', item.product.slug)} className="text-sm font-medium text-gray-900 leading-tight hover:text-primary transition-colors block">
+                                                    {item.product.name}
+                                                </Link>
                                                 <p className="text-xs text-gray-400 mt-1 uppercase tracking-tighter">REF: {item.product.sku || 'N/A'}</p>
                                             </div>
                                             <div className="text-sm font-semibold text-gray-900">

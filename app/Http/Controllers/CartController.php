@@ -95,7 +95,7 @@ class CartController extends Controller
     /**
      * Actualizar cantidad de un producto en el carrito
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, string $id)
     {
@@ -104,44 +104,55 @@ class CartController extends Controller
                 'quantity' => 'required|integer|min:1',
             ]);
 
-            if ($validated['quantity'] <= 0) {
-                $this->cartService->removeFromCart($id);
-                return redirect()->back()->with('success', 'Producto eliminado');
+            $this->cartService->updateQuantity($id, $validated['quantity']);
+
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Cantidad actualizada',
+                ]);
             }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Cantidad actualizada',
-                'cart' => $cart,
-            ]);
+            return redirect()->back()->with('success', 'Cantidad actualizada');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 400);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 400);
+            }
+
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 
     /**
      * Eliminar producto del carrito
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         try {
             $this->cartService->removeFromCart($id);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Producto eliminado del carrito',
-                'cart' => $cart,
-            ]);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Producto eliminado del carrito',
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Producto eliminado del carrito');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 400);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 400);
+            }
+
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 

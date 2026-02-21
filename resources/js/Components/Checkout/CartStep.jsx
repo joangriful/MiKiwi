@@ -50,7 +50,7 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                         key={product.id}
                         className="group flex flex-col items-center text-center"
                     >
-                        <div className="relative aspect-square w-full bg-gray-50 rounded-xl overflow-hidden mb-3 border border-gray-100 group-hover:border-indigo-200 transition-colors">
+                        <Link href={route('products.show', product.slug)} className="relative aspect-square w-full bg-gray-50 rounded-xl overflow-hidden mb-3 border border-gray-100 group-hover:border-indigo-200 transition-colors block">
                             <img
                                 src={
                                     Array.isArray(product.images) &&
@@ -61,10 +61,10 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                                 alt={product.name}
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
-                        </div>
-                        <h4 className="text-sm font-medium text-gray-900 line-clamp-1">
+                        </Link>
+                        <Link href={route('products.show', product.slug)} className="text-sm font-medium text-gray-900 line-clamp-1 hover:text-primary transition-colors">
                             {product.name}
-                        </h4>
+                        </Link>
                         <p className="text-sm font-bold text-primary mt-1">
                             {parseFloat(product.base_price).toFixed(2)} €
                         </p>
@@ -143,7 +143,7 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                                 className="py-6 flex items-center justify-between gap-4"
                             >
                                 <div className="flex items-center space-x-6">
-                                    <div className="w-24 h-24 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100">
+                                    <Link href={route('products.show', item.product.slug)} className="w-24 h-24 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100 hover:opacity-80 transition-opacity block">
                                         <img
                                             src={(() => {
                                                 try {
@@ -168,11 +168,11 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                                             alt={item.product.name}
                                             className="w-full h-full object-cover"
                                         />
-                                    </div>
+                                    </Link>
                                     <div className="flex flex-col">
-                                        <h3 className="text-xl font-bold text-gray-900 leading-tight">
+                                        <Link href={route('products.show', item.product.slug)} className="text-xl font-bold text-gray-900 leading-tight hover:text-primary transition-colors">
                                             {item.product.name}
-                                        </h3>
+                                        </Link>
                                         <p className="text-sm text-gray-500 mt-1">
                                             {parseFloat(
                                                 item.product.base_price,
