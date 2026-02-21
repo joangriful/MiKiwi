@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, Suspense, lazy } from 'react';
 import { Head, router } from '@inertiajs/react';
 import axios from 'axios';
 import PreviewArea from '@/Components/DollConfigurator/PreviewArea';
@@ -7,7 +7,11 @@ import CloseUp from '@/Components/DollConfigurator/CloseUp';
 import OptionsBar from '@/Components/DollConfigurator/OptionsBar';
 import Header from '@/Components/Common/Header';
 
+// Lazy load the correct 3D viewer
+const Mannequin3DViewer = lazy(() => import('@/Components/DollConfigurator/Mannequin3DViewer'));
+
 export default function DollConfigTest({ views, defaultSettings, partPositions: initialPartPositions }) {
+    const [activeTab, setActiveTab] = useState('customize'); // 'customize' or 'ready'
     const [allSelections, setAllSelections] = useState({ front: {}, back: {} });
     const [currentView, setCurrentView] = useState('front');
     const [zoomLevel, setZoomLevel] = useState(100);
@@ -55,17 +59,13 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
             const windowHeight = window.innerHeight;
             const contentHeight = windowHeight - headerHeight;
 
-            // Calculate percentage relative to the CONTENT area (below header)
-            // relativeY is distance from bottom of header
             const relativeY = clientY - headerHeight;
 
-            // Clamp relativeY
             if (relativeY < 0) return;
             if (relativeY > contentHeight) return;
 
             const newPercentage = (relativeY / contentHeight) * 100;
 
-            // Constrain between 20% and 95% (allows hiding PartSelector almost completely)
             if (newPercentage >= 20 && newPercentage <= 95) {
                 setTopSectionHeight(newPercentage);
             }
@@ -87,6 +87,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
             window.removeEventListener('touchend', handleUp);
         };
     }, []);
+
     // Initial load of defaults
     useEffect(() => {
         let defaults = {};
@@ -120,7 +121,6 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
             const next = { ...prev };
             const currentViewSelections = { ...(next[currentView] || {}) };
 
-            // Update Current View
             if (!item) {
                 delete currentViewSelections[category];
             } else {
@@ -132,115 +132,147 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
         });
     };
 
-    // Get selections for current view - EXACT pattern from DollDefaultConfigurator
     const selectedParts = useMemo(() => {
         return allSelections[currentView] || {};
     }, [allSelections, currentView]);
 
-    // Get section order from settings
     const sectionOrder = useMemo(() => {
         return defaultSettings?.sectionOrder || [];
     }, [defaultSettings]);
 
     return (
-        <div className="flex flex-col h-screen overflow-hidden">
+        <div className="flex flex-col h-screen overflow-hidden bg-white">
             <Head title="Doll Configurator" />
 
-            {/* Static Header */}
-            <div className="z-50 bg-white">
+            {/* Static Header with Tabs */}
+            <div className="z-50 bg-white border-b border-gray-100">
                 <Header />
+                <div className="flex justify-center border-t border-gray-50 bg-white">
+                    <div className="inline-flex p-1 bg-gray-100 rounded-xl my-3">
+                        <button
+                            onClick={() => setActiveTab('customize')}
+                            className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'customize'
+                                ? 'bg-white text-black shadow-sm'
+                                : 'text-gray-500 hover:text-gray-700'
+                                }`}
+                        >
+                            Personalizar
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('ready')}
+                            className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'ready'
+                                ? 'bg-white text-black shadow-sm'
+                                : 'text-gray-500 hover:text-gray-700'
+                                }`}
+                        >
+                            Muñecas Listas
+                        </button>
+                    </div>
+                </div>
             </div>
 
             {/* Main Layout */}
             <div className="flex-1 flex flex-col min-[724px]:flex-row min-[724px]:flex-wrap min-[724px]:content-start lg:flex-nowrap bg-gray-50 overflow-hidden cursor-default select-none touch-none relative">
 
-                {/* Left Content Area (Images ONLY) */}
-                <div
-                    className="flex flex-col w-full h-full min-[724px]:w-full lg:w-auto lg:h-full lg:flex-1 border-r border-gray-200 bg-white shadow-xl lg:shadow-none z-20"
-                >
-
-                    {/* Images Row */}
-                    <div className="flex-1 flex relative overflow-hidden">
-
-                        {/* Preview Area - Mobile: PIP overlay, Desktop: Left column */}
+                {activeTab === 'customize' ? (
+                    <>
+                        {/* Left Content Area (Images ONLY) */}
                         <div
-                            className="absolute left-4 z-50 w-24 h-auto aspect-[2/3] pointer-events-none shadow-xl border-2 border-white rounded-lg bg-white overflow-hidden transition-all duration-75 ease-linear
-                                       min-[724px]:relative min-[724px]:bottom-auto min-[724px]:left-auto min-[724px]:w-1/2 min-[724px]:h-full min-[724px]:pointer-events-auto min-[724px]:border-r min-[724px]:border-gray-200 min-[724px]:shadow-none min-[724px]:rounded-none min-[724px]:aspect-auto
-                                       lg:w-1/4"
-                            style={{
-                                bottom: window.innerWidth < 724 ? `calc(${100 - topSectionHeight}% + 1rem)` : undefined
-                            }}
+                            className="flex flex-col w-full h-full min-[724px]:w-full lg:w-auto lg:h-full lg:flex-1 border-r border-gray-200 bg-white shadow-xl lg:shadow-none z-20"
                         >
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <PreviewArea
-                                    selectedParts={selectedParts}
-                                    viewportInfo={viewportInfo}
-                                    onViewportChange={setViewportInfo}
-                                    className="bg-white"
-                                    partPositions={partPositions} // Lifted State
-                                />
+
+                            {/* Images Row */}
+                            <div className="flex-1 flex relative overflow-hidden">
+
+                                {/* Preview Area */}
+                                <div
+                                    className="absolute left-4 z-50 w-24 h-auto aspect-[2/3] pointer-events-none shadow-xl border-2 border-white rounded-lg bg-white overflow-hidden transition-all duration-75 ease-linear
+                                               min-[724px]:relative min-[724px]:bottom-auto min-[724px]:left-auto min-[724px]:w-1/2 min-[724px]:h-full min-[724px]:pointer-events-auto min-[724px]:border-r min-[724px]:border-gray-200 min-[724px]:shadow-none min-[724px]:rounded-none min-[724px]:aspect-auto
+                                               lg:w-1/4"
+                                    style={{
+                                        bottom: window.innerWidth < 724 ? `calc(${100 - topSectionHeight}% + 1rem)` : undefined
+                                    }}
+                                >
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <PreviewArea
+                                            selectedParts={selectedParts}
+                                            viewportInfo={viewportInfo}
+                                            onViewportChange={setViewportInfo}
+                                            className="bg-white"
+                                            partPositions={partPositions}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* CloseUp Area */}
+                                <div className="w-full h-full relative bg-gray-100 overflow-hidden shadow-inner
+                                                min-[724px]:w-1/2 lg:flex-1">
+                                    <CloseUp
+                                        selectedParts={selectedParts}
+                                        onViewportChange={setViewportInfo}
+                                        viewportOverride={viewportInfo}
+                                        initialViewport={defaultZoom}
+                                        zoomLevel={zoomLevel}
+                                    />
+                                </div>
                             </div>
                         </div>
 
-                        {/* CloseUp Area - Mobile: Full, Desktop: Right column */}
-                        <div className="w-full h-full relative bg-gray-100 overflow-hidden shadow-inner
-                                        min-[724px]:w-1/2 lg:flex-1">
-                            <CloseUp
-                                selectedParts={selectedParts}
-                                onViewportChange={setViewportInfo}
-                                viewportOverride={viewportInfo}
-                                initialViewport={defaultZoom}
-                                zoomLevel={zoomLevel}
-                            />
-                        </div>
-                    </div>
-                </div>
+                        {/* Drag Handle - Mobile/Tablet Only */}
+                        {window.innerWidth < 1024 && (
+                            <div
+                                onMouseDown={handleDragStart}
+                                onTouchStart={handleDragStart}
+                                className="absolute w-full h-8 z-50 flex items-center justify-center cursor-row-resize touch-none"
+                                style={{ bottom: `${100 - topSectionHeight}%`, transform: 'translateY(50%)' }}
+                            >
+                                <div className="w-12 h-1.5 bg-gray-300 rounded-full shadow-sm mx-auto" />
+                            </div>
+                        )}
 
-                {/* Drag Handle - Mobile/Tablet Only */}
-                {window.innerWidth < 1024 && (
-                    <div
-                        onMouseDown={handleDragStart}
-                        onTouchStart={handleDragStart}
-                        className="absolute w-full h-8 z-50 flex items-center justify-center cursor-row-resize touch-none"
-                        style={{ bottom: `${100 - topSectionHeight}%`, transform: 'translateY(50%)' }}
-                    >
-                        {/* Visible Handle */}
-                        <div className="w-12 h-1.5 bg-gray-300 rounded-full shadow-sm mx-auto" />
+                        {/* Right Column: Options Bar + Controls */}
+                        <div
+                            className="absolute bottom-0 left-0 w-full flex flex-col bg-black/50 backdrop-blur-md z-40 border-t border-white/10
+                                       min-[724px]:w-full
+                                       lg:relative lg:w-[400px] lg:h-full lg:border-t-0 lg:border-l lg:border-white/10 lg:flex-none transition-[height] duration-0 ease-linear"
+                            style={{ height: window.innerWidth < 1024 ? `${100 - topSectionHeight}%` : '100%' }}
+                        >
+                            <div className="flex-none z-[60] relative">
+                                <OptionsBar
+                                    currentView={currentView}
+                                    onViewChange={setCurrentView}
+                                    zoomLevel={zoomLevel}
+                                    onZoomChange={setZoomLevel}
+                                    bgColor="bg-transparent"
+                                />
+                            </div>
+
+                            <div className="flex-1 overflow-hidden">
+                                <PartSelector
+                                    parts={availableParts}
+                                    selectedParts={selectedParts}
+                                    onSelect={handleSelectPart}
+                                    sectionOrder={sectionOrder}
+                                    showImages={true}
+                                    partPositions={partPositions}
+                                    currentView={currentView}
+                                    onSavePosition={handleSavePosition}
+                                />
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-white z-30">
+                        <Suspense fallback={
+                            <div className="flex flex-col items-center justify-center w-full h-full bg-white">
+                                <div className="w-12 h-12 border-4 border-black/10 border-t-black rounded-full animate-spin mb-4"></div>
+                                <p className="text-gray-500 font-medium font-outfit">Cargando visor 3D...</p>
+                            </div>
+                        }>
+                            <Mannequin3DViewer />
+                        </Suspense>
                     </div>
                 )}
-
-                {/* Right Column: Options Bar + Controls */}
-                <div
-                    className="absolute bottom-0 left-0 w-full flex flex-col bg-black/50 backdrop-blur-md z-40 border-t border-white/10
-                               min-[724px]:w-full
-                               lg:relative lg:w-[400px] lg:h-full lg:border-t-0 lg:border-l lg:border-white/10 lg:flex-none transition-[height] duration-0 ease-linear"
-                    style={{ height: window.innerWidth < 1024 ? `${100 - topSectionHeight}%` : '100%' }}
-                >
-                    {/* Options Bar - Moved here */}
-                    <div className="flex-none z-[60] relative">
-                        <OptionsBar
-                            currentView={currentView}
-                            onViewChange={setCurrentView}
-                            zoomLevel={zoomLevel}
-                            onZoomChange={setZoomLevel}
-                            bgColor="bg-transparent"
-                        />
-                    </div>
-
-                    {/* Part Selector - Takes remaining height */}
-                    <div className="flex-1 overflow-hidden">
-                        <PartSelector
-                            parts={availableParts}
-                            selectedParts={selectedParts}
-                            onSelect={handleSelectPart}
-                            sectionOrder={sectionOrder}
-                            showImages={true}
-                            partPositions={partPositions} // Lifted State
-                            currentView={currentView}
-                            onSavePosition={handleSavePosition} // Optimistic Handler
-                        />
-                    </div>
-                </div>
 
             </div>
         </div>
