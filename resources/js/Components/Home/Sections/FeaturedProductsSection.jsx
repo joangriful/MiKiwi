@@ -17,14 +17,12 @@ export default function FeaturedProductsSection({ featuredProducts = [] }) {
             </div>
 
             <div className="collections-btn-wrap" style={{ marginTop: '40px' }}>
-                <a
-                    href="http://127.0.0.1:8000/productos"
+                <Link
+                    href={route('products.index')}
                     className="btn-v6"
-                    target="_blank"
-                    rel="noopener noreferrer"
                 >
                     Ver Todos los Productos
-                </a>
+                </Link>
             </div>
         </section>
     );
