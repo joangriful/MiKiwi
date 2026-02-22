@@ -114,12 +114,15 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
                                 <button
                                     key={category.id}
                                     onClick={() => handleCategoryClick(category)}
-                                    className={`px-5 py-4 rounded-3xl text-[11px] font-bold uppercase tracking-widest transition-all text-left border ${localFilters.category == category.id
+                                    className={`px-5 py-4 rounded-3xl text-[11px] font-bold uppercase tracking-widest transition-all text-left border flex justify-between items-center ${localFilters.category == category.id
                                         ? 'bg-black text-white border-black shadow-lg shadow-black/10'
                                         : 'bg-gray-50 text-gray-600 border-transparent hover:border-gray-200'
                                         }`}
                                 >
-                                    {category.name}
+                                    <span>{category.name}</span>
+                                    <span className={`text-[9px] px-2 py-0.5 rounded-full ${localFilters.category == category.id ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-400'}`}>
+                                        {category.total_products_count || 0}
+                                    </span>
                                 </button>
                             ))}
                         </div>
@@ -131,12 +134,15 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
                                     <button
                                         key={sub.id}
                                         onClick={() => updateLocalFilter({ subCategory: localFilters.subCategory === sub.name ? null : sub.name })}
-                                        className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border ${localFilters.subCategory === sub.name
+                                        className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border flex items-center gap-2 ${localFilters.subCategory === sub.name
                                             ? 'bg-[#99b849] text-white border-[#99b849] shadow-md shadow-[#99b849]/20'
                                             : 'bg-white text-gray-400 border-gray-200 hover:border-black hover:text-black'
                                             }`}
                                     >
-                                        {sub.name}
+                                        <span>{sub.name}</span>
+                                        <span className={`text-[8px] px-1.5 py-0.5 rounded-full ${localFilters.subCategory === sub.name ? 'bg-white/30 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                                            {sub.products_count || 0}
+                                        </span>
                                     </button>
                                 ))}
                             </div>

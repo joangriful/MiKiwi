@@ -102,10 +102,23 @@ class ProductController extends Controller
         $categories = \App\Models\Category::root()
             ->where('is_active', true)
             ->with(['children' => function($q) {
-                $q->where('is_active', true)->orderBy('name');
+                $q->where('is_active', true)
+                  ->withCount(['products' => function($query) {
+                      $query->where('is_active', true)->where('stock_quantity', '>', 0);
+                  }])
+                  ->orderBy('name');
+            }])
+            ->withCount(['products' => function($query) {
+                $query->where('is_active', true)->where('stock_quantity', '>', 0);
             }])
             ->orderBy('name')
             ->get();
+
+        // Calcular el total de productos de la categoría principal sumando también los de sus subcategorías
+        $categories->each(function ($category) {
+            $childrenCount = $category->children->sum('products_count');
+            $category->total_products_count = $category->products_count + $childrenCount;
+        });
 
         return Inertia::render('Products', [
             'products' => $products,
