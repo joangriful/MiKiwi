@@ -29,9 +29,12 @@ Route::get('/', function () {
         ->orderBy('created_at', 'desc')
         ->get();
 
+    $collectionImages = \App\Models\HomeCollectionImage::all();
+
     return Inertia::render('Home', [
         'heroImages' => $heroImages,
         'featuredProducts' => $featuredProducts,
+        'collectionImages' => $collectionImages,
     ]);
 })->name('home');
 
@@ -170,6 +173,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
         $partPositions = $settingsController->getAllPartPositions();
 
+        $collectionImages = \App\Models\HomeCollectionImage::all();
+
         return Inertia::render('ComponentsManager', [
             'views' => $views,
             'defaultSettings' => $defaultSettings,
@@ -178,6 +183,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'heroImages' => $heroImages,
             'products' => $products,
             'categories' => $categories,
+            'collectionImages' => $collectionImages,
         ]);
     })->name('components.manager');
 
@@ -187,8 +193,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/users/{user}/toggle-role', [App\Http\Controllers\UserController::class, 'toggleAdmin'])->name('users.toggleRole');
     Route::post('/content/hero/upload', [App\Http\Controllers\ContentController::class, 'uploadHeroImages'])->name('content.hero.upload');
     Route::delete('/content/hero/{heroImage}', [App\Http\Controllers\ContentController::class, 'deleteHeroImage'])->name('content.hero.delete');
+    Route::post('/content/collections/upload', [App\Http\Controllers\ContentController::class, 'uploadCollectionImage'])->name('content.collections.upload');
 
     // Product Management
+    Route::get('/admin/products/cloudinary-images', [App\Http\Controllers\ProductManagerController::class, 'getProductImages'])->name('products.cloudinary-images');
+    Route::post('/admin/products/link-folder', [App\Http\Controllers\ProductManagerController::class, 'linkCloudinaryFolder'])->name('products.link-folder');
     Route::post('/products/upload', [App\Http\Controllers\ProductManagerController::class, 'uploadProduct'])->name('products.upload');
     Route::put('/products/{product:id}', [App\Http\Controllers\ProductManagerController::class, 'updateProduct'])->name('products.update');
     Route::delete('/products/{product:id}', [App\Http\Controllers\ProductManagerController::class, 'deleteProduct'])->name('products.delete');

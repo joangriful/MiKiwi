@@ -30,49 +30,12 @@ class ProductManagerController extends Controller
             'is_adult_only' => 'boolean',
             'is_active' => 'boolean',
             'images' => 'nullable|array',
-            'images.*' => 'image|max:10240', // Max 10MB per image
-            'existing_images' => 'nullable|array',
-            'existing_images.*' => 'string',
-            'hover_image_input' => 'nullable|string',
+            'images.*' => 'string',
+            'image_url' => 'nullable|string',
+            'hover_image_url' => 'nullable|string',
         ]);
 
         try {
-            $imageUrls = [];
-            $primaryImageUrl = null;
-
-            // 1. Process existing Cloudinary IDs or URLs
-            if ($request->has('existing_images')) {
-                foreach ($request->input('existing_images') as $img) {
-                    if (!empty(trim($img))) {
-                        $imageUrls[] = $this->cloudinaryService->getImageUrl(trim($img));
-                    }
-                }
-            }
-
-            // 2. Upload new images to Cloudinary
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
-                    $cloudinaryResponse = $this->cloudinaryService->uploadImage(
-                        $image,
-                        'products'
-                    );
-                    $imageUrls[] = $cloudinaryResponse['secure_url'];
-                }
-            }
-
-            // Process Hover Image
-            $hoverImageUrl = null;
-            if ($request->filled('hover_image_input')) {
-                $hoverImageUrl = $this->cloudinaryService->getImageUrl(trim($request->input('hover_image_input')));
-            }
-
-
-
-            // First image becomes primary
-            if (!empty($imageUrls)) {
-                $primaryImageUrl = $imageUrls[0];
-            }
-
             // Generate slug from name
             $slug = Str::slug($validated['name']);
 
@@ -96,9 +59,9 @@ class ProductManagerController extends Controller
                 'product_type' => $validated['product_type'],
                 'is_adult_only' => $validated['is_adult_only'] ?? true,
                 'is_active' => $validated['is_active'] ?? true,
-                'image_url' => $primaryImageUrl,
-                'hover_image_url' => $hoverImageUrl,
-                'images' => !empty($imageUrls) ? $imageUrls : null,
+                'image_url' => $validated['image_url'] ?? null,
+                'hover_image_url' => $validated['hover_image_url'] ?? null,
+                'images' => !empty($validated['images']) ? $validated['images'] : null,
             ]);
 
             return redirect()->back()->with('success', 'Producto creado correctamente');
@@ -122,9 +85,10 @@ class ProductManagerController extends Controller
             'is_adult_only' => 'boolean',
             'is_active' => 'boolean',
             'is_featured' => 'sometimes|boolean',
-            'existing_images' => 'nullable|array',
-            'existing_images.*' => 'string',
-            'hover_image_input' => 'nullable|string',
+            'images' => 'nullable|array',
+            'images.*' => 'string',
+            'image_url' => 'nullable|string',
+            'hover_image_url' => 'nullable|string',
         ]);
 
         try {
@@ -139,22 +103,8 @@ class ProductManagerController extends Controller
                 $validated['slug'] = $slug;
             }
 
-            // Image handling
-            if ($request->has('existing_images')) {
-                $imageUrls = [];
-                foreach ($request->input('existing_images') as $img) {
-                    if (!empty(trim($img))) {
-                        $imageUrls[] = $this->cloudinaryService->getImageUrl(trim($img));
-                    }
-                }
-
-                $validated['images'] = !empty($imageUrls) ? $imageUrls : null;
-                $validated['image_url'] = !empty($imageUrls) ? $imageUrls[0] : null;
-            }
-
-            if ($request->has('hover_image_input')) {
-                $val = trim($request->input('hover_image_input'));
-                $validated['hover_image_url'] = !empty($val) ? $this->cloudinaryService->getImageUrl($val) : null;
+            if (empty($validated['images'])) {
+                $validated['images'] = null;
             }
 
             $product->update($validated);
@@ -177,6 +127,94 @@ class ProductManagerController extends Controller
         } catch (\Exception $e) {
             Log::error('Error deleting product: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al eliminar el producto');
+        }
+    }
+
+    public function getProductImages(Request $request)
+    {
+        $productName = $request->input('product_name');
+        if (empty($productName)) {
+            return response()->json(['images' => []]);
+        }
+
+        $folder = 'productos/' . trim($productName);
+        $images = $this->cloudinaryService->listProductImages($folder);
+        
+        // Formatear la lista para devolver solo la URL
+        $imageUrls = collect($images)->map(function ($img) {
+            return $img['secure_url'];
+        })->toArray();
+
+        return response()->json(['images' => $imageUrls]);
+    }
+
+    public function linkCloudinaryFolder(Request $request)
+    {
+        $validated = $request->validate([
+            'product_name' => 'required|string',
+            'source' => 'required|string'
+        ]);
+
+        $productName = trim($validated['product_name']);
+        $source = trim($validated['source']);
+
+        if (filter_var($source, FILTER_VALIDATE_URL)) {
+            // Check for Cloudinary console URL (folders/%2F... or folder=%2F...)
+            if (preg_match('/(?:folders\/|folder=)(%2F[^&]+|[^&\?]+)/', $source, $matches)) {
+                $folder = urldecode($matches[1]);
+                $folder = trim($folder, '/');
+            } else {
+                $parsed = parse_url($source, PHP_URL_PATH);
+                if (!$parsed || $parsed === '/') {
+                    return response()->json(['success' => false, 'error' => 'URL inválida o no contiene ruta a la imagen.'], 400);
+                }
+                $path = preg_replace('/^\/.*\/upload\/(v\d+\/)?/', '', $parsed);
+                $folder = dirname($path);
+            }
+        } else {
+            $folder = trim($source, '/');
+        }
+
+        // Clean up and validate folder
+        $folder = trim(str_replace('\\', '/', $folder), '/');
+
+        if ($folder === '.' || $folder === '') {
+            return response()->json(['success' => false, 'error' => 'La URL que has pegado no contiene ninguna carpeta en su interior (es una imagen suelta en la raíz de Cloudinary). Cloudinary a veces oculta las carpetas en los links. Por favor, escribe manualmente el nombre de la carpeta (ej: "Mini Diva" o "productos/Mini Diva") en lugar de usar un link.'], 400);
+        }
+
+        $targetFolder = 'productos/' . $productName;
+
+        try {
+            // Si el origen simplemente era "Mini Diva", comprobamos si "productos/Mini Diva" ya existe
+            if (strpos($folder, '/') === false) {
+                $autoFolder = 'productos/' . $folder;
+                // Si la auto-carpeta es idéntica al target, no hay que renombrar nada,
+                // solo le decimos a React "todo ok" para que recargue y traiga las fotos.
+                if ($autoFolder === $targetFolder) {
+                    return response()->json(['success' => true, 'message' => 'Carpeta vinculada correctamente (ya tenía el nombre adecuado).']);
+                }
+
+                // Intento extra: renombrarlo si $autoFolder existe y es distinto al destino final
+                try {
+                    $adminApi = new \Cloudinary\Api\Admin\AdminApi();
+                    $adminApi->renameFolder($autoFolder, $targetFolder);
+                    return response()->json(['success' => true, 'message' => 'Carpeta vinculada con éxito.']);
+                } catch (\Exception $e) {
+                     // Ignorar y probar con el nombre original ($folder)
+                }
+            }
+
+            if ($folder !== $targetFolder) {
+                $adminApi = new \Cloudinary\Api\Admin\AdminApi();
+                $adminApi->renameFolder($folder, $targetFolder);
+            }
+            return response()->json(['success' => true, 'message' => 'Carpeta vinculada (y renombrada si era necesario) con éxito.']);
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+             // Avoid HTML errors leaking
+            return response()->json(['success' => false, 'error' => 'La carpeta de origen (' . $folder . ') no existe o no tiene imágenes.'], 400);
+        } catch (\Exception $e) {
+            \Log::error('Error linking folder: ' . $e->getMessage());
+            return response()->json(['success' => false, 'error' => 'No se pudo vincular la carpeta. Verificá que exista en Cloudinary. (' . $folder . ')'], 400);
         }
     }
 }

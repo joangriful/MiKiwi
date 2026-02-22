@@ -6,11 +6,12 @@ import FeaturedProductsSection from '@/Components/Home/Sections/FeaturedProducts
 import PremiumAtelierSection from '@/Components/Home/Sections/PremiumAtelierSection';
 import CollectionsSection from '@/Components/Home/Sections/CollectionsSection';
 import ImmersiveGallerySection from '@/Components/Home/Sections/ImmersiveGallerySection';
+import SeoTextSection from '@/Components/Home/Sections/SeoTextSection';
 import useLenisScroll from '@/Components/Home/hooks/useLenisScroll';
 import useScrollAnimations from '@/Components/Home/hooks/useScrollAnimations';
 import '@/Components/Home/Home.css';
 
-export default function HomePage({ auth, laravelVersion, phpVersion, heroImages = [], featuredProducts = [] }) {
+export default function HomePage({ auth, laravelVersion, phpVersion, heroImages = [], featuredProducts = [], collectionImages = [] }) {
     // Initialize smooth scroll
     useLenisScroll();
 
@@ -27,9 +28,10 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
                 <CalibrationSection />
                 <FeaturedProductsSection featuredProducts={featuredProducts} />
                 <PremiumAtelierSection />
-                <CollectionsSection />
+                <CollectionsSection collectionImages={collectionImages} />
                 <ImmersiveGallerySection />
             </main>
+            <SeoTextSection />
             <Footer />
         </div>
     );
