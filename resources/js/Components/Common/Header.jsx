@@ -17,41 +17,64 @@ export default function Header() {
             {/* Center: Navigation Menu */}
             <nav className="hidden xl:flex items-center gap-8">
                 <Link
-                    href={route('products.index')}
-                    className="text-[11px] font-bold text-white uppercase tracking-[0.2em] hover:text-[#f8b7ea] transition-colors"
+                    href="/productos?featured=1"
+                    className="text-[11px] font-bold text-white uppercase tracking-[0.2em] hover:text-[#99b849] transition-colors"
                 >
                     Top Ventas
                 </Link>
                 <Link
-                    href="/productos?category=bdsm-y-fetiche"
-                    className="text-[11px] font-bold text-white uppercase tracking-[0.2em] hover:text-[#f8b7ea] transition-colors"
+                    href={route('products.index')}
+                    className="text-[11px] font-bold text-white uppercase tracking-[0.2em] hover:text-[#99b849] transition-colors"
                 >
-                    BDSM
+                    Juguetes
                 </Link>
                 <Link
                     href="/productos?category=cosmetica-y-cuidado"
-                    className="text-[11px] font-bold text-white uppercase tracking-[0.2em] hover:text-[#f8b7ea] transition-colors"
+                    className="text-[11px] font-bold text-white uppercase tracking-[0.2em] hover:text-[#99b849] transition-colors"
                 >
                     Cosmética
                 </Link>
-                <Link
-                    href="/productos?category=estimulacion-anal"
-                    className="text-[11px] font-bold text-white uppercase tracking-[0.2em] hover:text-[#f8b7ea] transition-colors"
-                >
-                    Estimulación Anal
-                </Link>
-                <Link
-                    href="/productos?category=estimulacion-externa"
-                    className="text-[11px] font-bold text-white uppercase tracking-[0.2em] hover:text-[#f8b7ea] transition-colors"
-                >
-                    Estimulación Externa
-                </Link>
-                <Link
-                    href="/productos?category=estimulacion-interna"
-                    className="text-[11px] font-bold text-white uppercase tracking-[0.2em] hover:text-[#f8b7ea] transition-colors"
-                >
-                    Estimulación Interna
-                </Link>
+
+                {/* Estimulación Dropdown */}
+                <div className="relative group flex items-center h-full cursor-default">
+                    <span className="text-[11px] font-bold text-white uppercase tracking-[0.2em] group-hover:text-[#99b849] transition-colors flex items-center gap-1">
+                        Estimulación
+                        <span className="material-symbols-outlined text-xs translate-y-[1px]">keyboard_arrow_down</span>
+                    </span>
+
+                    {/* Dropdown Content */}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[120]">
+                        <div className="bg-black/95 backdrop-blur-sm border border-white/10 rounded-2xl p-4 min-w-[220px] shadow-2xl">
+                            <ul className="flex flex-col gap-3">
+                                <li>
+                                    <Link
+                                        href="/productos?category=estimulacion-interna"
+                                        className="text-[10px] font-bold text-white/70 hover:text-[#99b849] uppercase tracking-[0.2em] transition-colors block py-1"
+                                    >
+                                        Estimulación Interna
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        href="/productos?category=estimulacion-externa"
+                                        className="text-[10px] font-bold text-white/70 hover:text-[#99b849] uppercase tracking-[0.2em] transition-colors block py-1"
+                                    >
+                                        Estimulación Externa
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        href="/productos?category=estimulacion-anal"
+                                        className="text-[10px] font-bold text-white/70 hover:text-[#99b849] uppercase tracking-[0.2em] transition-colors block py-1"
+                                    >
+                                        Estimulación Anal
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
                 <Link
                     href={route('doll.config.test')}
                     className="text-[11px] font-bold text-[#f8b7ea] uppercase tracking-[0.2em] hover:text-white transition-colors"

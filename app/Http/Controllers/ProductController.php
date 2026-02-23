@@ -93,6 +93,11 @@ class ProductController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
+        // Filtrar por productos destacados (Top Ventas)
+        if ($request->boolean('featured')) {
+            $query->where('is_featured', true);
+        }
+
         // Ordenar
         $sort = $request->input('sort', 'newest');
         switch ($sort) {
