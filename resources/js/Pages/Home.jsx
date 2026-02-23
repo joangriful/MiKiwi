@@ -23,10 +23,10 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
     ];
 
     const benefits = [
-        { title: 'Envío discreto', img: '/images/benefits/envio.png', desc: 'Paquetes anónimos y nombres genéricos en los recibos.' },
-        { title: 'Garantía 3 años', img: '/images/benefits/garantia.png', desc: 'Disfruta sin preocuparte. Cubrimos cualquier fallo de fábrica.' },
-        { title: 'Pago seguro', img: '/images/benefits/pago.png', desc: 'Nuestra página está protegida con certificación SSL.' },
-        { title: 'Devolución', img: '/images/benefits/devolucion.png', desc: '¿Era un regalo y no ha gustado? Devuelve tu juguete precintado sin problema.' }
+        { title: 'Por qué elegirnos', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771237740/eroteca_plugs_q8kgy8.webp', desc: 'Diseños exclusivos que rompen moldes.' },
+        { title: 'Envío Discreto', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771237736/claim-envios-img_ljob1v.webp', desc: 'Paquetes discretos para tu total privacidad.' },
+        { title: 'Garantía MiKiwi', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771237736/claim-garantia-img_e0t3s2.webp', desc: 'Comprometidos con la calidad de nuestras piezas.' },
+        { title: 'Calidad Premium', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771238940/portadaplatanomelon-1547046722_iqly7v.avif', desc: 'Fabricación con los mejores estándares.' }
     ];
 
     return (
@@ -37,10 +37,17 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
             <main>
                 {/* --- Hero Section --- */}
                 <section className="hero-minimal">
-                    <img src="/assets/icons/mikiwi_logo.svg" alt="MiKiwi Logo" className="hero-logo-large" />
+                    <div className="hero-top-nav">
+                        <img src="/assets/icons/mikiwi_logo.svg" alt="MiKiwi Logo" className="hero-logo-small" />
+                        <Link href={route('register')} className="btn-pill">
+                            Únete a MIKIWI
+                        </Link>
+                    </div>
+
                     <div className="hero-bottom">
                         <p className="hero-subtitle">
-                            Ingeniería sensorial + diseño exclusivo para elevar tu placer.
+                            Ingeniería sensorial + diseño<br />
+                            exclusivo para elevar tu placer.
                         </p>
                         <Link href={route('products.index')} className="btn-pill">
                             Explorar catálogo
@@ -48,39 +55,44 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
                     </div>
                 </section>
 
+                {/* --- Keywords Section --- */}
+                <div className="work-section">
+                    <p className="work-keywords">
+                        Diseño Propio.<br />
+                        Fabricación Española.<br />
+                        Calidad Premium.<br />
+                        Bienestar Sexual.
+                    </p>
+                </div>
+
                 {/* --- Benefits Section (Por qué elegirnos) --- */}
                 <section className="benefits-section">
-                    <h2>Por qué elegirnos</h2>
                     <div className="benefits-grid">
                         {benefits.map((benefit, i) => (
                             <div key={i} className="benefit-card">
                                 <div className="benefit-img">
                                     <img src={benefit.img} alt={benefit.title} />
                                 </div>
-                                <h3>{benefit.title}</h3>
+                                <h3 className="uppercase tracking-widest text-sm mb-2">{benefit.title}</h3>
                                 <p>{benefit.desc}</p>
                             </div>
                         ))}
                     </div>
                 </section>
 
-                {/* --- Interstitial Keywords --- */}
-                <div className="work-section">
-                    <p className="work-keywords">
-                        Diseño Propio. Fabricación Española. Calidad Premium. Bienestar Sexual.
-                    </p>
-                </div>
+                {/* --- Quiz Section --- */}
+                <CalibrationSection calibrationImages={heroImages.filter(img => img.type === 'calibration')} />
 
                 {/* --- Featured Products --- */}
                 <FeaturedProductsSection featuredProducts={featuredProducts} />
 
-                {/* --- Collection Grid (Static Dark) --- */}
+                {/* --- Collection Grid --- */}
                 <section className="method-section">
                     <div className="method-header">
                         <h2>Colecciones.</h2>
                         <div>
                             <p>Universos sensoriales cuidadosamente curados por MiKiwi.</p>
-                            <Link href="#" className="btn-pill" style={{ borderColor: 'white', color: 'white' }}>Ver todas</Link>
+                            <Link href={route('products.index')} className="btn-pill" style={{ borderColor: 'white', color: 'white' }}>Ver todas</Link>
                         </div>
                     </div>
 
@@ -91,14 +103,11 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
                                     <img src={col.img} alt={col.title} />
                                 </div>
                                 <h3>{col.title}</h3>
-                                <Link href={col.link} className="collection-link-new">Ver más →</Link>
+                                <Link href={col.link} className="collection-link-new">Explorar →</Link>
                             </div>
                         ))}
                     </div>
                 </section>
-
-                {/* --- Quiz Section --- */}
-                <CalibrationSection calibrationImages={heroImages.filter(img => img.type === 'calibration')} />
 
                 {/* --- Dolls Section --- */}
                 <DollsSection dollsImages={heroImages.filter(img => img.type === 'dolls')} />

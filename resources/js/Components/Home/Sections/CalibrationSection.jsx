@@ -3,7 +3,8 @@ import { Link } from '@inertiajs/react';
 
 export default function CalibrationSection({ calibrationImages = [] }) {
     // Look for the uploaded background or fallback to a solid color/placeholder
-    const bgImage = calibrationImages.length > 0 ? calibrationImages[0].url : null;
+    const defaultBg = "https://res.cloudinary.com/dquwonjie/image/upload/v1771238940/portadaplatanomelon-1547046722_iqly7v.avif";
+    const bgImage = calibrationImages.length > 0 ? calibrationImages[0].url : defaultBg;
 
     return (
         <section className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden bg-black mt-0">
