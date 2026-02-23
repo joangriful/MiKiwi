@@ -192,8 +192,8 @@ const PartOption = ({ item, isSelected, onSelect, onKeyDown, selectionLabel, sho
 
             {/* Selection Label Badge (Only if not editing) */}
             {isSelected && selectionLabel && !isEditing && (
-                <div className="absolute inset-0 flex items-center justify-center bg-blue-600/10 backdrop-blur-[1px] pointer-events-none">
-                    <div className="bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm uppercase tracking-wider">
+                <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-primary)]/10 backdrop-blur-[1px] pointer-events-none">
+                    <div className="bg-[var(--color-primary)] text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm uppercase tracking-wider">
                         {selectionLabel}
                     </div>
                 </div>
@@ -211,13 +211,14 @@ const PartOption = ({ item, isSelected, onSelect, onKeyDown, selectionLabel, sho
                     className={`
                         relative 
                         w-28 h-28 sm:w-32 sm:h-32 
-                        rounded-xl overflow-hidden 
-                        border-2 transition-all duration-200 
-                        hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50
+                        rounded-2xl overflow-hidden 
+                        border-2 transition-all duration-500 ease-premium
+                        hover:shadow-[0_10px_25px_rgba(0,0,0,0.08)] hover:-translate-y-1.5
+                        focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50
                         flex flex-col items-center justify-center
                         ${isSelected
-                            ? 'border-blue-600 ring-2 ring-blue-600 ring-opacity-20 shadow-md transform scale-105'
-                            : 'border-gray-200 bg-white hover:border-indigo-300'
+                            ? 'border-[var(--color-primary)] ring-4 ring-[var(--color-primary)]/10 shadow-[0_8px_30px_rgba(153,184,73,0.2)] bg-white/80'
+                            : 'border-[var(--border)] bg-[var(--bg-surface)] hover:border-[var(--color-primary)]/30'
                         }
                     `}
                     title={item.id}
@@ -228,7 +229,7 @@ const PartOption = ({ item, isSelected, onSelect, onKeyDown, selectionLabel, sho
                     {onSavePosition && (
                         <div
                             onClick={toggleEdit}
-                            className="absolute top-1 right-1 p-1.5 bg-white/90 rounded-full border border-gray-200 text-gray-600 hover:text-blue-600 hover:border-blue-400 opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-sm z-10 cursor-pointer hover:scale-110"
+                            className="absolute top-1 right-1 p-1.5 bg-[var(--bg-surface)]/90 rounded-full border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--color-primary-dark)] hover:border-[var(--color-primary)] opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-sm z-10 cursor-pointer hover:scale-110"
                             title="Edit Position"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -142,31 +142,31 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
     }, [defaultSettings]);
 
     return (
-        <div className="flex flex-col min-h-screen bg-white">
+        <div className="flex flex-col min-h-screen bg-[var(--bg-main)]">
             <Head title="Doll Configurator" />
 
             {/* Static Header with Tabs */}
             <div className="z-50 bg-white border-b border-gray-100">
                 <Header />
-                <div className="flex justify-center border-t border-gray-50 bg-white">
-                    <div className="inline-flex p-1 bg-gray-100 rounded-xl my-3">
+                <div className="flex justify-center border-t border-[var(--border)] bg-[var(--bg-surface)] py-4">
+                    <div className="inline-flex p-1.5 bg-[var(--bg-main)] rounded-2xl shadow-inner border border-[var(--border)]/50">
                         <button
                             onClick={() => setActiveTab('customize')}
-                            className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'customize'
-                                ? 'bg-white text-black shadow-sm'
-                                : 'text-gray-500 hover:text-gray-700'
+                            className={`px-8 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all duration-300 ${activeTab === 'customize'
+                                ? 'bg-[var(--premium-gradient)] text-white shadow-[0_4px_15px_rgba(153,184,73,0.4)] scale-105'
+                                : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-white/50'
                                 }`}
                         >
-                            Personalizar
+                            PERSONALIZAR
                         </button>
                         <button
                             onClick={() => setActiveTab('ready')}
-                            className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'ready'
-                                ? 'bg-white text-black shadow-sm'
-                                : 'text-gray-500 hover:text-gray-700'
+                            className={`px-8 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all duration-300 ${activeTab === 'ready'
+                                ? 'bg-[var(--premium-gradient)] text-white shadow-[0_4px_15px_rgba(153,184,73,0.4)] scale-105'
+                                : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-white/50'
                                 }`}
                         >
-                            Muñecas Listas
+                            MUÑECAS LISTAS
                         </button>
                     </div>
                 </div>
@@ -233,9 +233,9 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
 
                         {/* Right Column: Options Bar + Controls */}
                         <div
-                            className="absolute bottom-0 left-0 w-full flex flex-col bg-black/50 backdrop-blur-md z-40 border-t border-white/10
+                            className="absolute bottom-0 left-0 w-full flex flex-col bg-gradient-to-b from-[var(--bg-surface)] to-[var(--bg-main)] backdrop-blur-2xl z-40 border-t border-[var(--border)]
                                        min-[724px]:w-full
-                                       lg:relative lg:w-[400px] lg:h-full lg:border-t-0 lg:border-l lg:border-white/10 lg:flex-none transition-[height] duration-0 ease-linear"
+                                       lg:relative lg:w-[420px] lg:h-full lg:border-t-0 lg:border-l lg:border-[var(--border)] lg:flex-none transition-all duration-500 ease-premium shadow-[-20px_0_50px_rgba(0,0,0,0.05)]"
                             style={{ height: window.innerWidth < 1024 ? `${100 - topSectionHeight}%` : '100%' }}
                         >
                             <div className="flex-none z-[60] relative">

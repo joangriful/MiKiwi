@@ -35,7 +35,7 @@ export default function OptionsBar({ currentView, onViewChange, zoomLevel, onZoo
             <div className="relative" ref={viewRef}>
                 <button
                     onClick={() => setShowViewOptions(!showViewOptions)}
-                    className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-bold uppercase tracking-wider text-gray-700 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-[var(--bg-main)] hover:bg-[var(--border)] rounded-lg text-sm font-bold uppercase tracking-wider text-[var(--text-main)] transition-colors"
                 >
                     {currentView}
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={`w-4 h-4 transition-transform ${showViewOptions ? 'rotate-180' : ''}`}>
@@ -44,7 +44,7 @@ export default function OptionsBar({ currentView, onViewChange, zoomLevel, onZoo
                 </button>
 
                 {showViewOptions && (
-                    <div className="absolute bottom-full lg:bottom-auto lg:top-full lg:mt-2 left-0 mb-2 lg:mb-0 w-full min-w-[120px] bg-white rounded-lg shadow-xl ring-1 ring-black/5 overflow-hidden z-[100] p-1 space-y-1">
+                    <div className="absolute bottom-full lg:bottom-auto lg:top-full lg:mt-2 left-0 mb-2 lg:mb-0 w-full min-w-[120px] bg-[var(--bg-surface)] rounded-lg shadow-xl ring-1 ring-black/5 overflow-hidden z-[100] p-1 space-y-1">
                         {views.map(view => (
                             <button
                                 key={view}
@@ -53,8 +53,8 @@ export default function OptionsBar({ currentView, onViewChange, zoomLevel, onZoo
                                     setShowViewOptions(false);
                                 }}
                                 className={`w-full text-left px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-md transition-colors ${currentView === view
-                                    ? 'bg-blue-50 text-blue-600'
-                                    : 'text-gray-600 hover:bg-gray-100'
+                                    ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary-dark)]'
+                                    : 'text-[var(--text-muted)] hover:bg-[var(--bg-main)]'
                                     }`}
                             >
                                 {view}
@@ -69,7 +69,7 @@ export default function OptionsBar({ currentView, onViewChange, zoomLevel, onZoo
                 <div className="relative" ref={zoomRef}>
                     <button
                         onClick={() => setShowZoomOptions(!showZoomOptions)}
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-bold text-gray-700 transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 bg-[var(--bg-main)] hover:bg-[var(--border)] rounded-lg text-sm font-bold text-[var(--text-main)] transition-colors"
                     >
                         {zoomLevel}%
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={`w-4 h-4 transition-transform ${showZoomOptions ? 'rotate-180' : ''}`}>
@@ -78,7 +78,7 @@ export default function OptionsBar({ currentView, onViewChange, zoomLevel, onZoo
                     </button>
 
                     {showZoomOptions && (
-                        <div className="absolute bottom-full lg:bottom-auto lg:top-full lg:mt-2 right-0 mb-2 lg:mb-0 w-full min-w-[100px] bg-white rounded-lg shadow-xl ring-1 ring-black/5 overflow-hidden z-[100] p-1 space-y-1">
+                        <div className="absolute bottom-full lg:bottom-auto lg:top-full lg:mt-2 right-0 mb-2 lg:mb-0 w-full min-w-[100px] bg-[var(--bg-surface)] rounded-lg shadow-xl ring-1 ring-black/5 overflow-hidden z-[100] p-1 space-y-1">
                             {zoomLevels.map(zoom => (
                                 <button
                                     key={zoom}
@@ -87,8 +87,8 @@ export default function OptionsBar({ currentView, onViewChange, zoomLevel, onZoo
                                         setShowZoomOptions(false);
                                     }}
                                     className={`w-full text-left px-4 py-2 text-xs font-bold rounded-md transition-colors ${zoomLevel === zoom
-                                        ? 'bg-blue-50 text-blue-600'
-                                        : 'text-gray-600 hover:bg-gray-100'
+                                        ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary-dark)]'
+                                        : 'text-[var(--text-muted)] hover:bg-[var(--bg-main)]'
                                         }`}
                                 >
                                     {zoom}%
