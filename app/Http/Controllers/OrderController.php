@@ -23,16 +23,8 @@ class OrderController extends Controller
 
     public function __construct(CartService $cartService, StripeService $stripeService)
     {
-        // 1. Validar (ocurre automáticamente antes de llegar aquí)
-        // 2. Ejecutar la lógica de negocio
-        
-        // No necesitamos try-catch si las excepciones de la Etapa 1 tienen método render()
-        $order = $orderService->createOrder(
-            $request->user(), 
-            $request->validated()
-        );
-
-        return response()->json($order, 201);
+        $this->cartService = $cartService;
+        $this->stripeService = $stripeService;
     }
 
     public function show(Order $order)
@@ -40,19 +32,9 @@ class OrderController extends Controller
         // Autorizar (Policy creada en Etapa 2)
         $this->authorize('view', $order);
 
-        if ($cartData['item_count'] === 0) {
-            return response()->json(['error' => 'El carrito está vacío.'], 400);
-        }
-
-        try {
-            $intent = $this->stripeService->createPaymentIntent($cartData['total']);
-
-            return response()->json([
-                'clientSecret' => $intent->client_secret,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        return Inertia::render('Profile/OrderShow', [
+            'order' => $order->load('items.product'),
+        ]);
     }
 
     public function create()
@@ -87,7 +69,9 @@ class OrderController extends Controller
             return back()->with('error', implode(' ', $cartValidation['errors']));
         }
 
-        $cartData = $this->cartService->getCart();
+        $isBuyNow = session()->has('buy_now_item');
+        $cartData = $isBuyNow ? $this->cartService->getBuyNowItem() : $this->cartService->getCart();
+
         if ($cartData['item_count'] === 0) {
             throw new CartEmptyException('checkout');
         }
@@ -101,7 +85,7 @@ class OrderController extends Controller
                 }
             }
 
-            DB::transaction(function () use ($request, $cartData, $paymentStatus) {
+            DB::transaction(function () use ($request, $cartData, $paymentStatus, $isBuyNow) {
                 $order = Order::create([
                     'user_id' => Auth::id(),
                     'order_number' => 'ORD-'.strtoupper(Str::random(10)),
@@ -128,7 +112,12 @@ class OrderController extends Controller
                     ]);
                     $product->decrement('stock_quantity', $item['quantity']);
                 }
-                $this->cartService->clearCart();
+
+                if ($isBuyNow) {
+                    $this->cartService->clearBuyNowItem();
+                } else {
+                    $this->cartService->clearCart();
+                }
             });
 
             return redirect()->route('orders.success')->with('success', '¡Pedido realizado con éxito!');
@@ -140,6 +129,30 @@ class OrderController extends Controller
     public function success()
     {
         return Inertia::render('Checkout/Success');
+    }
+
+    public function createPaymentIntent(Request $request)
+    {
+        $isBuyNow = session()->has('buy_now_item');
+        $cartData = $isBuyNow ? $this->cartService->getBuyNowItem() : $this->cartService->getCart();
+
+        if ($cartData['item_count'] === 0) {
+            return response()->json(['error' => 'Cart is empty'], 400);
+        }
+
+        $user = Auth::user();
+        $customer = $this->stripeService->getOrCreateCustomer($user);
+
+        $intent = $this->stripeService->createPaymentIntent(
+            $cartData['total'],
+            'eur',
+            ['order_type' => $isBuyNow ? 'buy_now' : 'standard'],
+            $customer->id
+        );
+
+        return response()->json([
+            'clientSecret' => $intent->client_secret,
+        ]);
     }
 
     public function index()

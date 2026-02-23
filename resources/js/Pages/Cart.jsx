@@ -33,7 +33,7 @@ function CheckoutContent({
     const [isInternalProcessing, setIsInternalProcessing] = useState(false);
 
     const handleSubmitOrder = async () => {
-        if (!stripe || !elements) {
+        if (!stripe) {
             console.error('Stripe not loaded');
             return;
         }
@@ -42,16 +42,15 @@ function CheckoutContent({
 
         try {
             // 1. Create Payment Intent on backend
-            // Get the actual total after shipping and coupons
             const dynamicTotal = total - (formData.coupon_code && cart.coupon ? cart.coupon.discount : 0);
 
             const { data: intentData } = await axios.post(route('payment-intent.create'), {
-                amount: Math.round(dynamicTotal * 100) / 100, // Ensure normalized total
+                amount: Math.round(dynamicTotal * 100) / 100,
             });
 
             // 2. Confirm payment on frontend
-            const result = await stripe.confirmCardPayment(intentData.clientSecret, {
-                payment_method: {
+            const confirmData = {
+                payment_method: formData.selected_payment_method || {
                     card: elements.getElement(CardElement),
                     billing_details: {
                         name: `${formData.first_name} ${formData.last_name}`,
@@ -65,7 +64,9 @@ function CheckoutContent({
                         }
                     },
                 },
-            });
+            };
+
+            const result = await stripe.confirmCardPayment(intentData.clientSecret, confirmData);
 
             if (result.error) {
                 alert(result.error.message);
@@ -139,6 +140,7 @@ function CheckoutContent({
                 <PaymentStep
                     data={formData}
                     setData={setFormData}
+                    auth={auth}
                     onSubmit={handleSubmitOrder}
                     onBack={prevStep}
                     processing={formProcessing || isInternalProcessing}
@@ -148,7 +150,7 @@ function CheckoutContent({
     );
 }
 
-export default function Cart({ cart = { items: [], total: 0 }, auth = { user: null }, popularProducts = [], stripeKey, coupon }) {
+export default function Cart({ cart = { items: [], total: 0 }, auth = { user: null }, popularProducts = [], stripeKey, coupon, isBuyNow }) {
     console.log('Cart received stripeKey:', stripeKey);
     const finalStripePromise = useMemo(() => {
         return stripeKey ? loadStripe(stripeKey) : stripePromise;
@@ -173,6 +175,7 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
 
         // Payment Step
         payment_method: 'card',
+        selected_payment_method: null,
         payment_intent_id: null,
         billing_same_as_shipping: true,
         billing_address: {
@@ -272,7 +275,17 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                     {/* Right Column (2/5) - Persistent Basket Summary */}
                     <div className="w-full md:w-2/5 bg-gray-50 p-6 md:p-12 lg:p-16 h-auto">
                         <div className="sticky top-10">
-                            <h3 className="text-2xl font-semibold mb-8 text-gray-800">Tu Cesta</h3>
+                            <div className="flex justify-between items-center mb-8">
+                                <h3 className="text-2xl font-semibold text-gray-800">Tu Cesta</h3>
+                                {isBuyNow && (
+                                    <Link 
+                                        href={route('cart.index')}
+                                        className="text-[10px] font-black uppercase tracking-widest text-[#99b849] hover:underline"
+                                    >
+                                        Ver cesta completa
+                                    </Link>
+                                )}
+                            </div>
 
                             <div className="space-y-6 mb-8 max-h-[50vh] overflow-y-auto pr-4 custom-scrollbar">
                                 {cart.items && cart.items.length > 0 ? (
@@ -285,9 +298,12 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                                                             const images = typeof item.product.images === 'string'
                                                                 ? JSON.parse(item.product.images)
                                                                 : item.product.images;
-                                                            return Array.isArray(images) && images.length > 0 ? images[0] : 'https://via.placeholder.com/150';
+                                                            if (Array.isArray(images) && images.length > 0) {
+                                                                return images[0];
+                                                            }
+                                                            return item.product.image_url || 'https://via.placeholder.com/150';
                                                         } catch (e) {
-                                                            return 'https://via.placeholder.com/150';
+                                                            return item.product.image_url || 'https://via.placeholder.com/150';
                                                         }
                                                     })()}
                                                     alt={item.product.name}

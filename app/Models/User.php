@@ -20,6 +20,7 @@ class User extends Authenticatable
         'birth_date',
         'role',
         'is_active',
+        'stripe_customer_id',
     ];
 
     protected $casts = [

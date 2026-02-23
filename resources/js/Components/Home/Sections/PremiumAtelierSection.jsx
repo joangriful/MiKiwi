@@ -1,7 +1,31 @@
-import React from 'react';
-import { Link } from '@inertiajs/react';
+import React, { useState } from 'react';
+import { Link, router } from '@inertiajs/react';
+import axios from 'axios';
 
 export default function PremiumAtelierSection() {
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleBuyNow = async () => {
+        setIsLoading(true);
+        try {
+            const { data: responseData } = await axios.post(route("cart.buy-now"), {
+                product_slug: 'mobi',
+                quantity: 1,
+            });
+            
+            if (responseData.redirect) {
+                router.visit(responseData.redirect);
+            } else {
+                router.visit(route("cart.index", { buy_now: 1 }));
+            }
+        } catch (error) {
+            console.error("Error buying now:", error);
+            setIsLoading(false);
+            // Fallback redirect if API fails or product not found
+            router.visit(route('products.show', 'mobi'));
+        }
+    };
+
     return (
         <section className="premium-atelier">
             <div className="atelier-bg-visual"></div>
@@ -27,7 +51,17 @@ export default function PremiumAtelierSection() {
                     </div>
                 </div>
 
-                <Link href="#" className="atelier-btn">Lanzar Configurador</Link>
+                <div className="flex gap-4 mt-8">
+                    <Link href={route('configurador.index')} className="atelier-btn">Lanzar Configurador</Link>
+                    <button 
+                        onClick={handleBuyNow}
+                        disabled={isLoading}
+                        className="atelier-btn ivory"
+                        style={{ background: 'var(--primary)', border: 'none' }}
+                    >
+                        {isLoading ? 'PROCESANDO...' : 'COMPRAR MOBI AHORA'}
+                    </button>
+                </div>
             </div>
         </section>
     );

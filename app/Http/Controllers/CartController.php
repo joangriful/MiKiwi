@@ -20,7 +20,7 @@ class CartController extends Controller
      *
      * @return \Inertia\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $cart = $this->cartService->getCart();
         $popularProducts = \App\Models\Product::where('is_active', true)
@@ -43,7 +43,10 @@ class CartController extends Controller
         }
 
         return Inertia::render('Cart', [
-            'cart' => $cart,
+            'cart' => $request->has('buy_now') && session()->has('buy_now_item') 
+                ? $this->cartService->getBuyNowItem() 
+                : $cart,
+            'isBuyNow' => $request->has('buy_now') && session()->has('buy_now_item'),
             'popularProducts' => $popularProducts,
             'pageTitle' => 'Carrito de Compras - MiKiwi',
             'stripeKey' => config('services.stripe.key'),
@@ -175,6 +178,44 @@ class CartController extends Controller
                 'success' => false,
                 'message' => $e->getMessage(),
             ], 400);
+        }
+    }
+
+    /**
+     * Comprar un producto directamente (aislado del carrito)
+     */
+    public function buyNow(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'product_slug' => 'required|string',
+                'quantity' => 'required|integer|min:1',
+                'accessories' => 'nullable|array',
+            ]);
+
+            $this->cartService->setBuyNowItem(
+                $validated['product_slug'],
+                $validated['quantity'],
+                $validated['accessories'] ?? []
+            );
+
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'redirect' => route('cart.index', ['buy_now' => 1]),
+                ]);
+            }
+
+            return redirect()->route('cart.index', ['buy_now' => 1]);
+        } catch (\Exception $e) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 400);
+            }
+
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 }

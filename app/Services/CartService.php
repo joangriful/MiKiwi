@@ -14,6 +14,7 @@ class CartService
     protected ProductRepositoryInterface $productRepository;
 
     protected string $cartSessionKey = 'shopping_cart';
+    protected string $buyNowSessionKey = 'buy_now_item';
 
     public function __construct(ProductRepositoryInterface $productRepository)
     {
@@ -210,5 +211,73 @@ class CartService
             'valid' => empty($errors),
             'errors' => $errors,
         ];
+    }
+
+    /**
+     * Establecer el producto para compra directa (Buy Now)
+     */
+    public function setBuyNowItem(string $productSlug, int $quantity = 1, array $accessories = []): void
+    {
+        $product = $this->productRepository->getActiveBySlug($productSlug);
+
+        if (! $product) {
+            throw new ProductNotFoundException($productSlug);
+        }
+
+        if ($product->stock_quantity < $quantity) {
+            throw new InsufficientStockException(
+                productName: $product->name,
+                availableStock: $product->stock_quantity,
+                requestedQuantity: $quantity,
+                productIdentifier: $product->sku ?? $product->id
+            );
+        }
+
+        Session::put($this->buyNowSessionKey, [
+            'slug' => $productSlug,
+            'quantity' => $quantity,
+            'accessories' => $accessories,
+        ]);
+    }
+
+    /**
+     * Obtener el producto de compra directa
+     */
+    public function getBuyNowItem(): ?array
+    {
+        $item = Session::get($this->buyNowSessionKey);
+
+        if (! $item) {
+            return null;
+        }
+
+        $product = $this->productRepository->getActiveBySlug($item['slug']);
+
+        if (!$product) {
+            $this->clearBuyNowItem();
+            return null;
+        }
+
+        $subtotal = $product->base_price * $item['quantity'];
+
+        return [
+            'items' => [[
+                'product_id' => $product->id,
+                'product' => $product,
+                'quantity' => $item['quantity'],
+                'accessories' => $item['accessories'] ?? [],
+                'subtotal' => $subtotal,
+            ]],
+            'total' => $subtotal,
+            'item_count' => 1,
+        ];
+    }
+
+    /**
+     * Limpiar el producto de compra directa
+     */
+    public function clearBuyNowItem(): void
+    {
+        Session::forget($this->buyNowSessionKey);
     }
 }

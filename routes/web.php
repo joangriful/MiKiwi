@@ -106,6 +106,13 @@ Route::middleware('auth')->group(function () {
     // 💳 Stripe Payment Intent
     Route::post('/api/payment-intent', [OrderController::class, 'createPaymentIntent'])
         ->name('payment-intent.create');
+
+    // 💳 Gestión de Tarjetas Guardadas
+    Route::prefix('api/payment-methods')->name('payment-methods.')->group(function () {
+        Route::get('/', [App\Http\Controllers\PaymentMethodController::class, 'index'])->name('index');
+        Route::post('/setup-intent', [App\Http\Controllers\PaymentMethodController::class, 'createSetupIntent'])->name('setup-intent');
+        Route::delete('/{id}', [App\Http\Controllers\PaymentMethodController::class, 'destroy'])->name('destroy');
+    });
 });
 
 /*
@@ -309,6 +316,7 @@ Route::prefix('configurador')->group(function () {
     Route::get('/cart', function () {
         return Inertia::render('Cart');
     })->name('cart.view');
+    Route::post('/cart/buy-now', [App\Http\Controllers\CartController::class, 'buyNow'])->name('cart.buy-now');
 });
 
 Route::get('/doll_config_test', function () {

@@ -53,10 +53,9 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                         <Link href={route('products.show', product.slug)} className="relative aspect-square w-full bg-gray-50 rounded-xl overflow-hidden mb-3 border border-gray-100 group-hover:border-indigo-200 transition-colors block">
                             <img
                                 src={
-                                    Array.isArray(product.images) &&
-                                    product.images.length > 0
+                                    (Array.isArray(product.images) && product.images.length > 0)
                                         ? product.images[0]
-                                        : "https://via.placeholder.com/150"
+                                        : (product.image_url || "https://via.placeholder.com/150")
                                 }
                                 alt={product.name}
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -147,22 +146,17 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                                         <img
                                             src={(() => {
                                                 try {
-                                                    const images =
-                                                        typeof item.product
-                                                            .images === "string"
-                                                            ? JSON.parse(
-                                                                  item.product
-                                                                      .images,
-                                                              )
-                                                            : item.product
-                                                                  .images;
-                                                    return Array.isArray(
-                                                        images,
-                                                    ) && images.length > 0
-                                                        ? images[0]
-                                                        : "https://via.placeholder.com/150";
+                                                    const images = typeof item.product.images === "string"
+                                                            ? JSON.parse(item.product.images)
+                                                            : item.product.images;
+                                                    
+                                                    if (Array.isArray(images) && images.length > 0) {
+                                                        return images[0];
+                                                    }
+                                                    
+                                                    return item.product.image_url || "https://via.placeholder.com/150";
                                                 } catch (e) {
-                                                    return "https://via.placeholder.com/150";
+                                                    return item.product.image_url || "https://via.placeholder.com/150";
                                                 }
                                             })()}
                                             alt={item.product.name}

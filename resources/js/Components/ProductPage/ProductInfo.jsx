@@ -40,11 +40,16 @@ export default function ProductInfo({ product }) {
         if (!product?.slug) return;
         setIsLoading(true);
         try {
-            await axios.post(route("cart.add"), {
+            const { data: responseData } = await axios.post(route("cart.buy-now"), {
                 product_slug: product.slug,
                 quantity: quantity,
             });
-            router.visit(route("cart.index"));
+            
+            if (responseData.redirect) {
+                router.visit(responseData.redirect);
+            } else {
+                router.visit(route("cart.index", { buy_now: 1 }));
+            }
         } catch (error) {
             console.error("Error buying now:", error);
             showNotification("error");

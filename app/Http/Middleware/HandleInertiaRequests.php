@@ -39,6 +39,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'cartCount' => $cartCount,
+            'stripeKey' => config('services.stripe.key'),
         ];
     }
 }
