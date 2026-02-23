@@ -54,13 +54,22 @@ class ProductController extends Controller
     {
         $query = Product::where('is_active', true);
 
-        // Filtrar por categoría (Incluyendo subcategorías de forma recursiva)
+        // Filtrar por categoría (ID o Slug, Incluyendo subcategorías de forma recursiva)
         if ($request->has('category')) {
-            $categoryIds = \App\Models\Category::where('id', $request->category)
-                ->orWhere('parent_id', $request->category)
-                ->pluck('id');
+            $categoryParam = $request->query('category');
 
-            $query->whereIn('category_id', $categoryIds);
+            $category = \App\Models\Category::where('id', $categoryParam)
+                ->orWhere('slug', $categoryParam)
+                ->first();
+
+            if ($category) {
+                // Get all children IDs for this category
+                $categoryIds = \App\Models\Category::where('id', $category->id)
+                    ->orWhere('parent_id', $category->id)
+                    ->pluck('id');
+
+                $query->whereIn('category_id', $categoryIds);
+            }
         }
 
         // Filtrar por subcategoría específica

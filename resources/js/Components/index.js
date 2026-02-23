@@ -1,5 +1,4 @@
 export { default as Header } from './Common/Header';
-export { default as SubHeader } from './Common/SubHeader';
 export { default as Footer } from './Common/Footer';
 export { default as ProductImageCarousel } from './ProductPage/ProductImageCarousel';
 export { default as MainProductImage } from './ProductPage/MainProductImage';

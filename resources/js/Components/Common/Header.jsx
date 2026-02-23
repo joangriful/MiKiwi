@@ -14,6 +14,52 @@ export default function Header() {
                 />
             </Link>
 
+            {/* Center: Navigation Menu */}
+            <nav className="hidden xl:flex items-center gap-8">
+                <Link
+                    href={route('products.index')}
+                    className="text-[11px] font-bold text-white uppercase tracking-[0.2em] hover:text-[#f8b7ea] transition-colors"
+                >
+                    Top Ventas
+                </Link>
+                <Link
+                    href="/productos?category=bdsm-y-fetiche"
+                    className="text-[11px] font-bold text-white uppercase tracking-[0.2em] hover:text-[#f8b7ea] transition-colors"
+                >
+                    BDSM
+                </Link>
+                <Link
+                    href="/productos?category=cosmetica-y-cuidado"
+                    className="text-[11px] font-bold text-white uppercase tracking-[0.2em] hover:text-[#f8b7ea] transition-colors"
+                >
+                    Cosmética
+                </Link>
+                <Link
+                    href="/productos?category=estimulacion-anal"
+                    className="text-[11px] font-bold text-white uppercase tracking-[0.2em] hover:text-[#f8b7ea] transition-colors"
+                >
+                    Estimulación Anal
+                </Link>
+                <Link
+                    href="/productos?category=estimulacion-externa"
+                    className="text-[11px] font-bold text-white uppercase tracking-[0.2em] hover:text-[#f8b7ea] transition-colors"
+                >
+                    Estimulación Externa
+                </Link>
+                <Link
+                    href="/productos?category=estimulacion-interna"
+                    className="text-[11px] font-bold text-white uppercase tracking-[0.2em] hover:text-[#f8b7ea] transition-colors"
+                >
+                    Estimulación Interna
+                </Link>
+                <Link
+                    href={route('doll.config.test')}
+                    className="text-[11px] font-bold text-[#f8b7ea] uppercase tracking-[0.2em] hover:text-white transition-colors"
+                >
+                    Muñecas
+                </Link>
+            </nav>
+
             {/* Right: Icons (Profile, Cart) */}
             <div className="flex items-center gap-3 md:gap-6">
                 <Link href="/perfil" className="hover:opacity-80 transition-opacity flex items-center">
@@ -30,7 +76,7 @@ export default function Header() {
                 <Link href={route('cart.index')} className="hover:opacity-80 transition-opacity relative">
                     <img src="/assets/icons/cart.svg" alt="Cart" className="h-6 w-6 lg:h-8 lg:w-8 invert brightness-0" />
                     {cartCount > 0 && (
-                        <span className="absolute -top-2 -right-2 bg-[#99b849] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full leading-none">
+                        <span className="absolute -top-2 -right-2 bg-[#f8b7ea] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full leading-none">
                             {cartCount > 99 ? '99+' : cartCount}
                         </span>
                     )}

@@ -1,5 +1,5 @@
 import { Head } from '@inertiajs/react';
-import { Header, Footer, SubHeader } from '@/Components';
+import { Header, Footer } from '@/Components';
 import HeroSection from '@/Components/Home/Sections/HeroSection';
 import CalibrationSection from '@/Components/Home/Sections/CalibrationSection';
 import FeaturedProductsSection from '@/Components/Home/Sections/FeaturedProductsSection';
@@ -23,7 +23,6 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
         <div className="min-h-screen flex flex-col bg-white text-gray-900 font-sans select-none cursor-default">
             <Head title="MiKiwi | V6 Global Sensory Luxury" />
             <Header />
-            <SubHeader transparent={true} textBlack={true} />
             <main className="flex-grow home-container">
                 <HeroSection heroImages={heroImages.filter(img => img.type === 'home')} />
                 <FeaturedProductsSection featuredProducts={featuredProducts} />
