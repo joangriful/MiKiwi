@@ -42,86 +42,86 @@ export default function ShippingStep({ data, setData, onNext, onBack }) {
     };
 
     return (
-        <div className="space-y-8 animate-in slide-in-from-right duration-500">
-            <h2 className="text-2xl font-bold text-gray-900 tracking-tight mb-2">3. Método de Envío</h2>
-            <p className="text-sm text-gray-500 mb-6">Elige cómo quieres recibir tu pedido.</p>
+        <div className="space-y-10 animate-in slide-in-from-right duration-700">
+            <div className="mb-10 pb-6 border-b border-gray-100">
+                <h2 className="text-4xl font-black text-gray-900 tracking-tight">Envío</h2>
+                <p className="text-gray-400 text-[10px] uppercase tracking-widest font-bold mt-2">Paso 3 de 4</p>
+            </div>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-6">
                 {shippingMethods.map((method) => (
                     <div
                         key={method.id}
-                        className={`group relative border-2 p-6 rounded-2xl cursor-pointer transition-all duration-300 ${data.shipping_method === method.id ? 'border-primary bg-primary/5 ring-4 ring-primary/5' : 'border-gray-100 hover:border-gray-200 bg-white'}`}
+                        className={`group relative border-2 p-8 rounded-3xl cursor-pointer transition-all duration-500 ${data.shipping_method === method.id ? 'border-primary bg-primary/5 ring-8 ring-primary/5' : 'border-gray-50 hover:border-gray-200 bg-white shadow-sm'}`}
                         onClick={() => setData('shipping_method', method.id)}
                     >
                         <div className="flex justify-between items-center w-full">
-                            <div className="flex items-center">
-                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mr-4 transition-colors ${data.shipping_method === method.id ? 'border-primary bg-primary' : 'border-gray-300'}`}>
-                                    {data.shipping_method === method.id && <div className="w-2 h-2 rounded-full bg-white"></div>}
+                            <div className="flex items-center gap-6">
+                                <div className={`w-8 h-8 rounded-xl border-4 flex items-center justify-center transition-all duration-500 ${data.shipping_method === method.id ? 'border-primary bg-primary shadow-lg shadow-primary/20' : 'border-gray-100 bg-gray-50'}`}>
+                                    {data.shipping_method === method.id && <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" /></svg>}
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-gray-900">{method.name}</h3>
-                                    <p className="text-xs text-gray-500 font-medium">{method.desc}</p>
+                                    <h3 className="font-black text-xl text-gray-900 leading-none">{method.name}</h3>
+                                    <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-2">{method.desc}</p>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <span className={`text-lg font-black ${data.shipping_method === method.id ? 'text-primary' : 'text-gray-900'}`}>{method.price.toFixed(2)} €</span>
+                                <span className={`text-2xl font-black ${data.shipping_method === method.id ? 'text-primary' : 'text-gray-900'}`}>{method.price.toFixed(2)}<span className="text-sm ml-0.5">€</span></span>
                             </div>
                         </div>
 
                         {/* Pickup Points Selector */}
                         {method.id === 'pickup' && data.shipping_method === 'pickup' && (
-                            <div className="mt-8 pt-8 border-t border-primary/10 slide-in-from-top duration-300" onClick={(e) => e.stopPropagation()}>
-                                <div className="flex gap-2 mb-6">
+                            <div className="mt-10 pt-10 border-t border-primary/10 animate-in slide-in-from-top-4 duration-500" onClick={(e) => e.stopPropagation()}>
+                                <div className="flex gap-4 mb-8 bg-white p-2 rounded-2xl border border-primary/10 shadow-sm focus-within:border-primary/30 transition-all">
                                     <input
                                         type="text"
-                                        placeholder="Ciudad o código postal..."
-                                        className="flex-1 rounded-xl border-gray-200 text-sm focus:border-primary focus:ring-4 focus:ring-primary/5 h-12"
+                                        placeholder="Busca por ciudad o CP..."
+                                        className="flex-1 rounded-xl border-none text-sm font-bold focus:ring-0 h-12 px-4 placeholder:text-gray-300"
                                         value={searchCity}
                                         onChange={(e) => setSearchCity(e.target.value)}
                                     />
                                     <button
                                         onClick={handleSearch}
-                                        className="px-6 py-2 bg-gray-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all"
+                                        className="px-8 py-2 bg-gray-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary transition-all active:scale-95 shadow-lg shadow-black/5"
                                     >
                                         Buscar
                                     </button>
                                 </div>
 
                                 {loading ? (
-                                    <div className="flex flex-col items-center py-8 text-primary">
-                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-current mb-2"></div>
-                                        <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">Buscando puntos cercanos...</span>
+                                    <div className="flex flex-col items-center py-10 text-primary">
+                                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-current mb-4"></div>
+                                        <span className="text-[10px] font-black uppercase tracking-widest opacity-40">Localizando puntos...</span>
                                     </div>
                                 ) : (
-                                    <div className="space-y-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                                    <div className="grid grid-cols-1 gap-4 max-h-80 overflow-y-auto pr-2 custom-scrollbar p-2">
                                         {pickupPoints.length > 0 ? (
                                             pickupPoints.map((point) => (
                                                 <div
                                                     key={point.id}
-                                                    className={`p-4 rounded-xl border-2 transition-all group/point ${data.pickup_point_id === point.id ? 'bg-white border-primary shadow-lg shadow-primary/5' : 'bg-white border-gray-50 hover:border-gray-200'}`}
+                                                    className={`p-6 rounded-2xl border-2 transition-all duration-300 transform group/point ${data.pickup_point_id === point.id ? 'bg-white border-primary shadow-xl shadow-primary/10 -translate-y-1' : 'bg-gray-50/50 border-transparent hover:border-gray-100 hover:bg-white'}`}
                                                     onClick={() => setData('pickup_point_id', point.id)}
                                                 >
-                                                    <div className="flex justify-between items-start">
+                                                    <div className="flex justify-between items-center text-left">
                                                         <div className="flex-1">
-                                                            <div className="font-bold text-gray-900 text-sm mb-1">{point.name}</div>
-                                                            <div className="text-[11px] text-gray-500 font-medium leading-relaxed">
-                                                                {point.address}<br />
-                                                                {point.postal_code} {point.city}
+                                                            <div className={`font-black uppercase tracking-tight text-sm transition-colors ${data.pickup_point_id === point.id ? 'text-primary' : 'text-gray-900 group-hover/point:text-primary'}`}>{point.name}</div>
+                                                            <div className="text-[11px] text-gray-400 font-bold uppercase tracking-widest mt-2 leading-relaxed">
+                                                                {point.address} — {point.postal_code} {point.city}
                                                             </div>
                                                         </div>
-                                                        {data.pickup_point_id === point.id && (
-                                                            <div className="bg-primary/10 p-1.5 rounded-full">
-                                                                <svg className="w-3 h-3 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                                                                </svg>
-                                                            </div>
-                                                        )}
+                                                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all ${data.pickup_point_id === point.id ? 'bg-primary text-white scale-110' : 'bg-gray-200 text-transparent group-hover/point:bg-primary/20 group-hover/point:text-primary'}`}>
+                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" /></svg>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             ))
                                         ) : (
-                                            <div className="text-center py-8 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                                                <p className="text-xs font-bold text-gray-400">No hay puntos disponibles en esta zona.</p>
+                                            <div className="text-center py-12 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-100">
+                                                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 border border-gray-100 shadow-sm text-gray-300">
+                                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                                </div>
+                                                <p className="text-[10px] font-black uppercase text-gray-400 tracking-widest leading-relaxed px-10">No encontramos tiendas en esta zona.<br />Prueba con otra ciudad o CP.</p>
                                             </div>
                                         )}
                                     </div>
@@ -132,25 +132,25 @@ export default function ShippingStep({ data, setData, onNext, onBack }) {
                 ))}
             </div>
 
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-10 border-t border-gray-100">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-12 border-t border-gray-100 mt-12">
                 <button
                     type="button"
                     onClick={onBack}
-                    className="flex items-center px-6 py-3 rounded-xl border-2 border-gray-100 text-gray-400 hover:text-primary hover:border-primary/20 transition-all duration-300 font-bold text-xs uppercase tracking-widest order-2 md:order-1"
+                    className="flex justify-center items-center px-8 py-4 bg-gray-50 rounded-2xl text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-primary hover:bg-primary/5 transition-all duration-300 group order-2 md:order-1 min-w-[200px]"
                 >
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                    Información
+                    <span className="mr-2 group-hover:-translate-x-1 transition-transform">
+                        &larr;
+                    </span>{" "}
+                    Mis Datos
                 </button>
                 <button
                     onClick={onNext}
                     disabled={!data.shipping_method || (data.shipping_method === 'pickup' && !data.pickup_point_id)}
-                    className={`px-12 py-4 font-black rounded-2xl shadow-2xl transition-all duration-300 transform hover:-translate-y-1 active:scale-95 text-lg w-full md:w-auto order-1 md:order-2 flex items-center justify-center min-w-[280px] ${(!data.shipping_method || (data.shipping_method === 'pickup' && !data.pickup_point_id)) ? 'bg-gray-100 text-gray-300 cursor-not-allowed shadow-none' : 'bg-primary text-white hover:bg-primary-dark shadow-primary/20'}`}
+                    className={`px-12 py-5 font-black rounded-2xl shadow-2xl transition-all duration-500 transform hover:-translate-y-1 active:scale-95 text-xl w-full md:w-auto order-1 md:order-2 flex items-center justify-center min-w-[320px] group ${(!data.shipping_method || (data.shipping_method === 'pickup' && !data.pickup_point_id)) ? 'bg-gray-100 text-gray-300 cursor-not-allowed shadow-none' : 'bg-primary text-white hover:bg-primary-dark shadow-primary/20'}`}
                 >
                     CONTINUAR A PAGO
-                    <svg className="w-5 h-5 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    <svg className="w-5 h-5 ml-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
                 </button>
             </div>

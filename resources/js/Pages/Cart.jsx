@@ -50,9 +50,9 @@ function CheckoutContent({
 
             // 2. Confirm payment on frontend
             const confirmData = {
-                payment_method: formData.selected_payment_method 
-                    ? (formData.selected_payment_method.startsWith('tok_') 
-                        ? { card: { token: formData.selected_payment_method } } 
+                payment_method: formData.selected_payment_method
+                    ? (formData.selected_payment_method.startsWith('tok_')
+                        ? { card: { token: formData.selected_payment_method } }
                         : formData.selected_payment_method)
                     : {
                         card: elements.getElement(CardElement),
@@ -238,23 +238,31 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                 <Header user={auth.user} />
 
                 <main className="flex-grow flex flex-col md:flex-row w-full max-w-screen-2xl mx-auto px-4 md:px-0 lg:px-0">
-                    <div className="w-full md:w-3/5 border-r border-gray-100 p-6 md:p-12 lg:p-16">
+                    <div className="w-full md:w-3/5 p-6 md:p-12 lg:p-16 bg-white">
                         {/* Progress Navigation */}
-                        <div className="flex items-center space-x-2 text-sm mb-10 text-gray-400">
+                        <div className="flex items-center justify-between overflow-x-auto pb-4 mb-12 no-scrollbar">
                             {['Carrito', 'Información', 'Envío', 'Pago'].map((label, index) => {
                                 const stepNum = index + 1;
                                 const isActive = step === stepNum;
                                 const isCompleted = step > stepNum;
                                 return (
                                     <React.Fragment key={label}>
-                                        <div className="flex items-center">
-                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
-                                                ${isActive ? 'bg-primary text-white' : isCompleted ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'}`}>
-                                                {stepNum}
+                                        <div className="flex flex-col items-center min-w-fit px-2">
+                                            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-sm transition-all duration-500 shadow-sm
+                                                ${isActive ? 'bg-primary text-white scale-110 shadow-lg shadow-primary/20' : isCompleted ? 'bg-primary/20 text-primary' : 'bg-gray-100 text-gray-400'}`}>
+                                                {isCompleted ? (
+                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                ) : stepNum}
                                             </div>
-                                            <span className={`ml-2 text-xs mt-1 ${isActive ? 'text-primary font-bold' : isCompleted ? 'text-primary' : 'text-gray-500'}`}>{label}</span>
+                                            <span className={`mt-3 text-[10px] uppercase tracking-widest font-black transition-colors duration-300 ${isActive ? 'text-primary' : isCompleted ? 'text-gray-900' : 'text-gray-300'}`}>{label}</span>
                                         </div>
-                                        {index < 3 && <span className="mx-2 text-gray-300">&gt;</span>}
+                                        {index < 3 && (
+                                            <div className="flex-grow mx-4 h-[2px] bg-gray-100 min-w-[20px] max-w-[60px] self-center -mt-6">
+                                                <div className={`h-full bg-primary transition-all duration-700 ease-out`} style={{ width: step > stepNum ? '100%' : '0%' }}></div>
+                                            </div>
+                                        )}
                                     </React.Fragment>
                                 );
                             })}
@@ -278,25 +286,28 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                     </div>
 
                     {/* Right Column (2/5) - Persistent Basket Summary */}
-                    <div className="w-full md:w-2/5 bg-gray-50 p-6 md:p-12 lg:p-16 h-auto">
+                    <div className="w-full md:w-2/5 bg-[#fcfaf7] p-6 md:p-12 lg:p-16 border-l border-gray-100">
                         <div className="sticky top-10">
-                            <div className="flex justify-between items-center mb-8">
-                                <h3 className="text-2xl font-semibold text-gray-800">Tu Cesta</h3>
+                            <div className="flex justify-between items-end mb-10">
+                                <div>
+                                    <h3 className="text-3xl font-black text-gray-900 tracking-tight">Tu Pedido</h3>
+                                    <div className="w-12 h-1 bg-primary mt-2 rounded-full"></div>
+                                </div>
                                 {isBuyNow && (
-                                    <Link 
+                                    <Link
                                         href={route('cart.index')}
-                                        className="text-[10px] font-black uppercase tracking-widest text-[#99b849] hover:underline"
+                                        className="text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary-dark transition-colors"
                                     >
-                                        Ver cesta completa
+                                        Editar Cesta
                                     </Link>
                                 )}
                             </div>
 
-                            <div className="space-y-6 mb-8 max-h-[50vh] overflow-y-auto pr-4 custom-scrollbar">
+                            <div className="space-y-6 mb-10 max-h-[45vh] overflow-y-auto pr-4 custom-scrollbar">
                                 {cart.items && cart.items.length > 0 ? (
                                     cart.items.map((item) => (
-                                        <div key={item.product_id} className="flex gap-4 items-center">
-                                            <Link href={route('products.show', item.product.slug)} className="relative w-20 h-20 flex-shrink-0 bg-white rounded-lg border border-gray-100 overflow-hidden shadow-sm hover:opacity-80 transition-opacity block">
+                                        <div key={item.product_id} className="flex gap-5 items-center group">
+                                            <Link href={route('products.show', item.product.slug)} className="relative w-20 h-20 flex-shrink-0 bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm group-hover:shadow-md group-hover:border-primary/20 transition-all duration-300 block">
                                                 <img
                                                     src={(() => {
                                                         try {
@@ -312,109 +323,120 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                                                         }
                                                     })()}
                                                     alt={item.product.name}
-                                                    className="w-full h-full object-cover"
+                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                                 />
-                                                <span className="absolute -top-1 -right-1 bg-gray-800 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">
+                                                <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] w-6 h-6 flex items-center justify-center rounded-lg font-black shadow-lg shadow-primary/20">
                                                     {item.quantity}
                                                 </span>
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        e.stopPropagation();
-                                                        handleRemoveItem(item.product_id);
-                                                    }}
-                                                    className="absolute bottom-0 right-0 bg-red-500 text-white p-1 rounded-tl-lg hover:bg-red-600 transition-colors z-10"
-                                                    title="Eliminar del carrito"
-                                                >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                                    </svg>
-                                                </button>
                                             </Link>
                                             <div className="flex-1">
-                                                <Link href={route('products.show', item.product.slug)} className="text-sm font-medium text-gray-900 leading-tight hover:text-primary transition-colors block">
+                                                <Link href={route('products.show', item.product.slug)} className="text-sm font-bold text-gray-900 leading-snug hover:text-primary transition-colors block">
                                                     {item.product.name}
                                                 </Link>
-                                                <p className="text-xs text-gray-400 mt-1 uppercase tracking-tighter">REF: {item.product.sku || 'N/A'}</p>
+                                                <div className="flex items-center gap-3 mt-1">
+                                                    <p className="text-[10px] text-gray-300 font-extrabold uppercase tracking-widest">REF: {item.product.sku || 'N/A'}</p>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            handleRemoveItem(item.product_id);
+                                                        }}
+                                                        className="text-[10px] font-black uppercase text-red-400 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600"
+                                                    >
+                                                        Quitar
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div className="text-sm font-semibold text-gray-900">
+                                            <div className="text-sm font-black text-gray-900">
                                                 {(item.product.base_price * item.quantity).toFixed(2)} €
                                             </div>
                                         </div>
                                     ))
                                 ) : (
-                                    <p className="text-gray-400 text-sm italic">Tu cesta está vacía ahora mismo.</p>
+                                    <div className="py-8 text-center bg-white rounded-3xl border-2 border-dashed border-gray-100">
+                                        <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">Carrito vacío</p>
+                                    </div>
                                 )}
                             </div>
 
-                            <div className="mt-8 pt-8 border-t border-gray-200">
-                                <label className="text-xs uppercase tracking-widest font-bold text-gray-400 mb-2 block">CUPÓN DE DESCUENTO</label>
-                                <div className="flex gap-2">
+                            <div className="mt-10 pt-10 border-t border-gray-100">
+                                <label className="text-[10px] uppercase tracking-[0.2em] font-black text-gray-400 mb-3 block px-1">CUPÓN DE DESCUENTO</label>
+                                <div className="flex gap-3 bg-white p-2 rounded-2xl border border-gray-100 focus-within:border-primary/30 transition-all shadow-sm">
                                     <input
                                         type="text"
-                                        placeholder="Código del cupón"
-                                        className="flex-1 text-sm border-gray-200 rounded-lg focus:ring-primary focus:border-primary"
+                                        placeholder="Tengo un código..."
+                                        className="flex-1 text-xs border-none bg-transparent focus:ring-0 font-bold placeholder:text-gray-300 uppercase tracking-widest"
                                         value={data.coupon_code}
                                         onChange={(e) => setData('coupon_code', e.target.value)}
                                     />
                                     <button
                                         onClick={applyCoupon}
-                                        className="px-4 py-2 bg-gray-800 text-white text-xs font-bold rounded-lg hover:bg-gray-700 transition-all"
+                                        className="px-6 py-3 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95"
                                     >
-                                        Aplicar
+                                        Validar
                                     </button>
                                 </div>
                                 {coupon && (
-                                    <div className="mt-3 flex justify-between items-center bg-green-50 p-2 rounded-lg border border-green-100">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xs font-bold text-green-700">{coupon.code}</span>
-                                            <span className="text-[10px] text-green-600">(-{coupon.type === 'percent' ? `${coupon.value}%` : `${coupon.value} €`})</span>
+                                    <div className="mt-4 flex justify-between items-center bg-primary/5 p-4 rounded-2xl border border-primary/10 animate-in zoom-in-95 duration-300">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
+                                            </div>
+                                            <div>
+                                                <span className="text-xs font-black text-gray-900 block">{coupon.code}</span>
+                                                <span className="text-[10px] text-primary font-bold uppercase tracking-tighter">Descuento aplicado (-{coupon.type === 'percent' ? `${coupon.value}%` : `${coupon.value} €`})</span>
+                                            </div>
                                         </div>
-                                        <button onClick={removeCoupon} className="text-red-500 hover:text-red-700">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        <button onClick={removeCoupon} className="p-2 text-gray-300 hover:text-red-500 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                                             </svg>
                                         </button>
                                     </div>
                                 )}
                             </div>
 
-                            <div className="space-y-4 pt-8 border-t border-gray-200 mt-6">
-                                <div className="flex justify-between text-gray-600">
-                                    <span className="text-sm">Subtotal</span>
-                                    <span className="font-medium">{subtotal.toFixed(2)} €</span>
+                            <div className="space-y-4 pt-10 border-t border-gray-100 mt-10">
+                                <div className="flex justify-between px-1">
+                                    <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Subtotal</span>
+                                    <span className="text-sm font-black text-gray-900">{subtotal.toFixed(2)} €</span>
                                 </div>
 
                                 {coupon && (
-                                    <div className="flex justify-between text-green-600 font-medium">
-                                        <span className="text-sm">Descuento ({coupon.code})</span>
-                                        <span>-{coupon.discount.toFixed(2)} €</span>
+                                    <div className="flex justify-between px-1">
+                                        <span className="text-xs font-bold text-primary uppercase tracking-widest text-[10px]">Ahorro cupón</span>
+                                        <span className="text-sm font-black text-primary">-{coupon.discount.toFixed(2)} €</span>
                                     </div>
                                 )}
 
-                                <div className="flex justify-between text-gray-600">
-                                    <span className="text-sm">Envío</span>
-                                    <span className="font-medium">
-                                        {step > 2 ? `${shippingCost.toFixed(2)} €` : 'Calculado en el siguiente paso'}
+                                <div className="flex justify-between px-1">
+                                    <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Gastos Envío</span>
+                                    <span className="text-sm font-black text-gray-900">
+                                        {step > 2 ? `${shippingCost.toFixed(2)} €` : <span className="text-[10px] text-gray-300 italic lowercase tracking-normal">pendiente de envío</span>}
                                     </span>
                                 </div>
 
-                                <div className="flex justify-between items-baseline pt-6 border-t border-gray-200 mt-4">
+                                <div className="flex justify-between items-end pt-10 border-t border-gray-100 mt-6 px-1">
                                     <div>
-                                        <span className="text-xl font-bold text-gray-900">Total</span>
-                                        <p className="text-[10px] text-gray-400 uppercase font-semibold">Incluye IVA</p>
+                                        <span className="text-xs font-black text-gray-400 uppercase tracking-[0.2em]">Total Final</span>
+                                        <p className="text-[10px] text-gray-300 uppercase font-bold mt-1">IVA Incluido</p>
                                     </div>
-                                    <span className="text-3xl font-extrabold text-primary">
-                                        {(total - (coupon ? coupon.discount : 0)).toFixed(2)} €
-                                    </span>
+                                    <div className="text-right">
+                                        <span className="text-4xl font-black text-primary tracking-tighter">
+                                            {(total - (coupon ? coupon.discount : 0)).toFixed(2)}<span className="text-xl ml-1">€</span>
+                                        </span>
+                                    </div>
                                 </div>
 
                                 {step === 1 && (
                                     <button
                                         onClick={nextStep}
-                                        className="w-full mt-6 px-12 py-4 bg-primary text-white font-black rounded-xl hover:bg-primary-dark shadow-xl shadow-green-100 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 text-lg"
+                                        className="group relative w-full mt-10 px-12 py-5 bg-primary text-white font-black rounded-2xl hover:bg-primary-dark shadow-2xl shadow-primary/20 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 text-lg overflow-hidden"
                                     >
-                                        Pagar Pedido
+                                        <div className="relative z-10 flex items-center justify-center gap-3">
+                                            <span>PAGAR AHORA</span>
+                                            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                                        </div>
+                                        <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </button>
                                 )}
                             </div>

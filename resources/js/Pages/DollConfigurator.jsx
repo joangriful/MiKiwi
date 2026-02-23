@@ -60,7 +60,7 @@ function Scene({ hairStyle, hairColor, eyeColor, eyeSize, skinTone, bodyProporti
             {/* Background gradient circle */}
             <mesh position={[0, 0, -3]}>
                 <circleGeometry args={[4, 64]} />
-                <meshBasicMaterial color="#f8f9fa" />
+                <meshBasicMaterial color="#f8f5f0" />
             </mesh>
         </>
     );

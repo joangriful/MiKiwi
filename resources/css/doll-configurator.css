@@ -7,7 +7,7 @@
     display: flex;
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--bg-main);
     overflow: hidden;
     position: relative;
 }
@@ -46,9 +46,9 @@
     font-family: 'Sugo Pro Display', serif;
     font-size: 2.5rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--text-main);
     margin: 0;
-    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    text-shadow: none;
     letter-spacing: -0.5px;
 }
 
@@ -56,7 +56,7 @@
     font-family: 'Mulish', sans-serif;
     font-size: 1rem;
     font-weight: 300;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-muted);
     margin: 5px 0 0 0;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -70,14 +70,14 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--bg-main);
 }
 
 .loading-spinner {
     width: 60px;
     height: 60px;
-    border: 4px solid rgba(255, 255, 255, 0.3);
-    border-top-color: #ffffff;
+    border: 4px solid var(--border);
+    border-top-color: var(--color-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -104,11 +104,11 @@
 .customization-panel {
     width: 420px;
     height: 100vh;
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--bg-surface);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-left: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.15);
+    border-left: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
@@ -125,7 +125,8 @@
 }
 
 .customization-panel::-webkit-scrollbar-thumb {
-    background: rgba(102, 126, 234, 0.5);
+    background: var(--color-primary);
+    opacity: 0.5;
     border-radius: 4px;
 }
 
@@ -136,12 +137,12 @@
 /* Panel Header */
 .panel-header {
     padding: 40px 30px 30px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--premium-gradient);
     color: white;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
 }
 
 .panel-header h2 {
@@ -192,11 +193,11 @@
     font-family: 'Mulish', sans-serif;
     font-size: 0.95rem;
     font-weight: 700;
-    color: #2c3e50;
+    color: var(--text-main);
     margin: 0 0 16px 0;
     text-transform: uppercase;
     letter-spacing: 1.2px;
-    border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+    border-bottom: 2px solid var(--border);
     padding-bottom: 10px;
 }
 
@@ -211,8 +212,8 @@
 }
 
 .option-button {
-    background: rgba(102, 126, 234, 0.06);
-    border: 2px solid rgba(102, 126, 234, 0.15);
+    background: var(--bg-main);
+    border: 2px solid var(--border);
     border-radius: 10px;
     padding: 14px;
     cursor: pointer;
@@ -228,7 +229,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--premium-gradient);
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 0;
@@ -240,8 +241,8 @@
 }
 
 .option-button.active {
-    border-color: #667eea;
-    background: rgba(102, 126, 234, 0.15);
+    border-color: var(--color-primary);
+    background: rgba(153, 184, 73, 0.1);
 }
 
 .option-icon {
@@ -254,13 +255,13 @@
     font-family: 'Mulish', sans-serif;
     font-size: 0.85rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--text-main);
     position: relative;
     z-index: 1;
 }
 
 .option-button.active .option-label {
-    color: #667eea;
+    color: var(--color-primary-dark);
 }
 
 /* ============================================
@@ -303,7 +304,7 @@
 
 .color-swatch.active {
     border-color: #ffffff;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3), 0 0 0 4px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3), 0 0 0 4px var(--color-primary);
     transform: scale(1.05);
 }
 
@@ -333,7 +334,7 @@
     height: 8px;
     -webkit-appearance: none;
     appearance: none;
-    background: linear-gradient(to right, #667eea 0%, #764ba2 100%);
+    background: var(--premium-gradient);
     border-radius: 4px;
     outline: none;
     opacity: 0.8;
@@ -351,32 +352,32 @@
     width: 20px;
     height: 20px;
     background: #ffffff;
-    border: 3px solid #667eea;
+    border: 3px solid var(--color-primary);
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px rgba(153, 184, 73, 0.4);
     transition: all 0.3s ease;
 }
 
 .custom-slider::-webkit-slider-thumb:hover {
     transform: scale(1.15);
-    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.6);
+    box-shadow: 0 6px 16px rgba(153, 184, 73, 0.6);
 }
 
 .custom-slider::-moz-range-thumb {
     width: 20px;
     height: 20px;
     background: #ffffff;
-    border: 3px solid #667eea;
+    border: 3px solid var(--color-primary);
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px rgba(153, 184, 73, 0.4);
     transition: all 0.3s ease;
 }
 
 .custom-slider::-moz-range-thumb:hover {
     transform: scale(1.15);
-    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.6);
+    box-shadow: 0 6px 16px rgba(153, 184, 73, 0.6);
 }
 
 .slider-labels {
@@ -405,7 +406,7 @@
     margin-bottom: 8px;
     font-family: 'Mulish', sans-serif;
     font-size: 0.9rem;
-    color: #2c3e50;
+    color: var(--text-main);
 }
 
 .proportion-label {
@@ -414,7 +415,7 @@
 
 .proportion-value {
     font-weight: 700;
-    color: #667eea;
+    color: var(--color-primary-dark);
     font-size: 1rem;
 }
 
@@ -425,16 +426,16 @@
 .instructions {
     margin-top: 40px;
     padding: 24px;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+    background: var(--bg-main);
     border-radius: 12px;
-    border: 1px solid rgba(102, 126, 234, 0.2);
+    border: 1px solid var(--border);
 }
 
 .instruction-header {
     font-family: 'Mulish', sans-serif;
     font-size: 0.85rem;
     font-weight: 700;
-    color: #667eea;
+    color: var(--color-primary-dark);
     margin-bottom: 16px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -459,7 +460,7 @@
 
 .instruction-label {
     font-weight: 600;
-    color: #667eea;
+    color: var(--color-primary-dark);
 }
 
 /* ============================================
