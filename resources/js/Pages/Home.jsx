@@ -32,7 +32,7 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
                 <CalibrationSection calibrationImages={heroImages.filter(img => img.type === 'calibration')} />
                 <PremiumAtelierSection />
                 <ImmersiveGallerySection />
-            <SeoTextSection />
+                <SeoTextSection />
             </main>
             <Footer />
         </div>
