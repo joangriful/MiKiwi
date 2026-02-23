@@ -5,6 +5,7 @@ import CalibrationSection from '@/Components/Home/Sections/CalibrationSection';
 import FeaturedProductsSection from '@/Components/Home/Sections/FeaturedProductsSection';
 import CollectionsSection from '@/Components/Home/Sections/CollectionsSection';
 import useLenisScroll from '@/Components/Home/hooks/useLenisScroll';
+import ScrollReveal from '@/Components/Home/utils/ScrollReveal';
 import './Home.css';
 
 export default function HomePage({ auth, laravelVersion, phpVersion, heroImages = [], featuredProducts = [], collectionImages = [] }) {
@@ -52,54 +53,66 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
                 </section>
 
                 {/* --- Keywords Section --- */}
-                <div className="work-section">
-                    <p className="work-keywords">
-                        Diseño Propio.<br />
-                        Fabricación Española.<br />
-                        Calidad Premium.<br />
-                        Bienestar Sexual.
-                    </p>
-                </div>
+                <ScrollReveal direction="right" distance={50} delay={0.2}>
+                    <div className="work-section">
+                        <p className="work-keywords">
+                            Diseño Propio.<br />
+                            Fabricación Española.<br />
+                            Calidad Premium.<br />
+                            Bienestar Sexual.
+                        </p>
+                    </div>
+                </ScrollReveal>
 
                 {/* --- Benefits Section (Por qué elegirnos) --- */}
                 <section className="benefits-section">
                     <div className="benefits-grid">
                         {benefits.map((benefit, i) => (
-                            <div key={i} className="benefit-card">
-                                <div className="benefit-img">
-                                    <img src={benefit.img} alt={benefit.title} />
+                            <ScrollReveal key={i} direction="up" delay={i * 0.15}>
+                                <div className="benefit-card">
+                                    <div className="benefit-img">
+                                        <img src={benefit.img} alt={benefit.title} />
+                                    </div>
+                                    <h3 className="uppercase tracking-widest text-sm mb-2">{benefit.title}</h3>
+                                    <p>{benefit.desc}</p>
                                 </div>
-                                <h3 className="uppercase tracking-widest text-sm mb-2">{benefit.title}</h3>
-                                <p>{benefit.desc}</p>
-                            </div>
+                            </ScrollReveal>
                         ))}
                     </div>
                 </section>
 
                 {/* --- Quiz Section --- */}
-                <CalibrationSection calibrationImages={heroImages.filter(img => img.type === 'calibration')} />
+                <ScrollReveal direction="up">
+                    <CalibrationSection calibrationImages={heroImages.filter(img => img.type === 'calibration')} />
+                </ScrollReveal>
 
                 {/* --- Featured Products --- */}
-                <FeaturedProductsSection featuredProducts={featuredProducts} />
+                <ScrollReveal direction="left" distance={60}>
+                    <FeaturedProductsSection featuredProducts={featuredProducts} />
+                </ScrollReveal>
 
                 {/* --- Collection Grid --- */}
                 <section className="method-section">
-                    <div className="method-header">
-                        <h2>Colecciones.</h2>
-                        <div>
-                            <p>Universos sensoriales cuidadosamente curados por MiKiwi.</p>
-                            <Link href={route('products.index')} className="btn-pill">Ver todas</Link>
+                    <ScrollReveal direction="right">
+                        <div className="method-header">
+                            <h2>Colecciones.</h2>
+                            <div>
+                                <p>Universos sensoriales cuidadosamente curados por MiKiwi.</p>
+                                <Link href={route('products.index')} className="btn-pill">Ver todas</Link>
+                            </div>
                         </div>
-                    </div>
+                    </ScrollReveal>
 
                     <div className="collection-grid-new">
                         {collections.map((col, i) => (
-                            <Link key={i} href={col.link} className="collection-item-new group">
-                                <div className="collection-img-box overflow-hidden rounded-2xl">
-                                    <img src={col.img} alt={col.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                </div>
-                                <h3 className="mt-4">{col.title}</h3>
-                            </Link>
+                            <ScrollReveal key={i} direction="left" delay={i * 0.1} distance={30}>
+                                <Link href={col.link} className="collection-item-new group">
+                                    <div className="collection-img-box overflow-hidden rounded-2xl">
+                                        <img src={col.img} alt={col.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    </div>
+                                    <h3 className="mt-4">{col.title}</h3>
+                                </Link>
+                            </ScrollReveal>
                         ))}
                     </div>
                 </section>
@@ -122,16 +135,24 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
                     </div>
 
                     <div className="teaser-content relative z-10">
-                        <span className="font-sugo text-pink-500 text-xs tracking-[.3em] uppercase mb-4 block">Personalización Avanzada</span>
-                        <h2 className="font-sugo text-black text-5xl md:text-8xl font-black uppercase leading-[0.85] mb-8">
-                            CREA TU<br />PROPIA MODELO.
-                        </h2>
-                        <p className="text-black/60 max-w-lg text-lg mb-10 font-light">
-                            Accede a nuestro configurador biométrico de alta fidelidad. Define cada detalle, textura y polímero de tu compañera ideal.
-                        </p>
-                        <Link href={route('doll.config.test')} className="btn-pill">
-                            LANZAR CONFIGURADOR
-                        </Link>
+                        <ScrollReveal direction="right" distance={40}>
+                            <span className="font-sugo text-pink-500 text-xs tracking-[.3em] uppercase mb-4 block">Personalización Avanzada</span>
+                            <h2 className="font-sugo text-black text-5xl md:text-8xl font-black uppercase leading-[0.85] mb-8">
+                                CREA TU<br />PROPIA MODELO.
+                            </h2>
+                        </ScrollReveal>
+
+                        <ScrollReveal direction="left" distance={40} delay={0.2}>
+                            <p className="text-black/60 max-w-lg text-lg mb-10 font-light">
+                                Accede a nuestro configurador biométrico de alta fidelidad. Define cada detalle, textura y polímero de tu compañera ideal.
+                            </p>
+                        </ScrollReveal>
+
+                        <ScrollReveal direction="up" delay={0.4}>
+                            <Link href={route('doll.config.test')} className="btn-pill">
+                                LANZAR CONFIGURADOR
+                            </Link>
+                        </ScrollReveal>
                     </div>
                 </section>
 
