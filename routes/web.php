@@ -29,7 +29,10 @@ Route::get('/', function () {
         ->orderBy('created_at', 'desc')
         ->get();
 
-    $collectionImages = \App\Models\HomeCollectionImage::all();
+    $homeCollectionImageModel = 'App\\Models\\HomeCollectionImage';
+    $collectionImages = class_exists($homeCollectionImageModel)
+        ? $homeCollectionImageModel::all()
+        : collect();
 
     return Inertia::render('Home', [
         'heroImages' => $heroImages,
@@ -160,7 +163,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->with([
                 'children' => function ($q) {
                     $q->where('is_active', true)->orderBy('name')->select(['id', 'parent_id', 'name']);
-                }
+                },
             ])
             ->orderBy('name')
             ->get(['id', 'parent_id', 'name']);
@@ -169,11 +172,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->orderBy('created_at', 'desc')
             ->get();
 
-        \Illuminate\Support\Facades\Log::info('Admin Products Count: ' . $products->count());
+        \Illuminate\Support\Facades\Log::info('Admin Products Count: '.$products->count());
 
         $partPositions = $settingsController->getAllPartPositions();
 
-        $collectionImages = \App\Models\HomeCollectionImage::all();
+        $homeCollectionImageModel = 'App\\Models\\HomeCollectionImage';
+        $collectionImages = class_exists($homeCollectionImageModel)
+            ? $homeCollectionImageModel::all()
+            : collect();
 
         return Inertia::render('ComponentsManager', [
             'views' => $views,
@@ -226,8 +232,9 @@ Route::get('/sostenibilidad', function () {
     $heroImages = \App\Models\HeroImage::where('type', 'sustainability')
         ->orderBy('created_at', 'desc')
         ->get();
+
     return Inertia::render('Sustainability', [
-        'heroImages' => $heroImages
+        'heroImages' => $heroImages,
     ]);
 })->name('sustainability');
 
@@ -322,4 +329,4 @@ Route::get('/doll_config_test', function () {
     ]);
 })->name('doll.config.test');
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
