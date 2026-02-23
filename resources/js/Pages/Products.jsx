@@ -1,6 +1,9 @@
-import { router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { useState, useCallback } from 'react';
 import debounce from 'lodash/debounce';
+import Header from '@/Components/Common/Header';
+import Footer from '@/Components/Common/Footer';
+import { ProductCard, FilterMenu } from '@/Components';
 
 export default function Products({ products, categories = [], filters }) {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -13,7 +16,7 @@ export default function Products({ products, categories = [], filters }) {
                 { ...filters, search: term },
                 { preserveState: true, preserveScroll: true, replace: true }
             );
-        }, 500),
+        }, 300),
         [filters]
     );
 
@@ -36,41 +39,41 @@ export default function Products({ products, categories = [], filters }) {
                         <span className="text-[10px] font-bold tracking-[0.3em] text-[#99b849] uppercase block animate-in fade-in slide-in-from-bottom-2 duration-700">
                             Curated Selection
                         </span>
-                        <div className="flex flex-col xl:flex-row xl:items-end gap-6 xl:gap-12">
-                            <h1 className="text-4xl md:text-7xl font-bold text-gray-900 tracking-widest leading-none">
-                                Nuestros <br />Productos<span className="text-[#99b849]">.</span>
-                            </h1>
+                        <h1 className="text-4xl md:text-7xl font-bold text-gray-900 tracking-widest leading-none">
+                            Nuestros <br />Productos<span className="text-[#99b849]">.</span>
+                        </h1>
+                    </div>
+                    <p className="text-gray-400 text-base md:text-lg max-w-md font-light">
+                        Ingeniería sensorial de precisión diseñada para elevar tu experiencia de introspección habitual.
+                    </p>
+                </div>
 
-                            {/* Search Input */}
-                            <div className="relative w-full max-w-md group animate-in fade-in slide-in-from-left-4 duration-700 delay-200">
-                                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-[#99b849] transition-colors">
-                                    search
-                                </span>
-                                <input
-                                    type="text"
-                                    placeholder="Buscar por nombre..."
-                                    value={searchTerm}
-                                    onChange={handleSearchChange}
-                                    className="w-full bg-white border border-gray-100 pl-12 pr-6 py-4 rounded-full shadow-sm outline-none focus:ring-2 focus:ring-[#99b849]/20 focus:border-[#99b849] transition-all text-sm"
-                                />
-                                {searchTerm && (
-                                    <button
-                                        onClick={() => handleSearchChange({ target: { value: '' } })}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors"
-                                    >
-                                        <span className="material-symbols-outlined text-sm">close</span>
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                        <p className="text-gray-400 text-base md:text-lg max-w-md font-light">
-                            Ingeniería sensorial de precisión diseñada para elevar tu experiencia de introspección habitual.
-                        </p>
+                <div className="flex flex-col md:flex-row justify-end items-stretch md:items-center gap-4 mb-12">
+                    {/* Enhanced Search Input */}
+                    <div className="relative w-full md:w-80 lg:w-96 group animate-in fade-in slide-in-from-right-4 duration-700 delay-200">
+                        <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-[#99b849] transition-colors">
+                            search
+                        </span>
+                        <input
+                            type="text"
+                            placeholder="Buscar..."
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            className="w-full bg-white border-2 border-[#99b849]/30 pl-14 pr-10 py-4 rounded-full shadow-sm outline-none focus:ring-4 focus:ring-[#99b849]/10 focus:border-[#99b849] transition-all text-sm placeholder:text-gray-300"
+                        />
+                        {searchTerm && (
+                            <button
+                                onClick={() => handleSearchChange({ target: { value: '' } })}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors p-2"
+                            >
+                                <span className="material-symbols-outlined text-base">close</span>
+                            </button>
+                        )}
                     </div>
 
                     <button
                         onClick={() => setIsFilterOpen(true)}
-                        className="group flex items-center gap-3 bg-white border border-gray-100 px-8 py-4 rounded-full shadow-sm hover:shadow-md transition-all active:scale-95 shrink-0"
+                        className="group flex items-center justify-center gap-3 bg-white border-2 border-[#99b849]/30 px-8 py-4 rounded-full shadow-sm hover:shadow-md hover:border-[#99b849] transition-all active:scale-95 shrink-0"
                     >
                         <span className="material-symbols-outlined text-gray-900 text-xl transition-transform group-hover:rotate-12">tune</span>
                         <div className="flex items-center gap-2">
@@ -146,9 +149,9 @@ export default function Products({ products, categories = [], filters }) {
                         </div>
                     )}
                 </div>
-            </main>
+            </main >
 
             <Footer />
-        </div>
+        </div >
     );
 }
