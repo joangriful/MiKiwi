@@ -1,6 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { useState, useCallback } from 'react';
-import debounce from 'lodash/debounce';
+import { debounce } from 'lodash';
 import Header from '@/Components/Common/Header';
 import Footer from '@/Components/Common/Footer';
 import { ProductCard, FilterMenu } from '@/Components';
