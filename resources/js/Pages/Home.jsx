@@ -1,4 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
+import { motion } from 'framer-motion';
+
 import { Header, Footer } from '@/Components';
 import HeroSection from '@/Components/Home/Sections/HeroSection';
 import CalibrationSection from '@/Components/Home/Sections/CalibrationSection';
@@ -34,9 +36,16 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
             <main>
                 {/* --- Hero Section --- */}
                 <section className="hero-minimal hero-v2">
-                    <div className="hero-watermark">
-                        <img src="/assets/icons/mikiwi_logo.svg" alt="WATERMARK" />
-                    </div>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 0.7, scale: 1 }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                        className="hero-watermark"
+                    >
+                        <div className="hero-logo-shimmer">
+                            <img src="/assets/icons/mikiwi_logo.svg" alt="WATERMARK" />
+                        </div>
+                    </motion.div>
 
                     <div className="hero-center">
                         <Link href={route('register')} className="btn-pill btn-hover-effect">
