@@ -12,6 +12,8 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
     const [savedCards, setSavedCards] = useState([]);
     const [isLoadingCards, setIsLoadingCards] = useState(false);
     const [paymentOption, setPaymentOption] = useState('new'); // 'new' or card ID
+    const [showAdminTestCards, setShowAdminTestCards] = useState(false);
+    const [copiedId, setCopiedId] = useState(null);
 
     useEffect(() => {
         if (auth?.user) {
@@ -40,9 +42,19 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
         setData('selected_payment_method', optionId === 'new' ? null : optionId);
     };
 
-    const fillTestCard = () => {
-        alert("Tarjeta de prueba: 4242 4242 4242 4242\nExp: 12/24\nCVC: 123\nCP: 28001");
+    const toggleAdminTestCards = () => setShowAdminTestCards(!showAdminTestCards);
+
+    const copyToClipboard = (text, id) => {
+        navigator.clipboard.writeText(text);
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2000);
     };
+
+    const TEST_CARDS = [
+        { brand: 'Visa', number: '4242424242424242', display: '4242 4242 4242 4242', exp: '12/26', cvc: '123' },
+        { brand: 'MasterCard', number: '5555555555554444', display: '5555 5555 5555 4444', exp: '12/26', cvc: '123' },
+        { brand: 'Amex', number: '378282246310005', display: '3782 8224 6310 005', exp: '12/26', cvc: '123' },
+    ];
 
     const onSubmitClick = (event) => {
         event.preventDefault();
@@ -151,14 +163,48 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                                 </div>
                             </div>
                             {isAdmin && (
-                                <button
-                                    type="button"
-                                    onClick={fillTestCard}
-                                    className="mt-4 w-full py-2 border-2 border-dashed border-primary/30 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary/5 transition-all flex items-center justify-center gap-2"
-                                >
-                                    <span className="material-symbols-outlined text-sm">science</span>
-                                    Modo Admin: Ver Datos de Prueba
-                                </button>
+                                <div className="mt-4 border-t border-gray-100 pt-4">
+                                    <button
+                                        type="button"
+                                        onClick={toggleAdminTestCards}
+                                        className="w-full py-2 border-2 border-dashed border-primary/30 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary/5 transition-all flex items-center justify-center gap-2"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">science</span>
+                                        {showAdminTestCards ? 'Ocultar Datos de Prueba' : 'Modo Admin: Ver Datos de Prueba'}
+                                    </button>
+
+                                    {showAdminTestCards && (
+                                        <div className="mt-4 grid grid-cols-1 gap-2 animate-in slide-in-from-top-2 duration-200">
+                                            {TEST_CARDS.map((card, idx) => (
+                                                <div key={idx} className="bg-gray-50 rounded-xl p-3 border border-gray-100 flex items-center justify-between group">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[8px] font-black uppercase text-gray-400 tracking-tighter">{card.brand}</span>
+                                                        <span className="font-mono text-xs text-gray-600 tracking-wider transition-colors group-hover:text-primary">{card.display}</span>
+                                                    </div>
+                                                    <div className="flex gap-1">
+                                                        <button 
+                                                            type="button"
+                                                            onClick={() => copyToClipboard(card.number, `num-${idx}`)}
+                                                            className={`p-1.5 rounded-lg transition-all ${copiedId === `num-${idx}` ? 'bg-green-100 text-green-600' : 'bg-white text-gray-400 hover:text-gray-900 shadow-sm border border-gray-100'}`}
+                                                            title="Copiar Número"
+                                                        >
+                                                            <span className="material-symbols-outlined text-sm">{copiedId === `num-${idx}` ? 'check' : 'content_copy'}</span>
+                                                        </button>
+                                                        <button 
+                                                            type="button"
+                                                            onClick={() => copyToClipboard(`${card.exp} | ${card.cvc}`, `exp-${idx}`)}
+                                                            className={`p-1.5 rounded-lg transition-all ${copiedId === `exp-${idx}` ? 'bg-green-100 text-green-600' : 'bg-white text-gray-400 hover:text-gray-900 shadow-sm border border-gray-100'}`}
+                                                            title="Copiar Exp/CVC"
+                                                        >
+                                                            <span className="material-symbols-outlined text-sm">{copiedId === `exp-${idx}` ? 'check' : 'calendar_today'}</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            <p className="text-[8px] text-center text-gray-400 font-bold uppercase mt-1">C.P. Recomendado: 28001</p>
+                                        </div>
+                                    )}
+                                </div>
                             )}
                         </div>
                     </div>

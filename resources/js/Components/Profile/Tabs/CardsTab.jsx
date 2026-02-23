@@ -8,7 +8,11 @@ import {
     useStripe,
     useElements,
 } from '@stripe/react-stripe-js';
-
+const TEST_CARDS = [
+    { brand: 'Visa', number: '4242 4242 4242 4242', raw: '4242424242424242', exp: '12/26', cvc: '123' },
+    { brand: 'MasterCard', number: '5555 5555 5555 4444', raw: '5555555555554444', exp: '12/26', cvc: '123' },
+    { brand: 'Amex', number: '3782 8224 6310 005', raw: '378282246310005', exp: '12/26', cvc: '123' },
+];
 function CardForm({ onCancel, onSuccess }) {
     const stripe = useStripe();
     const elements = useElements();
@@ -126,6 +130,15 @@ export default function CardsTab() {
     const [cards, setCards] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
+    const [copiedId, setCopiedId] = useState(null);
+    const { auth } = usePage().props;
+    const isAdmin = auth?.user?.role === 'admin';
+
+    const handleCopy = (text, id) => {
+        navigator.clipboard.writeText(text);
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2000);
+    };
 
     const fetchCards = async () => {
         setIsLoading(true);
@@ -244,6 +257,52 @@ export default function CardsTab() {
                         }} 
                     />
                 </Elements>
+            )}
+
+            {/* Admin Test Cards Reference */}
+            {isAdmin && (
+                <div className="mt-16 pt-12 border-t border-gray-100">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+                            <span className="material-symbols-outlined text-xl">science</span>
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-black text-gray-900 leading-none">Referencia para Pruebas</h3>
+                            <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-2">Uso exclusivo de administradores (Modo Test)</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {TEST_CARDS.map((card, idx) => (
+                            <div key={idx} className="bg-gray-50/50 border border-gray-100 rounded-3xl p-6 transition-all hover:border-indigo-100 hover:bg-white group">
+                                <span className="text-[10px] font-black text-indigo-400 uppercase tracking-tighter mb-1 block">{card.brand}</span>
+                                <div className="flex items-center justify-between gap-4">
+                                    <span className="font-mono text-xs text-gray-700 tracking-wider transition-colors group-hover:text-indigo-600">{card.number}</span>
+                                    <button 
+                                        onClick={() => handleCopy(card.raw, `profile-card-${idx}`)}
+                                        className={`p-2 rounded-lg transition-all ${copiedId === `profile-card-${idx}` ? 'bg-green-100 text-green-600' : 'bg-white text-gray-300 hover:text-gray-900 border border-gray-100 shadow-sm'}`}
+                                        title="Copiar número"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">{copiedId === `profile-card-${idx}` ? 'check' : 'content_copy'}</span>
+                                    </button>
+                                </div>
+                                <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex flex-col">
+                                            <span className="text-[8px] font-black text-gray-300 uppercase">Exp</span>
+                                            <span className="text-[10px] font-mono font-bold text-gray-600">{card.exp}</span>
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-[8px] font-black text-gray-300 uppercase">CVC</span>
+                                            <span className="text-[10px] font-mono font-bold text-gray-600">{card.cvc}</span>
+                                        </div>
+                                    </div>
+                                    <p className="text-[10px] font-black text-gray-300 uppercase">CP: 28001</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             )}
         </div>
     );

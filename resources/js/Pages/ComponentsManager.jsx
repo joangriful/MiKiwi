@@ -8,6 +8,7 @@ import PagesGridView from '../Components/ComponentsManager/PagesGridView';
 import UsersManager from '../Components/ComponentsManager/UsersManager';
 import ContentManager from '../Components/ComponentsManager/ContentManager';
 import ProductsManager from '../Components/ComponentsManager/ProductsManager';
+import StripeTestCards from '../Components/ComponentsManager/StripeTestCards';
 import { useComponentsManager } from '../Components/ComponentsManager/useComponentsManager';
 
 export default function ComponentsManager({ views, defaultSettings, partPositions, users, heroImages, categories, products, debugCount }) {
@@ -60,7 +61,8 @@ export default function ComponentsManager({ views, defaultSettings, partPosition
                         { id: 'doll', label: 'Doll', icon: 'person' },
                         { id: 'users', label: 'Users', icon: 'group' },
                         { id: 'content', label: 'Content', icon: 'image' },
-                        { id: 'products', label: 'Products', icon: 'inventory_2' }
+                        { id: 'products', label: 'Products', icon: 'inventory_2' },
+                        { id: 'payments', label: 'Payments', icon: 'payments' }
                     ].map(tab => (
                         <button
                             key={tab.id}
@@ -129,6 +131,10 @@ export default function ComponentsManager({ views, defaultSettings, partPosition
 
                 {activeManager === 'products' && (
                     <ProductsManager categories={categories} products={products} debugCount={debugCount} />
+                )}
+                
+                {activeManager === 'payments' && (
+                    <StripeTestCards />
                 )}
             </div>
         </div>
