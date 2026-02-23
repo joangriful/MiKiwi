@@ -16,7 +16,7 @@ export default function FeaturedProductsManager({ products = [] }) {
 
     const toggleFeatured = (product) => {
         setLoadingId(product.id);
-        router.post(route('products.update', product.slug), {
+        router.post(route('products.update', product.id), {
             _method: 'put',
             is_featured: !product.is_featured
         }, {

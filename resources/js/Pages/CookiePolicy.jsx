@@ -43,7 +43,7 @@ export default function CookiePolicy() {
             <Head title="Política de Cookies - MiKiwi" />
             <Header />
 
-            <main className="flex-grow container mx-auto px-6 py-16 max-w-3xl">
+            <main className="flex-grow container mx-auto px-6 py-12 md:py-16 max-w-3xl">
                 {/* Breadcrumb */}
                 <nav className="text-xs text-gray-400 mb-8 flex items-center gap-2">
                     <Link href={route('home')} className="hover:text-secondary-dark transition-colors">Inicio</Link>

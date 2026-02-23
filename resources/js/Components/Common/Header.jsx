@@ -29,7 +29,7 @@ export default function Header() {
     }, [isSearchOpen]);
 
     return (
-        <div className="flex items-center justify-between px-6 bg-black h-[60px] lg:h-[80px] shadow-md transition-all duration-300">
+        <div className="flex items-center justify-between px-4 md:px-6 bg-black h-[60px] lg:h-[80px] shadow-md transition-all duration-300">
             {/* Left: Logo */}
             <Link href={route('home')} className="flex items-center h-full py-[5px] pl-[5px]">
                 <img
@@ -40,10 +40,10 @@ export default function Header() {
             </Link>
 
             {/* Right: Icons (Search, Profile, Cart) */}
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3 md:gap-6">
 
                 {/* Expandable Search Bar */}
-                <div ref={searchContainerRef} className={`flex items-center relative transition-all duration-300 ease-in-out pl-4 pr-2 py-1 rounded-full border border-transparent ${isSearchOpen ? 'w-64 bg-white border-primary' : 'w-10 bg-transparent'}`}>
+                <div ref={searchContainerRef} className={`flex items-center relative transition-all duration-300 ease-in-out pl-4 pr-2 py-1 rounded-full border border-transparent ${isSearchOpen ? 'w-48 xs:w-64 bg-white border-primary' : 'w-10 bg-transparent'}`}>
                     <input
                         ref={searchInputRef}
                         type="text"

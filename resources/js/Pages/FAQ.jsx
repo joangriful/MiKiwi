@@ -33,8 +33,8 @@ export default function FAQ() {
         <div className="min-h-screen bg-bg-main text-text-main font-body">
             <Head title="Preguntas Frecuentes - MiKiwi" />
             <Header />
-            <main className="container mx-auto px-6 py-20 max-w-4xl">
-                <h1 className="text-[32px] font-bold mb-12 text-center text-secondary-dark font-head uppercase tracking-widest">Preguntas frecuentes</h1>
+            <main className="container mx-auto px-6 py-12 md:py-20 max-w-4xl">
+                <h1 className="text-2xl md:text-[32px] font-bold mb-10 md:mb-12 text-center text-secondary-dark font-head uppercase tracking-widest leading-tight">Preguntas frecuentes</h1>
 
                 <div className="space-y-12">
                     {faqData.map((section, sIdx) => (

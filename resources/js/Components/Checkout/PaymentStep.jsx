@@ -172,6 +172,14 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                         <span className="text-sm font-bold">{cardError}</span>
                     </div>
                 )}
+
+                {/* Coming Soon Options */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="border border-gray-100 p-4 rounded-xl flex items-center bg-gray-50/50 opacity-60 grayscale cursor-not-allowed">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" className="h-4 mr-3" />
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Próximamente</span>
+                    </div>
+                </div>
             </div>
 
             {/* Billing Address Toggle */}
@@ -214,7 +222,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                                 required
                             />
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <InputLabel htmlFor="billing_city" value="Ciudad" />
                                 <input

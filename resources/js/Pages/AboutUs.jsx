@@ -25,8 +25,8 @@ export default function AboutUs() {
 
             <Header />
 
-            <main className="flex-1 w-full max-w-5xl mx-auto py-16 px-6 md:px-12">
-                <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-900 border-b border-gray-100 pb-6">{t.title}</h1>
+            <main className="flex-1 w-full max-w-5xl mx-auto py-12 md:py-16 px-6 md:px-12">
+                <h1 className="text-2xl md:text-4xl font-bold mb-8 text-gray-900 border-b border-gray-100 pb-6 leading-tight">{t.title}</h1>
 
                 <div className="space-y-12">
                     {/* Quiénes Somos */}

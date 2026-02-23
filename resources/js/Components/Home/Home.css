@@ -109,6 +109,12 @@
     margin-left: var(--nav-width);
 }
 
+@media (max-width: 768px) {
+    .curation-section {
+        padding: 60px 20px;
+    }
+}
+
 .curation-header {
     margin-bottom: 60px;
     display: flex;
@@ -174,6 +180,12 @@
     position: relative;
     overflow: hidden;
     margin-left: var(--nav-width);
+}
+
+@media (max-width: 768px) {
+    .premium-atelier {
+        padding: 100px 20px;
+    }
 }
 
 .atelier-bg-visual {
@@ -605,6 +617,12 @@
     background: var(--bg-surface);
     text-align: center;
     margin-left: var(--nav-width);
+}
+
+@media (max-width: 768px) {
+    .gallery-section {
+        padding: 80px 20px;
+    }
 }
 
 .gallery-header {

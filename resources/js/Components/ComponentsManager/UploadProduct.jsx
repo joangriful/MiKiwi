@@ -177,7 +177,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
             };
 
             const routeName = isEdit ? 'products.update' : 'products.upload';
-            const routeParams = isEdit ? initialData.slug : {};
+            const routeParams = isEdit ? initialData.id : {};
 
             router.visit(route(routeName, routeParams), {
                 method: isEdit ? 'put' : 'post',
@@ -203,8 +203,8 @@ export default function UploadProduct({ categories = [], initialData = null, onC
         setMainImage(newMain);
         setHoverImage(newHover);
 
-        if (isEdit && initialData && initialData.slug) {
-            router.put(route('products.update', initialData.slug), {
+        if (isEdit && initialData && initialData.id) {
+            router.put(route('products.update', initialData.id), {
                 ...formData,
                 image_url: newMain,
                 hover_image_url: newHover,
