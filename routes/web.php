@@ -211,6 +211,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Product Management
     Route::get('/admin/products/cloudinary-images', [App\Http\Controllers\ProductManagerController::class, 'getProductImages'])->name('products.cloudinary-images');
     Route::post('/admin/products/link-folder', [App\Http\Controllers\ProductManagerController::class, 'linkCloudinaryFolder'])->name('products.link-folder');
+    Route::post('/admin/products/upload-images', [App\Http\Controllers\ProductManagerController::class, 'uploadImagesTemp'])->name('products.upload-images');
     Route::post('/products/upload', [App\Http\Controllers\ProductManagerController::class, 'uploadProduct'])->name('products.upload');
     Route::put('/products/{product:id}', [App\Http\Controllers\ProductManagerController::class, 'updateProduct'])->name('products.update');
     Route::delete('/products/{product:id}', [App\Http\Controllers\ProductManagerController::class, 'deleteProduct'])->name('products.delete');

@@ -212,9 +212,49 @@ class ProductManagerController extends Controller
         } catch (\GuzzleHttp\Exception\ClientException $e) {
              // Avoid HTML errors leaking
             return response()->json(['success' => false, 'error' => 'La carpeta de origen (' . $folder . ') no existe o no tiene imágenes.'], 400);
+         } catch (\Exception $e) {
+             \Log::error('Error linking folder: ' . $e->getMessage());
+             return response()->json(['success' => false, 'error' => 'No se pudo vincular la carpeta. Verificá que exista en Cloudinary. (' . $folder . ')'], 400);
+         }
+     }
+
+    public function uploadImagesTemp(Request $request)
+    {
+        $request->validate([
+            'images' => 'required|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+            'product_name' => 'required|string'
+        ]);
+
+        try {
+            $productName = trim($request->input('product_name'));
+            $slugPrefix = strtolower(preg_replace('/[^A-Za-z0-9\-]/', '-', $productName));
+            $slugPrefix = preg_replace('/-+/', '-', $slugPrefix);
+            $slugPrefix = trim($slugPrefix, '-');
+            
+            // Generate the dynamic folder dynamically
+            $folder = 'productos/' . $slugPrefix;
+            
+            $uploadedUrls = [];
+
+            foreach ($request->file('images') as $image) {
+                // Upload directly to Cloudinary folder
+                $cloudinaryResponse = $this->cloudinaryService->uploadImage($image, $folder);
+                
+                if (isset($cloudinaryResponse['secure_url'])) {
+                    $uploadedUrls[] = $cloudinaryResponse['secure_url'];
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'urls' => $uploadedUrls,
+                'message' => count($uploadedUrls) . ' imágenes subidas a ' . $folder
+            ]);
+
         } catch (\Exception $e) {
-            \Log::error('Error linking folder: ' . $e->getMessage());
-            return response()->json(['success' => false, 'error' => 'No se pudo vincular la carpeta. Verificá que exista en Cloudinary. (' . $folder . ')'], 400);
+            Log::error('Error en uploadImagesTemp: ' . $e->getMessage());
+            return response()->json(['success' => false, 'error' => 'Error subiendo imágenes al servidor: ' . $e->getMessage()], 500);
         }
     }
 }

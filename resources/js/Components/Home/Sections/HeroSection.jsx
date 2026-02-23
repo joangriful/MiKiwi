@@ -18,7 +18,6 @@ export default function HeroSection({ heroImages }) {
             }}
         >
             <div className="hero-content" style={{ position: 'relative', zIndex: 100, marginBottom: '20vh' }}>
-                <p>Trascendiendo el límite de lo material. Ingeniería sensorial Suiza diseñada para la introspección profunda.</p>
             </div>
 
             <img

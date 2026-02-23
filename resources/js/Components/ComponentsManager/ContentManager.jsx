@@ -46,6 +46,22 @@ export default function ContentManager({ heroImages }) {
                             description="Gestiona las imágenes del hero de la página de sostenibilidad"
                             uploadType="sustainability"
                         />
+
+                        {/* Dolls Section Images */}
+                        <HeroImageManager
+                            images={heroImages.filter(img => img.type === 'dolls')}
+                            title="GIF / Imágenes Sección Muñecas (Home)"
+                            description="Gestiona el GIF de fondo que aparece en la sección Sex Dolls de la página principal"
+                            uploadType="dolls"
+                        />
+
+                        {/* Calibration Section Images */}
+                        <HeroImageManager
+                            images={heroImages.filter(img => img.type === 'calibration')}
+                            title="Fondo Sección Calibración (Home)"
+                            description="Gestiona la imagen de fondo para la sección de 'Descubre tu personalidad'"
+                            uploadType="calibration"
+                        />
                     </div>
                 )}
             </div>
