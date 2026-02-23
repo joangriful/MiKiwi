@@ -16,7 +16,7 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
         if (!confirm('¿Estás seguro de que deseas eliminar este producto?')) return;
 
         setDeletingId(product.id);
-        router.delete(route('products.delete', product.slug), {
+        router.delete(route('products.delete', product.id), {
             onSuccess: () => {
                 toast.success('Producto eliminado correctamente');
                 setDeletingId(null);
