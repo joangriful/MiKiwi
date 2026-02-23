@@ -22,66 +22,91 @@
     overflow-x: hidden;
 }
 
-/* --- Hero Section --- */
-.hero-minimal {
+/* --- Hero Section V4 --- */
+.hero-minimal.hero-v2 {
+    min-height: 90vh;
     background-color: var(--bg-pink);
-    min-height: 80vh;
-    padding: 60px 8%;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    /* Move content to bottom */
+    justify-content: center;
+    padding: 60px 8%;
     position: relative;
-    text-align: left;
+    overflow: hidden;
 }
 
-.hero-top-nav {
+.hero-watermark {
     position: absolute;
-    top: 30px;
-    left: 8%;
-    right: 8%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    bottom: 40px;
+    right: 40px;
+    width: 350px;
+    opacity: 1;
+    pointer-events: none;
+    z-index: 1;
 }
 
-.hero-logo-small {
-    height: 40px;
-    width: auto;
+.hero-watermark img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.hero-center {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
 .hero-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-top: 40px;
+    position: absolute;
+    bottom: 60px;
+    left: 8%;
     width: 100%;
 }
 
 .hero-subtitle {
-    font-size: 1.8rem;
-    font-weight: 500;
-    max-width: 450px;
-    line-height: 1.2;
+    font-family: var(--font-head);
+    font-size: 2.22rem;
+    font-weight: 700;
+    max-width: 550px;
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
 }
 
 .btn-pill {
-    padding: 15px 40px;
-    border: 1.5px solid var(--text-black);
-    border-radius: 50px;
-    font-weight: 600;
-    text-transform: lowercase;
-    transition: all 0.3s ease;
+    padding: 22px 65px;
+    border: 2px solid #000000;
+    border-radius: 100px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
-    background: transparent;
+    background: #fdfdfd;
     color: var(--text-black);
     text-decoration: none;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-head);
+    font-size: 1.3rem;
+    position: relative;
+    /* Clean Solid Relief / Depth effect */
+    box-shadow: 0 10px 0 #cecece;
 }
 
 .btn-pill:hover {
-    background: var(--text-black);
-    color: var(--bg-pink);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 0 #cecece;
+    background: #ffffff;
+}
+
+.btn-pill:active {
+    transform: translateY(6px);
+    box-shadow: 0 4px 0 #cecece;
 }
 
 /* --- Benefits Section (Por qué elegirnos) --- */
@@ -106,6 +131,17 @@
 
 .benefit-card {
     text-align: left;
+    background: #fff;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.4s ease;
+}
+
+.benefit-card:hover {
+    border-color: var(--bg-pink);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transform: translateY(-5px);
 }
 
 .benefit-img {
@@ -123,9 +159,11 @@
 }
 
 .benefit-card h3 {
-    font-size: 1.2rem;
-    font-weight: 700;
+    font-family: var(--font-head);
+    font-size: 1.1rem;
+    font-weight: 800;
     margin-bottom: 10px;
+    text-transform: uppercase;
 }
 
 .benefit-card p {
@@ -136,17 +174,20 @@
 
 /* --- Interstitial Section --- */
 .work-section {
-    padding: 80px 8%;
+    padding: 120px 8%;
     text-align: center;
+    background: #fafafa;
 }
 
 .work-keywords {
-    font-size: 2rem;
-    font-weight: 800;
+    font-family: var(--font-head);
+    font-size: 4rem;
+    font-weight: 900;
     margin-bottom: 40px;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    line-height: 1.4;
+    letter-spacing: -0.02em;
+    line-height: 0.9;
+    color: #111;
 }
 
 .work-header {
@@ -300,4 +341,38 @@
     .method-header h2 {
         font-size: 3.5rem;
     }
+}
+
+/* --- Logo Wrapper --- */
+.logo-wrapper {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- Doll Teaser Section --- */
+.doll-teaser-section {
+    position: relative;
+    padding: 180px 8%;
+    overflow: hidden;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+}
+
+.doll-teaser-section .teaser-content {
+    position: relative;
+    z-index: 10;
+    max-width: 600px;
+}
+
+.doll-teaser-section .teaser-content h2,
+.doll-teaser-section .teaser-content p {
+    color: var(--text-black);
 }

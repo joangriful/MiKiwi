@@ -12,7 +12,7 @@ export default function PremiumAtelierSection() {
                 product_slug: 'mobi',
                 quantity: 1,
             });
-            
+
             if (responseData.redirect) {
                 router.visit(responseData.redirect);
             } else {
@@ -32,9 +32,6 @@ export default function PremiumAtelierSection() {
             <div className="atelier-content">
                 <span className="atelier-tag">EXPERIMENTAL DIVISION</span>
                 <h2>Zona Premium,<br />Tu Muñeca.</h2>
-                <p style={{ fontSize: '1.5rem', color: 'rgba(255,255,255,0.4)', fontWeight: 300 }}>
-                    Configuración de modelos de alta fidelidad. Crea tu unidad humana a medida con precisión biotécnica.
-                </p>
 
                 <div className="config-preview-box">
                     <div className="config-item">
@@ -53,7 +50,7 @@ export default function PremiumAtelierSection() {
 
                 <div className="flex gap-4 mt-8">
                     <Link href={route('configurador.index')} className="atelier-btn">Lanzar Configurador</Link>
-                    <button 
+                    <button
                         onClick={handleBuyNow}
                         disabled={isLoading}
                         className="atelier-btn ivory"

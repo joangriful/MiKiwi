@@ -11,7 +11,7 @@ export default function ProductCard({ product }) {
     return (
         <Link
             href={route('products.show', product.slug)}
-            className="w-full flex flex-col bg-white group relative transition-all duration-300 hover:-translate-y-1"
+            className="w-full flex flex-col bg-white group relative transition-all duration-500 hover:-translate-y-4 hover:scale-[1.01] border-2 border-[#fec0d5]/60 hover:border-[#fec0d5] hover:shadow-[0_30px_60px_rgba(254,192,213,0.3)] rounded-[32px] p-3"
         >
             {/* Image Container */}
             <div className="relative aspect-[4/5] bg-[#F7F7F7] rounded-2xl overflow-hidden mb-4">

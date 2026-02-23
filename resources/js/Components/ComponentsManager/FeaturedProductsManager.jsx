@@ -105,7 +105,7 @@ export default function FeaturedProductsManager({ products = [] }) {
 
                 {/* Right Side: Featured Products */}
                 <div className="w-1/2 flex flex-col bg-slate-50">
-                    <div className="p-3 bg-blue-50 border-b border-blue-100 text-xs font-bold text-blue-700 uppercase tracking-wider sticky top-0">
+                    <div className="p-3 bg-blue-50 border-b border-blue-100 text-xs font-bold text-blue-700 uppercase tracking-sticky top-0">
                         Productos Destacados ({featuredProducts.length})
                     </div>
                     <div className="flex-1 overflow-auto">

@@ -3,11 +3,7 @@ import { Header, Footer } from '@/Components';
 import HeroSection from '@/Components/Home/Sections/HeroSection';
 import CalibrationSection from '@/Components/Home/Sections/CalibrationSection';
 import FeaturedProductsSection from '@/Components/Home/Sections/FeaturedProductsSection';
-import PremiumAtelierSection from '@/Components/Home/Sections/PremiumAtelierSection';
 import CollectionsSection from '@/Components/Home/Sections/CollectionsSection';
-import ImmersiveGallerySection from '@/Components/Home/Sections/ImmersiveGallerySection';
-import SeoTextSection from '@/Components/Home/Sections/SeoTextSection';
-import DollsSection from '@/Components/Home/Sections/DollsSection';
 import useLenisScroll from '@/Components/Home/hooks/useLenisScroll';
 import './Home.css';
 
@@ -16,10 +12,10 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
     useLenisScroll();
 
     const collections = [
-        { title: 'Para Ella.', img: '/images/collections/collection_ella.png', desc: 'Diseños ergonómicos y texturas premium.', link: '#' },
-        { title: 'Para Él.', img: '/images/collections/collection_el.png', desc: 'Innovación masculina redefinida.', link: '#' },
-        { title: 'Parejas.', img: '/images/collections/collection_parejas.png', desc: 'Juguetes diseñados para compartir.', link: '#' },
-        { title: 'Experiencias.', img: '/images/collections/collection_experiencias.png', desc: 'Kits curados para despertar los sentidos.', link: '#' }
+        { title: 'PARA ELLA.', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771865798/platanomelon-sexualidad-sin-tabues-1024x767_d9nufa.jpg', desc: 'Diseños ergonómicos y texturas premium.', link: '#' },
+        { title: 'PARA ÉL.', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771865798/juguetes-sexuales-platanomelon_nlqjcv.jpg', desc: 'Innovación masculina redefinida.', link: '#' },
+        { title: 'PAREJAS.', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771866759/Julia_Platanomelon_900-1024x512_tycrzc.jpg', desc: 'Juguetes diseñados para compartir.', link: '#' },
+        { title: 'EXPERIENCIAS.', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771866855/Julia_Platanomelon_910_ALTA-copia-1024x512_vnsnhs.jpg', desc: 'Kits curados para despertar los sentidos.', link: '#' }
     ];
 
     const benefits = [
@@ -36,11 +32,14 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
 
             <main>
                 {/* --- Hero Section --- */}
-                <section className="hero-minimal">
-                    <div className="hero-top-nav">
-                        <img src="/assets/icons/mikiwi_logo.svg" alt="MiKiwi Logo" className="hero-logo-small" />
-                        <Link href={route('register')} className="btn-pill">
-                            Únete a MIKIWI
+                <section className="hero-minimal hero-v2">
+                    <div className="hero-watermark">
+                        <img src="/assets/icons/mikiwi_logo.svg" alt="WATERMARK" />
+                    </div>
+
+                    <div className="hero-center">
+                        <Link href={route('register')} className="btn-pill btn-hover-effect">
+                            ÚNETE A MIKIWI
                         </Link>
                     </div>
 
@@ -49,9 +48,6 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
                             Ingeniería sensorial + diseño<br />
                             exclusivo para elevar tu placer.
                         </p>
-                        <Link href={route('products.index')} className="btn-pill">
-                            Explorar catálogo
-                        </Link>
                     </div>
                 </section>
 
@@ -92,32 +88,56 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
                         <h2>Colecciones.</h2>
                         <div>
                             <p>Universos sensoriales cuidadosamente curados por MiKiwi.</p>
-                            <Link href={route('products.index')} className="btn-pill" style={{ borderColor: 'white', color: 'white' }}>Ver todas</Link>
+                            <Link href={route('products.index')} className="btn-pill">Ver todas</Link>
                         </div>
                     </div>
 
                     <div className="collection-grid-new">
                         {collections.map((col, i) => (
-                            <div key={i} className="collection-item-new">
-                                <div className="collection-img-box">
-                                    <img src={col.img} alt={col.title} />
+                            <Link key={i} href={col.link} className="collection-item-new group">
+                                <div className="collection-img-box overflow-hidden rounded-2xl">
+                                    <img src={col.img} alt={col.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                 </div>
-                                <h3>{col.title}</h3>
-                                <Link href={col.link} className="collection-link-new">Explorar →</Link>
-                            </div>
+                                <h3 className="mt-4">{col.title}</h3>
+                            </Link>
                         ))}
                     </div>
                 </section>
 
-                {/* --- Dolls Section --- */}
-                <DollsSection dollsImages={heroImages.filter(img => img.type === 'dolls')} />
+
+                {/* --- Doll Customization Teaser --- */}
+                <section className="doll-teaser-section relative bg-white">
+                    {/* Background Overlay with requested image and transparency */}
+                    <div className="teaser-bg-overlay absolute inset-0 z-0">
+                        <img
+                            src="https://res.cloudinary.com/dquwonjie/image/upload/v1771872987/46bfb4f33999ce12ffa791b9df263c4f_vuktao.jpg"
+                            alt="Background Modelo"
+                            className="w-full h-full object-cover object-center opacity-[0.4] filter blur-[0.5px]"
+                        />
+                        {/* 
+                          Full-width gradient overlay to "cover" the photo more. 
+                          Starts solid white and fades out but keeps a white tint. 
+                        */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/60 to-white/20"></div>
+                    </div>
+
+                    <div className="teaser-content relative z-10">
+                        <span className="font-sugo text-pink-500 text-xs tracking-[.3em] uppercase mb-4 block">Personalización Avanzada</span>
+                        <h2 className="font-sugo text-black text-5xl md:text-8xl font-black uppercase leading-[0.85] mb-8">
+                            CREA TU<br />PROPIA MODELO.
+                        </h2>
+                        <p className="text-black/60 max-w-lg text-lg mb-10 font-light">
+                            Accede a nuestro configurador biométrico de alta fidelidad. Define cada detalle, textura y polímero de tu compañera ideal.
+                        </p>
+                        <Link href={route('doll.config.test')} className="btn-pill">
+                            LANZAR CONFIGURADOR
+                        </Link>
+                    </div>
+                </section>
 
                 {/* --- Atelier & Gallery --- */}
-                <PremiumAtelierSection />
-                <ImmersiveGallerySection />
 
-                {/* --- FAQ/SEO Section --- */}
-                <SeoTextSection />
+                {/* SEO Text Removed */}
             </main>
 
             <Footer />
