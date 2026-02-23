@@ -50,20 +50,24 @@ function CheckoutContent({
 
             // 2. Confirm payment on frontend
             const confirmData = {
-                payment_method: formData.selected_payment_method || {
-                    card: elements.getElement(CardElement),
-                    billing_details: {
-                        name: `${formData.first_name} ${formData.last_name}`,
-                        email: formData.email,
-                        phone: formData.phone,
-                        address: {
-                            line1: formData.address,
-                            city: formData.city,
-                            postal_code: formData.postal_code,
-                            country: 'ES',
-                        }
+                payment_method: formData.selected_payment_method 
+                    ? (formData.selected_payment_method.startsWith('tok_') 
+                        ? { card: { token: formData.selected_payment_method } } 
+                        : formData.selected_payment_method)
+                    : {
+                        card: elements.getElement(CardElement),
+                        billing_details: {
+                            name: `${formData.first_name} ${formData.last_name}`,
+                            email: formData.email,
+                            phone: formData.phone,
+                            address: {
+                                line1: formData.address,
+                                city: formData.city,
+                                postal_code: formData.postal_code,
+                                country: 'ES',
+                            }
+                        },
                     },
-                },
             };
 
             const result = await stripe.confirmCardPayment(intentData.clientSecret, confirmData);
@@ -105,6 +109,7 @@ function CheckoutContent({
         } catch (error) {
             console.error('Order submission error:', error);
             alert('Hubo un error al procesar tu pedido. Por favor, inténtalo de nuevo.');
+        } finally {
             setIsInternalProcessing(false);
         }
     };
