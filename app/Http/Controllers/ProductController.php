@@ -148,7 +148,7 @@ class ProductController extends Controller
         return Inertia::render('Products', [
             'products' => $products,
             'categories' => $categories,
-            'filters' => $request->only(['category', 'subCategory', 'min_price', 'max_price', 'sort', 'search']),
+            'filters' => $request->only(['category', 'subCategory', 'min_price', 'max_price', 'sort', 'search', 'featured']),
         ]);
     }
 }
