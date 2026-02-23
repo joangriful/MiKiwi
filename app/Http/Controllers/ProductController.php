@@ -41,7 +41,7 @@ class ProductController extends Controller
                 'product' => $productData['product'],
                 'accessories' => $productData['accessories'],
                 'relatedProducts' => $relatedProducts,
-                'pageTitle' => $product->name.' - MiKiwi',
+                'pageTitle' => $product->name . ' - MiKiwi',
             ]);
         } catch (ModelNotFoundException $e) {
             abort(404, 'Producto no encontrado');
@@ -59,7 +59,7 @@ class ProductController extends Controller
             $categoryIds = \App\Models\Category::where('id', $request->category)
                 ->orWhere('parent_id', $request->category)
                 ->pluck('id');
-            
+
             $query->whereIn('category_id', $categoryIds);
         }
 
@@ -77,6 +77,11 @@ class ProductController extends Controller
         }
         if ($request->has('max_price')) {
             $query->where('base_price', '<=', $request->max_price);
+        }
+
+        // Filtrar por nombre (Búsqueda)
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
 
         // Ordenar
@@ -101,16 +106,22 @@ class ProductController extends Controller
         // Obtener categorías con sus hijos para el sidebar
         $categories = \App\Models\Category::root()
             ->where('is_active', true)
-            ->with(['children' => function($q) {
-                $q->where('is_active', true)
-                  ->withCount(['products' => function($query) {
-                      $query->where('is_active', true)->where('stock_quantity', '>', 0);
-                  }])
-                  ->orderBy('name');
-            }])
-            ->withCount(['products' => function($query) {
-                $query->where('is_active', true)->where('stock_quantity', '>', 0);
-            }])
+            ->with([
+                'children' => function ($q) {
+                    $q->where('is_active', true)
+                        ->withCount([
+                            'products' => function ($query) {
+                                $query->where('is_active', true)->where('stock_quantity', '>', 0);
+                            }
+                        ])
+                        ->orderBy('name');
+                }
+            ])
+            ->withCount([
+                'products' => function ($query) {
+                    $query->where('is_active', true)->where('stock_quantity', '>', 0);
+                }
+            ])
             ->orderBy('name')
             ->get();
 
@@ -123,7 +134,7 @@ class ProductController extends Controller
         return Inertia::render('Products', [
             'products' => $products,
             'categories' => $categories,
-            'filters' => $request->only(['category', 'subCategory', 'min_price', 'max_price', 'sort']),
+            'filters' => $request->only(['category', 'subCategory', 'min_price', 'max_price', 'sort', 'search']),
         ]);
     }
 }
