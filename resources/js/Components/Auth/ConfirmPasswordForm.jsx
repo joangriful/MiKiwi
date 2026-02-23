@@ -1,8 +1,5 @@
 import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { useForm } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
 
 export default function ConfirmPasswordForm() {
@@ -23,27 +20,33 @@ export default function ConfirmPasswordForm() {
     };
 
     return (
-        <form onSubmit={submit}>
-            <div className="mt-4">
-                <InputLabel htmlFor="password" value="Password" />
-
-                <TextInput
+        <form onSubmit={submit} className="space-y-5">
+            <div className="mk-auth-field">
+                <label htmlFor="password" className="mk-auth-label">
+                    Contraseña actual
+                </label>
+                <input
                     id="password"
                     type="password"
                     name="password"
                     value={data.password}
-                    className="mt-1 block w-full"
-                    isFocused={true}
+                    className="mk-auth-input w-full px-4 py-3.5 text-sm"
+                    autoFocus
+                    required
+                    placeholder=" "
                     onChange={(e) => setData('password', e.target.value)}
                 />
-
-                <InputError message={errors.password} className="mt-2" />
+                <InputError message={errors.password} className="mt-2 text-xs" />
             </div>
 
-            <div className="mt-4 flex items-center justify-end">
-                <PrimaryButton className="ms-4" disabled={processing}>
-                    Confirm
-                </PrimaryButton>
+            <button type="submit" className="mk-auth-btn-primary w-full py-4 text-xs font-semibold uppercase" disabled={processing}>
+                <span>{processing ? 'Confirmando...' : 'Confirmar acceso'}</span>
+            </button>
+
+            <div className="text-center text-xs text-gray-500">
+                <Link href={route('login')} className="mk-auth-link font-medium">
+                    Volver a login
+                </Link>
             </div>
         </form>
     );

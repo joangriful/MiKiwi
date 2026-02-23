@@ -1,12 +1,9 @@
 import { useEffect } from 'react';
-import Checkbox from '@/Components/Checkbox';
 import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import AuthSocialButtons from '@/Components/Auth/AuthSocialButtons';
 import { Link, useForm } from '@inertiajs/react';
 
-export default function LoginForm({ status, canResetPassword }) {
+export default function LoginForm({ status, canResetPassword, autoFocus = false }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
@@ -26,86 +23,87 @@ export default function LoginForm({ status, canResetPassword }) {
     };
 
     return (
-        <form onSubmit={submit}>
+        <form onSubmit={submit} className="space-y-5">
             {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
+                <div className="mk-auth-status-success">
                     {status}
                 </div>
             )}
 
-            <div>
-                <InputLabel htmlFor="email" value="Email" />
-
-                <TextInput
+            <div className="mk-auth-field">
+                <label htmlFor="email" className="mk-auth-label">
+                    Correo electrónico
+                </label>
+                <input
                     id="email"
                     type="email"
                     name="email"
                     value={data.email}
-                    className="mt-1 block w-full"
+                    className="mk-auth-input mk-auth-input-access w-full px-4 py-3.5 text-sm"
                     autoComplete="username"
-                    isFocused={true}
+                    autoFocus={autoFocus}
+                    required
+                    placeholder=" "
                     onChange={(e) => setData('email', e.target.value)}
                 />
-
-                <InputError message={errors.email} className="mt-2" />
+                <InputError message={errors.email} className="mt-2 text-xs" />
             </div>
 
-            <div className="mt-4">
-                <InputLabel htmlFor="password" value="Password" />
-
-                <TextInput
+            <div className="mk-auth-field">
+                <label htmlFor="password" className="mk-auth-label">
+                    Contraseña
+                </label>
+                <input
                     id="password"
                     type="password"
                     name="password"
                     value={data.password}
-                    className="mt-1 block w-full"
+                    className="mk-auth-input mk-auth-input-access w-full px-4 py-3.5 text-sm"
                     autoComplete="current-password"
+                    required
+                    placeholder=" "
                     onChange={(e) => setData('password', e.target.value)}
                 />
-
-                <InputError message={errors.password} className="mt-2" />
+                <InputError message={errors.password} className="mt-2 text-xs" />
             </div>
 
-            <div className="mt-4 block">
-                <label className="flex items-center">
-                    <Checkbox
+            <div className="flex items-center justify-between pt-1">
+                <label className="group/check flex cursor-pointer items-center gap-2.5">
+                    <input
+                        type="checkbox"
                         name="remember"
                         checked={data.remember}
-                        onChange={(e) =>
-                            setData('remember', e.target.checked)
-                        }
+                        className="h-4 w-4 rounded border-gray-300 text-indigo-500 transition-all focus:ring-indigo-500"
+                        onChange={(e) => setData('remember', e.target.checked)}
                     />
-                    <span className="ms-2 text-sm text-gray-600">
-                        Remember me
+                    <span className="text-xs text-gray-500 transition-colors group-hover/check:text-gray-700">
+                        Recordarme
                     </span>
                 </label>
-            </div>
-
-            <div className="mt-4 flex items-center justify-end">
                 {canResetPassword && (
                     <Link
                         href={route('password.request')}
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        className="mk-auth-link text-xs font-medium"
                     >
-                        Forgot your password?
+                        ¿Has olvidado tu contraseña?
                     </Link>
                 )}
-
-                <PrimaryButton className="ms-4" disabled={processing}>
-                    Log in
-                </PrimaryButton>
             </div>
 
-            {/* Link to Register */}
-            <div className="mt-6 text-center text-sm text-gray-600">
-                Don't have an account?{' '}
-                <Link
-                    href={route('register')}
-                    className="font-medium text-indigo-600 hover:text-indigo-500"
-                >
-                    Sign up
+            <button type="submit" className="mk-auth-btn-primary mk-auth-btn-access mt-2 w-full py-4 text-xs font-semibold uppercase" disabled={processing}>
+                <span>
+                    {processing ? 'Accediendo...' : 'Acceso'}
+                </span>
+            </button>
+
+            <AuthSocialButtons dividerText="o continúa con" />
+
+            <p className="pt-2 text-center text-xs text-gray-500">
+                ¿No tienes cuenta?{' '}
+                <Link href={route('register')} className="mk-auth-link font-medium">
+                    Crear cuenta
                 </Link>
-            </div>
+            </p>
         </form>
     );
 }

@@ -1,7 +1,5 @@
 import InputError from '@/Components/InputError';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { useForm } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 
 export default function ForgotPasswordForm({ status }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -15,30 +13,40 @@ export default function ForgotPasswordForm({ status }) {
     };
 
     return (
-        <form onSubmit={submit}>
+        <form onSubmit={submit} className="space-y-5">
             {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
+                <div className="mk-auth-status-success">
                     {status}
                 </div>
             )}
 
-            <TextInput
-                id="email"
-                type="email"
-                name="email"
-                value={data.email}
-                className="mt-1 block w-full"
-                isFocused={true}
-                placeholder="Email Address"
-                onChange={(e) => setData('email', e.target.value)}
-            />
+            <div className="mk-auth-field">
+                <label htmlFor="email" className="mk-auth-label">
+                    Correo electrónico
+                </label>
+                <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    value={data.email}
+                    className="mk-auth-input w-full px-4 py-3.5 text-sm"
+                    autoFocus
+                    required
+                    placeholder=" "
+                    onChange={(e) => setData('email', e.target.value)}
+                />
+            </div>
 
-            <InputError message={errors.email} className="mt-2" />
+            <InputError message={errors.email} className="mt-2 text-xs" />
 
-            <div className="mt-4 flex items-center justify-end">
-                <PrimaryButton className="ms-4" disabled={processing}>
-                    Email Password Reset Link
-                </PrimaryButton>
+            <button type="submit" className="mk-auth-btn-primary w-full py-4 text-xs font-semibold uppercase" disabled={processing}>
+                <span>{processing ? 'Enviando...' : 'Enviar enlace de recuperación'}</span>
+            </button>
+
+            <div className="text-center text-xs text-gray-500">
+                <Link href={route('login')} className="mk-auth-link font-medium">
+                    Volver a iniciar sesión
+                </Link>
             </div>
         </form>
     );
