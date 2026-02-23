@@ -31,11 +31,12 @@ export default function UploadProduct({ categories = [], initialData = null, onC
     const [hoverImage, setHoverImage] = useState('');
     const [galleryImages, setGalleryImages] = useState([]);
 
-    const [cloudinaryImages, setCloudinaryImages] = useState([]);
-    const [isLoadingImages, setIsLoadingImages] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
+    const [isUploadingImages, setIsUploadingImages] = useState(false);
     const [uploading, setUploading] = useState(false);
 
-    // Manual folder link
+    // Dual Upload States
+    const [uploadMethod, setUploadMethod] = useState('upload'); // 'upload' | 'link'
     const [manualLinkFolder, setManualLinkFolder] = useState('');
     const [isLinking, setIsLinking] = useState(false);
 
@@ -51,25 +52,24 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                 toast.success(response.data.message);
                 setManualLinkFolder('');
 
-                // Re-fetch images after linking/renaming
-                setIsLoadingImages(true);
+                // Fetch resulting images
                 const resImages = await axios.get('/admin/products/cloudinary-images', {
-                    params: { product_name: formData.name } // esto buscará en 'productos/NombreActual' 
+                    params: { product_name: formData.name }
                 });
-                const fetchedImages = resImages.data.images || [];
-                setCloudinaryImages(fetchedImages);
 
-                // Si la galería de BD está vacía, auto-popular
-                if (fetchedImages.length > 0 && galleryImages.length === 0) {
-                    setGalleryImages(fetchedImages);
-                    if (!mainImage) setMainImage(fetchedImages[0]);
-                    if (!hoverImage && fetchedImages.length > 1) setHoverImage(fetchedImages[1]);
+                const fetchedImages = resImages.data.images || [];
+                if (fetchedImages.length > 0) {
+                    setGalleryImages(prev => {
+                        const merged = [...new Set([...prev, ...fetchedImages])];
+                        if (!mainImage) setMainImage(merged[0]);
+                        if (!hoverImage && merged.length > 1) setHoverImage(merged[1]);
+                        return merged;
+                    });
                 }
             }
         } catch (error) {
             toast.error(error.response?.data?.error || 'Error al vincular la carpeta');
         } finally {
-            setIsLoadingImages(false);
             setIsLinking(false);
         }
     };
@@ -113,36 +113,70 @@ export default function UploadProduct({ categories = [], initialData = null, onC
         }
     }, [initialData, categories]);
 
-    useEffect(() => {
+    const handleDragEnter = (e) => {
+        e.preventDefault(); e.stopPropagation(); setIsDragging(true);
+    };
+    const handleDragLeave = (e) => {
+        e.preventDefault(); e.stopPropagation(); setIsDragging(false);
+    };
+    const handleDragOver = (e) => {
+        e.preventDefault(); e.stopPropagation();
+    };
+
+    const handleDrop = async (e) => {
+        e.preventDefault(); e.stopPropagation(); setIsDragging(false);
+
         if (!formData.name) {
-            setCloudinaryImages([]);
+            toast.error('Primero debes escribir el nombre del producto para crear su carpeta.');
             return;
         }
 
-        const timer = setTimeout(async () => {
-            setIsLoadingImages(true);
-            try {
-                const response = await axios.get('/admin/products/cloudinary-images', {
-                    params: { product_name: formData.name }
+        const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+        if (files.length === 0) return;
+
+        await validateAndUploadImages(files);
+    };
+
+    const handleFileSelect = async (e) => {
+        if (!formData.name) {
+            toast.error('Primero debes escribir el nombre del producto para crear su carpeta.');
+            return;
+        }
+
+        const files = Array.from(e.target.files).filter(file => file.type.startsWith('image/'));
+        if (files.length === 0) return;
+
+        await validateAndUploadImages(files);
+    };
+
+    const validateAndUploadImages = async (files) => {
+        setIsUploadingImages(true);
+        const data = new FormData();
+        files.forEach(file => data.append('images[]', file));
+        data.append('product_name', formData.name);
+
+        try {
+            const response = await axios.post('/admin/products/upload-images', data, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+
+            if (response.data.success) {
+                toast.success(response.data.message);
+                const newUrls = response.data.urls || [];
+
+                setGalleryImages(prev => {
+                    const merged = [...prev, ...newUrls];
+                    if (!mainImage && merged.length > 0) setMainImage(merged[0]);
+                    if (!hoverImage && merged.length > 1) setHoverImage(merged[1]);
+                    return merged;
                 });
-                const fetchedImages = response.data.images || [];
-                setCloudinaryImages(fetchedImages);
-
-                // Si estamos creando uno nuevo y no hay galería seteada, auto-asignamos todo
-                if (!isEdit && fetchedImages.length > 0 && galleryImages.length === 0) {
-                    setGalleryImages(fetchedImages);
-                    if (!mainImage) setMainImage(fetchedImages[0]);
-                    if (!hoverImage && fetchedImages.length > 1) setHoverImage(fetchedImages[1]);
-                }
-            } catch (error) {
-                console.error('Error fetching images:', error);
-            } finally {
-                setIsLoadingImages(false);
             }
-        }, 800);
-
-        return () => clearTimeout(timer);
-    }, [formData.name]);
+        } catch (error) {
+            toast.error(error.response?.data?.error || 'Error subiendo imágenes');
+        } finally {
+            setIsUploadingImages(false);
+        }
+    };
 
     useEffect(() => {
         const targetId = selectedSubId || selectedParentId || '';
@@ -245,50 +279,88 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                     </p>
                 </div>
 
-                {/* Sección de Imágenes de Cloudinary */}
+                {/* Sección de Imágenes (Subir vs Vincular) */}
                 <div className="space-y-4">
                     <div className="flex items-center justify-between border-b border-gray-200 pb-2">
-                        <h3 className="text-lg font-semibold text-gray-800">Galería del Producto (Cloudinary)</h3>
-                        {isLoadingImages && <span className="text-sm text-blue-500 flex items-center gap-2"><span className="material-symbols-outlined text-sm animate-spin">refresh</span> Buscando imágenes...</span>}
+                        <h3 className="text-lg font-semibold text-gray-800">Galería del Producto</h3>
+
+                        <div className="flex bg-gray-100 rounded-lg p-1">
+                            <button
+                                type="button"
+                                onClick={() => setUploadMethod('upload')}
+                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${uploadMethod === 'upload' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                            >
+                                Subir Archivos
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setUploadMethod('link')}
+                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${uploadMethod === 'link' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                            >
+                                Vincular Carpeta
+                            </button>
+                        </div>
                     </div>
 
-                    {!formData.name ? (
-                        <div className="text-sm text-gray-500 bg-gray-50 p-4 rounded-lg text-center border border-dashed border-gray-300">
-                            Escribe el nombre del producto abajo para buscar sus imágenes automáticamente.
-                        </div>
-                    ) : cloudinaryImages.length === 0 && !isLoadingImages ? (
-                        <div className="text-sm text-yellow-600 bg-yellow-50 p-4 rounded-lg border border-yellow-200 flex flex-col gap-3">
-                            <div className="flex items-start gap-3">
-                                <span className="material-symbols-outlined mt-0.5">warning</span>
-                                <div>
-                                    <p className="font-semibold">No se encontraron imágenes en productos/{formData.name}</p>
-                                    <p>Asegúrate de que en Cloudinary exista o vincula manualmente a continuación.</p>
-                                </div>
-                            </div>
-                            <div className="mt-2 pt-3 border-t border-yellow-200/50">
-                                <p className="mb-2 font-medium">¿La carpeta tiene otro nombre? Escribe su nombre o pega una URL para vincularla a "{formData.name}":</p>
-                                <div className="flex gap-2">
-                                    <input
-                                        type="text"
-                                        placeholder="Ej: mobi, productos/mobi, o URL de imagen"
-                                        value={manualLinkFolder}
-                                        onChange={(e) => setManualLinkFolder(e.target.value)}
-                                        className="flex-1 px-3 py-1.5 border border-yellow-300 rounded text-sm bg-white outline-none focus:border-yellow-500"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={handleLinkFolder}
-                                        disabled={isLinking || !manualLinkFolder.trim()}
-                                        className="px-4 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded font-medium text-sm disabled:opacity-50 transition-colors"
-                                    >
-                                        {isLinking ? 'Vinculando...' : 'Vincular'}
-                                    </button>
-                                </div>
+                    {isUploadingImages && <span className="text-sm text-blue-500 flex items-center gap-2"><span className="material-symbols-outlined text-sm animate-spin">refresh</span> Subiendo imágenes...</span>}
+
+                    {uploadMethod === 'upload' ? (
+                        <div
+                            onDragEnter={handleDragEnter}
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                            className={`relative w-full h-32 border-2 border-dashed rounded-xl flex flex-col items-center justify-center transition-colors overflow-hidden ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'}`}
+                        >
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={handleFileSelect}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                            />
+                            <div className="flex flex-col items-center pointer-events-none text-gray-500 gap-2">
+                                <span className="material-symbols-outlined text-3xl">cloud_upload</span>
+                                <span className="font-medium text-sm">
+                                    {isDragging ? 'Suelta aquí' : (formData.name ? 'Arrastra imágenes o haz click para subir' : 'Escribe arriba el nombre del producto primero para poder subir fotos')}
+                                </span>
                             </div>
                         </div>
-                    ) : cloudinaryImages.length > 0 ? (
+                    ) : (
+                        <div className="p-4 bg-blue-50 rounded-xl border border-blue-100 flex flex-col gap-3">
+                            <p className="text-sm text-blue-800">
+                                <strong>¿Ya tienes las fotos en Cloudinary?</strong> Escribe el nombre exacto de la carpeta (o pega la URL de una foto). La carpeta será vinculada y renombrada automáticamente a "productos/{formData.name || '{nombre-del-producto}'}".
+                            </p>
+                            <div className="flex gap-2 relative z-20">
+                                <input
+                                    type="text"
+                                    placeholder="Ej: mobiliario-oficina, o URL..."
+                                    value={manualLinkFolder}
+                                    onChange={(e) => setManualLinkFolder(e.target.value)}
+                                    className="flex-1 px-3 py-2 border border-blue-200 rounded-lg text-sm bg-white outline-none focus:border-blue-500"
+                                    onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleLinkFolder}
+                                    disabled={isLinking || !manualLinkFolder.trim() || !formData.name}
+                                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm disabled:opacity-50 transition-colors cursor-pointer"
+                                >
+                                    {isLinking ? 'Vinculando...' : 'Vincular y Renombrar'}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {isUploadingImages && (
+                        <div className="mb-4 text-center text-sm font-medium text-blue-600 animate-pulse bg-blue-50 py-2 rounded">
+                            Subiendo a Cloudinary... por favor, espera.
+                        </div>
+                    )}
+
+                    {galleryImages.length > 0 && (
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                            {cloudinaryImages.map((imgUrl, idx) => {
+                            {galleryImages.map((imgUrl, idx) => {
                                 const isMain = mainImage === imgUrl;
                                 const isHover = hoverImage === imgUrl;
                                 return (
@@ -302,6 +374,19 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                                             {isMain && <span className="bg-blue-500 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded shadow-sm">Principal</span>}
                                             {isHover && <span className="bg-purple-500 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded shadow-sm">Hover</span>}
                                         </div>
+
+                                        {/* Drop action button to remove */}
+                                        <button
+                                            type="button"
+                                            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                            onClick={() => {
+                                                setGalleryImages(prev => prev.filter(v => v !== imgUrl));
+                                                if (isMain) setMainImage('');
+                                                if (isHover) setHoverImage('');
+                                            }}
+                                        >
+                                            <span className="material-symbols-outlined text-xs">close</span>
+                                        </button>
 
                                         {/* Hover Actions */}
                                         <div className={`absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm p-2 flex justify-between items-center transition-transform ${(!isMain && !isHover) ? 'translate-y-full group-hover:translate-y-0' : ''}`}>
@@ -317,9 +402,9 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                                 );
                             })}
                         </div>
-                    ) : null}
+                    )}
 
-                    {cloudinaryImages.length > 0 && (
+                    {galleryImages.length > 0 && (
                         <p className="text-xs text-gray-500 mt-2">
                             Haz clic en una imagen para hacerla <strong className="text-blue-500">Principal</strong>. Usa el botón inferior para marcarla o desmarcarla como <strong className="text-purple-500">Hover</strong>. Todas las imágenes mostradas formarán parte de la galería del producto.
                         </p>

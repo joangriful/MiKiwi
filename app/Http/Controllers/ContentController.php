@@ -20,19 +20,28 @@ class ContentController extends Controller
     {
         $request->validate([
             'images' => 'required|array',
-            'images.*' => 'image|max:10240', // Max 10MB per image
-            'type' => 'nullable|string|in:home,sustainability', // Validate type
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:10240', // Explicitly allow GIF
+            'type' => 'nullable|string|in:home,sustainability,dolls,calibration', 
         ]);
 
         try {
             $uploadedImages = [];
             $type = $request->input('type', 'home');
+            
+            // Map the type to the requested Cloudinary folder
+            $folderMap = [
+                'home' => 'hero_images/home',
+                'sustainability' => 'hero_images/sustainability',
+                'dolls' => 'home/doll_home',
+                'calibration' => 'home/calibracion'
+            ];
+            $cloudinaryFolder = $folderMap[$type] ?? 'hero_images/' . $type;
 
             foreach ($request->file('images') as $image) {
-                // Upload to Cloudinary
+                // Upload to Cloudinary using mapped folder
                 $cloudinaryResponse = $this->cloudinaryService->uploadImage(
                     $image,
-                    'hero_images/' . $type
+                    $cloudinaryFolder
                 );
 
                 // Store in database

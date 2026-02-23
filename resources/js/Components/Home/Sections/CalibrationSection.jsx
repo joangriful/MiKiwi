@@ -1,30 +1,41 @@
 import React from 'react';
 import { Link } from '@inertiajs/react';
 
-export default function CalibrationSection() {
+export default function CalibrationSection({ calibrationImages = [] }) {
+    // Look for the uploaded background or fallback to a solid color/placeholder
+    const bgImage = calibrationImages.length > 0 ? calibrationImages[0].url : null;
+
     return (
-        <section className="calibration-section">
-            <div className="calib-title">
-                <span style={{ fontWeight: 900, letterSpacing: '10px', color: 'var(--kiwi)', textTransform: 'uppercase', fontSize: '0.7rem', display: 'block', marginBottom: '20px' }}>
-                    SISTEMA DE IDENTIDAD v6
-                </span>
-                <h2>Descubre tu<br />Personalidad.</h2>
-                <p style={{ marginTop: '20px', color: 'var(--text-muted)' }}>
-                    Calibra tu estado mental para encontrar el perfil sensorial que se alinea con tu arquitectura interna.
-                </p>
+        <section className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden bg-black mt-0">
+            {/* Background Image */}
+            {bgImage ? (
+                <img
+                    src={bgImage}
+                    alt="Calibration Background"
+                    className="absolute inset-0 w-full h-full object-cover opacity-70"
+                />
+            ) : (
+                <div className="absolute inset-0 flex items-center justify-center text-white/30 text-sm">
+                    <span>(Sube una imagen de Calibración en el Manager)</span>
+                </div>
+            )}
+
+            {/* Content Container */}
+            <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
+                <h2 className="text-white text-3xl md:text-5xl lg:text-6xl font-black mb-8 drop-shadow-lg tracking-tight">
+                    ¿No sabes por dónde empezar?
+                </h2>
+
+                <Link
+                    href="#"
+                    className="inline-flex items-center justify-center px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white text-xl font-bold rounded-full shadow-[0_4px_20px_rgba(37,99,235,0.4)] hover:shadow-[0_6px_25px_rgba(37,99,235,0.6)] hover:-translate-y-1 transition-all duration-300 tracking-wide uppercase"
+                >
+                    CONÓCETE
+                </Link>
             </div>
-            <div className="quiz-container">
-                <p style={{ fontWeight: 900, letterSpacing: '5px', fontSize: '0.7rem', color: 'var(--color-primary)' }}>
-                    CUESTIONARIO DE DIAGNÓSTICO
-                </p>
-                <h3 style={{ margin: '20px 0', fontSize: '2rem', fontFamily: 'var(--font-head)' }}>
-                    ¿Cómo defines tu espacio de silencio?
-                </h3>
-                <p style={{ marginBottom: '40px', color: 'var(--text-muted)', opacity: 0.7 }}>
-                    Analizaremos tu respuesta somática para recomendarte el núcleo de resonancia perfecto.
-                </p>
-                <Link href="#" className="btn-v6">Iniciar Calibración</Link>
-            </div>
+
+            {/* Dark gradient to ensure text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/80 pointer-events-none"></div>
         </section>
     );
 }
