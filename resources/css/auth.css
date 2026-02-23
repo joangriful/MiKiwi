@@ -47,13 +47,18 @@
 }
 
 .mk-auth-brand {
-    font-family: var(--font-head), sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
     color: #1a1a1a;
     transition: opacity 0.3s ease;
+}
+
+.mk-auth-brand-logo {
+    width: auto;
+    height: 1.65rem;
+    color: #1a1a1a;
 }
 
 .mk-auth-brand:hover {
@@ -69,6 +74,43 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: rgba(26, 26, 26, 0.5);
+}
+
+.mk-auth-nav-switch {
+    position: relative;
+    padding-bottom: 0.32rem;
+    color: rgba(26, 26, 26, 0.5);
+    transition: color 0.25s ease, opacity 0.25s ease;
+}
+
+.mk-auth-nav-switch::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--color-primary, #99b849), var(--color-secondary, #f8b7ea));
+    transform: scaleX(0);
+    transform-origin: center;
+    opacity: 0;
+    transition: transform 0.28s ease, opacity 0.28s ease;
+}
+
+.mk-auth-nav-switch:hover,
+.mk-auth-nav-switch.is-active {
+    color: #1a1a1a;
+}
+
+.mk-auth-nav-switch:hover::after {
+    transform: scaleX(1);
+    opacity: 0.45;
+}
+
+.mk-auth-nav-switch.is-active::after {
+    transform: scaleX(1);
+    opacity: 1;
 }
 
 .mk-auth-nav-link {
@@ -905,7 +947,11 @@
     }
 
     .mk-auth-brand {
-        font-size: 1rem;
+        transform: none;
+    }
+
+    .mk-auth-brand-logo {
+        height: 1.45rem;
     }
 
     .mk-auth-nav-link {

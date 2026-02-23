@@ -1,6 +1,7 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
 
+import MikiwiLogo from '@/Components/MikiwiLogo';
 import LoginForm from '@/Components/Auth/LoginForm';
 import RegisterForm from '@/Components/Auth/RegisterForm';
 import ForgotPasswordForm from '@/Components/Auth/ForgotPasswordForm';
@@ -86,6 +87,21 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
     const isSplitLayout = view === 'login' || view === 'register';
     const isLoginActive = view === 'login';
     const isRegisterActive = view === 'register';
+    const [hoveredAuthPanel, setHoveredAuthPanel] = React.useState(null);
+    const [selectedAuthPanel, setSelectedAuthPanel] = React.useState(null);
+    const currentAuthState = hoveredAuthPanel ?? selectedAuthPanel ?? (isRegisterActive ? 'register' : 'login');
+    const loginHref = route('login');
+    const registerHref = route('register');
+
+    const handleAuthSwitchClick = (event, target) => {
+        if (!isSplitLayout || isMobileViewport) {
+            return;
+        }
+
+        event.preventDefault();
+        setSelectedAuthPanel(target);
+        setHoveredAuthPanel(target);
+    };
 
     const [isMobileViewport, setIsMobileViewport] = React.useState(() => {
         if (typeof window === 'undefined') {
@@ -127,12 +143,26 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
 
             <nav className="mk-auth-nav">
                 <Link href="/" className="mk-auth-brand">
-                    MI KIWI
+                    <MikiwiLogo className="mk-auth-brand-logo" />
                 </Link>
                 <div className="mk-auth-nav-center">
-                    <span>Acceso</span>
+                    <Link
+                        href={loginHref}
+                        className={`mk-auth-nav-switch ${currentAuthState === 'login' ? 'is-active' : ''}`}
+                        preserveScroll
+                        onClick={(event) => handleAuthSwitchClick(event, 'login')}
+                    >
+                        Acceso
+                    </Link>
                     <span className="opacity-30">|</span>
-                    <span>Registro</span>
+                    <Link
+                        href={registerHref}
+                        className={`mk-auth-nav-switch ${currentAuthState === 'register' ? 'is-active' : ''}`}
+                        preserveScroll
+                        onClick={(event) => handleAuthSwitchClick(event, 'register')}
+                    >
+                        Registro
+                    </Link>
                 </div>
                 <Link href="/" className="mk-auth-nav-link">
                     Volver al inicio
@@ -205,13 +235,15 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
 
                 ) : (
                     <main className="mk-auth-main mk-auth-main-split mk-auth-main-desktop">
-                        <section className={`group mk-auth-panel ${isLoginActive ? 'mk-auth-panel-active' : ''}`}>
+                        <section
+                            className={`group mk-auth-panel ${currentAuthState === 'login' ? 'mk-auth-panel-active' : ''}`}
+                            onMouseEnter={() => setHoveredAuthPanel('login')}
+                            onMouseLeave={() => setHoveredAuthPanel(null)}
+                        >
                             <div className="mk-auth-tech-grid" />
                             <div className="mk-auth-aurora mk-auth-aurora-login" />
 
                             <div className="mk-auth-panel-content">
-                                <span className="mk-auth-subtitle mk-auth-subtitle-indigo">01 - Acceso a tu cuenta</span>
-
                                 <h1 className="mk-auth-title">
                                     <span className="mk-auth-text-outline mk-auth-text-outline-login">Iniciar</span>
                                     <span className="mk-auth-title-solid">Sesión.</span>
@@ -228,13 +260,15 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
 
                         <div className="mk-auth-center-divider" />
 
-                        <section className={`group mk-auth-panel mk-auth-panel-register ${isRegisterActive ? 'mk-auth-panel-active' : ''}`}>
+                        <section
+                            className={`group mk-auth-panel mk-auth-panel-register ${currentAuthState === 'register' ? 'mk-auth-panel-active' : ''}`}
+                            onMouseEnter={() => setHoveredAuthPanel('register')}
+                            onMouseLeave={() => setHoveredAuthPanel(null)}
+                        >
                             <div className="mk-auth-tech-grid" />
                             <div className="mk-auth-aurora mk-auth-aurora-register" />
 
                             <div className="mk-auth-panel-content md:text-right">
-                                <span className="mk-auth-subtitle mk-auth-subtitle-lime">02 - Únete a nosotros</span>
-
                                 <h2 className="mk-auth-title">
                                     <span className="mk-auth-title-solid">Crear</span>
                                     <span className="mk-auth-text-outline mk-auth-text-outline-register">Cuenta.</span>
