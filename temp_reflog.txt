@@ -1,0 +1,30 @@
+﻿ed868e9 HEAD@{0}: reset: moving to ed868e9
+0a3a964 HEAD@{1}: merge feature_alberto: Merge made by the 'ort' strategy.
+bc46f06 HEAD@{2}: pull origin dev: Fast-forward
+223022e HEAD@{3}: checkout: moving from feature_alberto to dev
+8cc011b HEAD@{4}: commit: feat: Dual Upload mode for Products, layout fixes for Home and Carousel
+223022e HEAD@{5}: reset: moving to dev
+7b8f7b8 HEAD@{6}: reset: moving to HEAD
+7b8f7b8 HEAD@{7}: checkout: moving from dev to feature_alberto
+223022e HEAD@{8}: reset: moving to HEAD
+223022e HEAD@{9}: pull --rebase origin dev (finish): returning to refs/heads/dev
+223022e HEAD@{10}: pull --rebase origin dev (pick): Fix API route parameter to use product ID instead of slug for toggle, save, and delete actions
+d3c1bc0 HEAD@{11}: pull --rebase origin dev (start): checkout d3c1bc07d7f05243a97a6ecb846dfd37834c1149
+107509f HEAD@{12}: reset: moving to HEAD
+107509f HEAD@{13}: pull origin dev: Merge made by the 'ort' strategy.
+934c0fe HEAD@{14}: commit: Fix API route parameter to use product ID instead of slug for toggle, save, and delete actions
+1639397 HEAD@{15}: commit: Fix Cloudinary renaming bug and React route params; add SEO text section to Home
+fbd2126 HEAD@{16}: pull origin dev: Fast-forward
+e8d3bc0 HEAD@{17}: reset: moving to HEAD
+e8d3bc0 HEAD@{18}: merge feature_home_design: Merge made by the 'ort' strategy.
+5d916ac HEAD@{19}: pull origin dev: Fast-forward
+77237d9 HEAD@{20}: checkout: moving from feature_home_design to dev
+6ee36ef HEAD@{21}: commit: feat(ui): Adjust Mikiwi logos padding & size and implement dynamic featured products carousel
+ed868e9 HEAD@{22}: pull origin dev: Fast-forward
+77237d9 HEAD@{23}: reset: moving to HEAD
+77237d9 HEAD@{24}: checkout: moving from dev to feature_home_design
+77237d9 HEAD@{25}: commit: docs: Add comprehensive Inertia.js section to PROJECT_SUMMARY.md
+7285e20 HEAD@{26}: commit: docs: Create comprehensive PROJECT_SUMMARY.md and organize documentation
+81f9d73 HEAD@{27}: checkout: moving from dev to dev
+81f9d73 HEAD@{28}: reset: moving to origin/dev
+824196a HEAD@{29}: checkout: moving from feature_enhance_doll to dev

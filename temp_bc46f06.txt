@@ -1,0 +1,11 @@
+﻿commit bc46f065f228544e496e60f5cfededda2c9e66ea
+Author: Ismael Vargas <ismaelvargasduque14@gmail.com>
+Date:   Mon Feb 23 11:04:41 2026 +0100
+
+    Fix - Header cambiado, a├▒adida la lupa de productos en su pesta├▒a.
+
+M	app/Http/Controllers/ProductController.php
+M	package-lock.json
+M	package.json
+M	resources/js/Components/Common/Header.jsx
+M	resources/js/Pages/Products.jsx
