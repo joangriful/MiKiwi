@@ -1,0 +1,1234 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Memoria Tecnica Unificada - MiKiwi</title>
+    <link rel="stylesheet" href="./memoria-tecnica-academica.css">
+</head>
+<body>
+<main class="document">
+    <section class="sheet cover page-break" id="portada">
+        <header>
+            <div class="cover-mark">Memoria tecnica unificada</div>
+            <h1>Proyecto MiKiwi</h1>
+            <h2>Plataforma e-commerce con configurador visual y arquitectura hibrida Laravel + Inertia + React</h2>
+        </header>
+
+        <div>
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <span class="meta-label">Version del documento</span>
+                    <span class="meta-value">1.0</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Fecha</span>
+                    <span class="meta-value">Febrero 2026</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Centro / Entidad</span>
+                    <span class="meta-value">[Completar]</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Ciclo / Asignatura</span>
+                    <span class="meta-value">[Completar]</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Tutor o responsable academico</span>
+                    <span class="meta-value">[Completar]</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Estado</span>
+                    <span class="meta-value">Edicion para entrega</span>
+                </div>
+            </div>
+
+            <div class="authors">
+                <h3>Equipo de desarrollo</h3>
+                <ul>
+                    <li>Miguel Sanchez</li>
+                    <li>Ismael Vargas</li>
+                    <li>Angel Jiminez</li>
+                    <li>Joan Grifull</li>
+                    <li>Alberto Estepa</li>
+                    <li>Elena Mena</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer class="small">
+            Documento tecnico de referencia para defensa, auditoria interna y evolucion del proyecto.
+        </footer>
+    </section>
+
+    <section class="sheet toc page-break" id="indice">
+        <h2>Indice general</h2>
+        <ol>
+            <li><a href="#resumen">Resumen ejecutivo</a></li>
+            <li><a href="#introduccion">Introduccion y contexto</a></li>
+            <li><a href="#alcance">Alcance, fuentes y metodologia</a></li>
+            <li><a href="#objetivos">Objetivos funcionales y no funcionales</a></li>
+            <li><a href="#arquitectura">Arquitectura del sistema</a></li>
+            <li><a href="#servidor">Entorno servidor (Laravel)</a></li>
+            <li><a href="#cliente">Entorno cliente (React + Inertia)</a></li>
+            <li><a href="#datos">Modelo de datos y persistencia</a></li>
+            <li><a href="#integraciones">Integraciones externas</a></li>
+            <li><a href="#seguridad">Seguridad y cumplimiento tecnico</a></li>
+            <li><a href="#calidad">Calidad, pruebas y validacion</a></li>
+            <li><a href="#operacion">Operacion, despliegue y mantenimiento</a></li>
+            <li><a href="#hallazgos">Hallazgos tecnicos y de seguridad</a></li>
+            <li><a href="#riesgos">Riesgos arquitectonicos y deuda tecnica</a></li>
+            <li><a href="#plan">Plan de mejora priorizado (30/60/90 dias)</a></li>
+            <li><a href="#conclusiones">Conclusiones</a></li>
+            <li><a href="#anexos">Anexos tecnicos y trazabilidad</a></li>
+        </ol>
+
+        <h3>Control documental</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Version</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Descripcion</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>0.1</td>
+                <td>[Completar]</td>
+                <td>Borrador</td>
+                <td>Estructura inicial de memoria</td>
+            </tr>
+            <tr>
+                <td>0.5</td>
+                <td>[Completar]</td>
+                <td>Revision interna</td>
+                <td>Consolidacion de arquitectura y evidencias</td>
+            </tr>
+            <tr>
+                <td>0.9</td>
+                <td>[Completar]</td>
+                <td>Pre-entrega</td>
+                <td>Inclusion de hallazgos y plan de mejora</td>
+            </tr>
+            <tr>
+                <td>1.0</td>
+                <td>Febrero 2026</td>
+                <td>Entrega</td>
+                <td>Version final auditada</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="sheet" id="resumen">
+        <h2>1. Resumen ejecutivo</h2>
+        <p>MiKiwi es una aplicacion web de comercio electronico con fuerte componente de personalizacion visual. El sistema se construye sobre Laravel 12 y React 18, enlazados mediante Inertia.js, lo que permite una experiencia SPA-like sin abandonar el control de rutas y middleware en servidor.</p>
+        <p>La arquitectura observada ofrece una base profesional: separacion por capas, repositorios por contrato, servicios de negocio, validaciones formales en flujos relevantes, autorizacion con policies y soporte de asincronia por eventos/listeners/jobs.</p>
+        <p>Tambien se detectan riesgos que requieren accion inmediata: exposicion de secretos en documentacion, inconsistencias de implementacion en checkout/direcciones, contratos JSON no estandarizados y ausencia de automatizacion CI declarativa en el repositorio.</p>
+        <h3>1.1 Diagnostico de madurez tecnica</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Dimension</th>
+                <th>Estado actual</th>
+                <th>Nivel</th>
+                <th>Comentario tecnico</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Arquitectura base</td>
+                <td>Implementada</td>
+                <td>Medio-alto</td>
+                <td>Capas presentes y contratos por interfaz en parte del dominio</td>
+            </tr>
+            <tr>
+                <td>Calidad de codigo</td>
+                <td>Heterogenea</td>
+                <td>Medio</td>
+                <td>Coexisten bloques solidos y zonas con refactor incompleto</td>
+            </tr>
+            <tr>
+                <td>Seguridad operacional</td>
+                <td>Insuficiente</td>
+                <td>Bajo</td>
+                <td>Se detectan secretos expuestos y falta de gobierno documental</td>
+            </tr>
+            <tr>
+                <td>Automatizacion de entrega</td>
+                <td>Parcial</td>
+                <td>Bajo-medio</td>
+                <td>Hay pruebas, pero sin CI declarativa en repositorio</td>
+            </tr>
+            <tr>
+                <td>Escalabilidad inmediata</td>
+                <td>Factible</td>
+                <td>Medio</td>
+                <td>Requiere estabilizar checkout y estandarizar contratos API</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="note">
+            Este documento adopta un criterio estricto de veracidad: se describe el estado real verificable en codigo, separando claramente lo implementado de lo pendiente.
+        </div>
+    </section>
+
+    <section class="sheet" id="introduccion">
+        <h2>2. Introduccion y contexto del proyecto</h2>
+        <h3>2.1 Contexto funcional</h3>
+        <p>El producto MiKiwi persigue habilitar un flujo completo de venta digital para articulos personalizables. A nivel funcional integra catalogo, carrito, checkout, area de usuario y panel de gestion, anadiendo un configurador visual que impacta directamente en conversion y diferenciacion comercial.</p>
+
+        <h3>2.2 Contexto tecnologico</h3>
+        <ul>
+            <li><strong>Backend:</strong> Laravel 12, PHP 8.2+, Sanctum, Eloquent ORM.</li>
+            <li><strong>Frontend:</strong> React 18, Inertia.js 2, Tailwind CSS 3, Vite 7.</li>
+            <li><strong>Integraciones:</strong> Stripe (pagos), Cloudinary (media), Correos (pickup).</li>
+            <li><strong>Asincronia:</strong> queues, jobs, events/listeners y comandos programables.</li>
+        </ul>
+
+        <h3>2.3 Proposito de la memoria</h3>
+        <p>La memoria cumple tres objetivos simultaneos: (1) soporte academico/profesional de defensa, (2) referencia tecnica para mantenimiento y roadmap, (3) base de trazabilidad para decisiones de arquitectura y priorizacion de deuda tecnica.</p>
+
+        <h3>2.4 Alcance funcional detallado del producto</h3>
+        <ul>
+            <li>Canal de venta con navegacion por categorias y detalle de producto.</li>
+            <li>Carrito persistente por sesion con validaciones de stock.</li>
+            <li>Checkout con seleccion de direccion y flujo de pago externo.</li>
+            <li>Gestion de cuenta: perfil, direcciones, historial de pedidos.</li>
+            <li>Backoffice para contenido visual, catalogo y operaciones administrativas.</li>
+            <li>Configurador visual de producto con composicion por partes y capas.</li>
+        </ul>
+
+        <h3>2.5 Premisas arquitectonicas</h3>
+        <ul>
+            <li>Evitar duplicidad de logica entre frontend y backend en validacion de negocio.</li>
+            <li>Mantener el backend como fuente de verdad de permisos y estado transaccional.</li>
+            <li>Permitir evolucion incremental hacia mayor desacople sin reescritura total.</li>
+            <li>Priorizar correccion y trazabilidad frente a complejidad prematura.</li>
+        </ul>
+    </section>
+
+    <section class="sheet" id="alcance">
+        <h2>3. Alcance, fuentes y metodologia documental</h2>
+        <h3>3.1 Alcance</h3>
+        <ul>
+            <li>Analisis de arquitectura logica y tecnica del repositorio.</li>
+            <li>Descripcion del estado servidor, cliente y operaciones locales.</li>
+            <li>Identificacion de hallazgos tecnicos y de seguridad por severidad.</li>
+            <li>Definicion de plan de mejora a 30/60/90 dias.</li>
+        </ul>
+
+        <h3>3.2 Fuentes de evidencia revisadas</h3>
+        <p>Se han revisado archivos de configuracion, rutas, modelos, controladores, servicios, repositorios, requests, middleware, politicas, pruebas, migraciones y documentacion operativa. La evidencia primaria procede de la estructura en <code>app/</code>, <code>routes/</code>, <code>resources/js/</code>, <code>database/migrations/</code> y <code>tests/</code>.</p>
+
+        <h3>3.3 Metodologia</h3>
+        <ol>
+            <li>Inventario de componentes y dependencias.</li>
+            <li>Verificacion de claims documentales frente a codigo.</li>
+            <li>Clasificacion de hallazgos por impacto y urgencia.</li>
+            <li>Propuesta de roadmap por capacidad de ejecucion incremental.</li>
+        </ol>
+
+        <h3>3.4 Criterio de aceptacion de afirmaciones tecnicas</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Tipo de afirmacion</th>
+                <th>Condicion para declararla valida</th>
+                <th>Ejemplo de evidencia</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Arquitectura implementada</td>
+                <td>Existencia de estructura + uso real en flujo</td>
+                <td>Controllers + Services + Repositories enlazados por provider</td>
+            </tr>
+            <tr>
+                <td>Seguridad activa</td>
+                <td>Control tecnico verificable y no solo declarativo</td>
+                <td>Middleware, policies, requests, guards configurados</td>
+            </tr>
+            <tr>
+                <td>Calidad automatizada</td>
+                <td>Ejecucion reproducible en pipeline</td>
+                <td>Workflow CI versionado en repo</td>
+            </tr>
+            <tr>
+                <td>Cumplimiento de rendimiento/accesibilidad</td>
+                <td>Baseline medible y evidencia historica</td>
+                <td>Config Lighthouse + resultados persistidos</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="sheet" id="objetivos">
+        <h2>4. Objetivos funcionales y no funcionales</h2>
+        <h3>4.1 Objetivos funcionales</h3>
+        <ul>
+            <li>Gestion de identidad de usuario, autenticacion y perfil.</li>
+            <li>Publicacion de catalogo y navegacion por categorias.</li>
+            <li>Carrito de compra y consolidacion de pedido.</li>
+            <li>Proceso de checkout con soporte de pagos.</li>
+            <li>Administracion de activos visuales y contenido dinamico.</li>
+            <li>Configurador de producto con composicion de capas/partes.</li>
+        </ul>
+
+        <h3>4.2 Objetivos no funcionales</h3>
+        <ul>
+            <li>Mantenibilidad: separacion de responsabilidades y contratos.</li>
+            <li>Escalabilidad: arquitectura modular con extensibilidad progresiva.</li>
+            <li>Seguridad: controles de acceso, validacion de entradas, gestion segura de secretos.</li>
+            <li>Calidad: pruebas automatizadas y criterios de aceptacion tecnicos.</li>
+            <li>Operacion: trazabilidad de errores, observabilidad y capacidad de soporte.</li>
+        </ul>
+
+        <h3>4.3 Objetivos no funcionales medibles (propuesta de control)</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Categoria</th>
+                <th>Metrica objetivo</th>
+                <th>Umbral inicial</th>
+                <th>Estado actual</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Disponibilidad local de build</td>
+                <td>Build reproducible sin errores</td>
+                <td>100% en rama principal</td>
+                <td>Dependiente de validacion manual</td>
+            </tr>
+            <tr>
+                <td>Calidad de pruebas</td>
+                <td>Suites feature/unit en verde</td>
+                <td>>= 90% ejecuciones locales</td>
+                <td>Sin gate automatico de CI</td>
+            </tr>
+            <tr>
+                <td>Seguridad de secretos</td>
+                <td>Secret scan sin hallazgos</td>
+                <td>0 credenciales expuestas</td>
+                <td>Hallazgo critico vigente</td>
+            </tr>
+            <tr>
+                <td>Contrato API</td>
+                <td>Estandar error/exito uniforme</td>
+                <td>100% endpoints criticos</td>
+                <td>Parcial</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="sheet" id="arquitectura">
+        <h2>5. Arquitectura del sistema</h2>
+        <h3>5.1 Patron de arquitectura</h3>
+        <p>Se adopta un monolito modular con aproximacion hibrida web/API. Inertia funciona como puente entre backend y frontend para navegacion principal, mientras JSON API cubre casos asincronos puntuales.</p>
+
+        <h3>5.2 Capas y responsabilidades</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Capa</th>
+                <th>Implementacion principal</th>
+                <th>Responsabilidad</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Entrada HTTP</td>
+                <td>Routes + Middleware + Controllers</td>
+                <td>Recepcion de peticiones, seguridad perimetral y orquestacion</td>
+            </tr>
+            <tr>
+                <td>Aplicacion</td>
+                <td>Services + Actions</td>
+                <td>Reglas de negocio y coordinacion de casos de uso</td>
+            </tr>
+            <tr>
+                <td>Datos</td>
+                <td>Repositories + Models Eloquent</td>
+                <td>Persistencia, consultas y relaciones de dominio</td>
+            </tr>
+            <tr>
+                <td>Integracion</td>
+                <td>StripeService, CloudinaryService, CorreosService</td>
+                <td>Interaccion con proveedores externos</td>
+            </tr>
+            <tr>
+                <td>Gobierno</td>
+                <td>Policies, FormRequests, Exceptions</td>
+                <td>Autorizacion, validacion y consistencia de errores</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>5.3 Flujo de peticion de referencia</h3>
+        <ol>
+            <li>Cliente inicia accion por Inertia o Axios.</li>
+            <li>Laravel resuelve ruta y ejecuta middleware.</li>
+            <li>Controller valida/autoriza y delega a servicio o accion.</li>
+            <li>Servicio consume repositorio/modelo o servicio externo.</li>
+            <li>Respuesta se serializa como Inertia page payload o JSON API.</li>
+        </ol>
+
+        <h3>5.4 Decisiones y trade-offs</h3>
+        <ul>
+            <li><strong>Inertia + React:</strong> reduce complejidad full-stack, pero aumenta acoplamiento de releases backend/frontend.</li>
+            <li><strong>Service + Repository:</strong> mejora mantenibilidad, pero su aplicacion parcial introduce deuda de coherencia.</li>
+            <li><strong>Eventos/Jobs:</strong> habilita crecimiento asincrono, aunque parte de handlers estan en estado base.</li>
+            <li><strong>API selectiva:</strong> aporta flexibilidad, con coste de estandarizar contratos entre canales.</li>
+        </ul>
+
+        <h3>5.5 Vista C4 resumida (documental)</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Nivel</th>
+                <th>Elemento</th>
+                <th>Responsabilidad</th>
+                <th>Observacion tecnica</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Contexto</td>
+                <td>MiKiwi Platform</td>
+                <td>Venta y personalizacion de productos</td>
+                <td>Sistema central del negocio</td>
+            </tr>
+            <tr>
+                <td>Contenedor</td>
+                <td>Laravel App</td>
+                <td>Dominio, seguridad, persistencia e integraciones</td>
+                <td>Monolito modular</td>
+            </tr>
+            <tr>
+                <td>Contenedor</td>
+                <td>React UI (Inertia pages)</td>
+                <td>Interfaz de usuario y flujo interactivo</td>
+                <td>Server-driven navigation + llamadas axios puntuales</td>
+            </tr>
+            <tr>
+                <td>Contenedor externo</td>
+                <td>Stripe / Cloudinary / Correos</td>
+                <td>Pagos, media y puntos de recogida</td>
+                <td>Integracion por servicios dedicados</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>5.6 Flujo tecnico de checkout (pasos de referencia)</h3>
+        <ol>
+            <li>Usuario confirma carrito y direccion de envio.</li>
+            <li>Frontend invoca endpoint de preparacion de pago.</li>
+            <li>Backend valida datos, stock y contexto de usuario.</li>
+            <li>Se crea PaymentIntent y se retorna secreto de cliente.</li>
+            <li>Frontend confirma pago con SDK Stripe.</li>
+            <li>Backend persiste pedido, items, snapshots y estados.</li>
+            <li>Eventos/listeners disparan tareas complementarias (notificacion, inventario).</li>
+        </ol>
+    </section>
+
+    <section class="sheet" id="servidor">
+        <h2>6. Entorno servidor (Laravel)</h2>
+        <h3>6.1 Base framework</h3>
+        <p>El servidor opera con Laravel 12 y PHP 8.2+, con composicion modular en <code>app/</code>. Se observan middleware y providers orientados a auth, Inertia y resolucion de dependencias por interfaces.</p>
+
+        <h3>6.2 Rutas y exposicion</h3>
+        <h4>Canal web</h4>
+        <p><code>routes/web.php</code> concentra navegacion de sitio, checkout, perfil, paneles administrativos y paginas de soporte legal. Se identifican tambien endpoints con prefijo <code>/api/*</code> definidos en este canal para necesidades operativas concretas.</p>
+        <h4>Canal API</h4>
+        <p><code>routes/api.php</code> contiene endpoints de productos y autenticacion API con throttle para operaciones sensibles.</p>
+
+        <h3>6.3 Capa de dominio y persistencia</h3>
+        <p>Los modelos principales de ecommerce incluyen <code>User</code>, <code>Product</code>, <code>Category</code>, <code>Order</code>, <code>OrderItem</code>, <code>UserAddress</code>, <code>Coupon</code> y <code>PickupPoint</code>. El esquema se evoluciona por migraciones versionadas, con presencia de UUID y campos JSON para snapshots donde aplica.</p>
+
+        <h3>6.4 Seguridad, validacion y autorizacion</h3>
+        <ul>
+            <li>Autenticacion web por session guard y middleware <code>auth</code>.</li>
+            <li>Autenticacion API por Sanctum en rutas protegidas.</li>
+            <li>Policies de usuario, pedidos y direcciones.</li>
+            <li>FormRequests presentes en varios flujos, con mezcla de validacion inline en otros puntos.</li>
+        </ul>
+
+        <h3>6.5 Asincronia y procesamiento diferido</h3>
+        <p>La plataforma incorpora eventos, listeners y jobs en cola, junto con comandos scheduler para tareas operativas (stock, limpieza, sincronizacion). Este pilar esta implementado como base de escalabilidad, aunque ciertos handlers requieren completar logica de negocio.</p>
+
+        <h3>6.6 Observabilidad</h3>
+        <p>Existe logging funcional en capas de aplicacion e integracion. No se detecta instrumentacion APM o tracing distribuido en el estado actual del repositorio.</p>
+
+        <h3>6.7 Matriz de componentes backend por criticidad</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Componente</th>
+                <th>Criticidad</th>
+                <th>Rol</th>
+                <th>Estado</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>OrderController / OrderService</td>
+                <td>Alta</td>
+                <td>Checkout y creacion de pedido</td>
+                <td>Requiere estabilizacion prioritaria</td>
+            </tr>
+            <tr>
+                <td>CartController / CartService</td>
+                <td>Alta</td>
+                <td>Preparacion de compra y validacion de stock</td>
+                <td>Con hallazgos de consistencia</td>
+            </tr>
+            <tr>
+                <td>UserAddressController / Service</td>
+                <td>Alta</td>
+                <td>Gestion de direcciones de envio</td>
+                <td>Con errores de variable detectados</td>
+            </tr>
+            <tr>
+                <td>ProductService / Repositories</td>
+                <td>Media</td>
+                <td>Catalogo y consulta de productos</td>
+                <td>Base estable</td>
+            </tr>
+            <tr>
+                <td>CloudinaryService</td>
+                <td>Media</td>
+                <td>Pipeline de media y optimizacion visual</td>
+                <td>Funcional con complejidad alta</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>6.8 Gobierno de errores en servidor (objetivo recomendado)</h3>
+        <p>Para elevar robustez, se recomienda un envelope uniforme de respuesta de error en API: <code>{ success: false, code, message, details, trace_id }</code>. En el estado actual, la estructura varia por endpoint y controlador.</p>
+    </section>
+
+    <section class="sheet" id="cliente">
+        <h2>7. Entorno cliente (React + Inertia)</h2>
+        <h3>7.1 Inicializacion y estructura</h3>
+        <p>La app React se inicializa con <code>createInertiaApp</code> en <code>resources/js/app.jsx</code>. El bootstrap de HTTP se define en <code>resources/js/bootstrap.js</code> con Axios global. Se observa uso de context para idioma y carga perezosa de componentes de soporte.</p>
+
+        <h3>7.2 Comunicacion asincrona</h3>
+        <ul>
+            <li>Inertia para navegacion y formularios server-driven.</li>
+            <li>Axios para llamadas JSON en flujos puntuales (checkout, gestion de recursos, etc.).</li>
+            <li>Ziggy para helper de rutas y consistencia de endpoints.</li>
+        </ul>
+
+        <h3>7.3 Estado y patrones de composicion</h3>
+        <p>Se prioriza estado local por hooks. Se verifica <code>LanguageContext</code> y hook custom <code>usePartOptimization</code>. No se identifica una capa formal de servicios frontend ni cliente Axios central avanzado.</p>
+
+        <h3>7.4 UI, rendimiento y experiencia</h3>
+        <ul>
+            <li>Tailwind CSS como base de estilo y responsive.</li>
+            <li>Vite 7 para build y dev server de alto rendimiento.</li>
+            <li>Integracion de React Three Fiber para funcionalidades visuales avanzadas.</li>
+            <li>Lazy loading en componentes de coste elevado.</li>
+        </ul>
+
+        <h3>7.5 Limitaciones detectadas</h3>
+        <ul>
+            <li>No existe carpeta <code>resources/js/Services</code>.</li>
+            <li>No existe <code>resources/js/Utils/axios.js</code> como capa central.</li>
+            <li>El manejo de errores HTTP puede variar segun pagina/componente.</li>
+        </ul>
+
+        <h3>7.6 Arquitectura de front recomendada para siguiente iteracion</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Bloque</th>
+                <th>Estado actual</th>
+                <th>Mejora recomendada</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Servicios HTTP</td>
+                <td>Llamadas axios repartidas</td>
+                <td>Crear capa services por dominio y cliente central</td>
+            </tr>
+            <tr>
+                <td>Manejo de errores</td>
+                <td>No uniforme</td>
+                <td>Interceptor + normalizador de errores UI</td>
+            </tr>
+            <tr>
+                <td>Estado compartido</td>
+                <td>Principalmente local</td>
+                <td>Consolidar estado transversal minimo (auth/cart/ui)</td>
+            </tr>
+            <tr>
+                <td>Observabilidad cliente</td>
+                <td>Basica</td>
+                <td>Instrumentar eventos UX y errores JS</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>7.7 Consideraciones de rendimiento frontend</h3>
+        <ul>
+            <li>Definir presupuesto de bundle por pagina critica.</li>
+            <li>Diferir librerias pesadas solo en rutas que las necesiten.</li>
+            <li>Medir TTI y CLS en flujo real de checkout y configurador.</li>
+            <li>Revisar politicas de cache para assets y media transformada.</li>
+        </ul>
+    </section>
+
+    <section class="sheet" id="datos">
+        <h2>8. Modelo de datos y persistencia</h2>
+        <h3>8.1 Estrategia de modelado</h3>
+        <p>El modelo persiste entidades de negocio en una base relacional, evolucionada por migraciones incrementales. Se observan claves UUID en gran parte del dominio y cast de tipos para consistencia de lectura/escritura.</p>
+
+        <h3>8.2 Entidades y relaciones clave</h3>
+        <ul>
+            <li><strong>User</strong> 1..N <strong>Order</strong></li>
+            <li><strong>Order</strong> 1..N <strong>OrderItem</strong></li>
+            <li><strong>User</strong> 1..N <strong>UserAddress</strong></li>
+            <li><strong>Category</strong> 1..N <strong>Product</strong></li>
+            <li><strong>Product</strong> N..N <strong>Product</strong> (accesorios)</li>
+        </ul>
+
+        <h3>8.3 Observaciones de consistencia</h3>
+        <p>El uso de snapshots JSON para direccion de envio/facturacion es adecuado para trazabilidad historica de pedidos. No obstante, se detectan potenciales divergencias entre algunos payloads de checkout y campos persistidos, lo que requiere normalizacion de contrato.</p>
+
+        <h3>8.4 Reglas transaccionales criticas</h3>
+        <ul>
+            <li>Creacion de pedido e items dentro de transaccion atomica.</li>
+            <li>Validacion de stock previa al decremento de inventario.</li>
+            <li>Persistencia de snapshots para preservar evidencia historica del pedido.</li>
+            <li>Actualizacion de estado de pago desacoplada para soportar reintentos.</li>
+        </ul>
+
+        <h3>8.5 Riesgos de integridad de datos</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Riesgo</th>
+                <th>Causa tecnica</th>
+                <th>Impacto</th>
+                <th>Mitigacion</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Divergencia de campos de pedido</td>
+                <td>Payload no alineado con modelo/migracion</td>
+                <td>Datos omitidos o inconsistentes</td>
+                <td>Contrato unico + pruebas de integracion</td>
+            </tr>
+            <tr>
+                <td>Stock desincronizado</td>
+                <td>Errores en flujo transaccional</td>
+                <td>Sobreventa o anulaciones</td>
+                <td>Bloqueo transaccional y pruebas concurrentes</td>
+            </tr>
+            <tr>
+                <td>Historico incompleto</td>
+                <td>Manejo parcial de estados de pago/envio</td>
+                <td>Baja trazabilidad operativa</td>
+                <td>Eventos de estado + auditoria de cambios</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="sheet" id="integraciones">
+        <h2>9. Integraciones externas</h2>
+        <h3>9.1 Stripe</h3>
+        <p>Integracion backend mediante SDK oficial y componentes frontend para la captura de pago. La arquitectura es correcta, pero el flujo de endpoint de payment intent requiere cierre de inconsistencias en controlador/ruta.</p>
+
+        <h3>9.2 Cloudinary</h3>
+        <p>Integracion mediante SDK oficial para gestion de activos, consulta y transformacion de imagenes. Es una decision acertada para rendimiento y simplificacion de media pipeline.</p>
+
+        <h3>9.3 Correos</h3>
+        <p>Servicio de puntos de recogida con fallback mock, adecuado para continuidad funcional en entorno de desarrollo y resiliencia ante indisponibilidad externa.</p>
+
+        <h3>9.4 Matriz de integraciones y resiliencia</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Proveedor</th>
+                <th>Tipo</th>
+                <th>Operacion critica</th>
+                <th>Riesgo</th>
+                <th>Estrategia recomendada</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Stripe</td>
+                <td>Pago</td>
+                <td>Creacion/confirmacion de intento de pago</td>
+                <td>Fallo en cierre de transaccion</td>
+                <td>Idempotencia + reconciliacion por webhook</td>
+            </tr>
+            <tr>
+                <td>Cloudinary</td>
+                <td>Media</td>
+                <td>Carga y transformacion de assets</td>
+                <td>Latencia o error de recurso</td>
+                <td>Fallback de imagen + reintento controlado</td>
+            </tr>
+            <tr>
+                <td>Correos</td>
+                <td>Logistica</td>
+                <td>Consulta pickup points</td>
+                <td>No disponibilidad puntual</td>
+                <td>Cache local y fallback mock temporal</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="sheet" id="seguridad">
+        <h2>10. Seguridad y cumplimiento tecnico</h2>
+        <h3>10.1 Controles implementados</h3>
+        <ul>
+            <li>Middleware de autenticacion y rol admin.</li>
+            <li>Policies para autorizacion por ownership/rol.</li>
+            <li>FormRequests en flujos relevantes.</li>
+            <li>Sanctum en canal API protegido.</li>
+            <li>Protecciones nativas de Laravel frente a CSRF y SQL injection por ORM.</li>
+        </ul>
+
+        <h3>10.2 Brechas y riesgos de cumplimiento</h3>
+        <ul>
+            <li>Secretos en documentacion versionada.</li>
+            <li>Ausencia de politica formal de secretos en repositorio.</li>
+            <li>Inconsistencia de validacion segun endpoint.</li>
+            <li>Falta de estandar unificado de errores JSON y trazabilidad request-level.</li>
+        </ul>
+
+        <div class="note">
+            Recomendacion inmediata: retirar y rotar credenciales expuestas antes de cualquier despliegue o demostracion publica.
+        </div>
+
+        <h3>10.3 Mapeo resumido frente a OWASP Top 10 (estado documental)</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Categoria OWASP</th>
+                <th>Control observado</th>
+                <th>Gap detectado</th>
+                <th>Prioridad</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Broken Access Control</td>
+                <td>Policies + middleware auth/admin</td>
+                <td>Revisar consistencia en endpoints mixtos</td>
+                <td>Alta</td>
+            </tr>
+            <tr>
+                <td>Cryptographic Failures</td>
+                <td>Hash de password y secretos por env</td>
+                <td>Credenciales expuestas en docs</td>
+                <td>Critica</td>
+            </tr>
+            <tr>
+                <td>Injection</td>
+                <td>Eloquent y validacion de input</td>
+                <td>Unificar validacion en endpoints restantes</td>
+                <td>Media</td>
+            </tr>
+            <tr>
+                <td>Security Misconfiguration</td>
+                <td>Base framework segura</td>
+                <td>Falta estandar de hardening operativo</td>
+                <td>Media</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="sheet" id="calidad">
+        <h2>11. Calidad, pruebas y validacion</h2>
+        <h3>11.1 Estado de pruebas automatizadas</h3>
+        <p>La suite de PHPUnit esta presente con separacion Feature/Unit. Se observa cobertura funcional en servicios, repositorios, requests, policies, jobs y eventos. Este punto representa una fortaleza estructural del proyecto.</p>
+
+        <h3>11.2 Procesos de calidad actuales</h3>
+        <ul>
+            <li>Ejecucion local de pruebas y build.</li>
+            <li>Revision manual de comportamiento en entorno de desarrollo.</li>
+            <li>Sin pipeline CI declarativa en repositorio para enforcement continuo.</li>
+        </ul>
+
+        <h3>11.3 Limitaciones</h3>
+        <ul>
+            <li>Sin baseline automatizado de rendimiento/accesibilidad.</li>
+            <li>Sin consolidacion de quality gates por pull request.</li>
+            <li>Necesidad de reforzar pruebas end-to-end en checkout critico.</li>
+        </ul>
+
+        <h3>11.4 Estrategia de pruebas recomendada por capas</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Capa</th>
+                <th>Tipo de prueba principal</th>
+                <th>Objetivo</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Dominio (Services/Actions)</td>
+                <td>Unit + feature orientada a caso de uso</td>
+                <td>Validar reglas de negocio e invariantes</td>
+            </tr>
+            <tr>
+                <td>HTTP/API</td>
+                <td>Feature de contrato y autorizacion</td>
+                <td>Garantizar codigos, payload y permisos</td>
+            </tr>
+            <tr>
+                <td>Persistencia</td>
+                <td>Feature con factories/migraciones</td>
+                <td>Consistencia de modelos, relaciones y cast</td>
+            </tr>
+            <tr>
+                <td>Flujo end-to-end critico</td>
+                <td>E2E (pendiente de formalizacion)</td>
+                <td>Asegurar checkout completo sin regresion</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>11.5 Criterios de salida de release (propuestos)</h3>
+        <ul>
+            <li>Sin hallazgos criticos abiertos de seguridad o estabilidad.</li>
+            <li>Pruebas de auth, carrito y checkout en verde.</li>
+            <li>Validacion manual de rutas administrativas sensibles.</li>
+            <li>Checklist de secretos y variables de entorno completado.</li>
+        </ul>
+    </section>
+
+    <section class="sheet" id="operacion">
+        <h2>12. Operacion, despliegue y mantenimiento</h2>
+        <h3>12.1 Operacion local</h3>
+        <ol>
+            <li>Instalacion de dependencias PHP y JS.</li>
+            <li>Configuracion de variables de entorno.</li>
+            <li>Migraciones y seeders de base de datos.</li>
+            <li>Arranque por <code>composer dev</code> o <code>npm start</code>.</li>
+        </ol>
+
+        <h3>12.2 Mantenibilidad operativa</h3>
+        <p>La base de comandos es funcional y permite desarrollo concurrente, pero no se ha formalizado aun un playbook completo de incidentes, rollback y verificacion de release.</p>
+
+        <h3>12.3 Condiciones para production-ready</h3>
+        <ul>
+            <li>Resolucion de hallazgos criticos de seguridad y estabilidad.</li>
+            <li>Estandar de contratos API y manejo de errores.</li>
+            <li>CI con pruebas y build en cada integracion.</li>
+            <li>Evidencia objetiva de performance/accesibilidad.</li>
+        </ul>
+
+        <h3>12.4 Runbook operativo minimo (propuesto)</h3>
+        <ol>
+            <li>Validar estado de base de datos y cola antes de despliegue.</li>
+            <li>Aplicar migraciones con ventana controlada y backup previo.</li>
+            <li>Publicar nueva version y verificar health checks funcionales.</li>
+            <li>Ejecutar smoke test en login, catalogo, carrito y checkout.</li>
+            <li>Monitorear logs de error durante 30-60 minutos post-release.</li>
+        </ol>
+
+        <h3>12.5 Protocolo de incidente (propuesto)</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Fase</th>
+                <th>Tiempo objetivo</th>
+                <th>Accion</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Deteccion</td>
+                <td>&lt; 5 min</td>
+                <td>Identificar impacto, modulo y version afectada</td>
+            </tr>
+            <tr>
+                <td>Contencion</td>
+                <td>&lt; 15 min</td>
+                <td>Mitigar flujo critico (feature flag, rollback, desvio)</td>
+            </tr>
+            <tr>
+                <td>Resolucion</td>
+                <td>&lt; 2 h</td>
+                <td>Hotfix validado con pruebas dirigidas</td>
+            </tr>
+            <tr>
+                <td>Postmortem</td>
+                <td>&lt; 48 h</td>
+                <td>Documento RCA + accion preventiva trazable</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="sheet" id="hallazgos">
+        <h2>13. Hallazgos tecnicos y de seguridad</h2>
+        <h3>13.1 Matriz de hallazgos</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Severidad</th>
+                <th>Descripcion</th>
+                <th>Impacto</th>
+                <th>Evidencia</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>SEC-001</td>
+                <td class="sev-crit">Critica</td>
+                <td>Credenciales reales en documentacion versionada</td>
+                <td>Compromiso de secretos y riesgo de acceso no autorizado</td>
+                <td>README.md, docs/GUIA_INSTALACION.md</td>
+            </tr>
+            <tr>
+                <td>APP-001</td>
+                <td class="sev-crit">Critica</td>
+                <td>OrderController con fragmentos inconsistentes y variables no definidas</td>
+                <td>Fallo de checkout y errores runtime</td>
+                <td>app/Http/Controllers/OrderController.php</td>
+            </tr>
+            <tr>
+                <td>APP-002</td>
+                <td class="sev-crit">Critica</td>
+                <td>Ruta de payment intent apunta a metodo ausente</td>
+                <td>Error 500 en endpoint de pago</td>
+                <td>routes/web.php + OrderController</td>
+            </tr>
+            <tr>
+                <td>APP-003</td>
+                <td class="sev-crit">Critica</td>
+                <td>Auth API usa createToken sin HasApiTokens en User</td>
+                <td>Login/register API potencialmente inoperativos</td>
+                <td>Api/AuthController.php + Models/User.php</td>
+            </tr>
+            <tr>
+                <td>APP-004</td>
+                <td class="sev-high">Alta</td>
+                <td>UserAddressController usa variable no definida</td>
+                <td>Fallo en altas/ediciones de direccion</td>
+                <td>app/Http/Controllers/UserAddressController.php</td>
+            </tr>
+            <tr>
+                <td>APP-005</td>
+                <td class="sev-high">Alta</td>
+                <td>CartController retorna variable no definida</td>
+                <td>Respuestas JSON defectuosas</td>
+                <td>app/Http/Controllers/CartController.php</td>
+            </tr>
+            <tr>
+                <td>ARC-001</td>
+                <td class="sev-high">Alta</td>
+                <td>OrderService con senales de refactor incompleto</td>
+                <td>Inestabilidad de capa de negocio</td>
+                <td>app/Services/OrderService.php</td>
+            </tr>
+            <tr>
+                <td>DOC-001</td>
+                <td class="sev-high">Alta</td>
+                <td>Ausencia de API Resources dedicados</td>
+                <td>Contratos JSON heterogeneos</td>
+                <td>No existe app/Http/Resources</td>
+            </tr>
+            <tr>
+                <td>OPS-001</td>
+                <td class="sev-med">Media</td>
+                <td>Sin CI declarativa en repositorio</td>
+                <td>Control de calidad dependiente de ejecucion manual</td>
+                <td>No existe .github/workflows</td>
+            </tr>
+            <tr>
+                <td>PERF-001</td>
+                <td class="sev-med">Media</td>
+                <td>Sin automatizacion Lighthouse</td>
+                <td>No hay baseline reproducible de rendimiento web</td>
+                <td>Sin lighthouserc ni scripts asociados</td>
+            </tr>
+            <tr>
+                <td>FE-001</td>
+                <td class="sev-med">Media</td>
+                <td>Sin capa de servicios HTTP en frontend</td>
+                <td>Dispersa el manejo de errores y trazabilidad</td>
+                <td>No existe resources/js/Services</td>
+            </tr>
+            <tr>
+                <td>OBS-001</td>
+                <td class="sev-low">Baja</td>
+                <td>Observabilidad centrada en logs, sin trazas distribuidas</td>
+                <td>Dificultad de RCA avanzada</td>
+                <td>Uso de logs sin APM integrado</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>13.2 Analisis causal transversal</h3>
+        <ul>
+            <li><strong>Causa de proceso:</strong> ausencia de quality gate automatizado en integracion continua.</li>
+            <li><strong>Causa de arquitectura:</strong> adopcion parcial de patrones (servicios/requests) en modulos criticos.</li>
+            <li><strong>Causa de gobierno:</strong> falta de politica formal de secretos y check documental pre-release.</li>
+            <li><strong>Causa de operacion:</strong> observabilidad util pero insuficiente para RCA avanzada.</li>
+        </ul>
+    </section>
+
+    <section class="sheet" id="riesgos">
+        <h2>14. Riesgos arquitectonicos y deuda tecnica</h2>
+        <h3>14.1 Riesgos principales</h3>
+        <ol>
+            <li>Deriva de arquitectura por coexistencia de patrones y excepciones no normalizadas.</li>
+            <li>Riesgo operativo en checkout por incoherencias de implementacion.</li>
+            <li>Riesgo de seguridad documental con exposicion de secretos.</li>
+            <li>Riesgo de integracion por contratos API no estandarizados.</li>
+            <li>Riesgo de calidad por ausencia de CI y quality gates automatizados.</li>
+        </ol>
+
+        <h3>14.2 Deuda tecnica prioritaria</h3>
+        <ul>
+            <li>Correccion estructural de controladores y servicios criticos.</li>
+            <li>Unificacion de validaciones en FormRequests.</li>
+            <li>Estandar de respuesta JSON (success/error/codigo/trazabilidad).</li>
+            <li>Centralizacion de cliente HTTP frontend e interceptores.</li>
+            <li>Politica de secretos con escaneo y rotacion periodica.</li>
+        </ul>
+
+        <h3>14.3 Matriz de riesgo (probabilidad x impacto)</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Riesgo</th>
+                <th>Probabilidad</th>
+                <th>Impacto</th>
+                <th>Nivel</th>
+                <th>Respuesta recomendada</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Fallo de checkout por inconsistencia de codigo</td>
+                <td>Alta</td>
+                <td>Critico</td>
+                <td>Muy alto</td>
+                <td>Mitigar en sprint 0 con pruebas de regresion</td>
+            </tr>
+            <tr>
+                <td>Compromiso por secretos expuestos</td>
+                <td>Alta</td>
+                <td>Critico</td>
+                <td>Muy alto</td>
+                <td>Rotar credenciales y limpiar historial documental</td>
+            </tr>
+            <tr>
+                <td>Regresion funcional por falta de CI</td>
+                <td>Media</td>
+                <td>Alto</td>
+                <td>Alto</td>
+                <td>Introducir pipeline y quality gates</td>
+            </tr>
+            <tr>
+                <td>Inconsistencia API por contrato no uniforme</td>
+                <td>Media</td>
+                <td>Medio-alto</td>
+                <td>Alto</td>
+                <td>Estandarizar envelopes y pruebas de contrato</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="sheet" id="plan">
+        <h2>15. Plan de mejora priorizado (30/60/90 dias)</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Horizonte</th>
+                <th>Prioridad</th>
+                <th>Accion</th>
+                <th>Resultado esperado</th>
+                <th>KPI sugerido</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>0-30 dias</td>
+                <td>P0</td>
+                <td>Retirar secretos de docs y rotar credenciales comprometidas</td>
+                <td>Mitigacion de riesgo critico de seguridad</td>
+                <td>0 secretos detectados en escaneo</td>
+            </tr>
+            <tr>
+                <td>0-30 dias</td>
+                <td>P0</td>
+                <td>Corregir OrderController, CartController, UserAddressController y OrderService</td>
+                <td>Estabilidad de flujos de checkout y direcciones</td>
+                <td>0 errores runtime en rutas criticas</td>
+            </tr>
+            <tr>
+                <td>0-30 dias</td>
+                <td>P1</td>
+                <td>Asegurar autenticacion API funcional con Sanctum completo</td>
+                <td>Login/register API operativos</td>
+                <td>Tests auth API en verde</td>
+            </tr>
+            <tr>
+                <td>31-60 dias</td>
+                <td>P1</td>
+                <td>Migrar validacion inline a FormRequests en endpoints criticos</td>
+                <td>Uniformidad de validacion y mensajes</td>
+                <td>>= 80% endpoints criticos con FormRequest</td>
+            </tr>
+            <tr>
+                <td>31-60 dias</td>
+                <td>P1</td>
+                <td>Definir contrato JSON unico y guias de error</td>
+                <td>Consistencia de integracion frontend/backend</td>
+                <td>Documento de contrato + pruebas de contrato</td>
+            </tr>
+            <tr>
+                <td>31-60 dias</td>
+                <td>P2</td>
+                <td>Introducir capa frontend de servicios HTTP</td>
+                <td>Manejo centralizado de errores y trazabilidad</td>
+                <td>Reduccion de llamadas ad-hoc directas</td>
+            </tr>
+            <tr>
+                <td>61-90 dias</td>
+                <td>P1</td>
+                <td>Implementar CI basica (lint, test, build)</td>
+                <td>Quality gate por pull request</td>
+                <td>Tasa de pipeline estable > 95%</td>
+            </tr>
+            <tr>
+                <td>61-90 dias</td>
+                <td>P2</td>
+                <td>Incorporar baseline de performance/accesibilidad</td>
+                <td>Evidencia reproducible de calidad web</td>
+                <td>Score minimo objetivo por entorno</td>
+            </tr>
+            <tr>
+                <td>61-90 dias</td>
+                <td>P2</td>
+                <td>Mejorar observabilidad (request id, trazas, alertas)</td>
+                <td>Reduccion de MTTR y mejor analisis de incidentes</td>
+                <td>Tiempo medio de resolucion reducido</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>15.1 Lineas de trabajo ejecutivas</h3>
+        <ol>
+            <li><strong>Workstream A - Estabilidad transaccional:</strong> checkout, carrito, direcciones y auth API.</li>
+            <li><strong>Workstream B - Seguridad y gobierno:</strong> secretos, hardening y estandar documental.</li>
+            <li><strong>Workstream C - Calidad de entrega:</strong> CI, pruebas de contrato, baseline de performance.</li>
+            <li><strong>Workstream D - Plataforma frontend:</strong> capa services, manejo de errores y telemetria basica.</li>
+        </ol>
+
+        <h3>15.2 Gobernanza de ejecucion del plan</h3>
+        <ul>
+            <li>Revision semanal de riesgos abiertos con responsables asignados.</li>
+            <li>Tablero unico de deuda tecnica con fecha objetivo y evidencia de cierre.</li>
+            <li>Criterio de DoD explicito por modulo critico.</li>
+            <li>Reporte quincenal de KPIs de calidad y seguridad al equipo completo.</li>
+        </ul>
+    </section>
+
+    <section class="sheet" id="conclusiones">
+        <h2>16. Conclusiones</h2>
+        <p>MiKiwi presenta una base arquitectonica valida para evolucionar a estandares de produccion con un esfuerzo controlado. El stack es adecuado y la estructura modular ya existe en terminos de capas, componentes y pruebas.</p>
+        <p>El reto principal no es de cambio de tecnologia, sino de consolidacion tecnica: resolver inconsistencias en flujos criticos, normalizar contratos, reforzar seguridad documental y automatizar calidad de forma continua.</p>
+        <p>Si se ejecuta el plan 30/60/90 dias, el proyecto puede pasar de estado funcional con deuda a una plataforma robusta, trazable y defendible en auditoria tecnica formal.</p>
+        <p>Desde una perspectiva de arquitectura empresarial, la recomendacion es evolucion incremental con foco en confiabilidad operacional. Es decir: primero asegurar integridad de compra y seguridad, despues consolidar estandares de interfaz y automatizacion de calidad, y finalmente optimizar observabilidad y eficiencia de entrega.</p>
+        <p>Con ese orden de prioridades, el proyecto puede mejorar significativamente sin incurrir en reescrituras costosas ni degradar la capacidad de entrega funcional del equipo.</p>
+    </section>
+
+    <section class="sheet page-break" id="anexos">
+        <h2>17. Anexos tecnicos y trazabilidad</h2>
+        <h3>17.1 Mapa de archivos clave</h3>
+        <ul>
+            <li><strong>Backend:</strong> <code>app/Http/</code>, <code>app/Services/</code>, <code>app/Repositories/</code>, <code>app/Models/</code>, <code>routes/</code>, <code>database/migrations/</code>.</li>
+            <li><strong>Frontend:</strong> <code>resources/js/app.jsx</code>, <code>resources/js/bootstrap.js</code>, <code>resources/js/Pages/</code>, <code>resources/js/Hooks/usePartOptimization.js</code>, <code>resources/js/Contexts/LanguageContext.jsx</code>.</li>
+            <li><strong>Calidad:</strong> <code>tests/Feature/</code>, <code>tests/Unit/</code>, <code>phpunit.xml</code>.</li>
+            <li><strong>Documentacion sensible:</strong> <code>README.md</code>, <code>docs/GUIA_INSTALACION.md</code>.</li>
+        </ul>
+
+        <h3>17.2 Matriz de trazabilidad (afirmacion -> evidencia)</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Afirmacion</th>
+                <th>Evidencia</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Stack Laravel 12 + Inertia + Sanctum</td>
+                <td>composer.json</td>
+            </tr>
+            <tr>
+                <td>Stack React 18 + Vite 7 + Tailwind 3</td>
+                <td>package.json</td>
+            </tr>
+            <tr>
+                <td>Coexistencia de canal web e API</td>
+                <td>routes/web.php y routes/api.php</td>
+            </tr>
+            <tr>
+                <td>Services y Repositories implementados</td>
+                <td>app/Services/* y app/Repositories/*</td>
+            </tr>
+            <tr>
+                <td>Policies implementadas</td>
+                <td>app/Policies/*</td>
+            </tr>
+            <tr>
+                <td>Eventos, listeners y jobs presentes</td>
+                <td>app/Events/*, app/Listeners/*, app/Jobs/*</td>
+            </tr>
+            <tr>
+                <td>Sin API Resources dedicados</td>
+                <td>No existe app/Http/Resources</td>
+            </tr>
+            <tr>
+                <td>Sin CI declarativa en repo</td>
+                <td>No existe .github/workflows</td>
+            </tr>
+            <tr>
+                <td>Sin baseline Lighthouse automatizado</td>
+                <td>Sin lighthouserc y sin scripts npm asociados</td>
+            </tr>
+            <tr>
+                <td>Credenciales expuestas en documentos</td>
+                <td>README.md y docs/GUIA_INSTALACION.md</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>17.3 Firma y aprobacion</h3>
+        <div class="signatures">
+            <div class="sig-box"><strong>Miguel Sanchez</strong><div class="sig-line">Firma</div></div>
+            <div class="sig-box"><strong>Ismael Vargas</strong><div class="sig-line">Firma</div></div>
+            <div class="sig-box"><strong>Angel Jiminez</strong><div class="sig-line">Firma</div></div>
+            <div class="sig-box"><strong>Joan Grifull</strong><div class="sig-line">Firma</div></div>
+            <div class="sig-box"><strong>Alberto Estepa</strong><div class="sig-line">Firma</div></div>
+            <div class="sig-box"><strong>Elena Mena</strong><div class="sig-line">Firma</div></div>
+        </div>
+
+        <p class="small">Tutor o responsable academico: ___________________________</p>
+    </section>
+</main>
+</body>
+</html>

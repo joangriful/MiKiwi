@@ -1,0 +1,242 @@
+@import url("./memoria-tecnica.css");
+
+:root {
+    --bg: #e8edf4;
+    --paper: #ffffff;
+    --ink: #1a2633;
+    --muted: #4b5a6a;
+    --line: #d4dee9;
+    --line-strong: #b8c5d3;
+    --primary: #0f2942;
+    --primary-soft: #22415f;
+    --accent: #7d5d24;
+    --accent-soft: #aa8746;
+}
+
+body {
+    background:
+        radial-gradient(circle at 10% -5%, rgba(15, 41, 66, 0.1), transparent 35%),
+        radial-gradient(circle at 92% 105%, rgba(125, 93, 36, 0.09), transparent 33%),
+        #ecf1f7;
+}
+
+.document {
+    max-width: 1160px;
+    margin-top: 2.3rem;
+}
+
+.sheet {
+    padding: 3.7rem 3.9rem;
+    margin-bottom: 2.1rem;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow:
+        0 24px 55px rgba(15, 41, 66, 0.08),
+        0 3px 10px rgba(15, 41, 66, 0.05);
+}
+
+.sheet::before {
+    background:
+        linear-gradient(180deg, rgba(15, 41, 66, 0.03), transparent 22%),
+        linear-gradient(90deg, rgba(170, 135, 70, 0.04), transparent 18%);
+}
+
+.sheet:not(.cover)::after {
+    height: 5px;
+    opacity: 0.65;
+    background: linear-gradient(90deg, var(--primary-soft), var(--accent-soft));
+}
+
+.cover {
+    min-height: 94vh;
+}
+
+.cover h1 {
+    font-size: 2.7rem;
+    max-width: 13ch;
+}
+
+.cover h2 {
+    font-size: 1.05rem;
+    max-width: 62ch;
+}
+
+.meta-item {
+    background: #fcfdff;
+}
+
+.authors {
+    padding: 1.1rem 1.2rem;
+}
+
+.authors ul {
+    columns: 2;
+    column-gap: 2rem;
+}
+
+h2 {
+    font-size: 1.62rem;
+    margin-bottom: 1.35rem;
+}
+
+h3 {
+    font-size: 1.09rem;
+    letter-spacing: 0.01em;
+    color: #18334c;
+}
+
+p {
+    font-size: 1.01rem;
+}
+
+.sheet > h2 + p {
+    font-size: 1.05rem;
+    line-height: 1.74;
+}
+
+.toc h2 {
+    margin-bottom: 1.1rem;
+}
+
+.toc ol {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.8rem;
+    counter-reset: sectiontoc;
+}
+
+.toc li {
+    position: relative;
+    margin: 0 0 0.5rem;
+    padding: 0.55rem 0.75rem 0.55rem 2.9rem;
+    border: 1px solid #dde6f0;
+    border-radius: 10px;
+    background: #fbfdff;
+}
+
+.toc li::before {
+    counter-increment: sectiontoc;
+    content: counter(sectiontoc, decimal-leading-zero);
+    position: absolute;
+    left: 0.72rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.65rem;
+    height: 1.65rem;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #12304b;
+    background: #edf3fa;
+    border: 1px solid #cdd9e7;
+}
+
+.toc a {
+    display: block;
+    font-weight: 700;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #cfdae7;
+}
+
+th {
+    background: linear-gradient(180deg, #edf3fa, #e3ecf6);
+    color: #11314d;
+}
+
+th,
+td {
+    border-right: 1px solid #d6e0eb;
+    border-bottom: 1px solid #d6e0eb;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+th:last-child,
+td:last-child {
+    border-right: none;
+}
+
+.note {
+    border-left-width: 4px;
+    border-radius: 10px;
+    background: #f7fafc;
+}
+
+.signatures {
+    gap: 1rem 1.1rem;
+}
+
+.sig-box {
+    background: #fcfdff;
+    border-style: solid;
+    border-color: #ccd9e7;
+}
+
+@media (max-width: 980px) {
+    .sheet {
+        padding: 2.2rem 1.7rem;
+    }
+
+    .authors ul {
+        columns: 1;
+    }
+}
+
+@media print {
+    @page {
+        size: 210mm 297mm;
+        margin: 16mm;
+    }
+
+    html {
+        font-size: 10.6pt;
+    }
+
+    body {
+        line-height: 1.52;
+        background: #fff;
+    }
+
+    .sheet,
+    .sheet::before,
+    .sheet::after,
+    .cover::after,
+    .toc li::before {
+        box-shadow: none;
+        background: transparent;
+    }
+
+    .toc li {
+        border-color: #bbb;
+        background: transparent;
+        padding: 0.22rem 0 0.22rem 1.7rem;
+        border-radius: 0;
+    }
+
+    .toc li::before {
+        left: 0;
+        width: 1.2rem;
+        height: 1.2rem;
+        border: 1px solid #bbb;
+        font-size: 0.62rem;
+    }
+
+    table {
+        border: 1px solid #bbb;
+    }
+
+    th,
+    td {
+        border-color: #bbb;
+    }
+}

@@ -1,0 +1,72 @@
+@import url("./memoria-tecnica.css");
+
+:root {
+    --bg: #f2f4f7;
+    --paper: #ffffff;
+    --ink: #101418;
+    --muted: #3d454d;
+    --line: #d3d8de;
+    --line-strong: #b8c0ca;
+    --primary: #0b0f14;
+    --primary-soft: #222b34;
+    --accent: #2a2f36;
+    --accent-soft: #616974;
+}
+
+body {
+    background: #f3f5f8;
+}
+
+.sheet {
+    box-shadow: none;
+    border-radius: 8px;
+    border: 1px solid #cfd6de;
+    padding: 3.4rem 3.5rem;
+}
+
+.sheet::before,
+.sheet::after,
+.cover::after,
+h2::after {
+    display: none;
+}
+
+.cover-mark {
+    border-radius: 4px;
+    border-color: #adb6c0;
+    color: #1e2730;
+    background: #f7f9fb;
+}
+
+h2 {
+    border-bottom-width: 1px;
+}
+
+.note {
+    border-left-width: 3px;
+    background: #f8fafc;
+}
+
+th {
+    background: #f2f5f8;
+}
+
+tbody tr:nth-child(even),
+tbody tr:hover {
+    background: transparent;
+}
+
+@media print {
+    @page {
+        size: 210mm 297mm;
+        margin: 15mm;
+    }
+
+    html {
+        font-size: 10.5pt;
+    }
+
+    body {
+        background: #fff;
+    }
+}
