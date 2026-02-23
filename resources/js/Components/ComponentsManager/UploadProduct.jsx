@@ -30,6 +30,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
     const [mainImage, setMainImage] = useState('');
     const [hoverImage, setHoverImage] = useState('');
     const [galleryImages, setGalleryImages] = useState([]);
+    const [cloudinaryImages, setCloudinaryImages] = useState([]); // Fixed reference error
 
     const [isDragging, setIsDragging] = useState(false);
     const [isUploadingImages, setIsUploadingImages] = useState(false);
@@ -201,13 +202,17 @@ export default function UploadProduct({ categories = [], initialData = null, onC
         setUploading(true);
 
         try {
-            const finalGallery = cloudinaryImages.length > 0 ? cloudinaryImages : galleryImages;
+            // Priority: if we have manually selected main/hover, use them. 
+            // Otherwise default to first two of gallery.
+            const imagesToSend = galleryImages.length > 0 ? galleryImages : cloudinaryImages;
+            const primary = mainImage || (imagesToSend[0] || '');
+            const hover = hoverImage || (imagesToSend[1] || '');
 
             const submitData = {
                 ...formData,
-                images: finalGallery,
-                image_url: mainImage,
-                hover_image_url: hoverImage
+                images: imagesToSend,
+                image_url: primary,
+                hover_image_url: hover
             };
 
             const routeName = isEdit ? 'products.update' : 'products.upload';
@@ -351,6 +356,52 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                             </div>
                         </div>
                     )}
+
+                    {/* --- ENLACES MANUALES --- */}
+                    <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mt-4 space-y-4">
+                        <div className="flex items-center gap-2 mb-2">
+                            <span className="material-symbols-outlined text-blue-600">link</span>
+                            <h4 className="font-bold text-gray-700 uppercase p-0 m-0 text-sm">Enlaces manuales de Cloudinary</h4>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-[11px] font-bold text-gray-500 uppercase">Imagen Principal (URL)</label>
+                                <input
+                                    type="text"
+                                    value={mainImage}
+                                    onChange={(e) => setMainImage(e.target.value)}
+                                    placeholder="https://res.cloudinary.com/..."
+                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-[11px] font-bold text-gray-500 uppercase">Imagen Hover (URL)</label>
+                                <input
+                                    type="text"
+                                    value={hoverImage}
+                                    onChange={(e) => setHoverImage(e.target.value)}
+                                    placeholder="https://res.cloudinary.com/..."
+                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-1">
+                            <label className="text-[11px] font-bold text-gray-500 uppercase">Imágenes del Carrusel (Una por línea o separadas por comas)</label>
+                            <textarea
+                                value={galleryImages.join('\n')}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    const urls = val.split(/[,\n]/).map(u => u.trim()).filter(u => u !== '');
+                                    setGalleryImages(urls);
+                                }}
+                                rows={3}
+                                placeholder="Pega aquí todos los enlaces del carrusel..."
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                            />
+                        </div>
+                    </div>
 
                     {isUploadingImages && (
                         <div className="mb-4 text-center text-sm font-medium text-blue-600 animate-pulse bg-blue-50 py-2 rounded">

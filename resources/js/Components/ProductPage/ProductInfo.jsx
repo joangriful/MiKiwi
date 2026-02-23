@@ -44,7 +44,7 @@ export default function ProductInfo({ product }) {
                 product_slug: product.slug,
                 quantity: quantity,
             });
-            
+
             if (responseData.redirect) {
                 router.visit(responseData.redirect);
             } else {
@@ -62,8 +62,8 @@ export default function ProductInfo({ product }) {
             {/* Notification Banner */}
             <div
                 className={`overflow-hidden transition-all duration-500 ease-in-out ${notification
-                        ? "max-h-20 mb-4 opacity-100"
-                        : "max-h-0 mb-0 opacity-0"
+                    ? "max-h-20 mb-4 opacity-100"
+                    : "max-h-0 mb-0 opacity-0"
                     }`}
             >
                 {notification === "added" && (
@@ -121,8 +121,8 @@ export default function ProductInfo({ product }) {
                 <button
                     onClick={() => setIsFavorite(!isFavorite)}
                     className={`p-3 rounded-full border transition-all duration-300 ${isFavorite
-                            ? "bg-red-50 border-red-100 text-red-500 scale-110 shadow-sm"
-                            : "bg-white border-gray-100 text-gray-300 hover:text-gray-400 hover:border-gray-200"
+                        ? "bg-red-50 border-red-100 text-red-500 scale-110 shadow-sm"
+                        : "bg-white border-gray-100 text-gray-300 hover:text-gray-400 hover:border-gray-200"
                         }`}
                 >
                     <span
@@ -156,7 +156,7 @@ export default function ProductInfo({ product }) {
 
             {/* Description */}
             <div className="space-y-4 mb-8 md:mb-12">
-                <h3 className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-900">
+                <h3 className="text-[20px] font-bold tracking-[0.3em] uppercase text-gray-900">
                     Descripción
                 </h3>
                 <p className="text-gray-500 leading-relaxed text-base md:text-lg font-light">
