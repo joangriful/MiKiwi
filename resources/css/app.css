@@ -1,7 +1,30 @@
 @import './colores.css';
 @import './typography.css';
 @import './configurador.css';
+@import './auth.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#nprogress .bar {
+    background: repeating-linear-gradient(
+        90deg,
+        var(--color-primary, #99b849) 0,
+        var(--color-primary, #99b849) 16px,
+        var(--color-secondary, #f8b7ea) 16px,
+        var(--color-secondary, #f8b7ea) 32px
+    ) !important;
+    height: 3px;
+}
+
+#nprogress .peg {
+    box-shadow:
+        0 0 10px var(--color-primary, #99b849),
+        0 0 12px var(--color-secondary, #f8b7ea) !important;
+}
+
+#nprogress .spinner-icon {
+    border-top-color: var(--color-primary, #99b849) !important;
+    border-left-color: var(--color-secondary, #f8b7ea) !important;
+}
