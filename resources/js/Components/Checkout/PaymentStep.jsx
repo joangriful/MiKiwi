@@ -1,25 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import axios from 'axios';
 import InputLabel from '@/Components/InputLabel';
 
-export default function PaymentStep({ data, setData, onSubmit, onBack, processing }) {
+export default function PaymentStep({ data, setData, auth, onSubmit, onBack, processing }) {
+    const isAdmin = auth?.user?.role === 'admin';
     const stripe = useStripe();
     const elements = useElements();
     const [cardError, setCardError] = useState(null);
     const [isConfirming, setIsConfirming] = useState(false);
+    const [savedCards, setSavedCards] = useState([]);
+    const [isLoadingCards, setIsLoadingCards] = useState(false);
+    const [paymentOption, setPaymentOption] = useState('new'); // 'new' or card ID
+    const [showAdminTestCards, setShowAdminTestCards] = useState(false);
+    const [copiedId, setCopiedId] = useState(null);
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        if (!stripe || !elements) {
-            return;
+    useEffect(() => {
+        if (auth?.user) {
+            fetchSavedCards();
         }
+    }, [auth?.user]);
 
+    const fetchSavedCards = async () => {
+        setIsLoadingCards(true);
+        try {
+            const { data: cards } = await axios.get(route('payment-methods.index'));
+            setSavedCards(cards);
+            if (cards.length > 0) {
+                setPaymentOption(cards[0].id);
+                setData('selected_payment_method', cards[0].id);
+            }
+        } catch (err) {
+            console.error('Error fetching saved cards:', err);
+        } finally {
+            setIsLoadingCards(false);
+        }
+    };
+
+    const handleOptionChange = (optionId) => {
+        setPaymentOption(optionId);
+        setData('selected_payment_method', optionId === 'new' ? null : optionId);
+    };
+
+    const toggleAdminTestCards = () => setShowAdminTestCards(!showAdminTestCards);
+
+    const copyToClipboard = (text, id) => {
+        navigator.clipboard.writeText(text);
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2000);
+    };
+
+    const TEST_CARDS = [
+        { brand: 'Visa', number: '4242424242424242', display: '4242 4242 4242 4242', exp: '12/26', cvc: '123' },
+        { brand: 'MasterCard', number: '5555555555554444', display: '5555 5555 5555 4444', exp: '12/26', cvc: '123' },
+        { brand: 'Amex', number: '378282246310005', display: '3782 8224 6310 005', exp: '12/26', cvc: '123' },
+    ];
+
+    const onSubmitClick = (event) => {
+        event.preventDefault();
         setIsConfirming(true);
         setCardError(null);
-
-        // This function will be called by Cart.jsx handleSubmitOrder
-        // But we can also handle it here if we want to pass the intent back
         onSubmit();
     };
 
@@ -38,6 +78,15 @@ export default function PaymentStep({ data, setData, onSubmit, onBack, processin
         },
     };
 
+    const getBrandIcon = (brand) => {
+        const brands = {
+            'visa': 'text-blue-600',
+            'mastercard': 'text-red-500',
+            'amex': 'text-cyan-600',
+        };
+        return brands[brand.toLowerCase()] || 'text-gray-600';
+    };
+
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             <div className="flex justify-between items-center mb-2">
@@ -50,63 +99,130 @@ export default function PaymentStep({ data, setData, onSubmit, onBack, processin
                 </div>
             </div>
 
-            <p className="text-sm text-gray-500 mb-6">
-                Todas las transacciones están encriptadas y son seguras. MiKiwi nunca almacena los datos completos de tu tarjeta.
+            <p className="text-sm text-gray-500 mb-6 font-medium">
+                Selecciona una tarjeta guardada o añade una nueva para finalizar tu pedido.
             </p>
 
             <div className="space-y-4">
-                {/* Stripe Card Container */}
-                <div className="relative overflow-hidden group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-2xl pointer-events-none"></div>
-                    <div className="relative border-2 border-primary/20 p-6 rounded-2xl bg-white shadow-sm transition-all duration-300 group-hover:border-primary/40 group-hover:shadow-md">
-                        <div className="flex justify-between items-center mb-6">
-                            <div className="flex items-center">
-                                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
-                                    <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                    </svg>
+                {/* Saved Cards List */}
+                {!isLoadingCards && savedCards.length > 0 && (
+                    <div className="grid gap-3 mb-6">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Tarjetas Guardadas</label>
+                        {savedCards.map(card => (
+                            <div 
+                                key={card.id}
+                                onClick={() => handleOptionChange(card.id)}
+                                className={`group flex items-center p-4 border-2 rounded-2xl cursor-pointer transition-all ${paymentOption === card.id ? 'border-[#99b849] bg-[#99b849]/5 ring-1 ring-[#99b849]' : 'border-gray-100 bg-white hover:border-gray-200'}`}
+                            >
+                                <div className={`w-10 h-6 border rounded flex items-center justify-center mr-4 bg-white ${getBrandIcon(card.card.brand)}`}>
+                                    <span className="text-[8px] font-black italic uppercase">{card.card.brand}</span>
                                 </div>
-                                <span className="font-bold text-gray-900 text-lg">Tarjeta Bancaria</span>
+                                <div className="flex-1">
+                                    <p className="text-sm font-bold text-gray-900 tracking-wider">•••• {card.card.last4}</p>
+                                    <p className="text-[10px] text-gray-400 font-bold uppercase">Expira: {card.card.exp_month}/{card.card.exp_year}</p>
+                                </div>
+                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${paymentOption === card.id ? 'border-[#99b849] bg-[#99b849]' : 'border-gray-200'}`}>
+                                    {paymentOption === card.id && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                                </div>
                             </div>
-                            <div className="flex items-center space-x-2">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-4 grayscale hover:grayscale-0 transition-all opacity-60" />
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-6 grayscale hover:grayscale-0 transition-all opacity-60" />
-                                <div className="w-[1px] h-4 bg-gray-200 mx-2"></div>
-                                <span className="text-[10px] font-bold text-gray-400">AMEX, JCB...</span>
-                            </div>
-                        </div>
+                        ))}
+                    </div>
+                )}
 
-                        <div className="space-y-4">
+                {/* Use New Card Item */}
+                <div 
+                    onClick={() => handleOptionChange('new')}
+                    className={`flex items-center p-4 border-2 rounded-2xl cursor-pointer transition-all ${paymentOption === 'new' ? 'border-[#99b849] bg-[#99b849]/5 ring-1 ring-[#99b849]' : 'border-gray-100 bg-white hover:border-gray-200'}`}
+                >
+                    <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center mr-4">
+                        <span className="material-symbols-outlined text-gray-400">add_card</span>
+                    </div>
+                    <span className="flex-1 text-sm font-bold text-gray-900 uppercase tracking-tight">Usar otra tarjeta</span>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${paymentOption === 'new' ? 'border-[#99b849] bg-[#99b849]' : 'border-gray-200'}`}>
+                        {paymentOption === 'new' && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                    </div>
+                </div>
+
+                {/* Card Elements Container (Shown when 'new' selected) */}
+                {paymentOption === 'new' && (
+                    <div className="animate-in slide-in-from-top-4 duration-300">
+                        <div className="relative border-2 border-primary/20 p-6 rounded-2xl bg-white shadow-sm">
                             <div className={`p-4 rounded-xl border-2 transition-all duration-200 ${cardError ? 'border-red-200 bg-red-50/30' : 'border-gray-100 bg-gray-50/50 focus-within:border-primary focus-within:bg-white focus-within:ring-4 focus-within:ring-primary/5'}`}>
-                                <InputLabel value="Número de Tarjeta, Fecha y CVC" className="mb-3 text-[10px] uppercase tracking-[0.2em] font-black text-gray-400" />
+                                <div className="flex justify-between items-center mb-3">
+                                    <InputLabel value="Detalles de la Tarjeta" className="text-[10px] uppercase tracking-[0.2em] font-black text-gray-400" />
+                                    <div className="group relative">
+                                        <span className="material-symbols-outlined text-gray-400 text-sm cursor-help">info</span>
+                                        <div className="absolute bottom-full right-0 mb-2 w-64 p-3 bg-gray-900 text-white text-[10px] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl leading-relaxed">
+                                            <p className="font-bold border-b border-white/10 pb-1 mb-1 italic">¿Pago Seguro?</p>
+                                            Todas las transacciones pasan por Stripe, un procesador de pagos certificado PCI Nivel 1.
+                                        </div>
+                                    </div>
+                                </div>
                                 <div className="px-1 py-1">
                                     <CardElement options={cardElementOptions} onChange={(e) => setCardError(e.error ? e.error.message : null)} />
                                 </div>
                             </div>
+                            {isAdmin && (
+                                <div className="mt-4 border-t border-gray-100 pt-4">
+                                    <button
+                                        type="button"
+                                        onClick={toggleAdminTestCards}
+                                        className="w-full py-2 border-2 border-dashed border-primary/30 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary/5 transition-all flex items-center justify-center gap-2"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">science</span>
+                                        {showAdminTestCards ? 'Ocultar Datos de Prueba' : 'Modo Admin: Ver Datos de Prueba'}
+                                    </button>
 
-                            {cardError && (
-                                <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-4 rounded-xl border border-red-100 animate-in slide-in-from-left-2 duration-300">
-                                    <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                                    </svg>
-                                    <span className="text-sm font-bold">{cardError}</span>
+                                    {showAdminTestCards && (
+                                        <div className="mt-4 grid grid-cols-1 gap-2 animate-in slide-in-from-top-2 duration-200">
+                                            {TEST_CARDS.map((card, idx) => (
+                                                <div key={idx} className="bg-gray-50 rounded-xl p-3 border border-gray-100 flex items-center justify-between group">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[8px] font-black uppercase text-gray-400 tracking-tighter">{card.brand}</span>
+                                                        <span className="font-mono text-xs text-gray-600 tracking-wider transition-colors group-hover:text-primary">{card.display}</span>
+                                                    </div>
+                                                    <div className="flex gap-1">
+                                                        <button 
+                                                            type="button"
+                                                            onClick={() => copyToClipboard(card.number, `num-${idx}`)}
+                                                            className={`p-1.5 rounded-lg transition-all ${copiedId === `num-${idx}` ? 'bg-green-100 text-green-600' : 'bg-white text-gray-400 hover:text-gray-900 shadow-sm border border-gray-100'}`}
+                                                            title="Copiar Número"
+                                                        >
+                                                            <span className="material-symbols-outlined text-sm">{copiedId === `num-${idx}` ? 'check' : 'content_copy'}</span>
+                                                        </button>
+                                                        <button 
+                                                            type="button"
+                                                            onClick={() => copyToClipboard(`${card.exp} | ${card.cvc}`, `exp-${idx}`)}
+                                                            className={`p-1.5 rounded-lg transition-all ${copiedId === `exp-${idx}` ? 'bg-green-100 text-green-600' : 'bg-white text-gray-400 hover:text-gray-900 shadow-sm border border-gray-100'}`}
+                                                            title="Copiar Exp/CVC"
+                                                        >
+                                                            <span className="material-symbols-outlined text-sm">{copiedId === `exp-${idx}` ? 'check' : 'calendar_today'}</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            <p className="text-[8px] text-center text-gray-400 font-bold uppercase mt-1">C.P. Recomendado: 28001</p>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
                     </div>
-                </div>
+                )}
+
+                {cardError && paymentOption === 'new' && (
+                    <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-4 rounded-xl border border-red-100 animate-in slide-in-from-left-2 duration-300">
+                        <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-sm font-bold">{cardError}</span>
+                    </div>
+                )}
 
                 {/* Coming Soon Options */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="border border-gray-100 p-4 rounded-xl flex items-center bg-gray-50/50 opacity-60 grayscale cursor-not-allowed">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" className="h-4 mr-3" />
-                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Próximamente</span>
-                    </div>
-                    <div className="border border-gray-100 p-4 rounded-xl flex items-center bg-gray-50/50 opacity-60 grayscale cursor-not-allowed">
-                        <div className="flex gap-2 mr-3">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg" alt="Apple Pay" className="h-4" />
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay" className="h-4" />
-                        </div>
                         <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Próximamente</span>
                     </div>
                 </div>
@@ -152,7 +268,7 @@ export default function PaymentStep({ data, setData, onSubmit, onBack, processin
                                 required
                             />
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <InputLabel htmlFor="billing_city" value="Ciudad" />
                                 <input
@@ -196,22 +312,20 @@ export default function PaymentStep({ data, setData, onSubmit, onBack, processin
                 </button>
 
                 <button
-                    onClick={handleSubmit}
+                    onClick={onSubmitClick}
                     disabled={processing || isConfirming || !stripe}
-                    className="relative px-12 py-5 bg-primary text-white font-black rounded-2xl hover:bg-primary-dark shadow-2xl shadow-primary/20 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 text-xl w-full md:w-auto order-1 md:order-2 overflow-hidden flex items-center justify-center min-w-[280px]"
+                    className="relative px-12 py-5 bg-[#99b849] text-white font-black rounded-2xl hover:bg-[#8da843] shadow-2xl shadow-[#99b849]/20 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 text-xl w-full md:w-auto order-1 md:order-2 overflow-hidden flex items-center justify-center min-w-[280px]"
                 >
                     <div className="relative z-10 flex items-center">
                         {processing || isConfirming ? (
                             <>
                                 <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white mr-3"></div>
-                                <span>PROCESANDO...</span>
+                                <span className="uppercase tracking-[0.2em] text-xs">Procesando...</span>
                             </>
                         ) : (
                             <>
-                                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                </svg>
-                                <span>PAGAR AHORA</span>
+                                <span className="material-symbols-outlined mr-3">verified_user</span>
+                                <span className="uppercase tracking-[0.2em] text-xs">Pagar Pedido</span>
                             </>
                         )}
                     </div>
@@ -233,9 +347,6 @@ export default function PaymentStep({ data, setData, onSubmit, onBack, processin
                         <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">PCI Compliant</span>
                     </div>
                 </div>
-                <p className="text-[10px] text-center text-gray-400 max-w-sm leading-relaxed font-medium">
-                    MiKiwi es un entorno de comercio electrónico seguro. Puedes cancelar tu suscripción o pedir un reembolso en un plazo de 14 días.
-                </p>
             </div>
         </div>
     );

@@ -1,210 +1,306 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { usePage } from '@inertiajs/react';
+import axios from 'axios';
+import { loadStripe } from '@stripe/stripe-js';
+import {
+    Elements,
+    CardElement,
+    useStripe,
+    useElements,
+} from '@stripe/react-stripe-js';
+const TEST_CARDS = [
+    { brand: 'Visa', number: '4242 4242 4242 4242', raw: '4242424242424242', exp: '12/26', cvc: '123' },
+    { brand: 'MasterCard', number: '5555 5555 5555 4444', raw: '5555555555554444', exp: '12/26', cvc: '123' },
+    { brand: 'Amex', number: '3782 8224 6310 005', raw: '378282246310005', exp: '12/26', cvc: '123' },
+];
+function CardForm({ onCancel, onSuccess }) {
+    const stripe = useStripe();
+    const elements = useElements();
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [error, setError] = useState(null);
+    const [holder, setHolder] = useState('');
 
-export default function CardsTab() {
-    // Mock Data and State
-    const [cards, setCards] = useState([
-        { id: 1, brand: 'Visa', last4: '4242', expiry: '12/28', holder: 'Juan Pérez', isDefault: true },
-        { id: 2, brand: 'Mastercard', last4: '8899', expiry: '05/26', holder: 'Juan Pérez', isDefault: false }
-    ]);
-    const [isAdding, setIsAdding] = useState(false);
-    const [newCard, setNewCard] = useState({ number: '', expiry: '', cvc: '', holder: '' });
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!stripe || !elements) return;
 
-    const handleSetDefault = (id) => {
-        setCards(cards.map(card => ({
-            ...card,
-            isDefault: card.id === id
-        })));
-        // In real app, API call here
-    };
+        setIsProcessing(true);
+        setError(null);
 
-    const handleDelete = (id) => {
-        if (confirm('¿Estás seguro de que quieres eliminar esta tarjeta?')) {
-            setCards(cards.filter(c => c.id !== id));
+        try {
+            // 1. Get SetupIntent client secret
+            const { data } = await axios.post(route('payment-methods.setup-intent'));
+            const clientSecret = data.clientSecret;
+
+            // 2. Confirm card setup
+            const result = await stripe.confirmCardSetup(clientSecret, {
+                payment_method: {
+                    card: elements.getElement(CardElement),
+                    billing_details: { name: holder },
+                },
+            });
+
+            if (result.error) {
+                setError(result.error.message);
+                setIsProcessing(false);
+            } else {
+                onSuccess();
+            }
+        } catch (err) {
+            setError('Error al iniciar el proceso de registro.');
+            setIsProcessing(false);
         }
     };
 
-    const handleAddCard = (e) => {
-        e.preventDefault();
-        // Validation logic would go here
-        const brand = newCard.number.startsWith('4') ? 'Visa' : 'Mastercard';
-        const last4 = newCard.number.slice(-4) || '0000';
+    return (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl w-full max-w-md p-8 shadow-2xl relative animate-in zoom-in-95 duration-200">
+                <button
+                    onClick={onCancel}
+                    className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                    <span className="material-symbols-outlined">close</span>
+                </button>
 
-        const cardToAdd = {
-            id: Date.now(),
-            brand,
-            last4,
-            expiry: newCard.expiry,
-            holder: newCard.holder,
-            isDefault: cards.length === 0 // If it's first card, make default
-        };
+                <h3 className="text-2xl font-black text-gray-900 mb-2">Nueva Tarjeta</h3>
+                <p className="text-sm text-gray-500 mb-8">Tus datos se guardarán de forma segura en Stripe.</p>
 
-        setCards([...cards, cardToAdd]);
-        setIsAdding(false);
-        setNewCard({ number: '', expiry: '', cvc: '', holder: '' });
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Nombre del Titular</label>
+                        <input
+                            type="text"
+                            required
+                            value={holder}
+                            onChange={e => setHolder(e.target.value)}
+                            placeholder="Como aparece en la tarjeta"
+                            className="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-xl focus:border-[#99b849] focus:bg-white transition-all outline-none text-sm font-medium"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Datos de la Tarjeta</label>
+                        <div className="p-4 bg-gray-50 border-2 border-gray-100 rounded-xl focus-within:border-[#99b849] focus-within:bg-white transition-all">
+                            <CardElement options={{
+                                style: {
+                                    base: {
+                                        fontSize: '16px',
+                                        color: '#1f2937',
+                                        fontFamily: 'Inter, sans-serif',
+                                        '::placeholder': { color: '#9ca3af' },
+                                    },
+                                }
+                            }} />
+                        </div>
+                    </div>
+
+                    {error && (
+                        <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-600 animate-in slide-in-from-top-2">
+                            <span className="material-symbols-outlined text-xl">error</span>
+                            <p className="text-xs font-bold">{error}</p>
+                        </div>
+                    )}
+
+                    <button
+                        type="submit"
+                        disabled={!stripe || isProcessing}
+                        className="w-full py-4 bg-[#99b849] hover:bg-[#8da843] disabled:bg-gray-200 text-white font-black rounded-xl transition-all shadow-lg shadow-[#99b849]/20 flex items-center justify-center gap-3 active:scale-95"
+                    >
+                        {isProcessing ? (
+                            <>
+                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                <span className="uppercase tracking-widest text-xs">Guardando...</span>
+                            </>
+                        ) : (
+                            <>
+                                <span className="material-symbols-outlined">verified_user</span>
+                                <span className="uppercase tracking-widest text-xs">Vincular Tarjeta</span>
+                            </>
+                        )}
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+}
+
+export default function CardsTab() {
+    const { stripeKey } = usePage().props;
+    const [stripePromise] = useState(() => loadStripe(stripeKey));
+    const [cards, setCards] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isAdding, setIsAdding] = useState(false);
+    const [copiedId, setCopiedId] = useState(null);
+    const { auth } = usePage().props;
+    const isAdmin = auth?.user?.role === 'admin';
+
+    const handleCopy = (text, id) => {
+        navigator.clipboard.writeText(text);
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2000);
+    };
+
+    const fetchCards = async () => {
+        setIsLoading(true);
+        try {
+            const { data } = await axios.get(route('payment-methods.index'));
+            setCards(data);
+        } catch (err) {
+            console.error('Error fetching cards:', err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchCards();
+    }, []);
+
+    const handleDelete = async (id) => {
+        if (!confirm('¿Estás seguro de que quieres eliminar esta tarjeta?')) return;
+        
+        try {
+            await axios.delete(route('payment-methods.destroy', id));
+            setCards(cards.filter(c => c.id !== id));
+        } catch (err) {
+            alert('Error al eliminar la tarjeta.');
+        }
     };
 
     const getBrandIcon = (brand) => {
-        // Simple text fallback or path to svg
-        // In a real app we'd have SVGs for Visa/Mastercard/Amex
-        return brand === 'Visa' ? 'text-blue-600' : 'text-red-500';
+        const brands = {
+            'visa': 'text-blue-600',
+            'mastercard': 'text-red-500',
+            'amex': 'text-cyan-600',
+        };
+        return brands[brand.toLowerCase()] || 'text-gray-600';
     };
 
     return (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 min-h-[400px]">
-            <div className="flex justify-between items-center mb-8">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-10 min-h-[500px]">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Mis Tarjetas</h2>
-                    <p className="text-gray-600 mt-1">Gestiona tus tarjetas de crédito o débito para compras futuras.</p>
+                    <h2 className="text-3xl font-black text-gray-900 tracking-tight">Mis Tarjetas</h2>
+                    <p className="text-gray-500 mt-2 font-medium">Bóveda segura de métodos de pago activos.</p>
                 </div>
                 <button
                     onClick={() => setIsAdding(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#99b849] hover:bg-[#8da843] text-white rounded-lg transition-colors text-sm font-medium"
+                    className="flex items-center gap-3 px-6 py-3 bg-[#99b849] hover:bg-[#8da843] text-white rounded-2xl transition-all shadow-xl shadow-[#99b849]/10 font-black text-[10px] uppercase tracking-widest active:scale-95"
                 >
                     <span className="material-symbols-outlined text-lg">add_card</span>
-                    Añadir Nueva
+                    Añadir Nuevo Método
                 </button>
             </div>
 
-            {/* List Cards */}
-            <div className="grid gap-4">
-                {cards.map(card => (
-                    <div
-                        key={card.id}
-                        className={`relative flex items-center p-4 border rounded-xl transition-all ${card.isDefault ? 'border-[#99b849] bg-[#99b849]/5 ring-1 ring-[#99b849]' : 'border-gray-200 hover:border-gray-300'
-                            }`}
-                    >
-                        {/* Start: Icon */}
-                        <div className="h-12 w-16 bg-gray-100 rounded flex items-center justify-center mr-4">
-                            <span className={`font-bold text-xs ${getBrandIcon(card.brand)}`}>{card.brand}</span>
-                        </div>
-
-                        {/* Middle: Details */}
-                        <div className="flex-1">
-                            <div className="flex items-center gap-3">
-                                <h4 className="font-mono text-gray-800 font-medium">•••• •••• •••• {card.last4}</h4>
-                                {card.isDefault && (
-                                    <span className="text-[10px] bg-[#99b849] text-white px-2 py-0.5 rounded-full uppercase font-bold tracking-wide">
-                                        Predeterminada
-                                    </span>
-                                )}
+            {isLoading ? (
+                <div className="flex flex-col items-center justify-center py-20 grayscale opacity-20">
+                    <div className="w-12 h-12 border-4 border-gray-200 border-t-gray-400 rounded-full animate-spin mb-4"></div>
+                    <span className="text-[10px] font-black uppercase tracking-widest">Sincronizando con Stripe...</span>
+                </div>
+            ) : cards.length > 0 ? (
+                <div className="grid gap-6">
+                    {cards.map(card => (
+                        <div
+                            key={card.id}
+                            className="group relative flex items-center p-6 border-2 border-gray-50 bg-gray-50/30 rounded-3xl transition-all hover:border-[#99b849]/30 hover:bg-white hover:shadow-xl hover:shadow-gray-200/50"
+                        >
+                            <div className="h-14 w-20 bg-white border border-gray-100 rounded-xl flex flex-col items-center justify-center mr-6 shadow-sm overflow-hidden">
+                                <span className={`font-black text-[10px] uppercase tracking-tighter ${getBrandIcon(card.card.brand)}`}>{card.card.brand}</span>
+                                <div className="w-full h-[2px] bg-gray-50 my-1"></div>
+                                <span className="text-[8px] font-bold text-gray-400 uppercase">Credit</span>
                             </div>
-                            <p className="text-sm text-gray-500 mt-1">Caduca: {card.expiry} • {card.holder}</p>
-                        </div>
 
-                        {/* End: Actions */}
-                        <div className="flex items-center gap-2">
-                            {!card.isDefault && (
-                                <button
-                                    onClick={() => handleSetDefault(card.id)}
-                                    className="text-xs text-blue-600 hover:text-blue-800 hover:underline px-2 py-1"
-                                >
-                                    Marcar como principal
-                                </button>
-                            )}
+                            <div className="flex-1">
+                                <div className="flex items-center gap-4">
+                                    <h4 className="font-mono text-xl text-gray-900 font-bold tracking-widest">•••• •••• •••• {card.card.last4}</h4>
+                                </div>
+                                <div className="flex items-center gap-4 mt-2">
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center">
+                                        <span className="material-symbols-outlined text-sm mr-1 opacity-60">calendar_month</span>
+                                        Expira: {card.card.exp_month}/{card.card.exp_year}
+                                    </p>
+                                    <div className="w-1 h-1 bg-gray-200 rounded-full"></div>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center">
+                                        <span className="material-symbols-outlined text-sm mr-1 opacity-60">person</span>
+                                        {card.billing_details.name || 'Titular'}
+                                    </p>
+                                </div>
+                            </div>
+
                             <button
                                 onClick={() => handleDelete(card.id)}
-                                className="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-full hover:bg-red-50"
+                                className="p-3 text-gray-300 hover:text-red-500 transition-all rounded-full hover:bg-red-50 opacity-0 group-hover:opacity-100"
                                 title="Eliminar tarjeta"
                             >
-                                <span className="material-symbols-outlined text-xl">delete</span>
+                                <span className="material-symbols-outlined text-2xl">delete</span>
                             </button>
                         </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="text-center py-24 border-2 border-dashed border-gray-100 rounded-[40px] bg-gray-50/50 flex flex-col items-center">
+                    <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mb-6 shadow-sm border border-gray-50">
+                        <span className="material-symbols-outlined text-4xl text-gray-200">credit_card_off</span>
                     </div>
-                ))}
+                    <p className="text-gray-900 font-black text-xs uppercase tracking-widest">Sin métodos de pago</p>
+                    <p className="text-gray-400 text-sm mt-2 max-w-[200px]">Añade una tarjeta para acelerar tus futuras compras en MiKiwi.</p>
+                </div>
+            )}
 
-                {cards.length === 0 && !isAdding && (
-                    <div className="text-center py-12 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50">
-                        <span className="material-symbols-outlined text-4xl text-gray-300 mb-2">credit_card_off</span>
-                        <p className="text-gray-500">No tienes tarjetas guardadas.</p>
-                    </div>
-                )}
-            </div>
-
-            {/* Add Card Modal / Inline Form */}
             {isAdding && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl relative">
-                        <button
-                            onClick={() => setIsAdding(false)}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-                        >
-                            <span className="material-symbols-outlined">close</span>
-                        </button>
+                <Elements stripe={stripePromise}>
+                    <CardForm 
+                        onCancel={() => setIsAdding(false)} 
+                        onSuccess={() => {
+                            setIsAdding(false);
+                            fetchCards();
+                        }} 
+                    />
+                </Elements>
+            )}
 
-                        <h3 className="text-xl font-bold text-gray-900 mb-6">Añadir nueva tarjeta</h3>
+            {/* Admin Test Cards Reference */}
+            {isAdmin && (
+                <div className="mt-16 pt-12 border-t border-gray-100">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+                            <span className="material-symbols-outlined text-xl">science</span>
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-black text-gray-900 leading-none">Referencia para Pruebas</h3>
+                            <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-2">Uso exclusivo de administradores (Modo Test)</p>
+                        </div>
+                    </div>
 
-                        <form onSubmit={handleAddCard} className="space-y-4">
-                            <div>
-                                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Nombre del Titular</label>
-                                <input
-                                    type="text"
-                                    required
-                                    value={newCard.holder}
-                                    onChange={e => setNewCard({ ...newCard, holder: e.target.value })}
-                                    placeholder="Como aparece en la tarjeta"
-                                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#99b849] focus:outline-none"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Número de Tarjeta</label>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        required
-                                        maxLength={16}
-                                        value={newCard.number}
-                                        onChange={e => {
-                                            const val = e.target.value.replace(/\D/g, '');
-                                            setNewCard({ ...newCard, number: val });
-                                        }}
-                                        placeholder="0000 0000 0000 0000"
-                                        className="w-full pl-10 p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#99b849] focus:outline-none font-mono"
-                                    />
-                                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">credit_card</span>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {TEST_CARDS.map((card, idx) => (
+                            <div key={idx} className="bg-gray-50/50 border border-gray-100 rounded-3xl p-6 transition-all hover:border-indigo-100 hover:bg-white group">
+                                <span className="text-[10px] font-black text-indigo-400 uppercase tracking-tighter mb-1 block">{card.brand}</span>
+                                <div className="flex items-center justify-between gap-4">
+                                    <span className="font-mono text-xs text-gray-700 tracking-wider transition-colors group-hover:text-indigo-600">{card.number}</span>
+                                    <button 
+                                        onClick={() => handleCopy(card.raw, `profile-card-${idx}`)}
+                                        className={`p-2 rounded-lg transition-all ${copiedId === `profile-card-${idx}` ? 'bg-green-100 text-green-600' : 'bg-white text-gray-300 hover:text-gray-900 border border-gray-100 shadow-sm'}`}
+                                        title="Copiar número"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">{copiedId === `profile-card-${idx}` ? 'check' : 'content_copy'}</span>
+                                    </button>
                                 </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Caducidad</label>
-                                    <input
-                                        type="text"
-                                        required
-                                        maxLength={5}
-                                        value={newCard.expiry}
-                                        onChange={e => setNewCard({ ...newCard, expiry: e.target.value })}
-                                        placeholder="MM/AA"
-                                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#99b849] focus:outline-none text-center"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">CVC</label>
-                                    <div className="relative">
-                                        <input
-                                            type="text"
-                                            required
-                                            maxLength={3}
-                                            value={newCard.cvc}
-                                            onChange={e => {
-                                                const val = e.target.value.replace(/\D/g, '');
-                                                setNewCard({ ...newCard, cvc: val });
-                                            }}
-                                            placeholder="123"
-                                            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#99b849] focus:outline-none text-center"
-                                        />
-                                        <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm cursor-help" title="Código de 3 dígitos en el reverso">help</span>
+                                <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex flex-col">
+                                            <span className="text-[8px] font-black text-gray-300 uppercase">Exp</span>
+                                            <span className="text-[10px] font-mono font-bold text-gray-600">{card.exp}</span>
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-[8px] font-black text-gray-300 uppercase">CVC</span>
+                                            <span className="text-[10px] font-mono font-bold text-gray-600">{card.cvc}</span>
+                                        </div>
                                     </div>
+                                    <p className="text-[10px] font-black text-gray-300 uppercase">CP: 28001</p>
                                 </div>
                             </div>
-
-                            <button
-                                type="submit"
-                                className="w-full mt-4 py-3 bg-[#99b849] hover:bg-[#8da843] text-white font-bold rounded-xl transition-all transform active:scale-95"
-                            >
-                                Añadir Tarjeta
-                            </button>
-                        </form>
+                        ))}
                     </div>
                 </div>
             )}
