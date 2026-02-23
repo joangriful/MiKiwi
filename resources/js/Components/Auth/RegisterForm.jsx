@@ -1,11 +1,9 @@
 import { useEffect } from 'react';
 import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import AuthSocialButtons from '@/Components/Auth/AuthSocialButtons';
 import { Link, useForm } from '@inertiajs/react';
 
-export default function RegisterForm() {
+export default function RegisterForm({ autoFocus = false }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -26,95 +24,107 @@ export default function RegisterForm() {
     };
 
     return (
-        <form onSubmit={submit}>
-            <div>
-                <InputLabel htmlFor="name" value="Name" />
-
-                <TextInput
+        <form onSubmit={submit} className="space-y-5">
+            <div className="mk-auth-field">
+                <label htmlFor="name" className="mk-auth-label md:text-right">
+                    Nombre completo
+                </label>
+                <input
                     id="name"
                     name="name"
                     value={data.name}
-                    className="mt-1 block w-full"
+                    className="mk-auth-input mk-auth-input-lime w-full px-4 py-3.5 text-sm md:text-right"
                     autoComplete="name"
-                    isFocused={true}
+                    autoFocus={autoFocus}
                     onChange={(e) => setData('name', e.target.value)}
+                    placeholder=" "
                     required
                 />
-
-                <InputError message={errors.name} className="mt-2" />
+                <InputError message={errors.name} className="mt-2 text-xs md:text-right" />
             </div>
 
-            <div className="mt-4">
-                <InputLabel htmlFor="email" value="Email" />
-
-                <TextInput
+            <div className="mk-auth-field">
+                <label htmlFor="email" className="mk-auth-label md:text-right">
+                    Correo electrónico
+                </label>
+                <input
                     id="email"
                     type="email"
                     name="email"
                     value={data.email}
-                    className="mt-1 block w-full"
+                    className="mk-auth-input mk-auth-input-lime w-full px-4 py-3.5 text-sm md:text-right"
                     autoComplete="username"
                     onChange={(e) => setData('email', e.target.value)}
+                    placeholder=" "
                     required
                 />
-
-                <InputError message={errors.email} className="mt-2" />
+                <InputError message={errors.email} className="mt-2 text-xs md:text-right" />
             </div>
 
-            <div className="mt-4">
-                <InputLabel htmlFor="password" value="Password" />
-
-                <TextInput
+            <div className="mk-auth-field">
+                <label htmlFor="password" className="mk-auth-label md:text-right">
+                    Contraseña
+                </label>
+                <input
                     id="password"
                     type="password"
                     name="password"
                     value={data.password}
-                    className="mt-1 block w-full"
+                    className="mk-auth-input mk-auth-input-lime w-full px-4 py-3.5 text-sm md:text-right"
                     autoComplete="new-password"
                     onChange={(e) => setData('password', e.target.value)}
+                    placeholder=" "
                     required
                 />
-
-                <InputError message={errors.password} className="mt-2" />
+                <InputError message={errors.password} className="mt-2 text-xs md:text-right" />
             </div>
 
-            <div className="mt-4">
-                <InputLabel
-                    htmlFor="password_confirmation"
-                    value="Confirm Password"
-                />
-
-                <TextInput
+            <div className="mk-auth-field">
+                <label htmlFor="password_confirmation" className="mk-auth-label md:text-right">
+                    Confirmar contraseña
+                </label>
+                <input
                     id="password_confirmation"
                     type="password"
                     name="password_confirmation"
                     value={data.password_confirmation}
-                    className="mt-1 block w-full"
+                    className="mk-auth-input mk-auth-input-lime w-full px-4 py-3.5 text-sm md:text-right"
                     autoComplete="new-password"
-                    onChange={(e) =>
-                        setData('password_confirmation', e.target.value)
-                    }
+                    onChange={(e) => setData('password_confirmation', e.target.value)}
+                    placeholder=" "
                     required
                 />
 
                 <InputError
                     message={errors.password_confirmation}
-                    className="mt-2"
+                    className="mt-2 text-xs md:text-right"
                 />
             </div>
 
-            <div className="mt-4 flex items-center justify-end">
-                <Link
-                    href={route('login')}
-                    className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                    Already registered?
-                </Link>
+            <button type="submit" className="mk-auth-btn-lime mt-2 w-full py-4 text-xs font-semibold uppercase" disabled={processing}>
+                <span>{processing ? 'Creando cuenta...' : 'Crear mi cuenta'}</span>
+            </button>
 
-                <PrimaryButton className="ms-4" disabled={processing}>
-                    Register
-                </PrimaryButton>
-            </div>
+            <AuthSocialButtons dividerText="o regístrate con" />
+
+            <p className="pt-2 text-center text-xs text-gray-500 md:text-right">
+                ¿Ya tienes cuenta?{' '}
+                <Link href={route('login')} className="mk-auth-link font-medium">
+                    Iniciar sesión
+                </Link>
+            </p>
+
+            <p className="text-[10px] leading-relaxed text-gray-400 md:text-right">
+                Al registrarte, aceptas nuestros{' '}
+                <Link href={route('terms.use')} className="mk-auth-link font-medium">
+                    Términos de uso
+                </Link>{' '}
+                y{' '}
+                <Link href={route('privacy.policy')} className="mk-auth-link font-medium">
+                    Política de privacidad
+                </Link>
+                .
+            </p>
         </form>
     );
 }

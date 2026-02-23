@@ -1,4 +1,3 @@
-import PrimaryButton from '@/Components/PrimaryButton';
 import { Link, useForm } from '@inertiajs/react';
 
 export default function VerifyEmailForm({ status }) {
@@ -11,26 +10,25 @@ export default function VerifyEmailForm({ status }) {
     };
 
     return (
-        <form onSubmit={submit}>
+        <form onSubmit={submit} className="space-y-5">
             {status === 'verification-link-sent' && (
-                <div className="mb-4 text-sm font-medium text-green-600">
-                    A new verification link has been sent to the email address
-                    you provided during registration.
+                <div className="mk-auth-status-success">
+                    Hemos enviado un nuevo enlace de verificación al correo usado en tu registro.
                 </div>
             )}
 
-            <div className="mt-4 flex items-center justify-between">
-                <PrimaryButton disabled={processing}>
-                    Resend Verification Email
-                </PrimaryButton>
+            <button type="submit" className="mk-auth-btn-primary w-full py-4 text-xs font-semibold uppercase" disabled={processing}>
+                <span>{processing ? 'Enviando...' : 'Reenviar verificación'}</span>
+            </button>
 
+            <div className="text-center text-xs text-gray-500">
                 <Link
                     href={route('logout')}
                     method="post"
                     as="button"
-                    className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    className="mk-auth-link font-medium"
                 >
-                    Log Out
+                    Cerrar sesión
                 </Link>
             </div>
         </form>
