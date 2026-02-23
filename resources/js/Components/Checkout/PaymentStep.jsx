@@ -12,6 +12,8 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
     const [savedCards, setSavedCards] = useState([]);
     const [isLoadingCards, setIsLoadingCards] = useState(false);
     const [paymentOption, setPaymentOption] = useState('new'); // 'new' or card ID
+    const [showAdminTestCards, setShowAdminTestCards] = useState(false);
+    const [copiedId, setCopiedId] = useState(null);
 
     useEffect(() => {
         if (!processing) {
@@ -34,7 +36,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                 setPaymentOption(cards[0].id);
                 setData('selected_payment_method', cards[0].id);
             } else if (isAdmin) {
-                // For admins with no saved cards, auto-select the first test card
+                // For admins with no saved cards, auto-select the first test card token
                 setPaymentOption(TEST_CARDS[0].id);
                 setData('selected_payment_method', TEST_CARDS[0].id);
             }
@@ -50,10 +52,18 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
         setData('selected_payment_method', optionId === 'new' ? null : optionId);
     };
 
+    const toggleAdminTestCards = () => setShowAdminTestCards(!showAdminTestCards);
+
+    const copyToClipboard = (text, id) => {
+        navigator.clipboard.writeText(text);
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2000);
+    };
+
     const TEST_CARDS = [
-        { id: 'tok_visa', brand: 'Visa', last4: '4242', exp_month: 12, exp_year: 2026, isTest: true },
-        { id: 'tok_mastercard', brand: 'MasterCard', last4: '4444', exp_month: 12, exp_year: 2026, isTest: true },
-        { id: 'tok_amex', brand: 'Amex', last4: '8431', exp_month: 12, exp_year: 2026, isTest: true },
+        { id: 'tok_visa', brand: 'Visa', number: '4242424242424242', display: '4242 4242 4242 4242', exp: '12/26', cvc: '123', last4: '4242', exp_month: 12, exp_year: 2026 },
+        { id: 'tok_mastercard', brand: 'MasterCard', number: '5555555555554444', display: '5555 5555 5555 4444', exp: '12/26', cvc: '123', last4: '4444', exp_month: 12, exp_year: 2026 },
+        { id: 'tok_amex', brand: 'Amex', number: '371449635398431', display: '3714 4963 5398 431', exp: '12/26', cvc: '123', last4: '8431', exp_month: 12, exp_year: 2026 },
     ];
 
     const onSubmitClick = (event) => {
@@ -105,15 +115,15 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
 
             <div className="space-y-4">
                 {/* Saved Cards List */}
-                {!isLoadingCards && (savedCards.length > 0 || (isAdmin)) && (
+                {!isLoadingCards && (savedCards.length > 0 || isAdmin) && (
                     <div className="grid gap-3 mb-6">
                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
                             {isAdmin ? 'Tarjetas Guardadas y de Prueba' : 'Tarjetas Guardadas'}
                         </label>
-                        
+
                         {/* Real Saved Cards */}
                         {savedCards.map(card => (
-                            <div 
+                            <div
                                 key={card.id}
                                 onClick={() => handleOptionChange(card.id)}
                                 className={`group flex items-center p-4 border-2 rounded-2xl cursor-pointer transition-all ${paymentOption === card.id ? 'border-[#99b849] bg-[#99b849]/5 ring-1 ring-[#99b849]' : 'border-gray-100 bg-white hover:border-gray-200'}`}
@@ -131,9 +141,9 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                             </div>
                         ))}
 
-                        {/* Admin Test Cards */}
+                        {/* Admin Test Tokens (Quick Dev) */}
                         {isAdmin && TEST_CARDS.map(card => (
-                            <div 
+                            <div
                                 key={card.id}
                                 onClick={() => handleOptionChange(card.id)}
                                 className={`group flex items-center p-4 border-2 rounded-2xl cursor-pointer transition-all ${paymentOption === card.id ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-dashed border-gray-200 bg-gray-50/30 hover:border-primary/50'}`}
@@ -155,7 +165,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                 )}
 
                 {/* Use New Card Item */}
-                <div 
+                <div
                     onClick={() => handleOptionChange('new')}
                     className={`flex items-center p-4 border-2 rounded-2xl cursor-pointer transition-all ${paymentOption === 'new' ? 'border-[#99b849] bg-[#99b849]/5 ring-1 ring-[#99b849]' : 'border-gray-100 bg-white hover:border-gray-200'}`}
                 >
@@ -188,6 +198,50 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                                 </div>
                             </div>
 
+                            {isAdmin && (
+                                <div className="mt-4 border-t border-gray-100 pt-4">
+                                    <button
+                                        type="button"
+                                        onClick={toggleAdminTestCards}
+                                        className="w-full py-2 border-2 border-dashed border-primary/30 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary/5 transition-all flex items-center justify-center gap-2"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">science</span>
+                                        {showAdminTestCards ? 'Ocultar Datos de Prueba' : 'Modo Admin: Ver Datos de Prueba'}
+                                    </button>
+
+                                    {showAdminTestCards && (
+                                        <div className="mt-4 grid grid-cols-1 gap-2 animate-in slide-in-from-top-2 duration-200">
+                                            {TEST_CARDS.map((card, idx) => (
+                                                <div key={idx} className="bg-gray-50 rounded-xl p-3 border border-gray-100 flex items-center justify-between group">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[8px] font-black uppercase text-gray-400 tracking-tighter">{card.brand}</span>
+                                                        <span className="font-mono text-xs text-gray-600 tracking-wider transition-colors group-hover:text-primary">{card.display}</span>
+                                                    </div>
+                                                    <div className="flex gap-1">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => copyToClipboard(card.number, `num-${idx}`)}
+                                                            className={`p-1.5 rounded-lg transition-all ${copiedId === `num-${idx}` ? 'bg-green-100 text-green-600' : 'bg-white text-gray-400 hover:text-gray-900 shadow-sm border border-gray-100'}`}
+                                                            title="Copiar Número"
+                                                        >
+                                                            <span className="material-symbols-outlined text-sm">{copiedId === `num-${idx}` ? 'check' : 'content_copy'}</span>
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => copyToClipboard(`${card.exp} | ${card.cvc}`, `exp-${idx}`)}
+                                                            className={`p-1.5 rounded-lg transition-all ${copiedId === `exp-${idx}` ? 'bg-green-100 text-green-600' : 'bg-white text-gray-400 hover:text-gray-900 shadow-sm border border-gray-100'}`}
+                                                            title="Copiar Exp/CVC"
+                                                        >
+                                                            <span className="material-symbols-outlined text-sm">{copiedId === `exp-${idx}` ? 'check' : 'calendar_today'}</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            <p className="text-[8px] text-center text-gray-400 font-bold uppercase mt-1">C.P. Recomendado: 28001</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
