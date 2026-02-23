@@ -16,15 +16,15 @@ export default function Products({ products, categories = [], filters }) {
 
             <main className="flex-grow py-20 px-6 max-w-[1600px] mx-auto w-full">
                 {/* Minimalist Header */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 md:mb-20">
                     <div className="space-y-4">
                         <span className="text-[10px] font-bold tracking-[0.3em] text-[#99b849] uppercase block animate-in fade-in slide-in-from-bottom-2 duration-700">
                             Curated Selection
                         </span>
-                        <h1 className="text-5xl md:text-7xl font-bold text-gray-900 tracking-widest leading-none">
+                        <h1 className="text-4xl md:text-7xl font-bold text-gray-900 tracking-widest leading-none">
                             Nuestros <br />Productos<span className="text-[#99b849]">.</span>
                         </h1>
-                        <p className="text-gray-400 text-lg max-w-md font-light">
+                        <p className="text-gray-400 text-base md:text-lg max-w-md font-light">
                             Ingeniería sensorial de precisión diseñada para elevar tu experiencia de introspección habitual.
                         </p>
                     </div>

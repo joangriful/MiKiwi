@@ -136,7 +136,7 @@ export default function Colecciones() {
               <a href="#" style={{ color: 'var(--text-main)' }} className="hover:opacity-70 transition-opacity">CONTACTO</a>
             </nav>
             <div className="flex items-center space-x-5">
-              <button 
+              <button
                 onClick={toggleTheme}
                 className="hover:opacity-70 transition-opacity"
                 style={{ color: 'var(--text-main)' }}
@@ -154,12 +154,12 @@ export default function Colecciones() {
         </header>
 
         {/* Hero Section */}
-        <section className="relative py-20 overflow-hidden" style={{ backgroundColor: 'var(--bg-surface)' }}>
+        <section className="relative py-12 md:py-20 overflow-hidden" style={{ backgroundColor: 'var(--bg-surface)' }}>
           <div className="relative max-w-7xl mx-auto px-4 text-center">
-            <h1 className="text-5xl font-light mb-4 tracking-wide" style={{ color: 'var(--text-main)' }}>
+            <h1 className="text-3xl md:text-5xl font-light mb-4 tracking-wide" style={{ color: 'var(--text-main)' }}>
               Nuestras Categorías
             </h1>
-            <p className="text-lg max-w-2xl mx-auto" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-base md:text-lg max-w-2xl mx-auto" style={{ color: 'var(--text-muted)' }}>
               Explora nuestra selección curada de productos
             </p>
           </div>
@@ -172,7 +172,7 @@ export default function Colecciones() {
               <div
                 key={category.id}
                 className="group relative overflow-hidden rounded-2xl cursor-pointer"
-                style={{ 
+                style={{
                   minHeight: '320px',
                   backgroundColor: 'var(--bg-surface)',
                   border: '1px solid var(--border)',
@@ -180,17 +180,17 @@ export default function Colecciones() {
                 }}
               >
                 {/* Accent Bar */}
-                <div 
+                <div
                   className="absolute top-0 left-0 right-0 h-1 transition-all duration-300 group-hover:h-2"
                   style={{ backgroundColor: index % 3 === 0 ? 'var(--color-primary)' : index % 3 === 1 ? 'var(--color-secondary)' : 'var(--text-muted)' }}
                 ></div>
-                
+
                 {/* Content */}
                 <div className="relative h-full flex flex-col justify-between p-8">
                   <div className="flex-1 flex items-center justify-center">
                     <div className="w-20 h-20 rounded-full opacity-10" style={{ backgroundColor: 'var(--color-primary)' }}></div>
                   </div>
-                  
+
                   <div className="space-y-3">
                     <p className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
                       {category.subtitle}
@@ -201,7 +201,7 @@ export default function Colecciones() {
                     <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
                       {category.description}
                     </p>
-                    <button 
+                    <button
                       className="inline-flex items-center text-sm font-medium mt-4 group-hover:gap-2 transition-all duration-300"
                       style={{ color: 'var(--color-primary)' }}
                     >
@@ -226,10 +226,10 @@ export default function Colecciones() {
             <p className="text-base mb-8" style={{ color: 'var(--text-muted)' }}>
               Contáctanos para asesoramiento personalizado
             </p>
-            <button 
+            <button
               className="px-8 py-3 rounded-lg font-medium text-sm transition-all duration-300 hover:opacity-80"
-              style={{ 
-                backgroundColor: 'var(--color-primary)', 
+              style={{
+                backgroundColor: 'var(--color-primary)',
                 color: 'white',
                 border: 'none'
               }}

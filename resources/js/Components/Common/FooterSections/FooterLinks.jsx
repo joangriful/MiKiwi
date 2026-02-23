@@ -2,7 +2,7 @@ import { Link } from '@inertiajs/react';
 
 export default function FooterLinks() {
     return (
-        <div className="grid grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 w-full">
             <div>
                 <h3 className="font-bold text-base mb-3 text-[#d697c8]">Tienda</h3>
                 <ul className="space-y-2 text-xs text-gray-400">

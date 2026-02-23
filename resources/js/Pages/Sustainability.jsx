@@ -32,12 +32,12 @@ export default function Sustainability({ heroImages = [] }) {
                         </div>
                     )}
 
-                    <div className="container mx-auto max-w-4xl relative z-10 text-center text-white px-6">
-                        <span className="font-bold tracking-wider uppercase text-sm mb-4 block text-green-400">Nuestro Compromiso</span>
-                        <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight drop-shadow-lg">
+                    <div className="container mx-auto max-w-4xl relative z-10 text-center text-white px-6 py-12 md:py-0">
+                        <span className="font-bold tracking-wider uppercase text-xs md:text-sm mb-4 block text-green-400">Nuestro Compromiso</span>
+                        <h1 className="text-3xl md:text-6xl font-bold mb-6 leading-tight drop-shadow-lg">
                             Jugando por un <span className="text-green-400">futuro mejor</span>
                         </h1>
-                        <p className="text-xl md:text-2xl max-w-2xl mx-auto leading-relaxed text-gray-100 drop-shadow-md">
+                        <p className="text-lg md:text-2xl max-w-2xl mx-auto leading-relaxed text-gray-100 drop-shadow-md">
                             En Mikiwi, creemos que la diversión no debe costar el planeta. Diseñamos juguetes responsables,
                             seguros y duraderos, pensando en las generaciones venideras.
                         </p>
@@ -45,8 +45,8 @@ export default function Sustainability({ heroImages = [] }) {
                 </div>
 
                 {/* Main Content */}
-                <div className="container mx-auto px-6 py-16 max-w-6xl">
-                    <div className="grid md:grid-cols-3 gap-12">
+                <div className="container mx-auto px-6 py-12 md:py-16 max-w-6xl">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
                         {/* Materiales Seguros */}
                         <div className="text-center p-6 rounded-2xl bg-white hover:shadow-xl transition-shadow border border-gray-100">
                             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">

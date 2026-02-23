@@ -56,11 +56,10 @@ export default function ProductInfo({ product }) {
         <div className="h-full w-full flex flex-col pt-2 lg:pt-0">
             {/* Notification Banner */}
             <div
-                className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                    notification
+                className={`overflow-hidden transition-all duration-500 ease-in-out ${notification
                         ? "max-h-20 mb-4 opacity-100"
                         : "max-h-0 mb-0 opacity-0"
-                }`}
+                    }`}
             >
                 {notification === "added" && (
                     <div className="flex items-center gap-3 bg-[#f0f7e6] border border-[#c8e0a0] text-[#4a7a1a] rounded-2xl px-5 py-3">
@@ -110,17 +109,16 @@ export default function ProductInfo({ product }) {
             </div>
 
             {/* Title & Favorite */}
-            <div className="flex justify-between items-start mb-6">
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight leading-tight uppercase">
+            <div className="flex justify-between items-start mb-4 md:mb-6">
+                <h1 className="text-3xl md:text-5xl font-bold text-gray-900 tracking-tight leading-tight uppercase">
                     {product?.name || "Kiwi Premium"}
                 </h1>
                 <button
                     onClick={() => setIsFavorite(!isFavorite)}
-                    className={`p-3 rounded-full border transition-all duration-300 ${
-                        isFavorite
+                    className={`p-3 rounded-full border transition-all duration-300 ${isFavorite
                             ? "bg-red-50 border-red-100 text-red-500 scale-110 shadow-sm"
                             : "bg-white border-gray-100 text-gray-300 hover:text-gray-400 hover:border-gray-200"
-                    }`}
+                        }`}
                 >
                     <span
                         className={`material-symbols-outlined text-2xl ${isFavorite ? "fill-1" : ""}`}
@@ -139,9 +137,9 @@ export default function ProductInfo({ product }) {
                 <span className="text-4xl font-bold text-gray-900">
                     {product?.base_price
                         ? new Intl.NumberFormat("es-ES", {
-                              style: "currency",
-                              currency: "EUR",
-                          }).format(product.base_price)
+                            style: "currency",
+                            currency: "EUR",
+                        }).format(product.base_price)
                         : "4.99€"}
                 </span>
                 {product?.base_price > 50 && (
@@ -152,11 +150,11 @@ export default function ProductInfo({ product }) {
             </div>
 
             {/* Description */}
-            <div className="space-y-4 mb-12">
+            <div className="space-y-4 mb-8 md:mb-12">
                 <h3 className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-900">
                     Descripción
                 </h3>
-                <p className="text-gray-500 leading-relaxed text-lg font-light">
+                <p className="text-gray-500 leading-relaxed text-base md:text-lg font-light">
                     {product?.description ||
                         "Nuestros productos representan la cumbre de la ingeniería sensorial de MiKiwi. Cada pieza es seleccionada y procesada bajo los estándares más estrictos para garantizar una experiencia de introspección única y pura."}
                 </p>
@@ -190,7 +188,7 @@ export default function ProductInfo({ product }) {
                 <button
                     onClick={handleAddToCart}
                     disabled={isLoading}
-                    className="w-full bg-black text-white rounded-2xl py-5 px-8 font-bold text-xs uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95 shadow-xl shadow-black/10 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full bg-black text-white rounded-2xl py-4 md:py-5 px-8 font-bold text-xs uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95 shadow-xl shadow-black/10 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                     <span className="material-symbols-outlined text-xl">
                         shopping_cart
@@ -202,7 +200,7 @@ export default function ProductInfo({ product }) {
                 <button
                     onClick={handleBuyNow}
                     disabled={isLoading}
-                    className="w-full bg-[#99b849] text-white rounded-2xl py-5 px-8 font-bold text-xs uppercase tracking-[0.2em] hover:bg-[#88a441] transition-all active:scale-95 shadow-xl shadow-green-100 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full bg-[#99b849] text-white rounded-2xl py-4 md:py-5 px-8 font-bold text-xs uppercase tracking-[0.2em] hover:bg-[#88a441] transition-all active:scale-95 shadow-xl shadow-green-100 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                     <span className="material-symbols-outlined text-xl">
                         bolt

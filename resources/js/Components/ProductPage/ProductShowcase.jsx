@@ -35,13 +35,13 @@ export default function ProductShowcase({ product }) {
     }, [handleKeyDown]);
 
     return (
-        <section className="max-w-[1600px] mx-auto px-6 py-12">
-            <div className="flex flex-col lg:flex-row gap-16 items-start">
+        <section className="max-w-[1600px] mx-auto px-6 py-8 md:py-16">
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start">
 
                 {/* Left side: Images Section */}
-                <div className="w-full lg:w-[60%] flex flex-col gap-8">
+                <div className="w-full lg:w-[60%] flex flex-col gap-6 lg:gap-8">
                     {/* Main Image Container */}
-                    <div className="relative aspect-square lg:aspect-[4/3] bg-gray-50 rounded-[40px] overflow-hidden border border-gray-100 flex items-center justify-center p-8 group shadow-sm transition-shadow hover:shadow-md">
+                    <div className="relative aspect-square lg:aspect-[4/3] bg-gray-50 rounded-2xl md:rounded-[40px] overflow-hidden border border-gray-100 flex items-center justify-center p-4 md:p-8 group shadow-sm transition-shadow hover:shadow-md">
                         <MainProductImage image={selectedImage} />
 
                         {/* Keyboard Tip (Visible on hover) */}

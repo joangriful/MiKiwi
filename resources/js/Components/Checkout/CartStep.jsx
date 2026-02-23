@@ -54,7 +54,7 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                             <img
                                 src={
                                     Array.isArray(product.images) &&
-                                    product.images.length > 0
+                                        product.images.length > 0
                                         ? product.images[0]
                                         : "https://via.placeholder.com/150"
                                 }
@@ -140,7 +140,7 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                         {cart.items.map((item) => (
                             <li
                                 key={item.product_id}
-                                className="py-6 flex items-center justify-between gap-4"
+                                className="py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-4"
                             >
                                 <div className="flex items-center space-x-6">
                                     <Link href={route('products.show', item.product.slug)} className="w-24 h-24 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100 hover:opacity-80 transition-opacity block">
@@ -151,11 +151,11 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                                                         typeof item.product
                                                             .images === "string"
                                                             ? JSON.parse(
-                                                                  item.product
-                                                                      .images,
-                                                              )
+                                                                item.product
+                                                                    .images,
+                                                            )
                                                             : item.product
-                                                                  .images;
+                                                                .images;
                                                     return Array.isArray(
                                                         images,
                                                     ) && images.length > 0
@@ -190,7 +190,7 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                                         </button>
                                     </div>
                                 </div>
-                                <div className="flex flex-col items-end gap-3">
+                                <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-4 sm:gap-3 w-full sm:w-auto pt-4 sm:pt-0 border-t sm:border-t-0 border-gray-50">
                                     <div className="flex items-center bg-gray-100 rounded-full px-2 py-1">
                                         <button
                                             onClick={() =>

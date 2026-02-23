@@ -23,8 +23,8 @@ export default function FooterNewsletter() {
     };
 
     return (
-        <div className="w-full md:w-auto flex flex-col items-end text-right md:pr-12 relative lg:mt-[-40px]">
-            <div className="mb-2">
+        <div className="w-full md:w-auto flex flex-col items-center md:items-end text-center md:text-right md:pr-12 relative lg:mt-[-40px]">
+            <div className="mb-4">
                 <h4 className="text-white font-medium mb-1 text-lg font-head uppercase tracking-tight">Únete al círculo exclusivo de MiKiwi</h4>
                 <p className="text-gray-500 text-[10px] italic">Recibe ofertas especiales y recetas frescas.</p>
             </div>

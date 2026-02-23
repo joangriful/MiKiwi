@@ -77,11 +77,11 @@ export default function SubHeader({ isManager = false, activeManager, setActiveM
         <div className={`${transparent ? 'absolute top-[60px] lg:top-[80px] z-[110] w-full bg-transparent border-none' : 'bg-primary py-1.5 border-b border-black/10'} transition-all duration-300`}>
             <div className={`container mx-auto flex justify-center ${transparent ? 'py-4' : ''}`}>
                 <nav>
-                    <ul className="flex gap-8 items-center h-full">
+                    <ul className="flex gap-4 md:gap-8 items-center h-full">
                         <li>
                             <Link
                                 href="/configurador/wizard"
-                                className={`relative block font-bold text-sm lg:text-xl transition-all duration-300 uppercase tracking-wider origin-center hover:scale-110 ${textColorClass}`}
+                                className={`relative block font-bold text-[10px] xs:text-xs sm:text-sm lg:text-xl transition-all duration-300 uppercase tracking-wider origin-center hover:scale-110 ${textColorClass}`}
                                 data-text="Muñecas"
                             >
                                 Muñecas
@@ -90,7 +90,7 @@ export default function SubHeader({ isManager = false, activeManager, setActiveM
                         <li>
                             <Link
                                 href="/productos"
-                                className={`relative block font-bold text-sm lg:text-xl transition-all duration-300 uppercase tracking-wider origin-center hover:scale-110 ${textColorClass}`}
+                                className={`relative block font-bold text-[10px] xs:text-xs sm:text-sm lg:text-xl transition-all duration-300 uppercase tracking-wider origin-center hover:scale-110 ${textColorClass}`}
                                 data-text="Juguetes"
                             >
                                 Juguetes
@@ -99,7 +99,7 @@ export default function SubHeader({ isManager = false, activeManager, setActiveM
                         <li>
                             <Link
                                 href="/calibracion"
-                                className={`relative block font-bold text-sm lg:text-xl transition-all duration-300 uppercase tracking-wider origin-center hover:scale-110 ${textColorClass}`}
+                                className={`relative block font-bold text-[10px] xs:text-xs sm:text-sm lg:text-xl transition-all duration-300 uppercase tracking-wider origin-center hover:scale-110 ${textColorClass}`}
                                 data-text="Conócete"
                             >
                                 Conócete
