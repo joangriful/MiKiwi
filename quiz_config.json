@@ -1,0 +1,271 @@
+{
+  "quiz_metadata": {
+    "version": "1.0",
+    "last_updated": "2026-02-24",
+    "status": "functional",
+    "database_field_added": "2026-02-24",
+    "frontend_component": "resources/js/Pages/Configurador/Quiz.jsx"
+  },
+  "routes": {
+    "quiz_display": {
+      "method": "GET",
+      "path": "/quiz",
+      "name": "configurador.quiz",
+      "authentication": false,
+      "file": "routes/web.php",
+      "line": 366,
+      "action": "Renders Quiz.jsx component"
+    },
+    "quiz_save": {
+      "method": "POST",
+      "path": "/profile/quiz-result",
+      "name": "profile.quiz.save",
+      "authentication": true,
+      "file": "routes/web.php",
+      "line": 131,
+      "controller": "ProfileController@saveQuizResult",
+      "action": "Saves quiz result to users table"
+    },
+    "quiz_recommendations": {
+      "method": "GET",
+      "path": "/perfil",
+      "name": "perfil.view",
+      "authentication": true,
+      "file": "routes/web.php",
+      "line": 133,
+      "action": "Shows recommended products based on quiz result"
+    }
+  },
+  "controller": {
+    "file": "app/Http/Controllers/ProfileController.php",
+    "method": "saveQuizResult",
+    "lines": "158-181",
+    "input": {
+      "category": {
+        "type": "string",
+        "required": true,
+        "max_length": 255,
+        "description": "The winning quiz category"
+      }
+    },
+    "output": {
+      "success": "boolean",
+      "message": "string"
+    },
+    "validations": [
+      "category required",
+      "category is string",
+      "category max 255"
+    ]
+  },
+  "model": {
+    "file": "app/Models/User.php",
+    "fillable_field": "quiz_result_category",
+    "relations": [
+      "addresses (HasMany UserAddress)",
+      "orders (HasMany Order)",
+      "reviews (HasMany Review)",
+      "chatSessions (HasMany ChatSession)"
+    ]
+  },
+  "database": {
+    "table": "users",
+    "migration": "2026_02_24_110834_add_quiz_result_category_to_users_table.php",
+    "field": {
+      "name": "quiz_result_category",
+      "type": "VARCHAR(255)",
+      "nullable": true,
+      "unique": false,
+      "position": "after role"
+    },
+    "all_fields": [
+      "id (UUID PRIMARY KEY)",
+      "name (VARCHAR 255)",
+      "username (VARCHAR 255 NULLABLE UNIQUE)",
+      "email (VARCHAR 255 UNIQUE)",
+      "password (VARCHAR 255)",
+      "dni (VARCHAR 20 NULLABLE UNIQUE)",
+      "birth_date (DATE NULLABLE)",
+      "email_verified_at (TIMESTAMP NULLABLE)",
+      "role (ENUM customer/admin/support)",
+      "is_active (BOOLEAN DEFAULT true)",
+      "profile_photo_url (VARCHAR 255 NULLABLE)",
+      "profile_photo_public_id (VARCHAR 255 NULLABLE)",
+      "banner_url (VARCHAR 255 NULLABLE)",
+      "banner_public_id (VARCHAR 255 NULLABLE)",
+      "stripe_customer_id (VARCHAR 255 NULLABLE)",
+      "quiz_result_category (VARCHAR 255 NULLABLE) ← QUIZ FIELD",
+      "remember_token (VARCHAR 100 NULLABLE)",
+      "created_at (TIMESTAMP)",
+      "updated_at (TIMESTAMP)",
+      "deleted_at (TIMESTAMP NULLABLE soft delete)"
+    ]
+  },
+  "quiz_structure": {
+    "total_questions": 4,
+    "question_types": [
+      {
+        "id": 1,
+        "tag": "Personalidad",
+        "title": "¿Cómo describirías tu enfoque ante nuevas experiencias?",
+        "options": [
+          {
+            "id": "curious",
+            "label": "Explorador/a",
+            "description": "Busco constantemente descubrir sensaciones que nunca he sentido.",
+            "scores": {
+              "Ondas de Presión": 3,
+              "Sensaciones": 2,
+              "BDSM y Fetiche": 1
+            }
+          },
+          {
+            "id": "sensual",
+            "label": "Sensual",
+            "description": "Disfruto de los detalles, la lentitud y la conexión profunda.",
+            "scores": {
+              "Lubricantes": 3,
+              "Vibradores Externos": 2,
+              "Cuidado del Cuerpo": 2
+            }
+          },
+          {
+            "id": "bold",
+            "label": "Audaz",
+            "description": "Me gusta la intensidad y los retos que me saquen de mi zona de confort.",
+            "scores": {
+              "Impacto": 3,
+              "Restricción": 2,
+              "Plugs Anales": 2
+            }
+          },
+          {
+            "id": "balanced",
+            "label": "Equilibrado/a",
+            "description": "Busco el bienestar y el autoconocimiento en cada paso.",
+            "scores": {
+              "Salud Íntima": 3,
+              "Dildos": 2,
+              "Higiene": 1
+            }
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "tag": "Estado de Ánimo",
+        "title": "Si hoy fuera un escenario, ¿cuál elegirías?",
+        "options": [
+          {
+            "id": "storm",
+            "label": "Una tormenta eléctrica",
+            "description": "Energía pura, descargas intensas y contrastes fuertes.",
+            "scores": {
+              "Ondas de Presión": 4,
+              "Impacto": 2
+            }
+          },
+          {
+            "id": "spa",
+            "label": "Un refugio de aguas termales",
+            "description": "Calma, temperatura perfecta y relajación muscular total.",
+            "scores": {
+              "Cuidado del Cuerpo": 4,
+              "Salud Íntima": 2
+            }
+          },
+          {
+            "id": "club",
+            "label": "Un club clandestino",
+            "description": "Misterio, cuero y la sensación de lo prohibido.",
+            "scores": {
+              "Cuero y Textil": 4,
+              "Restricción": 2
+            }
+          },
+          {
+            "id": "garden",
+            "label": "Un jardín secreto al amanecer",
+            "description": "Frescura, sutileza y el despertar de los sentidos.",
+            "scores": {
+              "Sensaciones": 4,
+              "Vibradores Externos": 2
+            }
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "tag": "Sentidos",
+        "title": "¿Qué sentido guía tu placer con más fuerza?",
+        "options": [
+          {
+            "id": "touch",
+            "label": "El Tacto",
+            "description": "La textura de los materiales y la presión sobre la piel.",
+            "scores": {
+              "Cuero y Textil": 3,
+              "Dildos": 3,
+              "Masturbadores": 2
+            }
+          },
+          {
+            "id": "vision",
+            "label": "La Vista",
+            "description": "El diseño, la estética y la belleza de los objetos.",
+            "scores": {
+              "Vibradores Externos": 3,
+              "Ondas de Presión": 2
+            }
+          },
+          {
+            "id": "hearing",
+            "label": "El Oído",
+            "description": "El ritmo, el silencio o el sonido susurrante de la vibración.",
+            "scores": {
+              "Salud Íntima": 3,
+              "Sensaciones": 2
+            }
+          },
+          {
+            "id": "smell",
+            "label": "El Olfato",
+            "description": "La atmósfera, los aromas y la química del momento.",
+            "scores": {
+              "Lubricantes": 4,
+              "Cuidado del Cuerpo": 3
+            }
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "tag": "Deseo",
+        "title": "En este momento, ¿qué es lo que más anhelas?",
+        "options": [
+          {
+            "id": "control",
+            "label": "Jugar con el control",
+            "description": "Ya sea entregándolo o tomándolo, me fascina el poder.",
+            "scores": {
+              "Restricción": 4,
+              "Impacto": 3,
+              "Cuero y Textil": 2
+            }
+          },
+          {
+            "id": "climax",
+            "label": "Un clímax explosivo",
+            "description": "Sin rodeos, busco la culminación más potente posible.",
+            "scores": {
+              "Ondas de Presión": 5,
+              "Vibradores Externos": 2
+            }
+          },
+          {
+            "id": "connection",
+            "label": "Conectar con mi cuerpo",
+            "description": "Entender mis ritmos y cuidar mi salud sexual.",
+            "scores": {
+              "Salud Íntima": 4,
+              "Di

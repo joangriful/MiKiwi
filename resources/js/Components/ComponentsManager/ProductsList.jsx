@@ -50,6 +50,7 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
                 <table className="w-full text-left border-collapse">
                     <thead className="bg-gray-50 sticky top-0 z-10 border-b border-gray-200">
                         <tr>
+                            <th className="w-12 px-2 py-3 text-xs font-bold text-gray-400"></th>
                             <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Producto</th>
                             <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Categoría</th>
                             <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Precio</th>
@@ -59,8 +60,11 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                        {filteredProducts.map((product) => (
+                        {filteredProducts.map((product, index) => (
                             <tr key={product.id} className="hover:bg-gray-50 transition-colors group">
+                                <td className="w-12 px-2 py-4 text-sm text-gray-400 font-medium text-center">
+                                    {index + 1}
+                                </td>
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-lg bg-gray-100 flex-shrink-0 border border-gray-200 overflow-hidden">
