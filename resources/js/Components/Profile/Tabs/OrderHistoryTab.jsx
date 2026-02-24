@@ -34,7 +34,7 @@ export default function OrderHistoryTab() {
                     <div key={order.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
                         <div className="flex flex-wrap justify-between items-center mb-4 pb-4 border-b border-gray-100">
                             <div>
-                                <h3 className="text-lg font-semibold text-gray-900">{order.id}</h3>
+                                <h3 className="text-lg font-sans font-bold text-gray-900">{order.id}</h3>
                                 <p className="text-sm text-gray-500">Realizado el {order.date}</p>
                             </div>
                             <div className="text-right">
