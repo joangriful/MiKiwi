@@ -26,14 +26,6 @@ export default function ProfileTab({ setActiveTab }) {
     const [editingType, setEditingType] = useState('profile'); // 'profile' or 'banner'
     const [existingImage, setExistingImage] = useState(null); // Track the existing image for the editor
 
-    // Placeholder data for "My Collection" / Orders
-    const myCollection = [
-        { id: 1, name: 'Teclado Mecánico MK800', image: 'https://images.unsplash.com/photo-1595225476474-87563907a212?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3', date: '12 Ene 2024' },
-        { id: 2, name: 'Ratón Gaming G-Pro', image: 'https://images.unsplash.com/photo-1527814050087-3793815479db?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3', date: '10 Dic 2023' },
-        { id: 3, name: 'Monitor 4K Ultra', image: 'https://images.unsplash.com/photo-1547394765-185e1e68f34e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3', date: '25 Nov 2023' },
-        { id: 4, name: 'Auriculares NoiseCancel', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3', date: '05 Nov 2023' },
-    ];
-
     // Open editor for profile image
     const handleEditProfileImage = () => {
         setEditingType('profile');
@@ -227,46 +219,27 @@ export default function ProfileTab({ setActiveTab }) {
                 </div>
             </div>
 
-            {/* "My Collection" / Orders Visual Carousel */}
+            {/* Recommendaciones basadas en el Quiz */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[#99b849]">inventory_2</span>
-                        Mi Colección
+                        <span className="material-symbols-outlined text-[#99b849]">magic_button</span>
+                        Recomendados para ti
                     </h3>
                 </div>
 
-                {/* Horizontal Scroll Container (Carousel) */}
-                <div className="flex overflow-x-auto gap-4 pb-4 -mx-2 px-2 scrollbar-hide snap-x">
-                    {myCollection.map((item) => (
-                        <div key={item.id} className="snap-start flex-shrink-0 w-48 group relative bg-gray-50 rounded-xl overflow-hidden cursor-pointer hover:shadow-md transition-all duration-300 border border-transparent hover:border-[#99b849]/30">
-                            {/* Image Aspect Ratio Container */}
-                            <div className="aspect-square bg-gray-200 overflow-hidden relative">
-                                <img
-                                    src={item.image}
-                                    alt={item.name}
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
-                            </div>
-
-                            {/* Info */}
-                            <div className="p-3">
-                                <h4 className="font-semibold text-gray-800 text-sm truncate">{item.name}</h4>
-                                <p className="text-xs text-gray-500 mt-1">Comprado: {item.date}</p>
-                            </div>
-                        </div>
-                    ))}
+                {/* Contenedor dinámico: Mostrar prompt de Quiz o Productos */}
+                <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-xl border border-dashed border-gray-200 text-center">
+                    <span className="material-symbols-outlined text-4xl text-[#99b849] mb-4">quiz</span>
+                    <h4 className="text-lg font-semibold text-gray-800 mb-2">Descubre tu estilo ideal</h4>
+                    <p className="text-sm text-gray-500 max-w-md mb-6">
+                        Completa nuestro quiz inicial para que podamos recomendarte los productos que mejor se adapten a tus gustos y preferencias.
+                    </p>
+                    <button className="px-6 py-2 bg-[#99b849] hover:bg-[#86a340] text-white font-medium rounded-lg transition-colors">
+                        Realizar el Quiz
+                    </button>
+                    {/* Nota: Una vez realizado el quiz, aquí se mapearían los productos recomendados en lugar de este mensaje */}
                 </div>
-                <style>{`
-                    .scrollbar-hide::-webkit-scrollbar {
-                        display: none;
-                    }
-                    .scrollbar-hide {
-                        -ms-overflow-style: none;
-                        scrollbar-width: none;
-                    }
-                `}</style>
             </div>
         </div>
     );
