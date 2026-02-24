@@ -128,10 +128,65 @@ Route::middleware('auth')->group(function () {
     // Profile image and banner uploads
     Route::post('/profile/image', [ProfileController::class, 'updateProfileImage'])->name('profile.image.update');
     Route::post('/profile/banner', [ProfileController::class, 'updateBanner'])->name('profile.banner.update');
+    Route::post('/profile/quiz-result', [ProfileController::class, 'saveQuizResult'])->name('profile.quiz.save');
 
-    // Perfil visual
     Route::get('/perfil', function () {
-        return Inertia::render('perfil');
+        $recommendedProducts = collect();
+        $user = auth()->user();
+
+        if ($user && $user->quiz_result_category) {
+            $categoryName = trim($user->quiz_result_category);
+            \Log::info('Quiz Result Category to match:', ['category' => $categoryName]);
+            
+            // Mapeo entre Resultados del Quiz y las Categorías/Subcategorías reales de Productos.
+            // Esto asegura que sin importar el resultado del test, encontremos productos que tengan sentido.
+            $quizCategoryMap = [
+                'Ondas de Presión' => ['Ondas de Presión', 'Estimulación Externa', 'Estimuladores de Punto G'],
+                'Sensaciones' => ['Sensaciones', 'Cosmética y Cuidado', 'Wands de Masaje', 'Cuidado del Cuerpo'],
+                'BDSM y Fetiche' => ['BDSM y Fetiche', 'Cuero y Textil', 'Restricción', 'Impacto'],
+                'Lubricantes' => ['Lubricantes', 'Cosmética y Cuidado', 'Sensaciones'],
+                'Vibradores Externos' => ['Vibradores Externos', 'Estimulación Externa'],
+                'Cuidado del Cuerpo' => ['Cuidado del Cuerpo', 'Higiene', 'Cosmética y Cuidado'],
+                'Impacto' => ['Impacto', 'BDSM y Fetiche'],
+                'Restricción' => ['Restricción', 'BDSM y Fetiche'],
+                'Plugs Anales' => ['Plugs Anales', 'Cuentas y Bolas Anales', 'Estimulación Anal'],
+                'Salud Íntima' => ['Salud Íntima', 'Higiene', 'Cuidado del Cuerpo'],
+                'Dildos' => ['Dildos', 'Estimulación Interna', 'Pene y Testículos'],
+                'Higiene' => ['Higiene', 'Salud Íntima'],
+                'Cuero y Textil' => ['Cuero y Textil', 'BDSM y Fetiche'],
+                'Masturbadores' => ['Masturbadores', 'Pene y Testículos'],
+                'Dilatadores y Kits de Inicio' => ['Dilatadores y Kits de Inicio', 'Estimulación Anal', 'Salud Íntima'],
+                'Anillos Vibradores' => ['Anillos Vibradores', 'Pene y Testículos'],
+                'Arneses y Strapless' => ['Arneses y Strapless', 'Estimulación Interna']
+            ];
+
+            // Resolvemos qué categorías buscar basados en el mapa, o como fallback, el propio nombre.
+            $searchCategories = $quizCategoryMap[$categoryName] ?? [$categoryName];
+
+            // Buscar la categoría padre o hija que coincida con esos nombres
+            $categoryMatches = \App\Models\Category::whereIn('name', $searchCategories)->pluck('id');
+            \Log::info('Category Matches:', ['matches' => $categoryMatches]);
+            
+            if ($categoryMatches->isNotEmpty()) {
+                // Fetch the products related to that category
+                $products = \App\Models\Product::with('category:id,name')
+                    ->whereIn('category_id', $categoryMatches)
+                    ->where('is_active', true)
+                    ->inRandomOrder()
+                    ->take(4)
+                    ->get();
+                    
+                if ($products->isNotEmpty()) {
+                    $recommendedProducts = $products;
+                }
+            } else {
+                \Log::info('No categories matched for quiz result:', ['category' => $categoryName]);
+            }
+        }
+
+        return Inertia::render('perfil', [
+            'recommendedProducts' => $recommendedProducts
+        ]);
     })->name('perfil.view');
 
     // 📍 Gestión de Direcciones del Usuario

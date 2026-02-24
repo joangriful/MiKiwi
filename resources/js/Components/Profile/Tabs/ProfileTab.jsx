@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { usePage, router } from '@inertiajs/react';
+import { usePage, router, Link } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import ImageEditorModal from '../ImageEditorModal';
 
-export default function ProfileTab({ setActiveTab }) {
+export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
     const { auth } = usePage().props;
     const user = auth?.user || {
         name: 'Usuario MiKiwi',
@@ -226,20 +226,56 @@ export default function ProfileTab({ setActiveTab }) {
                         <span className="material-symbols-outlined text-[#99b849]">magic_button</span>
                         Recomendados para ti
                     </h3>
+                    {recommendedProducts && recommendedProducts.length > 0 && (
+                        <Link href="/configurador/quiz" className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors text-sm flex items-center gap-2">
+                            <span className="material-symbols-outlined text-sm">refresh</span>
+                            Repetir Quiz
+                        </Link>
+                    )}
                 </div>
 
                 {/* Contenedor dinámico: Mostrar prompt de Quiz o Productos */}
-                <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-xl border border-dashed border-gray-200 text-center">
-                    <span className="material-symbols-outlined text-4xl text-[#99b849] mb-4">quiz</span>
-                    <h4 className="text-lg font-semibold text-gray-800 mb-2">Descubre tu estilo ideal</h4>
-                    <p className="text-sm text-gray-500 max-w-md mb-6">
-                        Completa nuestro quiz inicial para que podamos recomendarte los productos que mejor se adapten a tus gustos y preferencias.
-                    </p>
-                    <button className="px-6 py-2 bg-[#99b849] hover:bg-[#86a340] text-white font-medium rounded-lg transition-colors">
-                        Realizar el Quiz
-                    </button>
-                    {/* Nota: Una vez realizado el quiz, aquí se mapearían los productos recomendados en lugar de este mensaje */}
-                </div>
+                {recommendedProducts && recommendedProducts.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {recommendedProducts.map((product) => (
+                            <div key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow group">
+                                <Link href={route('products.show', product.slug)} className="block relative h-48 overflow-hidden">
+                                    <img 
+                                        src={product.image_url} 
+                                        alt={product.name} 
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    />
+                                    {product.category && (
+                                        <div className="absolute top-2 left-2 bg-[#99b849] text-white text-xs font-bold px-2 py-1 rounded">
+                                            {product.category.name}
+                                        </div>
+                                    )}
+                                </Link>
+                                <div className="p-4">
+                                    <h4 className="font-semibold text-gray-900 mb-1 line-clamp-1 truncate">{product.name}</h4>
+                                    <p className="text-[#99b849] font-bold mb-4">{Number(product.base_price).toFixed(2)}€</p>
+                                    <Link 
+                                        href={route('products.show', product.slug)}
+                                        className="block w-full text-center py-2 border border-[#99b849] text-[#99b849] hover:bg-[#99b849] hover:text-white font-medium rounded-lg transition-colors text-sm"
+                                    >
+                                        Ver Producto
+                                    </Link>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-xl border border-dashed border-gray-200 text-center">
+                        <span className="material-symbols-outlined text-4xl text-[#99b849] mb-4">quiz</span>
+                        <h4 className="text-lg font-semibold text-gray-800 mb-2">Descubre tu estilo ideal</h4>
+                        <p className="text-sm text-gray-500 max-w-md mb-6">
+                            Completa nuestro quiz inicial para que podamos recomendarte los productos que mejor se adapten a tus gustos y preferencias.
+                        </p>
+                        <Link href="/configurador/quiz" className="px-6 py-2 bg-[#99b849] hover:bg-[#86a340] text-white font-medium rounded-lg transition-colors">
+                            Realizar el Quiz
+                        </Link>
+                    </div>
+                )}
             </div>
         </div>
     );
