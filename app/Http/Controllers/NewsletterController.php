@@ -42,7 +42,7 @@ class NewsletterController extends Controller
 
             // 2. Intentar enviar correo con Resend
             $htmlContent = $this->getEmailTemplate($genderMsg);
-            $apiKey = env('RESEND_API_KEY');
+            $apiKey = config('services.resend.key');
 
             if (!empty($apiKey)) {
                 $response = Http::withToken($apiKey)->post('https://api.resend.com/emails', [
@@ -51,6 +51,12 @@ class NewsletterController extends Controller
                     'subject' => '¡Bienvenidx a MiKiwi! Tu regalo te espera 🎁',
                     'html' => $htmlContent,
                 ]);
+
+                if (!$response->successful()) {
+                    Log::error('Resend API Error: ' . $response->body());
+                }
+            } else {
+                Log::warning('Resend API Key is missing in configuration.');
             }
 
             return back()->with('success', '¡Gracias por suscribirte! Datos guardados correctamente.');
