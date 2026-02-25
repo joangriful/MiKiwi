@@ -238,28 +238,69 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                 {recommendedProducts && recommendedProducts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {recommendedProducts.map((product) => (
-                            <div key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow group">
-                                <Link href={route('products.show', product.slug)} className="block relative h-48 overflow-hidden">
-                                    <img 
-                                        src={product.image_url} 
-                                        alt={product.name} 
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                    />
-                                    {product.category && (
-                                        <div className="absolute top-2 left-2 bg-[#99b849] text-white text-xs font-bold px-2 py-1 rounded">
-                                            {product.category.name}
-                                        </div>
+                            <div key={product.id} className="flex flex-col bg-white group relative transition-all duration-500 hover:-translate-y-2 flex-shrink-0 min-w-[280px] sm:min-w-[320px] md:min-w-0 md:max-w-[380px] md:mx-auto overflow-hidden rounded-[24px]">
+                                {/* Category Badge - Inside Card, Top Left */}
+                                {product.category && (
+                                    <div className="absolute top-3 left-3 z-20 bg-[#99b849] text-white px-3 py-1 rounded-full transition-all duration-500 group-hover:scale-110">
+                                        <span className="text-xs font-semibold">{product.category.name}</span>
+                                    </div>
+                                )}
+
+                                {/* Image Container */}
+                                <div className="relative aspect-[4/5] bg-[#F3F3F3] overflow-hidden">
+                                    {product.image_url ? (
+                                        <>
+                                            <img
+                                                src={product.image_url}
+                                                alt={product.name}
+                                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                            />
+                                            {product.hover_image_url && (
+                                                <img
+                                                    src={product.hover_image_url}
+                                                    alt={`${product.name} hover`}
+                                                    className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-1000"
+                                                />
+                                            )}
+                                        </>
+                                    ) : (
+                                        <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300" />
                                     )}
-                                </Link>
-                                <div className="p-4">
-                                    <h4 className="font-semibold text-gray-900 mb-1 line-clamp-1 truncate">{product.name}</h4>
-                                    <p className="text-[#99b849] font-bold mb-4">{Number(product.base_price).toFixed(2)}€</p>
-                                    <Link 
-                                        href={route('products.show', product.slug)}
-                                        className="block w-full text-center py-2 border border-[#99b849] text-[#99b849] hover:bg-[#99b849] hover:text-white font-medium rounded-lg transition-colors text-sm"
+
+                                    {/* Like Button - Minimalist Overlay */}
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                        }}
+                                        className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center transition-all bg-white/60 hover:bg-white rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100"
                                     >
-                                        Ver Producto
-                                    </Link>
+                                        <div className="w-5 h-5 transition-colors duration-200 bg-black"
+                                            style={{
+                                                maskImage: `url('/assets/icons/MdiCardsHeartOutline.svg')`,
+                                                maskSize: 'contain',
+                                                maskRepeat: 'no-repeat',
+                                                maskPosition: 'center',
+                                                WebkitMaskImage: `url('/assets/icons/MdiCardsHeartOutline.svg')`,
+                                                WebkitMaskSize: 'contain',
+                                                WebkitMaskRepeat: 'no-repeat',
+                                                WebkitMaskPosition: 'center',
+                                            }}
+                                        ></div>
+                                    </button>
+                                </div>
+
+                                {/* Info Section - Minimalist & Prioritizing Text */}
+                                <div className="flex flex-col pt-6 pb-4 px-2 space-y-2">
+                                    <div className="flex justify-between items-baseline gap-4">
+                                        <h3 className="text-base font-bold text-black uppercase tracking-widest leading-tight flex-1">{product.name}</h3>
+                                        <span className="text-base font-medium text-black/80">
+                                            {new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(product.base_price)}
+                                        </span>
+                                    </div>
+                                    <div className="h-px bg-black/5 w-12 transition-all duration-500 group-hover:w-full" />
+                                    <p className="text-xs text-black/40 line-clamp-2 leading-relaxed transition-colors group-hover:text-black/60">
+                                        {product.description || 'Ingeniería sensorial premium'}
+                                    </p>
                                 </div>
                             </div>
                         ))}
