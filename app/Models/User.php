@@ -21,6 +21,7 @@ class User extends Authenticatable
         'role',
         'is_active',
         'stripe_customer_id',
+        'quiz_result_category',
     ];
 
     protected $casts = [

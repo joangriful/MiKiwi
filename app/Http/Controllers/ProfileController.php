@@ -151,4 +151,32 @@ class ProfileController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Save the user's quiz result.
+     */
+    public function saveQuizResult(Request $request)
+    {
+        $request->validate([
+            'category' => ['required', 'string', 'max:255'],
+        ]);
+
+        try {
+            $user = $request->user();
+            $user->update([
+                'quiz_result_category' => $request->category,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Resultado guardado correctamente.'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Quiz result save failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al guardar el resultado.'
+            ], 500);
+        }
+    }
 }

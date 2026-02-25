@@ -15,10 +15,10 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
     useLenisScroll();
 
     const collections = [
-        { title: 'PARA ELLA.', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771865798/platanomelon-sexualidad-sin-tabues-1024x767_d9nufa.jpg', desc: 'Diseños ergonómicos y texturas premium.', link: '#' },
-        { title: 'PARA ÉL.', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771865798/juguetes-sexuales-platanomelon_nlqjcv.jpg', desc: 'Innovación masculina redefinida.', link: '#' },
-        { title: 'PAREJAS.', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771866759/Julia_Platanomelon_900-1024x512_tycrzc.jpg', desc: 'Juguetes diseñados para compartir.', link: '#' },
-        { title: 'EXPERIENCIAS.', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771866855/Julia_Platanomelon_910_ALTA-copia-1024x512_vnsnhs.jpg', desc: 'Kits curados para despertar los sentidos.', link: '#' }
+        { title: 'PARA ELLA.', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771865798/platanomelon-sexualidad-sin-tabues-1024x767_d9nufa.jpg', desc: 'Diseños ergonómicos y texturas premium.', link: route('products.index', { category: 'para-ella' }) },
+        { title: 'PARA ÉL.', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771865798/juguetes-sexuales-platanomelon_nlqjcv.jpg', desc: 'Innovación masculina redefinida.', link: route('products.index', { category: 'para-el' }) },
+        { title: 'PAREJAS.', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771866759/Julia_Platanomelon_900-1024x512_tycrzc.jpg', desc: 'Juguetes diseñados para compartir.', link: route('products.index', { category: 'parejas' }) },
+        { title: 'EXPERIENCIAS.', img: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771866855/Julia_Platanomelon_910_ALTA-copia-1024x512_vnsnhs.jpg', desc: 'Kits curados para despertar los sentidos.', link: route('products.index', { category: 'experiencias' }) }
     ];
 
     const benefits = [

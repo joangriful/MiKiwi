@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
+import axios from 'axios';
 import Header from '@/Components/Common/Header';
 import Footer from '@/Components/Common/Footer';
 import './Quiz.css';
@@ -14,7 +15,7 @@ const QUIZ_STEPS = [
                 id: 'curious',
                 label: 'Explorador/a',
                 desc: 'Busco constantemente descubrir sensaciones que nunca he sentido.',
-                scores: { 'Ondas de Presión': 3, 'Sensaciones': 2, 'BDSM': 1 }
+                scores: { 'Ondas de Presión': 3, 'Sensaciones': 2, 'BDSM y Fetiche': 1 }
             },
             {
                 id: 'sensual',
@@ -26,7 +27,7 @@ const QUIZ_STEPS = [
                 id: 'bold',
                 label: 'Audaz',
                 desc: 'Me gusta la intensidad y los retos que me saquen de mi zona de confort.',
-                scores: { 'Impacto': 3, 'Restricción': 2, 'Plugs Anal': 2 }
+                scores: { 'Impacto': 3, 'Restricción': 2, 'Plugs Anales': 2 }
             },
             {
                 id: 'balanced',
@@ -134,10 +135,13 @@ const QUIZ_STEPS = [
 export default function Quiz() {
     const [currentStep, setCurrentStep] = useState(0);
     const [scores, setScores] = useState({});
+    const [history, setHistory] = useState([]);
     const [isFinished, setIsFinished] = useState(false);
     const [resultCategory, setResultCategory] = useState(null);
+    const { auth } = usePage().props;
 
     const handleOptionClick = (optionScores) => {
+        setHistory([...history, scores]);
         const newScores = { ...scores };
         Object.entries(optionScores).forEach(([category, score]) => {
             newScores[category] = (newScores[category] || 0) + score;
@@ -164,11 +168,26 @@ export default function Quiz() {
 
         setResultCategory(bestCategory);
         setIsFinished(true);
+
+        if (auth?.user) {
+            axios.post(route('profile.quiz.save'), { category: bestCategory })
+                .catch(err => console.error('Error saving quiz result', err));
+        }
+    };
+
+    const handleBack = () => {
+        if (currentStep > 0) {
+            setCurrentStep(currentStep - 1);
+            const previousScores = history[history.length - 1] || {};
+            setScores(previousScores);
+            setHistory(history.slice(0, -1));
+        }
     };
 
     const resetQuiz = () => {
         setCurrentStep(0);
         setScores({});
+        setHistory([]);
         setIsFinished(false);
         setResultCategory(null);
     };
@@ -219,6 +238,19 @@ export default function Quiz() {
                 <div className="quiz-card">
                     {!isFinished ? (
                         <div key={currentStep} className="animate-step">
+                            <div className="flex justify-between items-center w-full mb-4">
+                                {currentStep > 0 ? (
+                                    <button 
+                                        onClick={handleBack} 
+                                        className="text-gray-500 hover:text-[#99b849] transition-colors flex items-center gap-1 text-sm font-medium z-10 cursor-pointer"
+                                    >
+                                        <span className="material-symbols-outlined text-base">arrow_back</span>
+                                        Volver
+                                    </button>
+                                ) : (
+                                    <div></div>
+                                )}
+                            </div>
                             <div className="quiz-step-indicator">
                                 {QUIZ_STEPS.map((_, idx) => (
                                     <div
@@ -263,7 +295,7 @@ export default function Quiz() {
 
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <Link
-                                    href="/productos"
+                                    href="/perfil"
                                     className="btn-minimal bg-[#99b849] text-white px-8 py-4 rounded-lg font-bold hover:scale-105 transition-all"
                                 >
                                     Ver mis recomendaciones

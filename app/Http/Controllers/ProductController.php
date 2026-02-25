@@ -63,12 +63,19 @@ class ProductController extends Controller
                 ->first();
 
             if ($category) {
-                // Get all children IDs for this category
-                $categoryIds = \App\Models\Category::where('id', $category->id)
-                    ->orWhere('parent_id', $category->id)
-                    ->pluck('id');
-
-                $query->whereIn('category_id', $categoryIds);
+                // Special case: "parejas" collection shows all non-BDSM products
+                if ($category->slug === 'parejas') {
+                    // Exclude BDSM category and all its descendants
+                    $bdsmCategory = \App\Models\Category::where('slug', 'bdsm-y-fetiche')->first();
+                    if ($bdsmCategory) {
+                        $bdsmIds = $this->getCategoryAndDescendants($bdsmCategory);
+                        $query->whereNotIn('category_id', $bdsmIds);
+                    }
+                } else {
+                    // Normal filtering: get all descendants of the category
+                    $categoryIds = $this->getCategoryAndDescendants($category);
+                    $query->whereIn('category_id', $categoryIds);
+                }
             }
         }
 
@@ -150,5 +157,24 @@ class ProductController extends Controller
             'categories' => $categories,
             'filters' => $request->only(['category', 'subCategory', 'min_price', 'max_price', 'sort', 'search', 'featured']),
         ]);
+    }
+
+    /**
+     * Get a category and all its descendants (children, grandchildren, etc.) recursively
+     *
+     * @param \App\Models\Category $category
+     * @return \Illuminate\Support\Collection
+     */
+    private function getCategoryAndDescendants(\App\Models\Category $category)
+    {
+        $ids = collect([$category->id]);
+
+        // Get all children recursively
+        $children = \App\Models\Category::where('parent_id', $category->id)->get();
+        foreach ($children as $child) {
+            $ids = $ids->merge($this->getCategoryAndDescendants($child));
+        }
+
+        return $ids;
     }
 }
