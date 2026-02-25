@@ -107,12 +107,6 @@ export default function RegisterForm({ autoFocus = false }) {
 
             <AuthSocialButtons dividerText="o regístrate con" />
 
-            <p className="pt-2 text-center text-xs text-gray-500 md:text-right">
-                ¿Ya tienes cuenta?{' '}
-                <Link href={route('login')} className="mk-auth-link font-medium">
-                    Iniciar sesión
-                </Link>
-            </p>
 
             <p className="text-[10px] leading-relaxed text-gray-400 md:text-right">
                 Al registrarte, aceptas nuestros{' '}

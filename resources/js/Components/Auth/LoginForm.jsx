@@ -97,13 +97,6 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
             </button>
 
             <AuthSocialButtons dividerText="o continúa con" />
-
-            <p className="pt-2 text-center text-xs text-gray-500">
-                ¿No tienes cuenta?{' '}
-                <Link href={route('register')} className="mk-auth-link font-medium">
-                    Crear cuenta
-                </Link>
-            </p>
         </form>
     );
 }
