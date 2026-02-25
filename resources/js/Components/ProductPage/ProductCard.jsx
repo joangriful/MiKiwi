@@ -11,7 +11,7 @@ export default function ProductCard({ product }) {
     return (
         <Link
             href={route('products.show', product.slug)}
-            className="w-full h-full flex flex-col bg-white group relative transition-all duration-500 hover:-translate-y-2 flex-shrink-0 min-w-[280px] sm:min-w-[320px] md:min-w-0 md:max-w-[380px] md:mx-auto overflow-hidden rounded-[24px]"
+            className="w-full h-full flex flex-col bg-white group relative transition-all duration-700 hover:-translate-y-1 flex-shrink-0 min-w-[280px] sm:min-w-[320px] md:min-w-0 md:max-w-[380px] md:mx-auto overflow-hidden rounded-[24px]"
         >
             {/* Image Container */}
             <div className="relative aspect-[4/5] bg-[#F3F3F3] overflow-hidden">
@@ -20,13 +20,13 @@ export default function ProductCard({ product }) {
                         <img
                             src={product.image_url}
                             alt={product.name}
-                            className={`w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 ${!product.hover_image_url ? '' : ''}`}
+                            className={`w-[110%] h-[110%] max-w-none -ml-[5%] -mt-[5%] object-cover transition-transform duration-1000 group-hover:translate-x-5 group-hover:-translate-y-5 ${!product.hover_image_url ? '' : ''}`}
                         />
                         {product.hover_image_url && (
                             <img
                                 src={product.hover_image_url}
                                 alt={`${product.name} hover`}
-                                className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-1000"
+                                className="absolute inset-x-0 inset-y-0 w-[110%] h-[110%] max-w-none -ml-[5%] -mt-[5%] object-cover opacity-0 group-hover:opacity-100 transition-all duration-1000 group-hover:translate-x-5 group-hover:-translate-y-5"
                             />
                         )}
                     </>
