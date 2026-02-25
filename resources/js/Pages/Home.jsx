@@ -125,8 +125,8 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
                         {collections.map((col, i) => (
                             <ScrollReveal key={i} direction="left" delay={i * 0.1} distance={30}>
                                 <Link href={col.link} className="collection-item-new group">
-                                    <div className="collection-img-box overflow-hidden rounded-2xl">
-                                        <img src={col.img} alt={col.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    <div className="collection-img-box rounded-2xl">
+                                        <img src={col.img} alt={col.title} />
                                     </div>
                                     <h3 className="mt-4">{col.title}</h3>
                                 </Link>

@@ -11,7 +11,7 @@ export default function ProductCard({ product }) {
     return (
         <Link
             href={route('products.show', product.slug)}
-            className="w-full h-full flex flex-col bg-white group relative transition-all duration-700 hover:-translate-y-1 flex-shrink-0 min-w-[280px] sm:min-w-[320px] md:min-w-0 md:max-w-[380px] md:mx-auto overflow-hidden rounded-[24px]"
+            className="w-full h-full flex flex-col bg-white group relative transition-all duration-500 flex-shrink-0 min-w-[280px] sm:min-w-[320px] md:min-w-0 md:max-w-[380px] md:mx-auto overflow-hidden rounded-[24px] ring-1 ring-black/5 hover:ring-2 hover:ring-[#99b849]/60 hover:shadow-[0_8px_32px_rgba(153,184,73,0.18)]"
         >
             {/* Image Container */}
             <div className="relative aspect-[4/5] bg-[#F3F3F3] overflow-hidden">
@@ -20,13 +20,13 @@ export default function ProductCard({ product }) {
                         <img
                             src={product.image_url}
                             alt={product.name}
-                            className={`w-[110%] h-[110%] max-w-none -ml-[5%] -mt-[5%] object-cover transition-transform duration-1000 group-hover:translate-x-5 group-hover:-translate-y-5 ${!product.hover_image_url ? '' : ''}`}
+                            className={`w-[110%] h-[110%] max-w-none -ml-[5%] -mt-[5%] object-cover transition-opacity duration-[600ms] ease-in-out ${product.hover_image_url ? 'group-hover:opacity-0' : ''}`}
                         />
                         {product.hover_image_url && (
                             <img
                                 src={product.hover_image_url}
                                 alt={`${product.name} hover`}
-                                className="absolute inset-x-0 inset-y-0 w-[110%] h-[110%] max-w-none -ml-[5%] -mt-[5%] object-cover opacity-0 group-hover:opacity-100 transition-all duration-1000 group-hover:translate-x-5 group-hover:-translate-y-5"
+                                className="absolute inset-x-0 inset-y-0 w-[110%] h-[110%] max-w-none -ml-[5%] -mt-[5%] object-cover opacity-0 transition-opacity duration-[600ms] ease-in-out group-hover:opacity-100"
                             />
                         )}
                     </>
@@ -66,8 +66,8 @@ export default function ProductCard({ product }) {
                         {new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(product.base_price)}
                     </span>
                 </div>
-                <div className="h-px bg-black/5 w-12 transition-all duration-500 group-hover:w-full" />
-                <p className="text-xs text-black/40 line-clamp-2 leading-relaxed transition-colors group-hover:text-black/60">
+                <div className="h-px bg-black/5 w-12" />
+                <p className="text-xs text-black/40 line-clamp-2 leading-relaxed">
                     {product.description || 'Ingeniería sensorial premium'}
                 </p>
             </div>

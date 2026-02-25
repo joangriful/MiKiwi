@@ -1,9 +1,12 @@
+import { forwardRef } from 'react';
 import ProductCard from './ProductCard';
 
-export default function ProductCarousel({ products = [] }) {
+const ProductCarousel = forwardRef(function ProductCarousel({ products = [] }, ref) {
     return (
-        <div className={`w-full flex gap-6 overflow-x-auto px-6 pt-10 pb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] ${products.length < 3 ? 'md:justify-center' : ''}`}>
-            {/* ProductCarousel Container */}
+        <div
+            ref={ref}
+            className={`w-full flex gap-6 overflow-x-auto px-6 pt-10 pb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] ${products.length < 3 ? 'md:justify-center' : ''}`}
+        >
             {products && products.length > 0 ? (
                 products.map((product, index) => (
                     <ProductCard key={product.id || index} product={product} />
@@ -15,5 +18,6 @@ export default function ProductCarousel({ products = [] }) {
             )}
         </div>
     );
-}
+});
 
+export default ProductCarousel;
