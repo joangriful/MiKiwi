@@ -146,7 +146,7 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
                     <div className="teaser-content relative z-10">
                         <ScrollReveal direction="right" distance={40}>
                             <span className="font-sugo text-pink-500 text-xs tracking-[.3em] uppercase mb-4 block">Personalización Avanzada</span>
-                            <h2 className="font-sugo text-black text-5xl md:text-8xl font-black uppercase leading-[0.85] mb-8">
+                            <h2 className="font-sugo text-black text-5xl md:text-8xl font-black uppercase leading-[0.85] mb-8 tracking-widest">
                                 CREA TU<br />PROPIA MODELO.
                             </h2>
                         </ScrollReveal>

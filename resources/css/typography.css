@@ -44,6 +44,7 @@
 
 .font-sugo {
     font-family: var(--font-head);
+    letter-spacing: 0.1em;
 }
 
 .font-agrandir {
@@ -66,5 +67,6 @@ h6,
 .brand-name {
     font-family: var(--font-head);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
+    /* Widest tracking for brand consistency */
 }
