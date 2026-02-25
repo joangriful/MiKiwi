@@ -19,14 +19,14 @@ export default function ShippingStep({ data, setData, onNext, onBack }) {
         }
     }, [data.shipping_method]);
 
-    const fetchPickupPoints = async (city = '') => {
+    const fetchPickupPoints = async (query = '') => {
         setLoading(true);
         try {
+            const isPostalCode = /^\d{4,5}$/.test(query.trim());
             const response = await axios.get(route('pickup-points.index'), {
-                params: {
-                    city: city,
-                    postal_code: data.postal_code // Also pass CP for better filtering
-                }
+                params: isPostalCode
+                    ? { postal_code: query.trim() }
+                    : { city: query.trim() }
             });
             setPickupPoints(response.data);
         } catch (error) {

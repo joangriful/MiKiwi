@@ -131,7 +131,7 @@ export default function Products({ products, categories = [], filters }) {
                                         <div
                                             key={key}
                                             className="w-12 h-12 flex items-center justify-center text-gray-300 text-xs font-bold"
-                                            dangerouslySetInnerHTML={{ __html: link.label }}
+                                            dangerouslySetInnerHTML={{ __html: link.label.replace('Previous', '').replace('Next', '') }}
                                         />
                                     ) : (
                                         <Link
@@ -141,7 +141,7 @@ export default function Products({ products, categories = [], filters }) {
                                                 ? 'bg-black text-white shadow-xl shadow-black/10'
                                                 : 'text-gray-400 hover:text-black hover:bg-gray-100'
                                                 }`}
-                                            dangerouslySetInnerHTML={{ __html: link.label }}
+                                            dangerouslySetInnerHTML={{ __html: link.label.replace('Previous', '').replace('Next', '') }}
                                         />
                                     )
                                 ))}

@@ -12,7 +12,7 @@ import PreferencesTab from "@/Components/Profile/Tabs/PreferencesTab";
 import ReturnsTab from "@/Components/Profile/Tabs/ReturnsTab";
 import AddressesTab from "@/Components/Profile/Tabs/AddressesTab";
 
-export default function Perfil({ recommendedProducts }) {
+export default function Perfil({ recommendedProducts, orders = [] }) {
     const [activeTab, setActiveTab] = useState('profile');
 
     const renderTabContent = () => {
@@ -20,7 +20,7 @@ export default function Perfil({ recommendedProducts }) {
             case 'profile':
                 return <ProfileTab setActiveTab={setActiveTab} recommendedProducts={recommendedProducts} />;
             case 'orders':
-                return <OrderHistoryTab />;
+                return <OrderHistoryTab orders={orders} />;
             case 'edit-account':
                 return <EditAccountTab />;
             case 'cards': // Added Case

@@ -102,47 +102,77 @@ class CorreosService
     protected function getMockTerminals($filters = [])
     {
         $allMocks = [
-            [
-                'name' => 'Citypaq - Oficina Principal Madrid',
-                'address' => 'Plaza de Cibeles s/n',
-                'city' => 'MADRID',
-                'postal_code' => '28014',
-            ],
-            [
-                'name' => 'Citypaq - Estación de Atocha',
-                'address' => 'Glorieta de Carlos V',
-                'city' => 'MADRID',
-                'postal_code' => '28045',
-            ],
-            [
-                'name' => 'Citypaq - El Corte Inglés Sol',
-                'address' => 'Puerta del Sol 10',
-                'city' => 'MADRID',
-                'postal_code' => '28013',
-            ],
-            [
-                'name' => 'Citypaq - Oficina Correos Barcelona',
-                'address' => 'Via Laietana 1',
-                'city' => 'BARCELONA',
-                'postal_code' => '08003',
-            ],
-            [
-                'name' => 'Citypaq - CC Nevada Shopping',
-                'address' => 'Av. de las Palmeras 75',
-                'city' => 'ARMILLA',
-                'postal_code' => '18100',
-            ],
+            // Madrid
+            ['id' => 'mock-mad-1', 'name' => 'Citypaq - Oficina Principal Madrid', 'address' => 'Plaza de Cibeles s/n', 'city' => 'MADRID', 'postal_code' => '28014'],
+            ['id' => 'mock-mad-2', 'name' => 'Citypaq - Estación de Atocha', 'address' => 'Glorieta de Carlos V', 'city' => 'MADRID', 'postal_code' => '28045'],
+            ['id' => 'mock-mad-3', 'name' => 'Citypaq - El Corte Inglés Sol', 'address' => 'Puerta del Sol 10', 'city' => 'MADRID', 'postal_code' => '28013'],
+
+            // Barcelona
+            ['id' => 'mock-bcn-1', 'name' => 'Citypaq - Oficina Principal Barcelona', 'address' => 'Via Laietana 1', 'city' => 'BARCELONA', 'postal_code' => '08003'],
+            ['id' => 'mock-bcn-2', 'name' => 'Citypaq - Estació de Sants', 'address' => 'Plaza dels Països Catalans s/n', 'city' => 'BARCELONA', 'postal_code' => '08014'],
+
+            // Valencia
+            ['id' => 'mock-vlc-1', 'name' => 'Citypaq - Oficina Principal Valencia', 'address' => 'Plaza del Ayuntamiento 24', 'city' => 'VALENCIA', 'postal_code' => '46002'],
+
+            // Sevilla
+            ['id' => 'mock-svq-1', 'name' => 'Citypaq - Oficina Principal Sevilla', 'address' => 'Avenida de la Constitución 32', 'city' => 'SEVILLA', 'postal_code' => '41001'],
+
+            // Bilbao
+            ['id' => 'mock-bio-1', 'name' => 'Citypaq - Oficina Principal Bilbao', 'address' => 'Alameda de Urquijo 19', 'city' => 'BILBAO', 'postal_code' => '48008'],
+
+            // Others
+            ['id' => 'mock-grx-1', 'name' => 'Citypaq - CC Nevada Shopping', 'address' => 'Av. de las Palmeras 75', 'city' => 'ARMILLA', 'postal_code' => '18100'],
+            ['id' => 'mock-slm-1', 'name' => 'Citypaq - Plaza Mayor Salamanca', 'address' => 'Plaza Mayor 1', 'city' => 'SALAMANCA', 'postal_code' => '37002'],
+            ['id' => 'mock-agp-1', 'name' => 'Citypaq - CC Larios Centro', 'address' => 'Av. de la Aurora 25', 'city' => 'MALAGA', 'postal_code' => '29002'],
         ];
 
-        // Filter by city if provided
-        if (!empty($filters['poblacion'])) {
+        $results = [];
+
+        // Filter by postal code if provided
+        if (!empty($filters['codPostal'])) {
+            $cp = (string) $filters['codPostal'];
+            $cpPrefix = substr($cp, 0, 2);
+
+            $results = array_values(array_filter($allMocks, function ($item) use ($cp, $cpPrefix) {
+                // Exact match or same province (first 2 digits)
+                return $item['postal_code'] === $cp || substr($item['postal_code'], 0, 2) === $cpPrefix;
+            }));
+
+            // If no mock data matches the CP province, "generate" local results for the UI
+            if (empty($results) && strlen($cp) === 5) {
+                return [
+                    [
+                        'id' => 'mock-gen-' . $cp . '-1',
+                        'name' => 'Citypaq - Sucursal Correos (' . $cp . ')',
+                        'address' => 'Calle Mayor 1',
+                        'city' => 'Localidad ' . $cp,
+                        'postal_code' => $cp,
+                    ],
+                    [
+                        'id' => 'mock-gen-' . $cp . '-2',
+                        'name' => 'Citypaq - Centro Comercial Zona ' . $cp,
+                        'address' => 'Avenida de la Libertad 10',
+                        'city' => 'Localidad ' . $cp,
+                        'postal_code' => $cp,
+                    ],
+                    [
+                        'id' => 'mock-gen-' . $cp . '-3',
+                        'name' => 'Citypaq - Gasolinera 24h CP ' . $cp,
+                        'address' => 'Carretera Nacional km 4',
+                        'city' => 'Localidad ' . $cp,
+                        'postal_code' => $cp,
+                    ]
+                ];
+            }
+        } elseif (!empty($filters['poblacion'])) {
+            // Filter by city (poblacion) if provided
             $city = strtoupper($filters['poblacion']);
-            return array_values(array_filter($allMocks, function ($item) use ($city) {
+            $results = array_values(array_filter($allMocks, function ($item) use ($city) {
                 return str_contains(strtoupper($item['city']), $city);
             }));
         }
 
-        return $allMocks;
+        return !empty($results) ? $results : array_slice($allMocks, 0, 5);
     }
 
     /**

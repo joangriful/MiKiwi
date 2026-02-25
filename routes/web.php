@@ -99,6 +99,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])
         ->name('orders.index');
 
+    // Ver detalle de un pedido
+    Route::get('/orders/{order}', [OrderController::class, 'show'])
+        ->name('orders.show');
+
+    // Cancelar pedido
+    Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])
+        ->name('orders.cancel');
+
     // 📦 API de Puntos de Recogida
     Route::get('/api/pickup-points', [App\Http\Controllers\PickupPointController::class, 'index'])
         ->name('pickup-points.index');
@@ -137,7 +145,7 @@ Route::middleware('auth')->group(function () {
         if ($user && $user->quiz_result_category) {
             $categoryName = trim($user->quiz_result_category);
             \Log::info('Quiz Result Category to match:', ['category' => $categoryName]);
-            
+
             // Mapeo entre Resultados del Quiz y las Categorías/Subcategorías reales de Productos.
             // Esto asegura que sin importar el resultado del test, encontremos productos que tengan sentido.
             $quizCategoryMap = [
@@ -166,7 +174,7 @@ Route::middleware('auth')->group(function () {
             // Buscar la categoría padre o hija que coincida con esos nombres
             $categoryMatches = \App\Models\Category::whereIn('name', $searchCategories)->pluck('id');
             \Log::info('Category Matches:', ['matches' => $categoryMatches]);
-            
+
             if ($categoryMatches->isNotEmpty()) {
                 // Fetch the products related to that category
                 $products = \App\Models\Product::with('category:id,name')
@@ -175,7 +183,7 @@ Route::middleware('auth')->group(function () {
                     ->inRandomOrder()
                     ->take(4)
                     ->get();
-                    
+
                 if ($products->isNotEmpty()) {
                     $recommendedProducts = $products;
                 }
@@ -185,7 +193,8 @@ Route::middleware('auth')->group(function () {
         }
 
         return Inertia::render('perfil', [
-            'recommendedProducts' => $recommendedProducts
+            'recommendedProducts' => $recommendedProducts,
+            'orders' => auth()->user()->orders()->with('items')->latest()->get(),
         ]);
     })->name('perfil.view');
 
@@ -234,7 +243,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->orderBy('created_at', 'desc')
             ->get();
 
-        \Illuminate\Support\Facades\Log::info('Admin Products Count: '.$products->count());
+        \Illuminate\Support\Facades\Log::info('Admin Products Count: ' . $products->count());
 
         $partPositions = $settingsController->getAllPartPositions();
 
@@ -393,4 +402,4 @@ Route::get('/doll_config_test', function () {
     ]);
 })->name('doll.config.test');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Head, useForm, Link } from '@inertiajs/react';
+import { Head, useForm, Link, router } from '@inertiajs/react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import axios from 'axios';
@@ -48,7 +48,7 @@ function CheckoutContent({
                 amount: Math.round(dynamicTotal * 100) / 100,
             });
 
-            // 2. Confirm payment on frontend
+            // 2. Confirm payment on frontend with Stripe
             const confirmData = {
                 payment_method: formData.selected_payment_method
                     ? (formData.selected_payment_method.startsWith('tok_')
@@ -78,38 +78,47 @@ function CheckoutContent({
                 return;
             }
 
-            // 3. Payment successful, submit order to backend
+            // 3. Payment done – build the order payload and submit to backend using router.post
             if (result.paymentIntent.status === 'succeeded') {
-                formTransform((data) => ({
-                    ...data,
+                const orderPayload = {
                     payment_intent_id: result.paymentIntent.id,
+                    payment_method: formData.payment_method || 'card',
+                    pickup_point_id: formData.pickup_point_id || null,
+                    shipping_method: formData.shipping_method,
                     shipping_address: {
-                        full_name: `${data.first_name} ${data.last_name}`,
-                        phone: data.phone,
-                        street_address: data.address,
-                        city: data.city,
-                        postal_code: data.postal_code,
-                        country: data.country,
+                        full_name: `${formData.first_name} ${formData.last_name}`,
+                        phone: formData.phone,
+                        street_address: formData.address,
+                        city: formData.city,
+                        postal_code: formData.postal_code,
+                        country: formData.country || 'España',
+                        email: formData.email,
                     },
-                    dni: data.dni,
-                    billing_address: data.billing_same_as_shipping ? null : {
-                        full_name: `${data.first_name} ${data.last_name}`,
-                        phone: data.phone,
-                        street_address: data.billing_address.address,
-                        city: data.billing_address.city,
-                        postal_code: data.billing_address.postal_code,
-                        country: data.billing_address.country,
-                    }
-                }));
+                    billing_address: formData.billing_same_as_shipping ? null : {
+                        full_name: `${formData.first_name} ${formData.last_name}`,
+                        phone: formData.phone,
+                        street_address: formData.billing_address?.address,
+                        city: formData.billing_address?.city,
+                        postal_code: formData.billing_address?.postal_code,
+                        country: formData.billing_address?.country || 'España',
+                    },
+                    notes: formData.notes || null,
+                };
 
-                formPost(route('orders.store'), {
+                // router.post handles CSRF automatically and redirects on success
+                router.post(route('orders.store'), orderPayload, {
                     onFinish: () => setIsInternalProcessing(false),
+                    onError: (errors) => {
+                        console.error('Order store errors:', errors);
+                        alert('Hubo un error al guardar tu pedido. Contacta con soporte con tu referencia de pago: ' + result.paymentIntent.id);
+                        setIsInternalProcessing(false);
+                    },
                 });
             }
         } catch (error) {
             console.error('Order submission error:', error);
-            alert('Hubo un error al procesar tu pedido. Por favor, inténtalo de nuevo.');
-        } finally {
+            const message = error?.response?.data?.message || error.message || 'Error desconocido';
+            alert(`Hubo un error al procesar tu pedido: ${message}`);
             setIsInternalProcessing(false);
         }
     };
