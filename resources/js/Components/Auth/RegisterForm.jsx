@@ -9,9 +9,23 @@ export default function RegisterForm({ autoFocus = false }) {
         email: '',
         password: '',
         password_confirmation: '',
+        quiz_result_category: null,
     });
 
     useEffect(() => {
+        // Load quiz result category from localStorage if available
+        const quizData = localStorage.getItem('quizData');
+        if (quizData) {
+            try {
+                const { resultCategory } = JSON.parse(quizData);
+                if (resultCategory) {
+                    setData('quiz_result_category', resultCategory);
+                }
+            } catch (e) {
+                console.error('Error loading quiz data from localStorage', e);
+            }
+        }
+
         return () => {
             reset('password', 'password_confirmation');
         };
@@ -20,7 +34,12 @@ export default function RegisterForm({ autoFocus = false }) {
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('register'));
+        post(route('register'), {
+            onSuccess: () => {
+                // Clear localStorage quiz data after successful registration
+                localStorage.removeItem('quizData');
+            }
+        });
     };
 
     return (

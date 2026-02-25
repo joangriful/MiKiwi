@@ -34,7 +34,17 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Check if user has quiz data in the request (from frontend localStorage)
+        if ($request->has('quiz_result_category')) {
+            $user = auth()->user();
+            if ($user) {
+                $user->update([
+                    'quiz_result_category' => $request->input('quiz_result_category')
+                ]);
+            }
+        }
+
+        return redirect()->intended(route('perfil.view', absolute: false));
     }
 
     /**

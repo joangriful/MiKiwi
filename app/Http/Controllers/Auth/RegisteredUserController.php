@@ -46,6 +46,13 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('home', absolute: false));
+        // Check if user has quiz data in the request (from frontend localStorage)
+        if ($request->has('quiz_result_category')) {
+            $user->update([
+                'quiz_result_category' => $request->input('quiz_result_category')
+            ]);
+        }
+
+        return redirect(route('perfil.view', absolute: false));
     }
 }

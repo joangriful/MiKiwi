@@ -140,6 +140,36 @@ export default function Quiz() {
     const [resultCategory, setResultCategory] = useState(null);
     const { auth } = usePage().props;
 
+    // Load quiz data from localStorage on mount (for unauthenticated users)
+    useEffect(() => {
+        const savedQuizData = localStorage.getItem('quizData');
+        if (savedQuizData) {
+            try {
+                const { currentStep: step, scores: savedScores, history: savedHistory, resultCategory: result } = JSON.parse(savedQuizData);
+                setCurrentStep(step);
+                setScores(savedScores);
+                setHistory(savedHistory);
+                setResultCategory(result);
+                setIsFinished(!!result);
+            } catch (e) {
+                console.error('Error loading quiz data from localStorage', e);
+            }
+        }
+    }, []);
+
+    // Save quiz data to localStorage whenever it changes (for unauthenticated users)
+    useEffect(() => {
+        if (!auth?.user) {
+            localStorage.setItem('quizData', JSON.stringify({
+                currentStep,
+                scores,
+                history,
+                resultCategory,
+                timestamp: new Date().toISOString()
+            }));
+        }
+    }, [currentStep, scores, history, resultCategory, auth?.user]);
+
     const handleOptionClick = (optionScores) => {
         setHistory([...history, scores]);
         const newScores = { ...scores };
@@ -170,8 +200,12 @@ export default function Quiz() {
         setIsFinished(true);
 
         if (auth?.user) {
+            // If authenticated, save immediately to database
             axios.post(route('profile.quiz.save'), { category: bestCategory })
                 .catch(err => console.error('Error saving quiz result', err));
+        } else {
+            // If not authenticated, quiz data is saved to localStorage via useEffect
+            // Show message to login/register
         }
     };
 
@@ -293,20 +327,50 @@ export default function Quiz() {
                                 {resultContent.text}
                             </p>
 
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <Link
-                                    href="/perfil"
-                                    className="btn-minimal bg-[#99b849] text-white px-8 py-4 rounded-lg font-bold hover:scale-105 transition-all"
-                                >
-                                    Ver mis recomendaciones
-                                </Link>
-                                <button
-                                    onClick={resetQuiz}
-                                    className="btn-restart"
-                                >
-                                    Repetir Test
-                                </button>
-                            </div>
+                            {auth?.user ? (
+                                // Authenticated user
+                                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                    <Link
+                                        href="/perfil"
+                                        className="btn-minimal bg-[#99b849] text-white px-8 py-4 rounded-lg font-bold hover:scale-105 transition-all"
+                                    >
+                                        Ver mis recomendaciones
+                                    </Link>
+                                    <button
+                                        onClick={resetQuiz}
+                                        className="btn-restart"
+                                    >
+                                        Repetir Test
+                                    </button>
+                                </div>
+                            ) : (
+                                // Unauthenticated user
+                                <div className="flex flex-col gap-4 justify-center">
+                                    <p className="text-gray-600 mb-4">
+                                        Crea una cuenta o inicia sesión para guardar tus recomendaciones
+                                    </p>
+                                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                        <Link
+                                            href="/register"
+                                            className="btn-minimal bg-[#99b849] text-white px-8 py-4 rounded-lg font-bold hover:scale-105 transition-all"
+                                        >
+                                            Crear Cuenta
+                                        </Link>
+                                        <Link
+                                            href="/login"
+                                            className="btn-minimal border-2 border-[#99b849] text-[#99b849] px-8 py-4 rounded-lg font-bold hover:bg-[#99b849] hover:text-white transition-all"
+                                        >
+                                            Iniciar Sesión
+                                        </Link>
+                                    </div>
+                                    <button
+                                        onClick={resetQuiz}
+                                        className="btn-restart mt-4"
+                                    >
+                                        Repetir Test
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

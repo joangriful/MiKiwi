@@ -8,9 +8,23 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
         email: '',
         password: '',
         remember: false,
+        quiz_result_category: null,
     });
 
     useEffect(() => {
+        // Load quiz result category from localStorage if available
+        const quizData = localStorage.getItem('quizData');
+        if (quizData) {
+            try {
+                const { resultCategory } = JSON.parse(quizData);
+                if (resultCategory) {
+                    setData('quiz_result_category', resultCategory);
+                }
+            } catch (e) {
+                console.error('Error loading quiz data from localStorage', e);
+            }
+        }
+
         return () => {
             reset('password');
         };
@@ -19,7 +33,12 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('login'));
+        post(route('login'), {
+            onSuccess: () => {
+                // Clear localStorage quiz data after successful login
+                localStorage.removeItem('quizData');
+            }
+        });
     };
 
     return (
