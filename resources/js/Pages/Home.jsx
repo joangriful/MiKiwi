@@ -42,9 +42,7 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
                         transition={{ duration: 1, ease: "easeOut" }}
                         className="hero-watermark"
                     >
-                        <div className="hero-logo-shimmer">
-                            <img src="/assets/icons/mikiwi_logo.svg" alt="WATERMARK" />
-                        </div>
+                        <img src="/assets/icons/mikiwi_logo.svg" alt="WATERMARK" />
                     </motion.div>
 
                     <div className="hero-center">
