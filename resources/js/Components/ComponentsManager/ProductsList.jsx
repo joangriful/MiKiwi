@@ -63,7 +63,7 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
                         {filteredProducts.map((product, index) => (
                             <tr key={product.id} className="hover:bg-gray-50 transition-colors group">
                                 <td className="w-12 px-2 py-4 text-sm text-gray-400 font-medium text-center">
-                                    {index + 1}
+                                    {filteredProducts.length - index}
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-4">
