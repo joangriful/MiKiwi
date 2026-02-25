@@ -80,14 +80,14 @@ export default function ProfileSidebar({ activeTab, setActiveTab }) {
                             onClick={() => handleTabChange(item.id)}
                             className={`group flex items-center w-full text-left px-4 py-3 text-sm rounded-lg transition-all duration-200 font-medium ${activeTab === item.id
                                     ? "bg-[#99b849]/10 text-[#99b849] border-l-4 border-[#99b849]"
-                                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                                    : "text-gray-600 hover:bg-pink-50 hover:text-pink-600"
                                 }`}
                         >
                             {item.icon && !item.isMaterial && (
                                 <span
                                     className={`w-5 h-5 mr-5 flex-shrink-0 transition-colors duration-200 ${activeTab === item.id
                                             ? "bg-[#99b849]"
-                                            : "bg-gray-400 group-hover:bg-gray-600"
+                                            : "bg-gray-400 group-hover:bg-pink-500"
                                         }`}
                                     style={{
                                         maskImage: `url('/assets/icons/${item.icon}')`,
@@ -105,7 +105,7 @@ export default function ProfileSidebar({ activeTab, setActiveTab }) {
                                 <span
                                     className={`material-symbols-outlined w-5 h-5 mr-5 flex-shrink-0 text-xl leading-none transition-colors duration-200 ${activeTab === item.id
                                             ? "text-[#99b849]"
-                                            : "text-gray-400 group-hover:text-gray-600"
+                                            : "text-gray-400 group-hover:text-pink-500"
                                         }`}
                                 >
                                     {item.icon}

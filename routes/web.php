@@ -10,8 +10,21 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserAddressController;
 use App\Services\CloudinaryService;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+/**
+ * Helper function to recursively get all descendant category IDs
+ */
+function getDescendantCategoryIds($category) {
+    $ids = collect([$category->id]);
+    $children = \App\Models\Category::where('parent_id', $category->id)->get();
+    foreach ($children as $child) {
+        $ids = $ids->merge(getDescendantCategoryIds($child));
+    }
+    return $ids;
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -147,48 +160,106 @@ Route::middleware('auth')->group(function () {
             \Log::info('Quiz Result Category to match:', ['category' => $categoryName]);
 
             // Mapeo entre Resultados del Quiz y las Categorías/Subcategorías reales de Productos.
-            // Esto asegura que sin importar el resultado del test, encontremos productos que tengan sentido.
+            // ACTUALIZADO: Ahora usa las NUEVAS colecciones (para-ella, para-el, parejas, experiencias)
+            // y sus subcategorías correspondientes
             $quizCategoryMap = [
-                'Ondas de Presión' => ['Ondas de Presión', 'Estimulación Externa', 'Estimuladores de Punto G'],
-                'Sensaciones' => ['Sensaciones', 'Cosmética y Cuidado', 'Wands de Masaje', 'Cuidado del Cuerpo'],
-                'BDSM y Fetiche' => ['BDSM y Fetiche', 'Cuero y Textil', 'Restricción', 'Impacto'],
-                'Lubricantes' => ['Lubricantes', 'Cosmética y Cuidado', 'Sensaciones'],
-                'Vibradores Externos' => ['Vibradores Externos', 'Estimulación Externa'],
-                'Cuidado del Cuerpo' => ['Cuidado del Cuerpo', 'Higiene', 'Cosmética y Cuidado'],
-                'Impacto' => ['Impacto', 'BDSM y Fetiche'],
-                'Restricción' => ['Restricción', 'BDSM y Fetiche'],
-                'Plugs Anales' => ['Plugs Anales', 'Cuentas y Bolas Anales', 'Estimulación Anal'],
-                'Salud Íntima' => ['Salud Íntima', 'Higiene', 'Cuidado del Cuerpo'],
-                'Dildos' => ['Dildos', 'Estimulación Interna', 'Pene y Testículos'],
-                'Higiene' => ['Higiene', 'Salud Íntima'],
-                'Cuero y Textil' => ['Cuero y Textil', 'BDSM y Fetiche'],
-                'Masturbadores' => ['Masturbadores', 'Pene y Testículos'],
-                'Dilatadores y Kits de Inicio' => ['Dilatadores y Kits de Inicio', 'Estimulación Anal', 'Salud Íntima'],
-                'Anillos Vibradores' => ['Anillos Vibradores', 'Pene y Testículos'],
-                'Arneses y Strapless' => ['Arneses y Strapless', 'Estimulación Interna']
+                // PARA ELLA - Estimulación femenina
+                'Ondas de Presión' => 'para-ella',
+                'Estimuladores de Punto G' => 'para-ella',
+                'Vibradores Externos' => 'para-ella',
+                'Wands de Masaje' => 'para-ella',
+                'Estimuladores de Pezones' => 'para-ella',
+                'Estimulación Interna' => 'para-ella',
+                'Dildos' => 'para-ella',
+                'Vibradores Internos' => 'para-ella',
+                'Arneses y Strapless' => 'para-ella',
+                'Salud Íntima' => 'para-ella',
+                
+                // PARA ÉL - Estimulación masculina
+                'Masturbadores' => 'para-el',
+                'Anillos Vibradores' => 'para-el',
+                'Bombas de Vacío' => 'para-el',
+                'Estimuladores de Próstata' => 'para-el',
+                'Pene y Testículos' => 'para-el',
+                
+                // PAREJAS - Productos para compartir (todas las subcategorías excepto BDSM)
+                'Sensaciones' => 'parejas',
+                'Cosmética y Cuidado' => 'parejas',
+                'Lubricantes' => 'parejas',
+                'Cuidado del Cuerpo' => 'parejas',
+                'Higiene' => 'parejas',
+                'Estimulación Anal' => 'parejas',
+                'Plugs Anales' => 'parejas',
+                'Cuentas y Bolas Anales' => 'parejas',
+                'Dilatadores y Kits de Inicio' => 'parejas',
+                'Vibradores Anales' => 'parejas',
+                
+                // EXPERIENCIAS - BDSM y Fetiche
+                'BDSM y Fetiche' => 'experiencias',
+                'Cuero y Textil' => 'experiencias',
+                'Impacto' => 'experiencias',
+                'Restricción' => 'experiencias',
             ];
 
-            // Resolvemos qué categorías buscar basados en el mapa, o como fallback, el propio nombre.
-            $searchCategories = $quizCategoryMap[$categoryName] ?? [$categoryName];
+            // Resolvemos qué categoría colección buscar basados en el mapa
+            $collectionSlug = $quizCategoryMap[$categoryName] ?? null;
+            
+            if ($collectionSlug) {
+                \Log::info('Collection slug to search:', ['slug' => $collectionSlug]);
+                
+                // Buscar la categoría colección
+                $collection = \App\Models\Category::where('slug', $collectionSlug)->first();
+                
+                if ($collection) {
+                    // Obtener todos los descendientes (hijos, nietos, etc.) de esta colección
+                    $categoryIds = getDescendantCategoryIds($collection);
+                    \Log::info('Category IDs to search:', ['ids' => $categoryIds->toArray()]);
+                    
+                    if ($categoryIds->isNotEmpty()) {
+                        // Fetch the products related to those categories
+                        $products = \App\Models\Product::with('category:id,name')
+                            ->whereIn('category_id', $categoryIds)
+                            ->where('is_active', true)
+                            ->where('stock_quantity', '>', 0)
+                            ->inRandomOrder()
+                            ->take(4)
+                            ->get();
 
-            // Buscar la categoría padre o hija que coincida con esos nombres
-            $categoryMatches = \App\Models\Category::whereIn('name', $searchCategories)->pluck('id');
-            \Log::info('Category Matches:', ['matches' => $categoryMatches]);
-
-            if ($categoryMatches->isNotEmpty()) {
-                // Fetch the products related to that category
-                $products = \App\Models\Product::with('category:id,name')
-                    ->whereIn('category_id', $categoryMatches)
-                    ->where('is_active', true)
-                    ->inRandomOrder()
-                    ->take(4)
-                    ->get();
-
-                if ($products->isNotEmpty()) {
-                    $recommendedProducts = $products;
+                        if ($products->isNotEmpty()) {
+                            $recommendedProducts = $products;
+                            \Log::info('Found products via collection:', ['count' => $products->count()]);
+                        } else {
+                            \Log::info('No products found for collection categories');
+                        }
+                    }
+                } else {
+                    \Log::info('Collection not found:', ['slug' => $collectionSlug]);
                 }
             } else {
-                \Log::info('No categories matched for quiz result:', ['category' => $categoryName]);
+                \Log::info('No collection mapping found for quiz result:', ['category' => $categoryName]);
+            }
+        }
+
+        // FALLBACK: Si no hay productos recomendados, mostrar los destacados
+        if ($recommendedProducts->isEmpty()) {
+            \Log::info('No recommended products found, falling back to featured products');
+            $recommendedProducts = \App\Models\Product::with('category:id,name')
+                ->where('is_active', true)
+                ->where('stock_quantity', '>', 0)
+                ->where('is_featured', true)
+                ->inRandomOrder()
+                ->take(4)
+                ->get();
+                
+            // Si aún no hay productos, mostrar los 4 más recientes
+            if ($recommendedProducts->isEmpty()) {
+                \Log::info('No featured products, falling back to latest products');
+                $recommendedProducts = \App\Models\Product::with('category:id,name')
+                    ->where('is_active', true)
+                    ->where('stock_quantity', '>', 0)
+                    ->latest()
+                    ->take(4)
+                    ->get();
             }
         }
 
