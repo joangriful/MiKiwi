@@ -73,7 +73,7 @@ class NewsletterController extends Controller
     {
         return <<<HTML
         <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
-            <h1 style="color: #d697c8; text-align: center;">¡Bienvenidx a MiKiwi! ✨</h1>
+            <h1 style="color: #d697c8; text-align: center;">¡Bienvenidx a MiKiwi! 🥝​</h1>
             <p>Hola, gracias por suscribirte a nuestra newsletter.</p>
             
             <p><strong>$genderMsg</strong></p>
@@ -92,7 +92,7 @@ class NewsletterController extends Controller
             </ul>
 
             <div style="text-align: center; margin-top: 30px;">
-                <a href="https://mikiwi.com" style="background: #d697c8; color: white; padding: 12px 25px; text-decoration: none; border-radius: 50px; font-weight: bold;">IR A LA TIENDA</a>
+                <a href="http://127.0.0.1:8000" style="background: #d697c8; color: white; padding: 12px 25px; text-decoration: none; border-radius: 50px; font-weight: bold;">IR A LA TIENDA</a>
             </div>
 
             <hr style="border: none; border-top: 1px solid #eee; margin-top: 30px;">
