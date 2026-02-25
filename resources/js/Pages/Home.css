@@ -42,12 +42,20 @@
     top: 50%;
     transform: translateY(-50%);
     right: 5%;
-    width: clamp(200px, 18vw, 350px);
-    opacity: 0.15;
-    /* Even fainter to be a true watermark */
+    width: clamp(150px, 15vw, 300px);
+    opacity: 0.12;
     pointer-events: none;
     z-index: 1;
-    /* Stay behind everything */
+}
+
+@media (max-width: 768px) {
+    .hero-watermark {
+        top: 20%;
+        /* Move up on mobile to avoid overlap with bottom text */
+        right: -10%;
+        /* Peek from the side */
+        width: 180px;
+    }
 }
 
 .hero-logo-shimmer {
@@ -102,23 +110,24 @@
 
 .hero-bottom {
     position: absolute;
-    bottom: 80px;
+    bottom: 60px;
+    /* Pull down away from central center button */
     left: 8%;
     width: 100%;
-    /* Switch to percentage to control responsive bounds */
     z-index: 10;
     pointer-events: none;
 }
 
 .hero-subtitle {
     font-family: var(--font-heading);
-    font-size: clamp(2rem, 6vw, 2.8rem);
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    /* Scaled down slightly for better zoning */
     font-weight: 700;
-    max-width: 550px;
-    /* Keep separation from right-side watermark */
+    max-width: 480px;
+    /* Restrict width to stay in the left zone */
     line-height: 1.1;
     text-transform: uppercase;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
     color: var(--text-black);
     pointer-events: auto;
 }
