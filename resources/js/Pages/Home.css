@@ -11,7 +11,10 @@
     --font-heading: 'Outfit', 'Inter', sans-serif;
     /* Bold heading font */
     --font-body: 'Inter', sans-serif;
+    --font-serif: 'Prata', serif;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Prata&display=swap');
 
 .home-container {
     background: var(--bg-white);
@@ -36,13 +39,15 @@
 
 .hero-watermark {
     position: absolute;
-    bottom: 40px;
-    right: 40px;
-    width: clamp(250px, 30vw, 450px);
-    opacity: 0.7;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 5%;
+    width: clamp(200px, 18vw, 350px);
+    opacity: 0.15;
+    /* Even fainter to be a true watermark */
     pointer-events: none;
     z-index: 1;
-    overflow: hidden;
+    /* Stay behind everything */
 }
 
 .hero-logo-shimmer {
@@ -97,19 +102,25 @@
 
 .hero-bottom {
     position: absolute;
-    bottom: 60px;
+    bottom: 80px;
     left: 8%;
     width: 100%;
+    /* Switch to percentage to control responsive bounds */
+    z-index: 10;
+    pointer-events: none;
 }
 
 .hero-subtitle {
-    font-family: var(--font-head);
-    font-size: 2.22rem;
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 6vw, 2.8rem);
     font-weight: 700;
     max-width: 550px;
+    /* Keep separation from right-side watermark */
     line-height: 1.1;
     text-transform: uppercase;
     letter-spacing: -0.02em;
+    color: var(--text-black);
+    pointer-events: auto;
 }
 
 .btn-pill {
@@ -358,24 +369,92 @@
 }
 
 @media (max-width: 768px) {
-    .hero-minimal .hero-logo-large {
-        max-width: 100%;
+    .hero-minimal.hero-v2 {
+        padding: 40px 6%;
     }
 
     .hero-bottom {
-        flex-direction: column;
-        align-items: flex-start;
+        bottom: 40px;
+        left: 6%;
+    }
+
+    .hero-subtitle {
+        font-size: 1.8rem;
+    }
+
+    .btn-pill {
+        padding: 18px 45px;
+        font-size: 1.1rem;
+        letter-spacing: 0.15em;
+    }
+
+    .work-section {
+        padding: 80px 6%;
+    }
+
+    .work-keywords {
+        font-size: 2.8rem;
+    }
+
+    .benefits-section {
+        padding: 80px 6%;
+    }
+
+    .benefits-grid {
+        grid-template-columns: 1fr;
         gap: 30px;
     }
 
-    .collection-grid-new,
-    .benefits-grid {
+    .collection-grid-new {
         grid-template-columns: 1fr;
+        gap: 40px;
     }
 
-    .work-header h2,
-    .method-header h2 {
+    .method-section {
+        padding: 80px 6%;
+    }
+
+    .method-header h2,
+    .work-header h2 {
         font-size: 3.5rem;
+    }
+
+    .method-header p,
+    .work-header p {
+        font-size: 1.2rem;
+    }
+
+    .doll-teaser-section {
+        padding: 100px 6%;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-pill {
+        width: 100%;
+        padding: 20px 30px;
+        font-size: 1rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+    }
+
+    .work-keywords {
+        font-size: 2.2rem;
+    }
+
+    .method-header h2,
+    .work-header h2 {
+        font-size: 2.8rem;
+    }
+
+    .benefit-card h3 {
+        font-size: 1.2rem;
+    }
+
+    .benefit-card p {
+        font-size: 1.05rem;
     }
 }
 
