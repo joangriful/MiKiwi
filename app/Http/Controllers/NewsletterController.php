@@ -42,7 +42,7 @@ class NewsletterController extends Controller
 
             // 2. Intentar enviar correo con Resend
             $htmlContent = $this->getEmailTemplate($genderMsg);
-            $apiKey = env('RESEND_API_KEY');
+            $apiKey = config('services.resend.key');
 
             if (!empty($apiKey)) {
                 $response = Http::withToken($apiKey)->post('https://api.resend.com/emails', [
@@ -51,6 +51,12 @@ class NewsletterController extends Controller
                     'subject' => '¡Bienvenidx a MiKiwi! Tu regalo te espera 🎁',
                     'html' => $htmlContent,
                 ]);
+
+                if (!$response->successful()) {
+                    Log::error('Resend API Error: ' . $response->body());
+                }
+            } else {
+                Log::warning('Resend API Key is missing in configuration.');
             }
 
             return back()->with('success', '¡Gracias por suscribirte! Datos guardados correctamente.');
@@ -67,7 +73,7 @@ class NewsletterController extends Controller
     {
         return <<<HTML
         <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
-            <h1 style="color: #d697c8; text-align: center;">¡Bienvenidx a MiKiwi! ✨</h1>
+            <h1 style="color: #d697c8; text-align: center;">¡Bienvenidx a MiKiwi! 🥝​</h1>
             <p>Hola, gracias por suscribirte a nuestra newsletter.</p>
             
             <p><strong>$genderMsg</strong></p>
@@ -78,7 +84,7 @@ class NewsletterController extends Controller
                 <p style="font-size: 12px;">Úsalo en tu primera compra en mikiwi.com</p>
             </div>
 
-            <h3>🔥 Productos destacados que te encantarán:</h3>
+            <h3>Productos destacados que te encantarán:</h3>
             <ul>
                 <li><strong>Satisfyer Pro 2:</strong> El favorito indiscutible.</li>
                 <li><strong>Lelo Dot:</strong> Innovación y placer preciso.</li>
@@ -86,7 +92,7 @@ class NewsletterController extends Controller
             </ul>
 
             <div style="text-align: center; margin-top: 30px;">
-                <a href="https://mikiwi.com" style="background: #d697c8; color: white; padding: 12px 25px; text-decoration: none; border-radius: 50px; font-weight: bold;">IR A LA TIENDA</a>
+                <a href="http://127.0.0.1:8000" style="background: #d697c8; color: white; padding: 12px 25px; text-decoration: none; border-radius: 50px; font-weight: bold;">IR A LA TIENDA</a>
             </div>
 
             <hr style="border: none; border-top: 1px solid #eee; margin-top: 30px;">

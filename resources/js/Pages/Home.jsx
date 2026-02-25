@@ -36,26 +36,37 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
             <main>
                 {/* --- Hero Section --- */}
                 <section className="hero-minimal hero-v2">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.98 }}
-                        animate={{ opacity: 0.7, scale: 1 }}
-                        transition={{ duration: 1, ease: "easeOut" }}
-                        className="hero-watermark"
-                    >
-                        <img src="/assets/icons/mikiwi_logo.svg" alt="WATERMARK" />
-                    </motion.div>
+                    <div className="hero-main-content">
+                        {/* Wrapper for text and logo to handle split layout on desktop */}
+                        <div className="hero-split-container">
+                            {/* Brand Logo - appearing first on mobile, right on desktop */}
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 1.2, ease: "easeOut" }}
+                                className="hero-brand-logo"
+                            >
+                                <img src="/assets/icons/mikiwi_logo.svg" alt="MiKiwi Logo" />
+                            </motion.div>
 
-                    <div className="hero-center">
-                        <Link href={route('register')} className="btn-pill btn-hover-effect">
-                            ÚNETE A MIKIWI
-                        </Link>
-                    </div>
-
-                    <div className="hero-bottom">
-                        <p className="hero-subtitle">
-                            Ingeniería sensorial + diseño<br />
-                            exclusivo para elevar tu placer.
-                        </p>
+                            {/* Actions & Slogan - appearing second on mobile, left on desktop */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.8, delay: 0.6 }}
+                                className="hero-text-side"
+                            >
+                                <h1 className="hero-slogan">
+                                    Ingeniería sensorial + diseño<br />
+                                    exclusivo para elevar tu placer.
+                                </h1>
+                                <div className="hero-cta-box">
+                                    <Link href={route('register')} className="btn-pill btn-hover-effect">
+                                        ÚNETE A MIKIWI
+                                    </Link>
+                                </div>
+                            </motion.div>
+                        </div>
                     </div>
                 </section>
 
