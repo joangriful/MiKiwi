@@ -84,7 +84,7 @@ class NewsletterController extends Controller
                 <p style="font-size: 12px;">Úsalo en tu primera compra en mikiwi.com</p>
             </div>
 
-            <h3>🔥 Productos destacados que te encantarán:</h3>
+            <h3>Productos destacados que te encantarán:</h3>
             <ul>
                 <li><strong>Satisfyer Pro 2:</strong> El favorito indiscutible.</li>
                 <li><strong>Lelo Dot:</strong> Innovación y placer preciso.</li>
