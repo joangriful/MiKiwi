@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useEffect } from 'react';
-import { getCloudinaryUrl } from '@/Utils/cloudinary';
-import { usePartOptimization } from '@/Hooks/usePartOptimization';
+import { getCloudinaryUrl } from '@/Shared/Utils/cloudinary';
+import { usePartOptimization } from '@/Shared/Hooks/usePartOptimization';
 
 // Sub-component to handle individual layer optimization and rendering
 const LayerImage = ({ layer, partPositions }) => {

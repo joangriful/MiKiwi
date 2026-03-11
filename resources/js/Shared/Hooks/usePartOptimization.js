@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { getCloudinaryUrl } from '@/Utils/cloudinary';
+import { getCloudinaryUrl } from '@/Shared/Utils/cloudinary';
 
 export const usePartOptimization = ({ item, partPositions, currentView, category, isEditing = false, showImages = true, overrideConfig = null }) => {
 

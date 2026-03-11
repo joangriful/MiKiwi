@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { getCloudinaryUrl } from '@/Utils/cloudinary';
+import { getCloudinaryUrl } from '@/Shared/Utils/cloudinary';
 
 export default function PartPositionEditor({ part, view, onClose, onSave }) {
     const [position, setPosition] = useState({ x: 0, y: 0, scale: 1 });
