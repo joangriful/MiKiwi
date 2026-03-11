@@ -92,9 +92,9 @@
 ## 5) Fase 1 - Preparacion (1 sesion)
 
 ### 5.1 Crear estructura destino (sin mover codigo aun)
-- Crear `resources/js/Features/`
-- Crear `resources/js/Shared/`
-- Crear `resources/js/Layouts/` (si no existe)
+- [x] Crear `resources/js/Features/`
+- [x] Crear `resources/js/Shared/`
+- [x] Crear `resources/js/Layouts/` (si no existe)
 
 ### 5.2 Reglas de import
 - Activar alias `@/` para `resources/js/`.
@@ -113,20 +113,20 @@
 ## 6) Fase 2 - Shared (segura y rapida)
 
 ### 6.1 translations
-- Mover `resources/js/translations/` a `resources/js/Shared/I18n/`
-- Actualizar imports en el `LanguageProvider` y donde se usen JSON.
- - Verificar que el selector de idioma sigue funcionando.
+- [x] Mover `resources/js/translations/` a `resources/js/Shared/I18n/`
+- [ ] Actualizar imports en el `LanguageProvider` y donde se usen JSON.
+- [ ] Verificar que el selector de idioma sigue funcionando.
 
 ### 6.2 Utils
-- Mover `resources/js/Utils/` a `resources/js/Shared/Utils/`
-- Ejemplo: `cloudinary.js`, `managerUtils.js`
-- Verificar si algun util es solo de un feature y moverlo alli.
- - Actualizar imports con `@/Shared/Utils/...`.
+- [x] Mover `resources/js/Utils/` a `resources/js/Shared/Utils/`
+- [x] Ejemplo: `cloudinary.js`, `managerUtils.js`
+- [ ] Verificar si algun util es solo de un feature y moverlo alli.
+- [x] Actualizar imports con `@/Shared/Utils/...`.
 
 ### 6.3 Hooks
-- Mover `resources/js/Hooks/` a `resources/js/Shared/Hooks/`
-- Si algun hook es especifico (ej. configurador), moverlo al feature correcto.
- - Actualizar imports con `@/Shared/Hooks/...`.
+- [x] Mover `resources/js/Hooks/` a `resources/js/Shared/Hooks/`
+- [ ] Si algun hook es especifico (ej. configurador), moverlo al feature correcto.
+- [ ] Actualizar imports con `@/Shared/Hooks/...`.
 
 ## 7) Fase 3 - Features pequenas (Marketing)
 
