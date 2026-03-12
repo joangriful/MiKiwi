@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import InputError from '@/Components/InputError';
-import AuthSocialButtons from '@/Components/Auth/AuthSocialButtons';
+import AuthSocialButtons from '@/Features/Auth/Components/AuthSocialButtons';
 import { Link, useForm } from '@inertiajs/react';
 
 export default function RegisterForm({ autoFocus = false }) {

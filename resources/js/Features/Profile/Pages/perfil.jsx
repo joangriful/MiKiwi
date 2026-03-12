@@ -3,14 +3,13 @@ import Header from "@/Components/Common/Header";
 import Footer from "@/Components/Common/Footer";
 import { useState } from "react";
 import { Head } from '@inertiajs/react';
-import ProfileSidebar from "@/Components/Profile/ProfileSidebar";
-import ProfileTab from "@/Components/Profile/Tabs/ProfileTab";
-import OrderHistoryTab from "@/Components/Profile/Tabs/OrderHistoryTab";
-import EditAccountTab from "@/Components/Profile/Tabs/EditAccountTab";
-import CardsTab from "@/Components/Profile/Tabs/CardsTab"; // Added Import
-import PreferencesTab from "@/Components/Profile/Tabs/PreferencesTab";
-import ReturnsTab from "@/Components/Profile/Tabs/ReturnsTab";
-import AddressesTab from "@/Components/Profile/Tabs/AddressesTab";
+import ProfileSidebar from "@/Features/Profile/Components/ProfileSidebar";
+import ProfileTab from "@/Features/Profile/Components/Tabs/ProfileTab";
+import OrderHistoryTab from "@/Features/Profile/Components/Tabs/OrderHistoryTab";
+import EditAccountTab from "@/Features/Profile/Components/Tabs/EditAccountTab";
+import CardsTab from "@/Features/Profile/Components/Tabs/CardsTab"; // Added Import
+import PreferencesTab from "@/Features/Profile/Components/Tabs/PreferencesTab";
+import ReturnsTab from "@/Features/Profile/Components/Tabs/ReturnsTab";
 
 export default function Perfil({ recommendedProducts, orders = [] }) {
     const [activeTab, setActiveTab] = useState('profile');
@@ -29,8 +28,6 @@ export default function Perfil({ recommendedProducts, orders = [] }) {
                 return <PreferencesTab />;
             case 'returns':
                 return <ReturnsTab />;
-            case 'addresses':
-                return <AddressesTab />;
             default:
                 return <ProfileTab recommendedProducts={recommendedProducts} />;
         }
@@ -59,5 +56,3 @@ export default function Perfil({ recommendedProducts, orders = [] }) {
         </div>
     );
 }
-
-

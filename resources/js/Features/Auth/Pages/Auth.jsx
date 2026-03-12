@@ -2,12 +2,12 @@ import React from 'react';
 import { Head, Link } from '@inertiajs/react';
 
 import MikiwiLogo from '@/Components/MikiwiLogo';
-import LoginForm from '@/Components/Auth/LoginForm';
-import RegisterForm from '@/Components/Auth/RegisterForm';
-import ForgotPasswordForm from '@/Components/Auth/ForgotPasswordForm';
-import ResetPasswordForm from '@/Components/Auth/ResetPasswordForm';
-import ConfirmPasswordForm from '@/Components/Auth/ConfirmPasswordForm';
-import VerifyEmailForm from '@/Components/Auth/VerifyEmailForm';
+import LoginForm from '@/Features/Auth/Components/LoginForm';
+import RegisterForm from '@/Features/Auth/Components/RegisterForm';
+import ForgotPasswordForm from '@/Features/Auth/Components/ForgotPasswordForm';
+import ResetPasswordForm from '@/Features/Auth/Components/ResetPasswordForm';
+import ConfirmPasswordForm from '@/Features/Auth/Components/ConfirmPasswordForm';
+import VerifyEmailForm from '@/Features/Auth/Components/VerifyEmailForm';
 
 export default function Auth({ view, title, subtitle, status, canResetPassword, token, email }) {
     const renderForm = () => {

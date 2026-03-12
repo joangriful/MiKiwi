@@ -19,6 +19,14 @@ createInertiaApp({
             return directMatch();
         }
 
+        if (name.includes('/')) {
+            const [feature, ...rest] = name.split('/');
+            const featurePath = `./Features/${feature}/Pages/${rest.join('/')}.jsx`;
+            if (pages[featurePath]) {
+                return pages[featurePath]();
+            }
+        }
+
         const featureMatchKey = Object.keys(pages).find((path) => path.endsWith(`/${name}.jsx`));
         if (featureMatchKey) {
             return pages[featureMatchKey]();

@@ -22,7 +22,6 @@ export default function ProfileSidebar({ activeTab, setActiveTab }) {
             icon: "preferences.svg",
         },
         { id: "returns", label: "Devoluciones", icon: "refund.svg" },
-        { id: "addresses", label: "Direcciones", icon: "address.svg" },
     ];
 
     const [isMobileOpen, setIsMobileOpen] = useState(false);

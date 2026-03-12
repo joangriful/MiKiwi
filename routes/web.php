@@ -270,12 +270,6 @@ Route::middleware('auth')->group(function () {
     })->name('perfil.view');
 
     // 📍 Gestión de Direcciones del Usuario
-    Route::prefix('addresses')->name('addresses.')->group(function () {
-        Route::get('/', [UserAddressController::class, 'index'])->name('index');
-        Route::post('/', [UserAddressController::class, 'store'])->name('store');
-        Route::put('/{address}', [UserAddressController::class, 'update'])->name('update');
-        Route::delete('/{address}', [UserAddressController::class, 'destroy'])->name('destroy');
-    });
 });
 
 /*
