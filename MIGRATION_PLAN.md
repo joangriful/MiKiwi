@@ -85,6 +85,22 @@
 6. Configurador 3D
 7. Admin / Manager
 
+### Indice de fases (orden oficial para ramas/commits)
+
+1. Fase 1 - Preparacion
+2. Fase 2 - Shared
+3. Fase 3 - Marketing
+4. Fase 4 - Auth y Profile
+5. Fase 5 - Catalogo / Productos
+6. Fase 6 - Checkout
+7. Fase 7 - Configurador 3D
+8. Fase 8 - Admin / Manager
+9. Fase 9 - CSS y Tailwind (paralelo por fases)
+10. Fase 10 - app.jsx minimo (rendimiento)
+11. Fase 11 - Backend DDD-light
+12. Fase 12 - Tests y CI
+13. Fase 13 - Criterios de finalizacion + Riesgos
+
 ### Regla de dependencias (orden real)
 
 - Siempre empezar por el modulo con menos dependencias.
@@ -100,7 +116,7 @@
 5. Ejecutar build local (si es posible).
 6. Probar rutas afectadas manualmente.
 
-## 5) Fase 1 - Preparacion (1 sesion)
+### Fase 1 - Preparacion (1 sesion)
 
 ### 5.1 Crear estructura destino (sin mover codigo aun)
 
@@ -125,7 +141,7 @@
 
 - Asignar features por persona para evitar conflictos.
 
-## 6) Fase 2 - Shared (segura y rapida)
+### Fase 2 - Shared (segura y rapida)
 
 ### 6.1 translations
 
@@ -198,7 +214,7 @@
 - Todo texto visible nuevo debe salir de `t()`.
 - Checklist por pagina: “no hay textos hardcodeados”.
 
-## 7) Fase 3 - Features pequenas (Marketing)
+### Fase 3 - Features pequenas (Marketing)
 
 ### 7.1 Crear feature Marketing
 
@@ -249,7 +265,7 @@
 - [x] FAQ
 - [x] LegalNotice
 
-## 8) Fase 4 - Auth y Profile
+### Fase 4 - Auth y Profile
 
 ### 8.1 Feature Auth
 
@@ -277,7 +293,7 @@
 3. Actualizar imports.
 4. Validar editar perfil y cambios basicos.
 
-## 9) Fase 5 - Catalogo / Productos
+### Fase 5 - Catalogo / Productos
 
 ### 9.1 Feature Catalog
 
@@ -305,7 +321,7 @@
 
 - Verificar import paths a assets y css
 
-## 10) Fase 6 - Checkout
+### Fase 6 - Checkout
 
 ### 10.1 Feature Checkout
 
@@ -325,7 +341,7 @@
 
 - Mantener integraciones en el feature mientras no se refactorice backend
 
-## 11) Fase 7 - Configurador 3D
+### Fase 7 - Configurador 3D
 
 ### 11.1 Feature Configurator
 
@@ -346,14 +362,17 @@
 
 - Verificar imports de `three`, `fiber`, `drei`
 
-## 12) Fase 8 - Admin / Manager
+### Fase 8 - Admin / Manager
 
 ### 12.1 Feature Admin
 
 - `Features/Admin/Pages/`
 - `Features/Admin/Components/`
 - Mover `Components/ComponentsManager` y `Pages/ComponentsManager`
- - Actualizar `useComponentsManager` a `Features/**`
+- Actualizar `useComponentsManager` a `Features/**`
+
+### Nota de secuencia
+- Tras completar Fase 8, siguen en orden: Fase 9, Fase 10, Fase 11, Fase 12, y luego Fase 13.
 
 #### Pasos exactos Admin
 
@@ -362,7 +381,7 @@
 3. Actualizar imports.
 4. Validar pantallas de admin.
 
-## 13) CSS y Tailwind (paralelo por fases)
+### Fase 9 - CSS y Tailwind (paralelo por fases)
 
 ### 13.1 Reducir CSS global
 
@@ -380,7 +399,7 @@
 - Solo cuando Tailwind sea insuficiente o muy verboso
 - `Component.module.css` o `feature.css` importado localmente
 
-## 14) app.jsx minimo (rendimiento)
+### Fase 10 - app.jsx minimo (rendimiento)
 
 - Solo `createInertiaApp`, providers indispensables y CSS critico
 - Mover `ToastContainer` y extras a Layouts o Pages
@@ -392,7 +411,7 @@
 3. Dejar solo providers esenciales (ej. LanguageProvider).
 4. Verificar que no hay cambio visible.
 
-## 15) Backend DDD-light (cuando el frontend este estable)
+### Fase 11 - Backend DDD-light (cuando el frontend este estable)
 
 ### 15.1 Crear carpetas base
 
@@ -447,7 +466,7 @@
 - Configurador
 - Admin
 
-## 16) Tests y CI
+### Fase 12 - Tests y CI
 
 ### 16.1 Tests antes y despues
 
@@ -470,7 +489,7 @@
 3. Ejecutar migraciones antes de tests.
 4. Correr `php artisan test`.
 
-## 17) Criterios de finalizacion
+### Fase 13 - Criterios de finalizacion
 
 - Todas las paginas resuelven desde `Features/`
 - No hay imports desde `Pages/` o `Components/` antiguos
@@ -482,7 +501,7 @@
     - tests OK
     - sin codigo legacy
 
-## 18) Riesgos y mitigaciones
+### Fase 13 - Riesgos y mitigaciones
 
 - Imports rotos: mover poco a poco y validar
 - CSS perdido: validar cada pagina migrada
