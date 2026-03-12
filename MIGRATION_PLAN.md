@@ -353,6 +353,7 @@
 - `Features/Admin/Pages/`
 - `Features/Admin/Components/`
 - Mover `Components/ComponentsManager` y `Pages/ComponentsManager`
+ - Actualizar `useComponentsManager` a `Features/**`
 
 #### Pasos exactos Admin
 

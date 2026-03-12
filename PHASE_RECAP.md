@@ -64,6 +64,16 @@
 - Agrupar todo el checkout en un solo feature.
 - Reducir acoplamientos y facilitar cambios futuros.
 
+## Fase 8 (Admin / ComponentsManager)
+**Que hicimos**
+- Movimos `ComponentsManager` a `Features/Admin` (Pages + Components).
+- Actualizamos `useComponentsManager` para escanear `Features/**` y ajustar rutas.
+- Ajustamos imports del Admin a `@/Features/Admin/...`.
+
+**Por que**
+- Mantener el panel admin alineado con la nueva estructura por features.
+- Evitar roturas por rutas antiguas.
+
 ## Fase 7 (Configurador 3D)
 **Que hicimos**
 - Movimos paginas `Configurador/*`, `DollConfigurator` y `DollConfigTest` a `Features/Configurator/Pages`.

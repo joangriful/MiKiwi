@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
-import Toast from '../Common/Toast';
+import Toast from '@/Components/Common/Toast';
 import AdminConfirmationModal from './AdminConfirmationModal';
 
 export default function UsersManager({ users }) {

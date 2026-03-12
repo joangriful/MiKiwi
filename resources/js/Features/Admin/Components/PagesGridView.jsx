@@ -52,11 +52,11 @@ const PagesGridView = ({
                         {SelectedPages.map((item) => {
                             let props = {};
                             let ComponentToRender = item.Component;
-                            
+
                             if (item.name === 'ProductPage') {
                                 // Use preview version without Header/Footer
                                 ComponentToRender = React.lazy(() => 
-                                    import('../../Pages/ProductPage').then(module => ({ 
+                                    import('@/Features/Catalog/Pages/ProductPage').then(module => ({ 
                                         default: module.ProductPagePreview 
                                     }))
                                 );

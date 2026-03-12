@@ -1,12 +1,12 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { buildFileTree, flattenTree, parseColorsFromCss } from '@/Shared/Utils/managerUtils';
-import cssContent from '../../../css/colores.css?raw';
+import cssContent from '@/../css/colores.css?raw';
 
 // Imports
-const componentImports = import.meta.glob('../../Components/**/*.jsx');
-const pageImports = import.meta.glob('../../Pages/**/*.jsx');
-const componentRawStart = import.meta.glob('../../Components/**/*.jsx', { query: '?raw', import: 'default' });
-const pageRawStart = import.meta.glob('../../Pages/**/*.jsx', { query: '?raw', import: 'default' });
+const componentImports = import.meta.glob('/resources/js/Features/**/Components/**/*.jsx');
+const pageImports = import.meta.glob('/resources/js/Features/**/Pages/**/*.jsx');
+const componentRawStart = import.meta.glob('/resources/js/Features/**/Components/**/*.jsx', { query: '?raw', import: 'default' });
+const pageRawStart = import.meta.glob('/resources/js/Features/**/Pages/**/*.jsx', { query: '?raw', import: 'default' });
 const DYNAMIC_COLORS = parseColorsFromCss(cssContent);
 
 export const useComponentsManager = () => {
@@ -51,8 +51,11 @@ export const useComponentsManager = () => {
     // Tree/List Logic
     const itemsList = useMemo(() => {
         return Object.keys(currentImports).map(path => {
-            const base = sourceType === 'components' ? '../../Components/' : '../../Pages/';
-            const name = path.replace(base, '').replace('.jsx', '');
+            const normalizedPath = path.replace(/\\/g, '/');
+            const name = normalizedPath
+                .replace('/resources/js/', '')
+                .replace(/^\/+/, '')
+                .replace('.jsx', '');
             return { path, name };
         }).filter(item => {
             const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
