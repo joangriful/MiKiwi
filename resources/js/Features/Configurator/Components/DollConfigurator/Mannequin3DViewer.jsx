@@ -2,7 +2,7 @@ import React, { useState, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Environment, ContactShadows } from '@react-three/drei';
 import MannequinModel from './MannequinModel';
-import ModelErrorBoundary from '@/Components/Configurador/ModelErrorBoundary';
+import ModelErrorBoundary from '@/Features/Configurator/Components/Configurador/ModelErrorBoundary';
 
 const availableModels = [
     {

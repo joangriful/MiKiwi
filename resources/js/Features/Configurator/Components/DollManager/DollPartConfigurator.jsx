@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import PartSelector from '@/Components/DollConfigurator/PartSelector';
+import PartSelector from '@/Features/Configurator/Components/DollConfigurator/PartSelector';
 // PartPositionEditor import removed as it is superseded by In-Card/Overlay editing and was unused in render
-import OptionsBar from '@/Components/DollConfigurator/OptionsBar';
+import OptionsBar from '@/Features/Configurator/Components/DollConfigurator/OptionsBar';
 
 export default function DollPartConfigurator({ views, saving, setMessage, partPositions, onSavePosition }) {
     const [currentView, setCurrentView] = useState('front');

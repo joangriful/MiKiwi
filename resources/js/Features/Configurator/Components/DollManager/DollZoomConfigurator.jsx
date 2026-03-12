@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CloseUp from '@/Components/DollConfigurator/CloseUp';
+import CloseUp from '@/Features/Configurator/Components/DollConfigurator/CloseUp';
 
 export default function DollZoomConfigurator({ currentSelections, currentZoom, onZoomChange }) {
     // We use the 'front' view selections for configuration.

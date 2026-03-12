@@ -332,6 +332,8 @@
 - `Features/Configurator/Pages/`
 - `Features/Configurator/Components/`
 - Mover `Pages/Configurador` y `Components/Configurador` + `DollConfigurator`
+ - Mover `DollConfigTest.jsx` y `DollConfigurator.jsx`
+ - Mover `Quiz.css` junto a `Quiz.jsx`
 
 #### Pasos exactos Configurator
 

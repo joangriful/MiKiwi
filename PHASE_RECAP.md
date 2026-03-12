@@ -63,3 +63,15 @@
 **Por que**
 - Agrupar todo el checkout en un solo feature.
 - Reducir acoplamientos y facilitar cambios futuros.
+
+## Fase 7 (Configurador 3D)
+**Que hicimos**
+- Movimos paginas `Configurador/*`, `DollConfigurator` y `DollConfigTest` a `Features/Configurator/Pages`.
+- Movimos componentes `Configurador`, `DollConfigurator` y `DollManager` a `Features/Configurator/Components`.
+- Mantuvimos `Quiz.css` junto a `Quiz.jsx`.
+- Actualizamos imports a `@/Features/Configurator/...`.
+
+**Por que**
+- Agrupar todo el configurador 3D en un solo feature.
+- Mantener compatibilidad con rutas de Inertia sin tocar backend.
+- Evitar imports cruzados entre carpetas antiguas.
