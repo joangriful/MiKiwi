@@ -285,6 +285,14 @@
 - `Features/Catalog/Components/`
 - Mover `ProductPage` y `Products` relacionados
 
+### 9.2 Feature Home (mismo paso)
+
+- `Features/Home/Pages/`
+- `Features/Home/Components/`
+- `Features/Home/hooks/`
+- `Features/Home/utils/`
+- Mover `Home.jsx` y `Home.css` (CSS junto a la pagina)
+
 #### Pasos exactos Catalog
 
 1. Identificar componentes de producto en `Components/ProductPage`.
@@ -293,7 +301,7 @@
 4. Actualizar imports.
 5. Validar listados y detalle de producto.
 
-### 9.2 Revisar imagenes y carousels
+### 9.3 Revisar imagenes y carousels
 
 - Verificar import paths a assets y css
 

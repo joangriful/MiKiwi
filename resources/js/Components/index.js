@@ -1,15 +1,14 @@
 export { default as Header } from './Common/Header';
 export { default as Footer } from './Common/Footer';
-export { default as ProductImageCarousel } from './ProductPage/ProductImageCarousel';
-export { default as MainProductImage } from './ProductPage/MainProductImage';
-export { default as ProductInfo } from './ProductPage/ProductInfo';
-export { default as ProductGridSection } from './ProductPage/ProductGridSection';
-export { default as ProductCarousel } from './ProductPage/ProductCarousel';
-export { default as ProductCard } from './ProductPage/ProductCard';
-export { default as ProductImagePlaceholder } from './ProductPage/ProductImagePlaceholder';
-export { default as ProductCardInfo } from './ProductPage/ProductCardInfo';
-export { default as ProductShowcase } from './ProductPage/ProductShowcase';
-export { default as RelatedProductsSection } from './ProductPage/RelatedProductsSection';
-export { default as FilterMenu } from './ProductPage/FilterMenu';
-
+export { default as ProductImageCarousel } from '../Features/Catalog/Components/ProductImageCarousel';
+export { default as MainProductImage } from '../Features/Catalog/Components/MainProductImage';
+export { default as ProductInfo } from '../Features/Catalog/Components/ProductInfo';
+export { default as ProductGridSection } from '../Features/Catalog/Components/ProductGridSection';
+export { default as ProductCarousel } from '../Features/Catalog/Components/ProductCarousel';
+export { default as ProductCard } from '../Features/Catalog/Components/ProductCard';
+export { default as ProductImagePlaceholder } from '../Features/Catalog/Components/ProductImagePlaceholder';
+export { default as ProductCardInfo } from '../Features/Catalog/Components/ProductCardInfo';
+export { default as ProductShowcase } from '../Features/Catalog/Components/ProductShowcase';
+export { default as RelatedProductsSection } from '../Features/Catalog/Components/RelatedProductsSection';
+export { default as FilterMenu } from '../Features/Catalog/Components/FilterMenu';
 

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Link } from '@inertiajs/react';
-import ProductCarousel from '@/Components/ProductPage/ProductCarousel';
+import ProductCarousel from '@/Features/Catalog/Components/ProductCarousel';
 
 export default function FeaturedProductsSection({ featuredProducts = [] }) {
     const carouselRef = useRef(null);
