@@ -3,10 +3,10 @@ import { Head, useForm, Link, router } from '@inertiajs/react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import axios from 'axios';
-import CartStep from '@/Components/Checkout/CartStep';
-import InfoStep from '@/Components/Checkout/InfoStep';
-import ShippingStep from '@/Components/Checkout/ShippingStep';
-import PaymentStep from '@/Components/Checkout/PaymentStep';
+import CartStep from '@/Features/Checkout/Components/CartStep';
+import InfoStep from '@/Features/Checkout/Components/InfoStep';
+import ShippingStep from '@/Features/Checkout/Components/ShippingStep';
+import PaymentStep from '@/Features/Checkout/Components/PaymentStep';
 import Header from '@/Components/Common/Header';
 import Footer from '@/Components/Common/Footer';
 

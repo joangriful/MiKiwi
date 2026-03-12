@@ -312,6 +312,7 @@
 - `Features/Checkout/Pages/`
 - `Features/Checkout/Components/`
 - Mover `Pages/Checkout` y `Components/Checkout`
+ - Mover `Cart.jsx` a `Features/Checkout/Pages/Cart.jsx`
 
 #### Pasos exactos Checkout
 
