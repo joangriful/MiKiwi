@@ -174,26 +174,26 @@
 ## 7) Fase 3 - Features pequenas (Marketing)
 
 ### 7.1 Crear feature Marketing
-- `resources/js/Features/Marketing/Pages/`
-- `resources/js/Features/Marketing/Components/` (si hace falta)
+- [x] `resources/js/Features/Marketing/Pages/`
+- [x] `resources/js/Features/Marketing/Components/` (si hace falta)
 
 ### 7.2 Mover paginas estaticas
-- AboutUs -> `Features/Marketing/Pages/about-us.jsx`
-- FAQ -> `Features/Marketing/Pages/faq.jsx`
-- LegalNotice -> `Features/Marketing/Pages/legal-notice.jsx`
-- PrivacyPolicy -> `Features/Marketing/Pages/privacy-policy.jsx`
-- TermsOfUse -> `Features/Marketing/Pages/terms-of-use.jsx`
-- TermsOfContract -> `Features/Marketing/Pages/terms-of-contract.jsx`
-- CookiePolicy -> `Features/Marketing/Pages/cookie-policy.jsx`
-- Sitemap -> `Features/Marketing/Pages/sitemap.jsx`
-- Sustainability -> `Features/Marketing/Pages/sustainability.jsx`
-- Contact -> `Features/Marketing/Pages/contact.jsx`
-- Company -> `Features/Marketing/Pages/company.jsx`
-- Offers -> `Features/Marketing/Pages/offers.jsx`
-- Subscriptions -> `Features/Marketing/Pages/subscriptions.jsx`
-- GiftPacks -> `Features/Marketing/Pages/gift-packs.jsx`
-- NuestrosKiwis -> `Features/Marketing/Pages/nuestros-kiwis.jsx`
-- colecciones -> `Features/Marketing/Pages/colecciones.jsx`
+- [x] AboutUs -> `Features/Marketing/Pages/about-us.jsx`
+- [x] FAQ -> `Features/Marketing/Pages/faq.jsx`
+- [x] LegalNotice -> `Features/Marketing/Pages/legal-notice.jsx`
+- [x] PrivacyPolicy -> `Features/Marketing/Pages/privacy-policy.jsx`
+- [x] TermsOfUse -> `Features/Marketing/Pages/terms-of-use.jsx`
+- [x] TermsOfContract -> `Features/Marketing/Pages/terms-of-contract.jsx`
+- [x] CookiePolicy -> `Features/Marketing/Pages/cookie-policy.jsx`
+- [x] Sitemap -> `Features/Marketing/Pages/sitemap.jsx`
+- [x] Sustainability -> `Features/Marketing/Pages/sustainability.jsx`
+- [x] Contact -> `Features/Marketing/Pages/contact.jsx`
+- [x] Company -> `Features/Marketing/Pages/company.jsx`
+- [x] Offers -> `Features/Marketing/Pages/offers.jsx`
+- [x] Subscriptions -> `Features/Marketing/Pages/subscriptions.jsx`
+- [x] GiftPacks -> `Features/Marketing/Pages/gift-packs.jsx`
+- [x] NuestrosKiwis -> `Features/Marketing/Pages/nuestros-kiwis.jsx`
+- [x] colecciones -> `Features/Marketing/Pages/colecciones.jsx`
 
 #### Pasos exactos para mover cada pagina estatica
 1) Crear archivo destino con nombre en `kebab-case`.
@@ -210,6 +210,11 @@
 #### Ejemplo de estrategia (conceptual)
 - `Pages/**/*.jsx` y `Features/**/Pages/**/*.jsx`
 - Si existe una pagina duplicada con el mismo nombre, solo debe existir en un lugar.
+
+### Validacion minima (Marketing)
+- [x] AboutUs
+- [x] FAQ
+- [x] LegalNotice
 
 ## 8) Fase 4 - Auth y Profile
 
