@@ -114,7 +114,7 @@
 
 ### 6.1 translations
 - [x] Mover `resources/js/translations/` a `resources/js/Shared/I18n/`
-- [ ] Actualizar imports en el `LanguageProvider` y donde se usen JSON.
+- [x] Actualizar imports en el `LanguageProvider` y donde se usen JSON.
 - [ ] Verificar que el selector de idioma sigue funcionando.
 
 ### 6.2 Utils
@@ -126,7 +126,50 @@
 ### 6.3 Hooks
 - [x] Mover `resources/js/Hooks/` a `resources/js/Shared/Hooks/`
 - [ ] Si algun hook es especifico (ej. configurador), moverlo al feature correcto.
-- [ ] Actualizar imports con `@/Shared/Hooks/...`.
+- [x] Actualizar imports con `@/Shared/Hooks/...`.
+
+## 6.5) i18n Global (Opcion B) - Plan de implementacion
+> Estado actual: i18n eliminado por decision del equipo. Se mantiene estructura `Shared/I18n/` para futura implementacion.
+
+### 6.5.1 Estandarizar claves (prevencion de incoherencias)
+- Definir convencion de claves: `page.section.item`.
+- Usar `es.json` como plantilla base.
+- Replicar las mismas claves en `en.json`, `fr.json`, `de.json`.
+- Si falta una clave, el sistema debe usar fallback (`key`) para no romper la UI.
+
+### 6.5.2 Crear helper global `t(key, vars?)`
+- Archivo: `resources/js/Shared/I18n/index.js`.
+- Exportar `translations` por idioma.
+- Exportar `t(key, vars)` con:
+  - lookup seguro por clave.
+  - fallback a la clave si no existe.
+  - soporte de placeholders simples `{name}`.
+
+### 6.5.3 Actualizar `LanguageContext`
+- Importar `translations` desde `Shared/I18n`.
+- Exponer `t(key, vars)` en el contexto.
+- Mantener `currentLanguage`, `changeLanguage`, `languages`.
+
+### 6.5.4 Migracion gradual por bloques
+- Empezar por `Marketing` (AboutUs, FAQ, Legal, etc.).
+- Reemplazar textos hardcodeados por `t('page.section.item')`.
+- Eliminar imports directos de JSON en cada pagina.
+
+### 6.5.5 Validacion de claves (ataque a typos)
+- Opcion rapida: comparar claves entre idiomas a ojo en cada feature.
+- Opcion profesional: script simple que compare claves y avise de faltantes.
+
+### 6.5.6 Rendimiento (bundle)
+- Si los JSON crecen mucho, pasar a carga dinamica por idioma.
+- Por ahora, cargar todos si el tamaño es pequeno.
+
+### 6.5.7 Textos dinamicos
+- Usar placeholders en JSON: `"hello": "Hola, {name}"`.
+- `t('hello', { name: 'Ana' })`.
+
+### 6.5.8 Regla de equipo (evitar mezcla)
+- Todo texto visible nuevo debe salir de `t()`.
+- Checklist por pagina: “no hay textos hardcodeados”.
 
 ## 7) Fase 3 - Features pequenas (Marketing)
 

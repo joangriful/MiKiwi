@@ -5,7 +5,6 @@ import '../css/colores.css';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
-import { LanguageProvider } from './Contexts/LanguageContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -22,7 +21,7 @@ createInertiaApp({
         const root = createRoot(el);
 
         root.render(
-            <LanguageProvider>
+            <>
                 <App {...props} />
                 <ToastContainer
                     position="bottom-right"
@@ -36,7 +35,7 @@ createInertiaApp({
                     pauseOnHover
                     theme="colored"
                 />
-            </LanguageProvider>
+            </>
         );
     },
     progress: {
