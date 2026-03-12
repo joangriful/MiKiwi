@@ -1,4 +1,4 @@
-# Recap claro (hasta Fase 4)
+# Recap claro (hasta Fase 6)
 
 ## Contexto rapido
 - Objetivo: refactor por features sin tocar Laravel.
@@ -42,3 +42,24 @@
 - Separar autenticacion y perfil como modulos claros.
 - Evitar cambios en Laravel y mantener rutas actuales.
 - Reducir mantenimiento quitando funciones no usadas.
+
+## Fase 5 (Catalogo + Home)
+**Que hicimos**
+- Movimos `Products` y `ProductPage` a `Features/Catalog`.
+- Movimos `Home` a `Features/Home` con `Home.css` junto a la pagina.
+- Actualizamos imports y reexports para mantener compatibilidad.
+
+**Por que**
+- Separar catalogo y home como features claros.
+- Mantener compatibilidad con Inertia sin tocar backend.
+- Reducir rutas relativas fragiles.
+
+## Fase 6 (Checkout)
+**Que hicimos**
+- Movimos `Cart` y `Success` a `Features/Checkout/Pages`.
+- Movimos pasos de checkout a `Features/Checkout/Components`.
+- Actualizamos imports a `@/Features/Checkout/...`.
+
+**Por que**
+- Agrupar todo el checkout en un solo feature.
+- Reducir acoplamientos y facilitar cambios futuros.
