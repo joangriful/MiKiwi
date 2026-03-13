@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from '@/Components/Common/Header';
-import Footer from '@/Components/Common/Footer';
+import Header from '@/Components/Common/Header/Header';
+import Footer from '@/Components/Common/Footer/Footer';
 import '@/Features/Configurator/Pages/Configurador/configurador.css';
 
 export default function ConfiguradorLayout({ children, transparentSubHeader = false }) {
@@ -22,3 +22,4 @@ export default function ConfiguradorLayout({ children, transparentSubHeader = fa
         </div>
     );
 }
+
