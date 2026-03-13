@@ -522,26 +522,28 @@
 
 ### Fase 12 - Tests y CI
 
+**Estado:** completado
+
 ### 16.1 Tests antes y despues
 
-- Tests unitarios basicos para casos de uso
-- Tests de integracion para rutas criticas
+- [x] Tests unitarios basicos para casos de uso
+- [x] Tests de integracion para rutas criticas
 
 ### 16.2 TODO: GitHub Actions
 
-- Pipeline con:
+- [x] Pipeline con:
     - `composer install`
     - `npm ci`
     - `npm run build`
     - `php artisan test`
-- Configurar base de datos de tests en CI.
+- [x] Configurar base de datos de tests en CI.
 
 #### CI con DB de tests (pasos)
 
-1. Crear DB de tests en el workflow (SQLite o MySQL).
-2. Definir `.env.testing` o variables en el workflow.
-3. Ejecutar migraciones antes de tests.
-4. Correr `php artisan test`.
+1. [x] Crear DB de tests en el workflow (SQLite o MySQL).
+2. [x] Definir `.env.testing` o variables en el workflow.
+3. [x] Ejecutar migraciones antes de tests.
+4. [x] Correr `php artisan test`.
 
 ### Fase 13 - Criterios de finalizacion
 
