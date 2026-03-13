@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import TextInput from '@/Components/TextInput';
-import InputLabel from '@/Components/InputLabel';
+import TextInput from '@/Components/TextInput/TextInput';
+import InputLabel from '@/Components/InputLabel/InputLabel';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import es from 'react-phone-input-2/lang/es.json';
+import './InfoStep.css';
 
 export default function InfoStep({ data, setData, onNext, onBack, user, errors }) {
     const spanishPostalcodes = {
@@ -303,3 +304,4 @@ export default function InfoStep({ data, setData, onNext, onBack, user, errors }
         </form>
     );
 }
+

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './ShippingStep.css';
 
 export default function ShippingStep({ data, setData, onNext, onBack }) {
     const [pickupPoints, setPickupPoints] = useState([]);

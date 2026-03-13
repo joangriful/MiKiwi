@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios';
-import InputLabel from '@/Components/InputLabel';
+import InputLabel from '@/Components/InputLabel/InputLabel';
+import './PaymentStep.css';
 
 export default function PaymentStep({ data, setData, auth, onSubmit, onBack, processing }) {
     const isAdmin = auth?.user?.role === 'admin';
@@ -398,3 +399,4 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
 
     );
 }
+

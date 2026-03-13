@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useForm, router } from "@inertiajs/react";
+import './CartStep.css';
 
 export default function CartStep({ cart, onNext, popularProducts = [] }) {
     const { delete: destroy, patch, processing } = useForm();

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import Header from '@/Components/Common/Header';
-import Footer from '@/Components/Common/Footer';
+import Header from '@/Components/Common/Header/Header';
+import Footer from '@/Components/Common/Footer/Footer';
 
 export default function Success() {
     return (
@@ -46,3 +46,4 @@ export default function Success() {
         </div>
     );
 }
+
