@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from '@inertiajs/react';
 import { toast } from 'react-toastify';
+import './ClaimsFormComponent.css';
 
 export default function ClaimsFormComponent() {
     const [formData, setFormData] = useState({

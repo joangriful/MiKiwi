@@ -1,8 +1,8 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import Header from '@/Components/Common/Header';
-import Footer from '@/Components/Common/Footer';
-import ClaimsFormComponent from '@/Features/Claims/Components/ClaimsFormComponent';
+import Header from '@/Components/Common/Header/Header';
+import Footer from '@/Components/Common/Footer/Footer';
+import ClaimsFormComponent from '@/Features/Claims/Components/ClaimsFormComponent/ClaimsFormComponent';
 
 export default function ClaimsForm() {
     return (
@@ -32,3 +32,4 @@ export default function ClaimsForm() {
         </div>
     );
 }
+
