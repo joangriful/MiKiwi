@@ -4,6 +4,8 @@ import FooterSocial from '../FooterSections/FooterSocial/FooterSocial';
 import FooterNewsletter from '../FooterSections/FooterNewsletter/FooterNewsletter';
 import FooterBottom from '../FooterSections/FooterBottom/FooterBottom';
 import './Footer.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Footer() {
     return (
@@ -22,7 +24,18 @@ export default function Footer() {
 
                 <FooterBottom />
             </div>
+            <ToastContainer
+                position="bottom-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </footer>
     );
 }
-
