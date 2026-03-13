@@ -3,8 +3,7 @@ import '../css/app.css';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import AppLayout from '@/Layouts/AppLayout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -36,21 +35,9 @@ createInertiaApp({
         const root = createRoot(el);
 
         root.render(
-            <>
+            <AppLayout>
                 <App {...props} />
-                <ToastContainer
-                    position="bottom-right"
-                    autoClose={3000}
-                    hideProgressBar={false}
-                    newestOnTop
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="colored"
-                />
-            </>
+            </AppLayout>
         );
     },
     progress: {

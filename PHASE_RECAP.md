@@ -98,3 +98,13 @@
 - Evitar CSS global innecesario y mover estilos a su feature.
 - Mantener tokens globales claros y centralizados.
 - Reducir riesgos de CSS “fantasma” importado en todas las paginas.
+
+## Fase 10 (app.jsx minimo)
+**Que hicimos**
+- Creamos `AppLayout` para alojar el `ToastContainer`.
+- Quitamos `ToastContainer` y sus imports de `app.jsx`.
+- Dejamos `app.jsx` con lo minimo (Inertia + resolver + layout).
+
+**Por que**
+- Reducir peso en el arranque global.
+- Mantener extras como toasts fuera del bootstrap principal.

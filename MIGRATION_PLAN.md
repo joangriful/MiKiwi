@@ -441,6 +441,17 @@
 3. Dejar solo providers esenciales (ej. LanguageProvider).
 4. Verificar que no hay cambio visible.
 
+### Puntos flacos y mitigaciones (implementado en el plan)
+
+- **Riesgo:** quitar providers necesarios para toda la app.
+  - **Mitigacion:** identificar providers usados globalmente antes de moverlos.
+- **Riesgo:** mover `ToastContainer` y perder notificaciones en algunas vistas.
+  - **Mitigacion:** moverlo solo al layout que envuelve todas las rutas que usan toasts (ej. `AuthenticatedLayout`).
+- **Riesgo:** CSS global duplicado o eliminado por error.
+  - **Mitigacion:** mantener `app.css` como unica entrada global y no tocar imports de pages.
+- **Riesgo:** cambios invisibles pero con errores en consola.
+  - **Mitigacion:** validar Home, Auth y Profile y revisar consola.
+
 ### Fase 11 - Backend DDD-light (cuando el frontend este estable)
 
 ### 15.1 Crear carpetas base
