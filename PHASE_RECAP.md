@@ -139,6 +139,11 @@
 - Creamos `app/Domain/Payments` y movimos Stripe:
   - `StripeService` a `Domain/Payments/Services`.
 - Actualizamos controllers a los nuevos namespaces.
+- Creamos `app/Domain/Coupons` y movimos la logica de cupones:
+  - `CouponService` a `Domain/Coupons/Services`.
+- Creamos `app/Domain/Newsletters` y movimos la logica de newsletter:
+  - `NewsletterService` a `Domain/Newsletters/Services`.
+- Actualizamos controllers de cupones y newsletter a los nuevos services.
 
 **Por que**
 - Iniciar la separacion DDD-light con un modulo pequeño y aislado.
