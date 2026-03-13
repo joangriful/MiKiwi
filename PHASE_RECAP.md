@@ -125,6 +125,11 @@
   - `ProductService` a `Domain/Products/Services`.
   - `ProductRepositoryInterface` y `EloquentProductRepository` a `Domain/Products/Repositories`.
 - Actualizamos controllers, `CartService`, `OrderService` y bindings a los nuevos namespaces.
+- Creamos `app/Domain/Addresses` y movimos el modulo de direcciones:
+  - `UserAddressService` a `Domain/Addresses/Services`.
+  - `SetDefaultAddress` a `Domain/Addresses/Actions`.
+  - `UserAddressRepositoryInterface` y `EloquentUserAddressRepository` a `Domain/Addresses/Repositories`.
+- Actualizamos namespaces y bindings en `AppServiceProvider`.
 
 **Por que**
 - Iniciar la separacion DDD-light con un modulo pequeño y aislado.

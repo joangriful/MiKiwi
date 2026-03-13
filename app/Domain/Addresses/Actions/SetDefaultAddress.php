@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Actions\Addresses;
+namespace App\Domain\Addresses\Actions;
 
-use App\Repositories\Interfaces\UserAddressRepositoryInterface;
+use App\Domain\Addresses\Repositories\Interfaces\UserAddressRepositoryInterface;
 
 class SetDefaultAddress
 {

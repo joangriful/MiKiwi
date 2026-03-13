@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories\Eloquent;
+namespace App\Domain\Addresses\Repositories\Eloquent;
 
 use App\Models\UserAddress;
-use App\Repositories\Interfaces\UserAddressRepositoryInterface;
+use App\Domain\Addresses\Repositories\Interfaces\UserAddressRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 
 class EloquentUserAddressRepository implements UserAddressRepositoryInterface

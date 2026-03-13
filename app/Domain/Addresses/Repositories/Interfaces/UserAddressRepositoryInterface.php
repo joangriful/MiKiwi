@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories\Interfaces;
+namespace App\Domain\Addresses\Repositories\Interfaces;
 
 use App\Models\UserAddress;
 use Illuminate\Database\Eloquent\Collection;
