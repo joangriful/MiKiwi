@@ -1,3 +1,5 @@
+import './ProductGridSection.css';
+
 export default function ProductGridSection({ title, children }) {
     return (
         <div className="w-full my-8">

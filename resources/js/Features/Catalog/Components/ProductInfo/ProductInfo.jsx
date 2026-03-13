@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, router } from "@inertiajs/react";
 import axios from "axios";
+import './ProductInfo.css';
 
 export default function ProductInfo({ product }) {
     const [isFavorite, setIsFavorite] = useState(false);

@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
-import ProductCard from './ProductCard';
+import ProductCard from '../ProductCard/ProductCard';
+import './ProductCarousel.css';
 
 const ProductCarousel = forwardRef(function ProductCarousel({ products = [] }, ref) {
     return (

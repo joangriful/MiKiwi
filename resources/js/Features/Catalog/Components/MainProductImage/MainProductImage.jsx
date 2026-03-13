@@ -1,3 +1,4 @@
+import './MainProductImage.css';
 export default function MainProductImage({ image }) {
     return (
         <div className="h-full w-full flex items-center justify-center p-8">

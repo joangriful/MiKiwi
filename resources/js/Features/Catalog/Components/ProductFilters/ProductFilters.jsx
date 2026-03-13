@@ -1,5 +1,6 @@
 import React from 'react';
 import { router } from '@inertiajs/react';
+import './ProductFilters.css';
 
 export default function ProductFilters({ categories, filters }) {
     const handleCategoryChange = (categoryId) => {

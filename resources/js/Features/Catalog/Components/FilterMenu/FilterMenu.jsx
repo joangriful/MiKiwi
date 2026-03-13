@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
+import './FilterMenu.css';
 
 export default function FilterMenu({ isOpen, onClose, categories = [], filters = {} }) {
     // Local state to store changes before applying

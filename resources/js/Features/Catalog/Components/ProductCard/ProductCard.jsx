@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import ProductImagePlaceholder from './ProductImagePlaceholder';
-import ProductCardInfo from './ProductCardInfo';
+import ProductImagePlaceholder from '../ProductImagePlaceholder/ProductImagePlaceholder';
+import ProductCardInfo from '../ProductCardInfo/ProductCardInfo';
 import { Link } from '@inertiajs/react';
+import './ProductCard.css';
 
 export default function ProductCard({ product }) {
     const [isLiked, setIsLiked] = useState(false);

@@ -1,5 +1,6 @@
-import ProductGridSection from './ProductGridSection';
-import ProductCarousel from './ProductCarousel';
+import ProductGridSection from '../ProductGridSection/ProductGridSection';
+import ProductCarousel from '../ProductCarousel/ProductCarousel';
+import './RelatedProductsSection.css';
 
 export default function RelatedProductsSection({ relatedProducts = [] }) {
     return (

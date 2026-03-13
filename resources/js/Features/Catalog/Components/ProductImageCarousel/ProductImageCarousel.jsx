@@ -1,4 +1,5 @@
 import React from 'react';
+import './ProductImageCarousel.css';
 
 export default function ProductImageCarousel({ images = [], selectedImage, onSelectImage }) {
     const currentIndex = images.indexOf(selectedImage);

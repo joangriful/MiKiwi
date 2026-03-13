@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './ProductCardInfo.css';
 
 export default function ProductCardInfo({ name, description, price }) {
     const [rating, setRating] = useState(0);

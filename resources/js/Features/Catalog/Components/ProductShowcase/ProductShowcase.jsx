@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import ProductImageCarousel from './ProductImageCarousel';
-import MainProductImage from './MainProductImage';
-import ProductInfo from './ProductInfo';
+import ProductImageCarousel from '../ProductImageCarousel/ProductImageCarousel';
+import MainProductImage from '../MainProductImage/MainProductImage';
+import ProductInfo from '../ProductInfo/ProductInfo';
+import './ProductShowcase.css';
 
 export default function ProductShowcase({ product }) {
     // Combine main image with additional images array and remove duplicates
