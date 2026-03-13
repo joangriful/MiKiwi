@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { usePartOptimization } from '@/Shared/Hooks/usePartOptimization';
+import { usePartOptimization } from '@/Features/Configurator/Hooks/usePartOptimization';
 
 const PartOption = ({ item, isSelected, onSelect, onKeyDown, selectionLabel, showImages, onSavePosition, partPositions, currentView, category }) => {
 

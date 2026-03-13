@@ -147,24 +147,24 @@
 
 - [x] Mover `resources/js/translations/` a `resources/js/Shared/I18n/`
 - [x] Actualizar imports en el `LanguageProvider` y donde se usen JSON.
-- [ ] Verificar que el selector de idioma sigue funcionando.
+- [ ] (Pospuesto) Verificar que el selector de idioma sigue funcionando.
 
 ### 6.2 Utils
 
 - [x] Mover `resources/js/Utils/` a `resources/js/Shared/Utils/`
 - [x] Ejemplo: `cloudinary.js`, `managerUtils.js`
-- [ ] Verificar si algun util es solo de un feature y moverlo alli.
-- [x] Actualizar imports con `@/Shared/Utils/...`.
+- [x] Verificar si algun util es solo de un feature y moverlo alli.
+- [x] Actualizar imports con `@/Shared/Utils/...` o moverlos al feature si son especificos.
 
 ### 6.3 Hooks
 
 - [x] Mover `resources/js/Hooks/` a `resources/js/Shared/Hooks/`
-- [ ] Si algun hook es especifico (ej. configurador), moverlo al feature correcto.
-- [x] Actualizar imports con `@/Shared/Hooks/...`.
+- [x] Si algun hook es especifico (ej. configurador), moverlo al feature correcto.
+- [x] Actualizar imports con `@/Shared/Hooks/...` o al feature correspondiente.
 
 ## 6.5) i18n Global (Opcion B) - Plan de implementacion
 
-> Estado actual: i18n eliminado por decision del equipo. Se mantiene estructura `Shared/I18n/` para futura implementacion.
+> Estado actual: i18n pospuesto por decision del equipo. Se mantiene estructura `Shared/I18n/` vacia para futura implementacion.
 
 ### 6.5.1 Estandarizar claves (prevencion de incoherencias)
 

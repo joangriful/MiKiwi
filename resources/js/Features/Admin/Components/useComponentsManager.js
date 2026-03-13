@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { buildFileTree, flattenTree, parseColorsFromCss } from '@/Shared/Utils/managerUtils';
+import { buildFileTree, flattenTree, parseColorsFromCss } from '@/Features/Admin/Utils/managerUtils';
 import cssContent from '@/../css/global.css?raw';
 
 // Imports
