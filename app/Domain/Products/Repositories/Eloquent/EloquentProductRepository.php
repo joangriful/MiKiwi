@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories\Eloquent;
+namespace App\Domain\Products\Repositories\Eloquent;
 
 use App\Models\Product;
-use App\Repositories\Interfaces\ProductRepositoryInterface;
+use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 

@@ -121,6 +121,10 @@
   - `CreateOrder` y `CancelOrder` a `Domain/Orders/Actions`.
   - `OrderRepositoryInterface` y `EloquentOrderRepository` a `Domain/Orders/Repositories`.
 - Actualizamos namespaces, imports y bindings del repositorio de pedidos.
+- Creamos `app/Domain/Products` y movimos el modulo de productos:
+  - `ProductService` a `Domain/Products/Services`.
+  - `ProductRepositoryInterface` y `EloquentProductRepository` a `Domain/Products/Repositories`.
+- Actualizamos controllers, `CartService`, `OrderService` y bindings a los nuevos namespaces.
 
 **Por que**
 - Iniciar la separacion DDD-light con un modulo pequeño y aislado.

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Domain\Products\Services;
 
-use App\Repositories\Interfaces\ProductRepositoryInterface;
+use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductService

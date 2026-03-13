@@ -6,7 +6,7 @@ namespace App\Services;
 
 use App\Exceptions\InsufficientStockException;
 use App\Exceptions\ProductNotFoundException;
-use App\Repositories\Interfaces\ProductRepositoryInterface;
+use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Support\Facades\Session;
 
 class CartService

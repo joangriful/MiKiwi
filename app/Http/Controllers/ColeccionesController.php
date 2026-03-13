@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Categories\Services\CategoryService;
-use App\Services\ProductService;
+use App\Domain\Products\Services\ProductService;
 use Inertia\Inertia;
 
 class ColeccionesController extends Controller
