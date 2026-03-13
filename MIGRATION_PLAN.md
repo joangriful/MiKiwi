@@ -416,6 +416,8 @@
 
 - Si un estilo es reutilizable, convertirlo en Tailwind o `@apply` en un solo lugar.
 - Si es especifico de una pagina, mantenerlo local al feature.
+- Estructura global recomendada para componentes: carpeta con `Component.jsx` + `Component.css`.
+- El CSS local se deja creado aunque este vacio; si no se usa, se puede borrar en el futuro.
 - `Component.module.css` o `feature.css` importado localmente (no global).
 
 ### 13.4 Puntos flacos y mitigaciones (implementado en el plan)
@@ -582,3 +584,41 @@
   - **Mitigacion:** `rg "resources/js/Pages|resources/js/Components"` y corregir.
 - **Riesgo:** carpetas vacias confunden al equipo.
   - **Mitigacion:** eliminar carpetas legacy vacias o dejar `.gitkeep` si se usaran.
+
+### Fase 14 - Componentes con carpeta + CSS local (global)
+
+**Objetivo:** unificar estructura de componentes para facilitar refactor y CSS local.
+
+#### 14.1 Convencion global
+
+- Cada componente vive en su propia carpeta.
+- Dentro: `Component.jsx` + `Component.css`.
+- El CSS local se crea aunque este vacio (se puede borrar si no se usa).
+
+#### 14.2 Fases de migracion (orden recomendado)
+
+1. Shared
+2. Marketing
+3. Auth
+4. Profile
+5. Catalog
+6. Home
+7. Checkout
+8. Configurator
+9. Admin
+10. Layouts
+
+#### 14.3 Pasos exactos por feature
+
+1. Crear carpeta por componente.
+2. Mover JSX dentro de la carpeta.
+3. Crear `Component.css` local (aunque vacio).
+4. Importar el CSS en el componente.
+5. Actualizar imports en el resto del feature.
+6. Validar la pagina principal del feature.
+
+#### 14.4 Validacion rapida
+
+- Abrir pagina principal del feature.
+- Revisar consola por imports rotos.
+- Confirmar que no hay cambios visuales.

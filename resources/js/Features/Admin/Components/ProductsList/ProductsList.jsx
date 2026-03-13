@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
 import { toast } from 'react-toastify';
+import './ProductsList.css';
 
 export default function ProductsList({ products = [], onEdit, debugCount }) {
     console.log('ProductsList received products:', products, 'DebugCount:', debugCount);

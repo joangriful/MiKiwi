@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import UploadProduct from './UploadProduct';
-import ProductsList from './ProductsList';
+import ProductsList from './ProductsList/ProductsList';
 import FeaturedProductsManager from './FeaturedProductsManager';
 
 export default function ProductsManager({ categories, products, debugCount }) {
