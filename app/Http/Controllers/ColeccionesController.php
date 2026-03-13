@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CategoryService;
+use App\Domain\Categories\Services\CategoryService;
 use App\Services\ProductService;
 use Inertia\Inertia;
 

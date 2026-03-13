@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Domain\Categories\Services;
 
-use App\Repositories\Interfaces\CategoryRepositoryInterface;
+use App\Domain\Categories\Repositories\Interfaces\CategoryRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CategoryService

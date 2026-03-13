@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Services\CategoryService;
+use App\Domain\Categories\Services\CategoryService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Inertia\Inertia;
 

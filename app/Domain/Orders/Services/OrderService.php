@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Domain\Orders\Services;
 
 use App\Exceptions\CartEmptyException;
 use App\Exceptions\InvalidOrderException;
-use App\Repositories\Interfaces\OrderRepositoryInterface;
+use App\Domain\Orders\Actions\CreateOrder;
+use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Support\Str;
 

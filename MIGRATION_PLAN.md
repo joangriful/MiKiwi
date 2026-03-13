@@ -507,6 +507,19 @@
 - Configurador
 - Admin
 
+### Puntos flacos y mitigaciones (implementado en el plan)
+
+- **Riesgo:** mover clases y romper namespaces/autoload.
+  - **Mitigacion:** mover por modulo, actualizar `namespace` y `use` en el mismo paso.
+- **Riesgo:** servicios sin bindings en el contenedor.
+  - **Mitigacion:** revisar `AppServiceProvider` y registrar bindings tras mover.
+- **Riesgo:** controllers se vuelven acoplados al dominio.
+  - **Mitigacion:** mantener controllers delgados y mover la logica a services/actions.
+- **Riesgo:** repositorios globales quedan fuera de su modulo.
+  - **Mitigacion:** reubicar repositorios dentro de `app/Domain/<Modulo>/Repositories`.
+- **Riesgo:** cambios silenciosos sin validar.
+  - **Mitigacion:** probar rutas del modulo migrado y revisar logs.
+
 ### Fase 12 - Tests y CI
 
 ### 16.1 Tests antes y despues

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Repositories\Interfaces\OrderRepositoryInterface;
+use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
 use Illuminate\Console\Command;
 
 class GenerateSalesReport extends Command

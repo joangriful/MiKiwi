@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Repositories\Eloquent;
+namespace App\Domain\Orders\Repositories\Eloquent;
 
 use App\Models\Order;
-use App\Repositories\Interfaces\OrderRepositoryInterface;
+use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;

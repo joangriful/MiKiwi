@@ -108,3 +108,20 @@
 **Por que**
 - Reducir peso en el arranque global.
 - Mantener extras como toasts fuera del bootstrap principal.
+
+## Fase 11 (Backend DDD-light)
+**Que hicimos**
+- Creamos `app/Domain/Categories` y movimos el modulo de categorias:
+  - `CategoryService` a `Domain/Categories/Services`.
+  - `CategoryRepositoryInterface` y `EloquentCategoryRepository` a `Domain/Categories/Repositories`.
+- Actualizamos namespaces y `use` en controllers.
+- Actualizamos bindings en `AppServiceProvider`.
+- Creamos `app/Domain/Orders` y movimos el modulo de pedidos:
+  - `OrderService` a `Domain/Orders/Services`.
+  - `CreateOrder` y `CancelOrder` a `Domain/Orders/Actions`.
+  - `OrderRepositoryInterface` y `EloquentOrderRepository` a `Domain/Orders/Repositories`.
+- Actualizamos namespaces, imports y bindings del repositorio de pedidos.
+
+**Por que**
+- Iniciar la separacion DDD-light con un modulo pequeño y aislado.
+- Mantener controllers delgados y repositorios dentro del dominio.

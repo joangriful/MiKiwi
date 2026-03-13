@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Actions\Orders;
+namespace App\Domain\Orders\Actions;
 
 use App\Events\OrderStatusUpdated;
 use App\Exceptions\InvalidOrderException;

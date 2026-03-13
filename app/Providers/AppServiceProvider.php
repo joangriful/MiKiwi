@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Repositories\Eloquent\EloquentCategoryRepository;
+use App\Domain\Categories\Repositories\Eloquent\EloquentCategoryRepository;
+use App\Domain\Categories\Repositories\Interfaces\CategoryRepositoryInterface;
 use App\Repositories\Eloquent\EloquentHeroImageRepository;
-use App\Repositories\Eloquent\EloquentOrderRepository;
+use App\Domain\Orders\Repositories\Eloquent\EloquentOrderRepository;
+use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Repositories\Eloquent\EloquentProductRepository;
 use App\Repositories\Eloquent\EloquentUserAddressRepository;
-use App\Repositories\Interfaces\CategoryRepositoryInterface;
 use App\Repositories\Interfaces\HeroImageRepositoryInterface;
-use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Repositories\Interfaces\UserAddressRepositoryInterface;
 use Illuminate\Support\Facades\Schema;
