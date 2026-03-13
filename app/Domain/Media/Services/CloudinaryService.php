@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Domain\Media\Services;
 
 use Cloudinary\Api\Search\SearchApi;
 use Cloudinary\Api\Upload\UploadApi;

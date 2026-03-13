@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Product;
-use App\Services\CloudinaryService;
+use App\Domain\Media\Services\CloudinaryService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
-use App\Services\CloudinaryService;
+use App\Domain\Media\Services\CloudinaryService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

@@ -144,6 +144,11 @@
 - Creamos `app/Domain/Newsletters` y movimos la logica de newsletter:
   - `NewsletterService` a `Domain/Newsletters/Services`.
 - Actualizamos controllers de cupones y newsletter a los nuevos services.
+- Creamos `app/Domain/Media` y movimos Cloudinary:
+  - `CloudinaryService` a `Domain/Media/Services`.
+- Creamos `app/Domain/Shipping` y movimos Correos:
+  - `CorreosService` a `Domain/Shipping/Services`.
+- Actualizamos controllers y comandos a los nuevos namespaces.
 
 **Por que**
 - Iniciar la separacion DDD-light con un modulo pequeño y aislado.
