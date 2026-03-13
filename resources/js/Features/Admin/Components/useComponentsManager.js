@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { buildFileTree, flattenTree, parseColorsFromCss } from '@/Shared/Utils/managerUtils';
-import cssContent from '@/../css/colores.css?raw';
+import cssContent from '@/../css/global.css?raw';
 
 // Imports
 const componentImports = import.meta.glob('/resources/js/Features/**/Components/**/*.jsx');

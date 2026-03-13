@@ -1,4 +1,4 @@
-# Recap claro (hasta Fase 6)
+# Recap claro (hasta Fase 9)
 
 ## Contexto rapido
 - Objetivo: refactor por features sin tocar Laravel.
@@ -64,16 +64,6 @@
 - Agrupar todo el checkout en un solo feature.
 - Reducir acoplamientos y facilitar cambios futuros.
 
-## Fase 8 (Admin / ComponentsManager)
-**Que hicimos**
-- Movimos `ComponentsManager` a `Features/Admin` (Pages + Components).
-- Actualizamos `useComponentsManager` para escanear `Features/**` y ajustar rutas.
-- Ajustamos imports del Admin a `@/Features/Admin/...`.
-
-**Por que**
-- Mantener el panel admin alineado con la nueva estructura por features.
-- Evitar roturas por rutas antiguas.
-
 ## Fase 7 (Configurador 3D)
 **Que hicimos**
 - Movimos paginas `Configurador/*`, `DollConfigurator` y `DollConfigTest` a `Features/Configurator/Pages`.
@@ -85,3 +75,26 @@
 - Agrupar todo el configurador 3D en un solo feature.
 - Mantener compatibilidad con rutas de Inertia sin tocar backend.
 - Evitar imports cruzados entre carpetas antiguas.
+
+## Fase 8 (Admin / ComponentsManager)
+**Que hicimos**
+- Movimos `ComponentsManager` a `Features/Admin` (Pages + Components).
+- Actualizamos `useComponentsManager` para escanear `Features/**` y ajustar rutas.
+- Ajustamos imports del Admin a `@/Features/Admin/...`.
+
+**Por que**
+- Mantener el panel admin alineado con la nueva estructura por features.
+- Evitar roturas por rutas antiguas.
+
+## Fase 9 (CSS y Tailwind)
+**Que hicimos**
+- Movimos `auth.css` a `Features/Auth/Pages/` y lo importamos localmente.
+- Movimos `configurador.css` y `doll-configurator.css` a `Features/Configurator/Pages/` y actualizamos imports.
+- Creamos `resources/css/global.css` para tokens globales.
+- Simplificamos `app.css` dejando solo `global.css`, Tailwind y estilos globales (nprogress).
+- Eliminamos imports globales redundantes en `app.jsx`.
+
+**Por que**
+- Evitar CSS global innecesario y mover estilos a su feature.
+- Mantener tokens globales claros y centralizados.
+- Reducir riesgos de CSS “fantasma” importado en todas las paginas.

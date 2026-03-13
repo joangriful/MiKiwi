@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '@/Components/Common/Header';
 import Footer from '@/Components/Common/Footer';
-import '../../css/configurador.css';
+import '@/Features/Configurator/Pages/Configurador/configurador.css';
 
 export default function ConfiguradorLayout({ children, transparentSubHeader = false }) {
     return (

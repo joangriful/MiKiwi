@@ -5,7 +5,7 @@ import { Head } from '@inertiajs/react';
 import ConfiguradorLayout from '@/Layouts/ConfiguradorLayout';
 import DollModel from '@/Features/Configurator/Components/Configurador/DollModel';
 import CustomizationPanel from '@/Features/Configurator/Components/Configurador/CustomizationPanel';
-import '../../css/doll-configurator.css';
+import './doll-configurator.css';
 
 function Scene({ hairStyle, hairColor, eyeColor, eyeSize, skinTone, bodyProportions }) {
     return (

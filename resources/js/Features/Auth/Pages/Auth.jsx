@@ -8,6 +8,7 @@ import ForgotPasswordForm from '@/Features/Auth/Components/ForgotPasswordForm';
 import ResetPasswordForm from '@/Features/Auth/Components/ResetPasswordForm';
 import ConfirmPasswordForm from '@/Features/Auth/Components/ConfirmPasswordForm';
 import VerifyEmailForm from '@/Features/Auth/Components/VerifyEmailForm';
+import './auth.css';
 
 export default function Auth({ view, title, subtitle, status, canResetPassword, token, email }) {
     const renderForm = () => {

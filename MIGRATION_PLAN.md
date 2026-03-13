@@ -383,21 +383,51 @@
 
 ### Fase 9 - CSS y Tailwind (paralelo por fases)
 
-### 13.1 Reducir CSS global
+### 13.1 Objetivo
 
-- Mantener `global.css` solo con variables (colores, tipografia, tokens)
-- Estilos especificos pasan a Tailwind en componentes o paginas
-    - TODO: unificar `colores.css` y `typography.css` dentro de `global.css` cuando toque.
+- Mantener `global.css` solo con variables/tokens globales.
+- Mover estilos de pagina/feature a su carpeta correspondiente.
+- Usar Tailwind por defecto; CSS solo cuando sea realmente necesario.
 
-#### Regla CSS
+### 13.2 Pasos exactos (orden recomendado)
 
-- Si un estilo es reutilizable, convertir a clase Tailwind o `@apply` en un solo lugar.
-- Si es especifico de una pagina, mantenerlo local en el feature.
+1. **Inventario CSS actual**
+    - Listar CSS activos: `app.css`, `colores.css`, `typography.css`, `auth.css`, `Home.css`, `Quiz.css`, etc.
+    - Etiquetar cada bloque como **global** (tokens/variables) o **feature**.
+2. **Definir `global.css` minimo**
+    - Dejar solo variables/tokens y resets globales.
+    - TODO: unificar `colores.css` + `typography.css` dentro de `global.css` cuando toque.
+3. **Localizar CSS por feature**
+    - Asociar cada CSS a su feature y pagina.
+    - Moverlo a `Features/<Feature>/Pages/` o `Features/<Feature>/Components/`.
+4. **Actualizar imports locales**
+    - Importar el CSS desde la pagina/componente que lo necesita.
+    - Evitar imports globales para estilos de una sola pagina.
+5. **Reducir CSS global**
+    - Eliminar del CSS global lo que ya esta importado localmente.
+6. **Tailwind primero**
+    - Reemplazar estilos simples por clases Tailwind.
+    - Usar CSS solo cuando Tailwind sea demasiado verboso o no cubra el caso.
+7. **Validacion rapida**
+    - Revisar Home, ProductPage, Cart, Profile, Configurador.
+    - Verificar que no hay warnings ni cambios visuales.
 
-### 13.2 Donde usar CSS local
+### 13.3 Reglas CSS (claras y faciles de seguir)
 
-- Solo cuando Tailwind sea insuficiente o muy verboso
-- `Component.module.css` o `feature.css` importado localmente
+- Si un estilo es reutilizable, convertirlo en Tailwind o `@apply` en un solo lugar.
+- Si es especifico de una pagina, mantenerlo local al feature.
+- `Component.module.css` o `feature.css` importado localmente (no global).
+
+### 13.4 Puntos flacos y mitigaciones (implementado en el plan)
+
+- **Riesgo:** romper estilos globales al mover CSS.
+  - **Mitigacion:** mover 1 archivo por vez y validar la pagina afectada antes de seguir.
+- **Riesgo:** perder variables/tokens al limpiar `app.css`.
+  - **Mitigacion:** separar primero tokens en `global.css`, luego limpiar lo demas.
+- **Riesgo:** CSS sin importar despues de moverlo.
+  - **Mitigacion:** actualizar el import en la pagina/componente en el mismo paso.
+- **Riesgo:** duplicar estilos entre Tailwind y CSS legacy.
+  - **Mitigacion:** eliminar el bloque CSS cuando ya exista en Tailwind.
 
 ### Fase 10 - app.jsx minimo (rendimiento)
 
