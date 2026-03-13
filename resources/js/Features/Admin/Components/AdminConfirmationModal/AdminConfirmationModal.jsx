@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './AdminConfirmationModal.css';
 
 export default function AdminConfirmationModal({ isOpen, onClose, onConfirm, user, actionType }) {
     const [inputValue, setInputValue] = useState('');

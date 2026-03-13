@@ -1,4 +1,5 @@
 import React from 'react';
+import './FileTreeItem.css';
 
 // Stateless FileTreeItem (Renders a single row)
 const FileTreeItem = ({ item, isSelected, isFocused, isOpen, onToggle, onSelect, selectionMode }) => {

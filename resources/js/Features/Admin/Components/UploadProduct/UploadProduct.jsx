@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import './UploadProduct.css';
 
 export default function UploadProduct({ categories = [], initialData = null, onCancel }) {
     const isEdit = !!initialData;

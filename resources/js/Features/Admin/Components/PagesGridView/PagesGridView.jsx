@@ -1,5 +1,6 @@
 import React from 'react';
-import PreviewContainer from './PreviewContainer';
+import PreviewContainer from '../PreviewContainer/PreviewContainer';
+import './PagesGridView.css';
 
 const PagesGridView = ({
     itemsList,

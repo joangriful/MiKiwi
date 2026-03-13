@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
 import { toast } from 'react-toastify';
+import './FeaturedProductsManager.css';
 
 export default function FeaturedProductsManager({ products = [] }) {
     const [searchTerm, setSearchTerm] = useState('');

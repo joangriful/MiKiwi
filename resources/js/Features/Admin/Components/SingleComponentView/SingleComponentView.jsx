@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
-import ErrorBoundary from './ErrorBoundary';
+import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
+import './SingleComponentView.css';
 
 const SingleComponentView = ({ selectedComponentPath, SelectedSingleComponent }) => {
     const [bgColor, setBgColor] = React.useState('bg-gray-100');

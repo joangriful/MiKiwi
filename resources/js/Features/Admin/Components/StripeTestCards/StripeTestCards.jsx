@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './StripeTestCards.css';
 
 const TEST_CARDS = [
     { brand: 'Visa', number: '4242 4242 4242 4242', exp: '12/26', cvc: '123', type: 'Success', icon: 'payments' },

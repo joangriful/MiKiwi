@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import HeroImageManager from './HeroImageManager';
+import HeroImageManager from '../HeroImageManager/HeroImageManager';
+import './ContentManager.css';
 
 export default function ContentManager({ heroImages }) {
     const [activeSection, setActiveSection] = useState('hero');

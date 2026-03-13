@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import UploadProduct from './UploadProduct';
-import ProductsList from './ProductsList/ProductsList';
-import FeaturedProductsManager from './FeaturedProductsManager';
+import UploadProduct from '../UploadProduct/UploadProduct';
+import ProductsList from '../ProductsList/ProductsList';
+import FeaturedProductsManager from '../FeaturedProductsManager/FeaturedProductsManager';
+import './ProductsManager.css';
 
 export default function ProductsManager({ categories, products, debugCount }) {
     console.log('ProductsManager received products:', products, 'DebugCount:', debugCount);

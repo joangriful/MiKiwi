@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import './PageScaler.css';
 
 // --- Page Scaler Component ---
 const PageScaler = ({ children }) => {

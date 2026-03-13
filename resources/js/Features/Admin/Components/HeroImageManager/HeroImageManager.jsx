@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { router } from '@inertiajs/react';
-import Toast from '@/Components/Common/Toast';
+import Toast from '@/Components/Common/Toast/Toast';
+import './HeroImageManager.css';
 
 export default function HeroImageManager({
     images = [],
@@ -167,3 +168,4 @@ export default function HeroImageManager({
         </div>
     );
 }
+

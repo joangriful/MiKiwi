@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
-import Toast from '@/Components/Common/Toast';
-import AdminConfirmationModal from './AdminConfirmationModal';
+import Toast from '@/Components/Common/Toast/Toast';
+import AdminConfirmationModal from '../AdminConfirmationModal/AdminConfirmationModal';
+import './UsersManager.css';
 
 export default function UsersManager({ users }) {
     const [searchTerm, setSearchTerm] = useState('');
@@ -163,3 +164,4 @@ export default function UsersManager({ users }) {
         </div>
     );
 }
+

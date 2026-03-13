@@ -1,4 +1,5 @@
 import React from 'react';
+import './ColorFilter.css';
 
 const ColorFilter = ({ definedColors, selectedColor, setSelectedColor }) => {
     return (

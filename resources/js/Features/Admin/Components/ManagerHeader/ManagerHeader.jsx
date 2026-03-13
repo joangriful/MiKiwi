@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from '@inertiajs/react';
+import './ManagerHeader.css';
 
 const ManagerHeader = ({ searchTerm, setSearchTerm, activeManager, onSaveDefaults }) => {
     return (

@@ -1,6 +1,7 @@
 import React from 'react';
-import FileExplorer from './FileExplorer';
-import ColorFilter from './ColorFilter';
+import FileExplorer from '../FileExplorer/FileExplorer';
+import ColorFilter from '../ColorFilter/ColorFilter';
+import './ManagerSidebar.css';
 
 const ManagerSidebar = ({
     sourceType,

@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
-import ErrorBoundary from './ErrorBoundary';
-import PageScaler from './PageScaler';
+import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
+import PageScaler from '../PageScaler/PageScaler';
+import './PreviewContainer.css';
 
 // --- Preview Container ---
 const PreviewContainer = ({ children, title }) => {

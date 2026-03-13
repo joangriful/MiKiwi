@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import DollManager from '@/Features/Configurator/Components/DollManager/DollManager';
 import { Head } from '@inertiajs/react';
-import ManagerHeader from '@/Features/Admin/Components/ManagerHeader';
-import ManagerSidebar from '@/Features/Admin/Components/ManagerSidebar';
-import SingleComponentView from '@/Features/Admin/Components/SingleComponentView';
-import PagesGridView from '@/Features/Admin/Components/PagesGridView';
-import UsersManager from '@/Features/Admin/Components/UsersManager';
-import ContentManager from '@/Features/Admin/Components/ContentManager';
-import ProductsManager from '@/Features/Admin/Components/ProductsManager';
-import StripeTestCards from '@/Features/Admin/Components/StripeTestCards';
+import ManagerHeader from '@/Features/Admin/Components/ManagerHeader/ManagerHeader';
+import ManagerSidebar from '@/Features/Admin/Components/ManagerSidebar/ManagerSidebar';
+import SingleComponentView from '@/Features/Admin/Components/SingleComponentView/SingleComponentView';
+import PagesGridView from '@/Features/Admin/Components/PagesGridView/PagesGridView';
+import UsersManager from '@/Features/Admin/Components/UsersManager/UsersManager';
+import ContentManager from '@/Features/Admin/Components/ContentManager/ContentManager';
+import ProductsManager from '@/Features/Admin/Components/ProductsManager/ProductsManager';
+import StripeTestCards from '@/Features/Admin/Components/StripeTestCards/StripeTestCards';
 import { useComponentsManager } from '@/Features/Admin/Components/useComponentsManager';
 
 export default function ComponentsManager({ views, defaultSettings, partPositions, users, heroImages, categories, products, debugCount }) {
@@ -140,3 +140,4 @@ export default function ComponentsManager({ views, defaultSettings, partPosition
         </div>
     );
 }
+

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
-import FileTreeItem from './FileTreeItem';
+import FileTreeItem from '../FileTreeItem/FileTreeItem';
+import './FileExplorer.css';
 
 const FileExplorer = ({
     sourceType,
