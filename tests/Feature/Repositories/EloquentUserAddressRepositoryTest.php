@@ -6,7 +6,7 @@ namespace Tests\Feature\Repositories;
 
 use App\Models\User;
 use App\Models\UserAddress;
-use App\Repositories\Eloquent\EloquentUserAddressRepository;
+use App\Domain\Addresses\Repositories\Eloquent\EloquentUserAddressRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

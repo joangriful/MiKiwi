@@ -150,6 +150,16 @@
   - `CorreosService` a `Domain/Shipping/Services`.
 - Actualizamos controllers y comandos a los nuevos namespaces.
 
+## Fase 12 (Tests y CI)
+**Que hicimos**
+- Creamos `.env.testing` con SQLite en memoria para tests locales.
+- Añadimos GitHub Actions con MySQL para CI (`.github/workflows/ci.yml`).
+- Incluimos pasos de build frontend y `php artisan test`.
+
+**Por que**
+- Tener tests reproducibles sin tocar la DB real.
+- Validar build + backend en cada push/pull request.
+
 **Por que**
 - Iniciar la separacion DDD-light con un modulo pequeño y aislado.
 - Mantener controllers delgados y repositorios dentro del dominio.

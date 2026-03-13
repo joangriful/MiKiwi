@@ -6,7 +6,7 @@ namespace Tests\Feature\Repositories;
 
 use App\Models\Order;
 use App\Models\User;
-use App\Repositories\Eloquent\EloquentOrderRepository;
+use App\Domain\Orders\Repositories\Eloquent\EloquentOrderRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

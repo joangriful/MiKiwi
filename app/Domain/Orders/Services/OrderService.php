@@ -6,7 +6,6 @@ namespace App\Domain\Orders\Services;
 
 use App\Exceptions\CartEmptyException;
 use App\Exceptions\InvalidOrderException;
-use App\Domain\Orders\Actions\CreateOrder;
 use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Domain\Carts\Services\CartService;
 use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
@@ -20,10 +19,14 @@ class OrderService
 
     protected CartService $cartService;
 
-    // Inyección de dependencia de la Acción
-    public function __construct(CreateOrder $createOrderAction)
-    {
-        $this->createOrderAction = $createOrderAction;
+    public function __construct(
+        OrderRepositoryInterface $orderRepository,
+        ProductRepositoryInterface $productRepository,
+        CartService $cartService
+    ) {
+        $this->orderRepository = $orderRepository;
+        $this->productRepository = $productRepository;
+        $this->cartService = $cartService;
     }
 
     /**

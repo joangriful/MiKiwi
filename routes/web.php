@@ -8,7 +8,7 @@ use App\Http\Controllers\ProductController;
 // 👇 IMPORTAMOS LOS CONTROLADORES DE LA TIENDA
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserAddressController;
-use App\Services\CloudinaryService;
+use App\Domain\Media\Services\CloudinaryService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -17,13 +17,15 @@ use Inertia\Inertia;
 /**
  * Helper function to recursively get all descendant category IDs
  */
-function getDescendantCategoryIds($category) {
-    $ids = collect([$category->id]);
-    $children = \App\Models\Category::where('parent_id', $category->id)->get();
-    foreach ($children as $child) {
-        $ids = $ids->merge(getDescendantCategoryIds($child));
+if (! function_exists('getDescendantCategoryIds')) {
+    function getDescendantCategoryIds($category) {
+        $ids = collect([$category->id]);
+        $children = \App\Models\Category::where('parent_id', $category->id)->get();
+        foreach ($children as $child) {
+            $ids = $ids->merge(getDescendantCategoryIds($child));
+        }
+        return $ids;
     }
-    return $ids;
 }
 
 /*

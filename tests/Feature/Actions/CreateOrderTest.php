@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Actions;
 
-use App\Actions\Orders\CreateOrder;
+use App\Domain\Orders\Actions\CreateOrder;
 use App\Exceptions\CartEmptyException;
 use App\Exceptions\InsufficientStockException;
 use App\Models\Product;
 use App\Models\User;
-use App\Services\CartService;
+use App\Domain\Carts\Services\CartService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
