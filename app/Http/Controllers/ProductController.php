@@ -37,7 +37,7 @@ class ProductController extends Controller
                 ->take(4)
                 ->get();
 
-            return Inertia::render('ProductPage', [
+            return Inertia::render('Catalog/ProductPage', [
                 'product' => $productData['product'],
                 'accessories' => $productData['accessories'],
                 'relatedProducts' => $relatedProducts,
@@ -152,7 +152,7 @@ class ProductController extends Controller
             $category->total_products_count = $category->products_count + $childrenCount;
         });
 
-        return Inertia::render('Products', [
+        return Inertia::render('Catalog/Products', [
             'products' => $products,
             'categories' => $categories,
             'filters' => $request->only(['category', 'subCategory', 'min_price', 'max_price', 'sort', 'search', 'featured']),

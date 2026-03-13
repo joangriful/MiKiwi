@@ -11,8 +11,8 @@ import CardsTab from "@/Features/Profile/Components/Tabs/CardsTab"; // Added Imp
 import PreferencesTab from "@/Features/Profile/Components/Tabs/PreferencesTab";
 import ReturnsTab from "@/Features/Profile/Components/Tabs/ReturnsTab";
 
-export default function Perfil({ recommendedProducts, orders = [] }) {
-    const [activeTab, setActiveTab] = useState('profile');
+export default function Perfil({ recommendedProducts, orders = [], initialTab = 'profile' }) {
+    const [activeTab, setActiveTab] = useState(initialTab);
 
     const renderTabContent = () => {
         switch (activeTab) {

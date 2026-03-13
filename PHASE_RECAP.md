@@ -160,6 +160,18 @@
 - Tener tests reproducibles sin tocar la DB real.
 - Validar build + backend en cada push/pull request.
 
+## Fase 13 (Cierre + limpieza)
+**Que hicimos**
+- Movimos `ClaimsForm` a `Features/Claims/Pages` y su componente a `Features/Claims/Components`.
+- Movimos `Dashboard` a `Features/Profile/Pages`.
+- Eliminamos la carpeta legacy `resources/js/Pages`.
+- Quitamos rutas duplicadas de `/formulario-reclamaciones` y `/politica-privacidad`.
+- Creamos paginas puente `Profile/Orders`, `Profile/OrderShow` y `Checkout/Create`.
+- Endurecimos el resolver de Inertia para exigir prefijo de feature.
+- Eliminamos la carpeta vacía `Features/Profile/Pages/Addresses`.
+- Actualizamos el plan con puntos flacos y mitigaciones.
+
 **Por que**
-- Iniciar la separacion DDD-light con un modulo pequeño y aislado.
-- Mantener controllers delgados y repositorios dentro del dominio.
+- Cerrar legacy restante en `Pages/`.
+- Mantener coherencia con el resolver basado en `Features/**/Pages`.
+- Evitar rutas duplicadas y confusas en `web.php`.

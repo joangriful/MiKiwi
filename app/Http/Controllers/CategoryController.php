@@ -28,7 +28,7 @@ class CategoryController extends Controller
             // Obtener detalles de la categoría con productos
             $categoryData = $this->categoryService->getCategoryDetails($category->slug);
 
-            return Inertia::render('Products', [
+            return Inertia::render('Catalog/Products', [
                 'products' => $categoryData['products'],
                 'categories' => \App\Models\Category::root()->where('is_active', true)->with('children')->get(), // Consistent with Products index
                 'category' => $categoryData['category'],

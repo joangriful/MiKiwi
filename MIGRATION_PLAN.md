@@ -547,6 +547,8 @@
 
 ### Fase 13 - Criterios de finalizacion
 
+**Estado:** completado
+
 - Todas las paginas resuelven desde `Features/`
 - No hay imports desde `Pages/` o `Components/` antiguos
 - `app.jsx` minimo y sin dependencias pesadas
@@ -557,8 +559,26 @@
     - tests OK
     - sin codigo legacy
 
+#### Plan de cierre (orden recomendado)
+
+1. Cerrar legacy de frontend (`Pages/` y `Components/` antiguos).
+2. Verificar rutas y resolver de Inertia (`Features/**/Pages`).
+3. Auditar imports antiguos y eliminar residuos.
+4. Checklist final por feature (paginas, rutas, tests, sin legacy).
+
 ### Fase 13 - Riesgos y mitigaciones
 
 - Imports rotos: mover poco a poco y validar
 - CSS perdido: validar cada pagina migrada
 - Conflictos de equipo: asignar features por persona
+
+### Puntos flacos y mitigaciones (implementado en el plan)
+
+- **Riesgo:** legacy en `resources/js/Pages` con dependencias ocultas.
+  - **Mitigacion:** buscar `Inertia::render` y mover solo lo referenciado.
+- **Riesgo:** resolver de Inertia enmascara fallos por fallback.
+  - **Mitigacion:** revisar `resolve()` y eliminar fallback temporal al cierre.
+- **Riesgo:** imports antiguos siguen vivos.
+  - **Mitigacion:** `rg "resources/js/Pages|resources/js/Components"` y corregir.
+- **Riesgo:** carpetas vacias confunden al equipo.
+  - **Mitigacion:** eliminar carpetas legacy vacias o dejar `.gitkeep` si se usaran.

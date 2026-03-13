@@ -2,7 +2,7 @@ import React from 'react';
 import { Head, Link } from '@inertiajs/react';
 import Header from '@/Components/Common/Header';
 import Footer from '@/Components/Common/Footer';
-import ClaimsFormComponent from '@/Components/ClaimsForm/ClaimsFormComponent';
+import ClaimsFormComponent from '@/Features/Claims/Components/ClaimsFormComponent';
 
 export default function ClaimsForm() {
     return (

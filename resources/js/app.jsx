@@ -10,23 +10,17 @@ const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => {
-        const pages = import.meta.glob(['./Pages/**/*.jsx', './Features/**/Pages/**/*.jsx']);
-        const directMatch = pages[`./Pages/${name}.jsx`];
-        if (directMatch) {
-            return directMatch();
+        const pages = import.meta.glob('./Features/**/Pages/**/*.jsx');
+
+        if (!name.includes('/')) {
+            throw new Error(`Inertia page name must include feature prefix: ${name}`);
         }
 
-        if (name.includes('/')) {
-            const [feature, ...rest] = name.split('/');
-            const featurePath = `./Features/${feature}/Pages/${rest.join('/')}.jsx`;
-            if (pages[featurePath]) {
-                return pages[featurePath]();
-            }
-        }
+        const [feature, ...rest] = name.split('/');
+        const featurePath = `./Features/${feature}/Pages/${rest.join('/')}.jsx`;
 
-        const featureMatchKey = Object.keys(pages).find((path) => path.endsWith(`/${name}.jsx`));
-        if (featureMatchKey) {
-            return pages[featureMatchKey]();
+        if (pages[featurePath]) {
+            return pages[featurePath]();
         }
 
         throw new Error(`Inertia page not found: ${name}`);

@@ -42,7 +42,7 @@ class CartController extends Controller
             }
         }
 
-        return Inertia::render('Cart', [
+        return Inertia::render('Checkout/Cart', [
             'cart' => $request->has('buy_now') && session()->has('buy_now_item') 
                 ? $this->cartService->getBuyNowItem() 
                 : $cart,

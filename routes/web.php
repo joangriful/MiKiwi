@@ -49,7 +49,7 @@ Route::get('/', function () {
         ? $homeCollectionImageModel::all()
         : collect();
 
-    return Inertia::render('Home', [
+    return Inertia::render('Home/Home', [
         'heroImages' => $heroImages,
         'featuredProducts' => $featuredProducts,
         'collectionImages' => $collectionImages,
@@ -57,7 +57,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return Inertia::render('Profile/Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 /*
@@ -265,7 +265,7 @@ Route::middleware('auth')->group(function () {
             }
         }
 
-        return Inertia::render('perfil', [
+        return Inertia::render('Profile/perfil', [
             'recommendedProducts' => $recommendedProducts,
             'orders' => auth()->user()->orders()->with('items')->latest()->get(),
         ]);
@@ -319,7 +319,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ? $homeCollectionImageModel::all()
             : collect();
 
-        return Inertia::render('ComponentsManager', [
+        return Inertia::render('Admin/ComponentsManager', [
             'views' => $views,
             'defaultSettings' => $defaultSettings,
             'partPositions' => $partPositions,
@@ -353,18 +353,18 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
 Route::get('/formulario-reclamaciones', function () {
-    return Inertia::render('ClaimsForm');
+    return Inertia::render('Claims/ClaimsForm');
 })->name('claims.form');
 Route::get('/politica-privacidad', function () {
-    return Inertia::render('PrivacyPolicy');
+    return Inertia::render('Marketing/PrivacyPolicy');
 })->name('privacy.policy');
 
 Route::get('/aviso-legal', function () {
-    return Inertia::render('LegalNotice');
+    return Inertia::render('Marketing/LegalNotice');
 })->name('legal.notice');
 
 Route::get('/mapa-del-sitio', function () {
-    return Inertia::render('Sitemap');
+    return Inertia::render('Marketing/Sitemap');
 })->name('sitemap');
 
 Route::get('/sostenibilidad', function () {
@@ -372,81 +372,73 @@ Route::get('/sostenibilidad', function () {
         ->orderBy('created_at', 'desc')
         ->get();
 
-    return Inertia::render('Sustainability', [
+    return Inertia::render('Marketing/Sustainability', [
         'heroImages' => $heroImages,
     ]);
 })->name('sustainability');
 
 Route::get('/nuestros-kiwis', function () {
-    return Inertia::render('NuestrosKiwis');
+    return Inertia::render('Marketing/NuestrosKiwis');
 })->name('nuestros-kiwis');
 
 Route::get('/packs-regalo', function () {
-    return Inertia::render('GiftPacks');
+    return Inertia::render('Marketing/GiftPacks');
 })->name('packs-regalo');
 
 Route::get('/suscripciones', function () {
-    return Inertia::render('Subscriptions');
+    return Inertia::render('Marketing/Subscriptions');
 })->name('suscripciones');
 
 Route::get('/ofertas', function () {
-    return Inertia::render('Offers');
+    return Inertia::render('Marketing/Offers');
 })->name('ofertas');
 
 Route::get('/compania', function () {
-    return Inertia::render('Company');
+    return Inertia::render('Marketing/Company');
 })->name('compania');
 
 Route::get('/preguntas-frecuentes', function () {
-    return Inertia::render('FAQ');
+    return Inertia::render('Marketing/FAQ');
 })->name('faq');
 
 Route::get('/contacto', function () {
-    return Inertia::render('Contact');
+    return Inertia::render('Marketing/Contact');
 })->name('contacto');
 
 Route::get('/sobre-nosotros', function () {
-    return Inertia::render('AboutUs');
+    return Inertia::render('Marketing/AboutUs');
 })->name('about-us');
 
 Route::get('/politica-cookies', function () {
-    return Inertia::render('CookiePolicy');
+    return Inertia::render('Marketing/CookiePolicy');
 })->name('cookie.policy');
 
 Route::get('/condiciones-contratacion', function () {
-    return Inertia::render('TermsOfContract');
+    return Inertia::render('Marketing/TermsOfContract');
 })->name('terms.contract');
 
-Route::get('/formulario-reclamaciones', function () {
-    return Inertia::render('ClaimsForm');
-})->name('claims.form');
-
-Route::get('/politica-privacidad', function () {
-    return Inertia::render('PrivacyPolicy');
-})->name('privacy.policy');
-
 Route::get('/terminos-uso', function () {
-    return Inertia::render('TermsOfUse');
+    return Inertia::render('Marketing/TermsOfUse');
 })->name('terms.use');
 
 Route::prefix('configurador')->group(function () {
     Route::get('/', function () {
-        return Inertia::render('Configurador/Home');
+        return Inertia::render('Configurator/Configurador/Index');
     })->name('configurador.home');
     Route::get('/index', function () {
-        return Inertia::render('Configurador/Index');
+        return Inertia::render('Configurator/Configurador/Index');
     })->name('configurador.index');
     Route::get('/collections', function () {
-        return Inertia::render('Configurador/Collections');
+        return Inertia::render('Configurator/Configurador/Collections');
     })->name('configurador.collections');
     Route::get('/quiz', function () {
-        return Inertia::render('Configurador/Quiz');
+        return Inertia::render('Configurator/Configurador/Quiz');
     })->name('configurador.quiz');
     Route::get('/munecas', function () {
-        return Inertia::render('DollConfigurator');
+        return Inertia::render('Configurator/DollConfigurator');
     })->name('configurador.dolls');
     Route::get('/cart', function () {
-        return Inertia::render('Cart');
+        return Inertia::render('Checkout/Cart');
     })->name('cart.view');
     Route::post('/cart/buy-now', [App\Http\Controllers\CartController::class, 'buyNow'])->name('cart.buy-now');
 });
@@ -462,7 +454,7 @@ Route::get('/doll_config_test', function () {
     $defaultSettings = $settingsController->getSettings();
     $partPositions = $settingsController->getAllPartPositions();
 
-    return Inertia::render('DollConfigTest', [
+    return Inertia::render('Configurator/DollConfigTest', [
         'views' => $views,
         'defaultSettings' => $defaultSettings,
         'partPositions' => $partPositions,

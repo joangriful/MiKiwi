@@ -31,7 +31,7 @@ class ColeccionesController extends Controller
         // Obtener categorías para navegación
         $categories = $this->categoryService->getNavigationCategories();
 
-        return Inertia::render('Colecciones/Index', [
+        return Inertia::render('Marketing/colecciones', [
             'products' => $products,
             'categories' => $categories,
             'pageTitle' => 'Catálogo de Productos - MiKiwi',
