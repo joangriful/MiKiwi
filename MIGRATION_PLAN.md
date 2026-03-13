@@ -166,6 +166,11 @@
 
 > Estado actual: i18n pospuesto por decision del equipo. Se mantiene estructura `Shared/I18n/` vacia para futura implementacion.
 
+### Nota sobre warnings (editor/autoload)
+
+- Los warnings del editor (subrayados rojos) no bloquean ejecucion.
+- Warnings de `composer dump-autoload` por clases duplicadas se limpian con `exclude-files-from-classmap`.
+
 ### 6.5.1 Estandarizar claves (prevencion de incoherencias)
 
 - Definir convencion de claves: `page.section.item`.
