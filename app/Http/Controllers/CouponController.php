@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coupon;
-use App\Services\CartService;
+use App\Domain\Carts\Services\CartService;
 use Illuminate\Http\Request;
 
 class CouponController extends Controller

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Domain\Carts\Services;
 
 use App\Exceptions\InsufficientStockException;
 use App\Exceptions\ProductNotFoundException;

@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\CartEmptyException;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Services\CartService;
+use App\Domain\Carts\Services\CartService;
 use App\Services\StripeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

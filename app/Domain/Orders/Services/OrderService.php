@@ -8,6 +8,7 @@ use App\Exceptions\CartEmptyException;
 use App\Exceptions\InvalidOrderException;
 use App\Domain\Orders\Actions\CreateOrder;
 use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
+use App\Domain\Carts\Services\CartService;
 use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Support\Str;
 

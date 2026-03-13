@@ -133,6 +133,9 @@
 - Creamos `app/Domain/HeroImages` y movimos el modulo de hero images:
   - `HeroImageRepositoryInterface` y `EloquentHeroImageRepository` a `Domain/HeroImages/Repositories`.
 - Actualizamos namespaces y bindings del repositorio de hero images.
+- Creamos `app/Domain/Carts` y movimos el modulo de carrito:
+  - `CartService` a `Domain/Carts/Services`.
+- Actualizamos imports en controllers, acciones y comandos.
 
 **Por que**
 - Iniciar la separacion DDD-light con un modulo pequeño y aislado.

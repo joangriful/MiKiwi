@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CartService;
+use App\Domain\Carts\Services\CartService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 

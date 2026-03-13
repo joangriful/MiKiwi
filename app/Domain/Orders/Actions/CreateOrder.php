@@ -9,7 +9,7 @@ use App\Exceptions\CartEmptyException;
 use App\Exceptions\InsufficientStockException;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Services\CartService;
+use App\Domain\Carts\Services\CartService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
