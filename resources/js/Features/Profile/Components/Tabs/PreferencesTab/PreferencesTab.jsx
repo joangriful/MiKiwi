@@ -1,4 +1,5 @@
 import React from 'react';
+import './PreferencesTab.css';
 
 export default function PreferencesTab() {
     return (

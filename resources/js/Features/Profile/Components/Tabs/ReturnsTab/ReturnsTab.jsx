@@ -1,4 +1,5 @@
 import React from 'react';
+import './ReturnsTab.css';
 
 export default function ReturnsTab() {
     return (

@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
+import './ImageEditorModal.css';
 
 export default function ImageEditorModal({
     isOpen,

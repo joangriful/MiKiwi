@@ -3,6 +3,7 @@ import { usePage } from '@inertiajs/react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import es from 'react-phone-input-2/lang/es.json';
+import './EditAccountTab.css';
 
 export default function EditAccountTab() {
     const { auth } = usePage().props;

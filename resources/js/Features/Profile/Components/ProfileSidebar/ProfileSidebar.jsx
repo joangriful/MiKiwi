@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "@inertiajs/react";
+import './ProfileSidebar.css';
 
 export default function ProfileSidebar({ activeTab, setActiveTab }) {
     const menuItems = [

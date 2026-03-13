@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { usePage, router, Link } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import ImageEditorModal from '../ImageEditorModal';
+import ImageEditorModal from '../../ImageEditorModal/ImageEditorModal';
+import './ProfileTab.css';
 
 export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
     const { auth } = usePage().props;

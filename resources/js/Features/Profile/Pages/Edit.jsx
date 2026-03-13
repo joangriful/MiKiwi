@@ -1,8 +1,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import DeleteUserForm from '@/Features/Profile/Components/Partials/DeleteUserForm';
-import UpdatePasswordForm from '@/Features/Profile/Components/Partials/UpdatePasswordForm';
-import UpdateProfileInformationForm from '@/Features/Profile/Components/Partials/UpdateProfileInformationForm';
+import DeleteUserForm from '@/Features/Profile/Components/Partials/DeleteUserForm/DeleteUserForm';
+import UpdatePasswordForm from '@/Features/Profile/Components/Partials/UpdatePasswordForm/UpdatePasswordForm';
+import UpdateProfileInformationForm from '@/Features/Profile/Components/Partials/UpdateProfileInformationForm/UpdateProfileInformationForm';
 
 export default function Edit({ mustVerifyEmail, status }) {
     return (
@@ -37,3 +37,4 @@ export default function Edit({ mustVerifyEmail, status }) {
         </AuthenticatedLayout>
     );
 }
+

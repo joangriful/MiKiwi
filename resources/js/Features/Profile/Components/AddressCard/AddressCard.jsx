@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import es from 'react-phone-input-2/lang/es.json';
+import './AddressCard.css';
 
 export default function AddressCard({ address, onSave, onDelete, onSetDefault, isDefault }) {
     const [isEditing, setIsEditing] = useState(address.isNew || false);

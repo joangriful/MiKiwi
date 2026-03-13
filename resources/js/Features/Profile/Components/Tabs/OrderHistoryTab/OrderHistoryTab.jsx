@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { router, usePage } from '@inertiajs/react';
+import './OrderHistoryTab.css';
 
 const STATUS_LABELS = {
     pending: { label: 'Pendiente', color: 'bg-yellow-100 text-yellow-800' },

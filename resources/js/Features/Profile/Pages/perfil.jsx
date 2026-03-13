@@ -1,15 +1,15 @@
 
-import Header from "@/Components/Common/Header";
-import Footer from "@/Components/Common/Footer";
+import Header from "@/Components/Common/Header/Header";
+import Footer from "@/Components/Common/Footer/Footer";
 import { useState } from "react";
 import { Head } from '@inertiajs/react';
-import ProfileSidebar from "@/Features/Profile/Components/ProfileSidebar";
-import ProfileTab from "@/Features/Profile/Components/Tabs/ProfileTab";
-import OrderHistoryTab from "@/Features/Profile/Components/Tabs/OrderHistoryTab";
-import EditAccountTab from "@/Features/Profile/Components/Tabs/EditAccountTab";
-import CardsTab from "@/Features/Profile/Components/Tabs/CardsTab"; // Added Import
-import PreferencesTab from "@/Features/Profile/Components/Tabs/PreferencesTab";
-import ReturnsTab from "@/Features/Profile/Components/Tabs/ReturnsTab";
+import ProfileSidebar from "@/Features/Profile/Components/ProfileSidebar/ProfileSidebar";
+import ProfileTab from "@/Features/Profile/Components/Tabs/ProfileTab/ProfileTab";
+import OrderHistoryTab from "@/Features/Profile/Components/Tabs/OrderHistoryTab/OrderHistoryTab";
+import EditAccountTab from "@/Features/Profile/Components/Tabs/EditAccountTab/EditAccountTab";
+import CardsTab from "@/Features/Profile/Components/Tabs/CardsTab/CardsTab"; // Added Import
+import PreferencesTab from "@/Features/Profile/Components/Tabs/PreferencesTab/PreferencesTab";
+import ReturnsTab from "@/Features/Profile/Components/Tabs/ReturnsTab/ReturnsTab";
 
 export default function Perfil({ recommendedProducts, orders = [], initialTab = 'profile' }) {
     const [activeTab, setActiveTab] = useState(initialTab);
@@ -56,3 +56,4 @@ export default function Perfil({ recommendedProducts, orders = [], initialTab = 
         </div>
     );
 }
+

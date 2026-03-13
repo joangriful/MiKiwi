@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import AddressCard from '../AddressCard';
+import AddressCard from '../../AddressCard/AddressCard';
+import './AddressesTab.css';
 
 export default function AddressesTab() {
     // Mock initial data
