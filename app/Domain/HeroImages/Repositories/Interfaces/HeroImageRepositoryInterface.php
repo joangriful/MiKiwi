@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories\Interfaces;
+namespace App\Domain\HeroImages\Repositories\Interfaces;
 
 use App\Models\HeroImage;
 use Illuminate\Database\Eloquent\Collection;

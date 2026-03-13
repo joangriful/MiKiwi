@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories\Eloquent;
+namespace App\Domain\HeroImages\Repositories\Eloquent;
 
 use App\Models\HeroImage;
-use App\Repositories\Interfaces\HeroImageRepositoryInterface;
+use App\Domain\HeroImages\Repositories\Interfaces\HeroImageRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 
 class EloquentHeroImageRepository implements HeroImageRepositoryInterface

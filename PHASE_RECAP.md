@@ -130,6 +130,9 @@
   - `SetDefaultAddress` a `Domain/Addresses/Actions`.
   - `UserAddressRepositoryInterface` y `EloquentUserAddressRepository` a `Domain/Addresses/Repositories`.
 - Actualizamos namespaces y bindings en `AppServiceProvider`.
+- Creamos `app/Domain/HeroImages` y movimos el modulo de hero images:
+  - `HeroImageRepositoryInterface` y `EloquentHeroImageRepository` a `Domain/HeroImages/Repositories`.
+- Actualizamos namespaces y bindings del repositorio de hero images.
 
 **Por que**
 - Iniciar la separacion DDD-light con un modulo pequeño y aislado.
