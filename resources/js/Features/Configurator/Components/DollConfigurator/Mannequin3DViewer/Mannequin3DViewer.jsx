@@ -1,8 +1,9 @@
 import React, { useState, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Environment, ContactShadows } from '@react-three/drei';
-import MannequinModel from './MannequinModel';
-import ModelErrorBoundary from '@/Features/Configurator/Components/Configurador/ModelErrorBoundary';
+import MannequinModel from '../MannequinModel/MannequinModel';
+import ModelErrorBoundary from '@/Features/Configurator/Components/Configurador/ModelErrorBoundary/ModelErrorBoundary';
+import './Mannequin3DViewer.css';
 
 const availableModels = [
     {
@@ -153,3 +154,4 @@ export default function Mannequin3DViewer() {
         </div>
     );
 }
+

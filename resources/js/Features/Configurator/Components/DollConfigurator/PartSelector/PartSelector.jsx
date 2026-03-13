@@ -1,5 +1,6 @@
 import React, { memo, useMemo } from 'react';
-import PartCarousel from './PartCarousel';
+import PartCarousel from '../PartCarousel/PartCarousel';
+import './PartSelector.css';
 
 const DEFAULT_ORDER = ['pelo', 'ojos', 'cejas', 'boca', 'nariz', 'orejas', 'manos', 'pies', 'vientre', 'pechos', 'vello', 'ropa'];
 

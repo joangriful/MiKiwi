@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import PreviewArea from '@/Features/Configurator/Components/DollConfigurator/PreviewArea';
-import CloseUp from '@/Features/Configurator/Components/DollConfigurator/CloseUp';
-import PartSelector from '@/Features/Configurator/Components/DollConfigurator/PartSelector';
-import OptionsBar from '@/Features/Configurator/Components/DollConfigurator/OptionsBar';
+import PreviewArea from '@/Features/Configurator/Components/DollConfigurator/PreviewArea/PreviewArea';
+import CloseUp from '@/Features/Configurator/Components/DollConfigurator/CloseUp/CloseUp';
+import PartSelector from '@/Features/Configurator/Components/DollConfigurator/PartSelector/PartSelector';
+import OptionsBar from '@/Features/Configurator/Components/DollConfigurator/OptionsBar/OptionsBar';
+import './DollDefaultConfigurator.css';
 
 export default function DollDefaultConfigurator({ views, currentSelections, onSelectionChange, saving, partPositions }) {
     const [currentView, setCurrentView] = useState('front');
@@ -113,3 +114,4 @@ export default function DollDefaultConfigurator({ views, currentSelections, onSe
         </div>
     );
 }
+

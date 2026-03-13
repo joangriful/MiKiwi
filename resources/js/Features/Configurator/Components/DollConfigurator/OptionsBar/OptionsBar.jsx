@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import './OptionsBar.css';
 
 export default function OptionsBar({ currentView, onViewChange, zoomLevel, onZoomChange, bgColor = 'bg-white', hideZoom = false }) {
     const [showViewOptions, setShowViewOptions] = useState(false);

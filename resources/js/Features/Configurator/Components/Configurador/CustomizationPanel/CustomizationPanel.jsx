@@ -1,4 +1,5 @@
 import React from 'react';
+import './CustomizationPanel.css';
 
 export default function CustomizationPanel({
     hairStyle,

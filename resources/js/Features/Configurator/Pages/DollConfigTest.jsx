@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useMemo, useRef, Suspense, lazy } from 'react';
 import { Head, router } from '@inertiajs/react';
 import axios from 'axios';
-import PreviewArea from '@/Features/Configurator/Components/DollConfigurator/PreviewArea';
-import PartSelector from '@/Features/Configurator/Components/DollConfigurator/PartSelector';
-import CloseUp from '@/Features/Configurator/Components/DollConfigurator/CloseUp';
-import OptionsBar from '@/Features/Configurator/Components/DollConfigurator/OptionsBar';
-import Header from '@/Components/Common/Header';
-import Footer from '@/Components/Common/Footer';
+import PreviewArea from '@/Features/Configurator/Components/DollConfigurator/PreviewArea/PreviewArea';
+import PartSelector from '@/Features/Configurator/Components/DollConfigurator/PartSelector/PartSelector';
+import CloseUp from '@/Features/Configurator/Components/DollConfigurator/CloseUp/CloseUp';
+import OptionsBar from '@/Features/Configurator/Components/DollConfigurator/OptionsBar/OptionsBar';
+import Header from '@/Components/Common/Header/Header';
+import Footer from '@/Components/Common/Footer/Footer';
 
 // Lazy load the correct 3D viewer
-const Mannequin3DViewer = lazy(() => import('@/Features/Configurator/Components/DollConfigurator/Mannequin3DViewer'));
+const Mannequin3DViewer = lazy(() => import('@/Features/Configurator/Components/DollConfigurator/Mannequin3DViewer/Mannequin3DViewer'));
 
 export default function DollConfigTest({ views, defaultSettings, partPositions: initialPartPositions }) {
     const [activeTab, setActiveTab] = useState('customize'); // 'customize' or 'ready'
@@ -280,3 +280,4 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
         </div>
     );
 }
+

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import './DollSectionOrderConfigurator.css';
 
 export default function DollSectionOrderConfigurator({ views, currentOrder, onSave, saving, message }) {
     const [orderedSections, setOrderedSections] = useState([]);

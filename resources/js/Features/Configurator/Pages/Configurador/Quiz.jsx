@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import axios from 'axios';
-import Header from '@/Components/Common/Header';
-import Footer from '@/Components/Common/Footer';
+import Header from '@/Components/Common/Header/Header';
+import Footer from '@/Components/Common/Footer/Footer';
 import './Quiz.css';
 
 const QUIZ_STEPS = [
@@ -380,3 +380,4 @@ export default function Quiz() {
         </div>
     );
 }
+

@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { Html, useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import './ModelErrorBoundary.css';
 
 function FallbackImagePlane({ imagePath }) {
     // Load the texture safely. If this fails, it might default to a placeholder or error out silently in console.

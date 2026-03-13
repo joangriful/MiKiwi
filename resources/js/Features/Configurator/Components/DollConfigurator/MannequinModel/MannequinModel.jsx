@@ -3,6 +3,7 @@ import { useTexture } from '@react-three/drei';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as THREE from 'three';
+import './MannequinModel.css';
 
 // Procedural Hair Component (Stable)
 const Hair = ({ style, color }) => {

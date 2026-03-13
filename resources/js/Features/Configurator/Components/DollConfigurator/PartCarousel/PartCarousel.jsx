@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import PartOption from './PartOption';
+import PartOption from '../PartOption/PartOption';
+import './PartCarousel.css';
 
 const CATEGORY_ICONS = {
     'pelo': <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4a2 2 0 012-2h12a2 2 0 012 2v1m-16 0v14a2 2 0 002 2h12a2 2 0 002-2V5m-16 0h16" /></svg>,

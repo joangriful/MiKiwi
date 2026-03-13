@@ -1,9 +1,10 @@
 import React, { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
-import DollDefaultConfigurator from './DollDefaultConfigurator';
-import DollPartConfigurator from './DollPartConfigurator';
-import DollZoomConfigurator from './DollZoomConfigurator';
-import DollSectionOrderConfigurator from './DollSectionOrderConfigurator';
+import DollDefaultConfigurator from './DollDefaultConfigurator/DollDefaultConfigurator';
+import DollPartConfigurator from './DollPartConfigurator/DollPartConfigurator';
+import DollZoomConfigurator from './DollZoomConfigurator/DollZoomConfigurator';
+import DollSectionOrderConfigurator from './DollSectionOrderConfigurator/DollSectionOrderConfigurator';
 import axios from 'axios';
+import './DollManager.css';
 
 const DollManager = forwardRef(({ views, defaultSettings, partPositions: initialPartPositions }, ref) => {
     const [activeSection, setActiveSection] = useState('default_images');
@@ -184,3 +185,4 @@ const DollManager = forwardRef(({ views, defaultSettings, partPositions: initial
 });
 
 export default DollManager;
+

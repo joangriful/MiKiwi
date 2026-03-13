@@ -3,8 +3,8 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei';
 import { Head } from '@inertiajs/react';
 import ConfiguradorLayout from '@/Layouts/ConfiguradorLayout';
-import DollModel from '@/Features/Configurator/Components/Configurador/DollModel';
-import CustomizationPanel from '@/Features/Configurator/Components/Configurador/CustomizationPanel';
+import DollModel from '@/Features/Configurator/Components/Configurador/DollModel/DollModel';
+import CustomizationPanel from '@/Features/Configurator/Components/Configurador/CustomizationPanel/CustomizationPanel';
 import './doll-configurator.css';
 
 function Scene({ hairStyle, hairColor, eyeColor, eyeSize, skinTone, bodyProportions }) {
@@ -135,3 +135,4 @@ export default function DollConfigurator() {
         </ConfiguradorLayout>
     );
 }
+
