@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import './HeroSection.css';
 
 export default function HeroSection({ heroImages }) {
     const heroRef = useRef(null);

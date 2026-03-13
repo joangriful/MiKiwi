@@ -1,4 +1,5 @@
 import React from 'react';
+import './DollsSection.css';
 
 export default function DollsSection({ dollsImages }) {
     if (!dollsImages || dollsImages.length === 0) return null;

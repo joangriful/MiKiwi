@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { Link } from '@inertiajs/react';
 import useStackCards from '@/Features/Home/hooks/useStackCards';
 import { charSplit } from '@/Features/Home/utils/textAnimations';
+import './CollectionsSection.css';
 
 export default function CollectionsSection() {
     const collectionsHeroRef = useRef(null);

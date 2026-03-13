@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import axios from 'axios';
+import './PremiumAtelierSection.css';
 
 export default function PremiumAtelierSection() {
     const [isLoading, setIsLoading] = useState(false);

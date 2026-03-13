@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from '@inertiajs/react';
+import './CalibrationSection.css';
 
 export default function CalibrationSection({ calibrationImages = [] }) {
     // Look for the uploaded background or fallback to a solid color/placeholder

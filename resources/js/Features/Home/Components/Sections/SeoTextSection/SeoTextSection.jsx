@@ -1,4 +1,5 @@
 import React from 'react';
+import './SeoTextSection.css';
 
 export default function SeoTextSection() {
     return (

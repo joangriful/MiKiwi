@@ -2,10 +2,10 @@ import { Head, Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 
 import { Header, Footer } from '@/Components';
-import HeroSection from '@/Features/Home/Components/Sections/HeroSection';
-import CalibrationSection from '@/Features/Home/Components/Sections/CalibrationSection';
-import FeaturedProductsSection from '@/Features/Home/Components/Sections/FeaturedProductsSection';
-import CollectionsSection from '@/Features/Home/Components/Sections/CollectionsSection';
+import HeroSection from '@/Features/Home/Components/Sections/HeroSection/HeroSection';
+import CalibrationSection from '@/Features/Home/Components/Sections/CalibrationSection/CalibrationSection';
+import FeaturedProductsSection from '@/Features/Home/Components/Sections/FeaturedProductsSection/FeaturedProductsSection';
+import CollectionsSection from '@/Features/Home/Components/Sections/CollectionsSection/CollectionsSection';
 import useLenisScroll from '@/Features/Home/hooks/useLenisScroll';
 import ScrollReveal from '@/Features/Home/utils/ScrollReveal';
 import './Home.css';
@@ -183,3 +183,4 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
         </div>
     );
 }
+

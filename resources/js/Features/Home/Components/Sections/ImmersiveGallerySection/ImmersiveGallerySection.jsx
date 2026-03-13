@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { Link } from '@inertiajs/react';
+import './ImmersiveGallerySection.css';
 
 export default function ImmersiveGallerySection() {
     const gallerySectionRef = useRef(null);
