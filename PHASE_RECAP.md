@@ -136,6 +136,9 @@
 - Creamos `app/Domain/Carts` y movimos el modulo de carrito:
   - `CartService` a `Domain/Carts/Services`.
 - Actualizamos imports en controllers, acciones y comandos.
+- Creamos `app/Domain/Payments` y movimos Stripe:
+  - `StripeService` a `Domain/Payments/Services`.
+- Actualizamos controllers a los nuevos namespaces.
 
 **Por que**
 - Iniciar la separacion DDD-light con un modulo pequeño y aislado.

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Domain\Payments\Services;
 
 use Illuminate\Support\Facades\Config;
 use Stripe\PaymentIntent;

@@ -8,7 +8,7 @@ use App\Exceptions\CartEmptyException;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Domain\Carts\Services\CartService;
-use App\Services\StripeService;
+use App\Domain\Payments\Services\StripeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
