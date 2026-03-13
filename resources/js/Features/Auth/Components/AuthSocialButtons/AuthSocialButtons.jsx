@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import './AuthSocialButtons.css';
 
 export default function AuthSocialButtons({ dividerText = 'o continúa con' }) {
     const [providerNotice, setProviderNotice] = useState('');

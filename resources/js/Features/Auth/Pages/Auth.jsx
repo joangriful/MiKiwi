@@ -1,13 +1,13 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
 
-import MikiwiLogo from '@/Components/MikiwiLogo';
-import LoginForm from '@/Features/Auth/Components/LoginForm';
-import RegisterForm from '@/Features/Auth/Components/RegisterForm';
-import ForgotPasswordForm from '@/Features/Auth/Components/ForgotPasswordForm';
-import ResetPasswordForm from '@/Features/Auth/Components/ResetPasswordForm';
-import ConfirmPasswordForm from '@/Features/Auth/Components/ConfirmPasswordForm';
-import VerifyEmailForm from '@/Features/Auth/Components/VerifyEmailForm';
+import MikiwiLogo from '@/Components/MikiwiLogo/MikiwiLogo';
+import LoginForm from '@/Features/Auth/Components/LoginForm/LoginForm';
+import RegisterForm from '@/Features/Auth/Components/RegisterForm/RegisterForm';
+import ForgotPasswordForm from '@/Features/Auth/Components/ForgotPasswordForm/ForgotPasswordForm';
+import ResetPasswordForm from '@/Features/Auth/Components/ResetPasswordForm/ResetPasswordForm';
+import ConfirmPasswordForm from '@/Features/Auth/Components/ConfirmPasswordForm/ConfirmPasswordForm';
+import VerifyEmailForm from '@/Features/Auth/Components/VerifyEmailForm/VerifyEmailForm';
 import './auth.css';
 
 export default function Auth({ view, title, subtitle, status, canResetPassword, token, email }) {
@@ -310,3 +310,4 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
         </div>
     );
 }
+

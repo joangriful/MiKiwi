@@ -1,5 +1,6 @@
-import InputError from '@/Components/InputError';
+import InputError from '@/Components/InputError/InputError';
 import { Link, useForm } from '@inertiajs/react';
+import './ForgotPasswordForm.css';
 
 export default function ForgotPasswordForm({ status }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -51,3 +52,4 @@ export default function ForgotPasswordForm({ status }) {
         </form>
     );
 }
+

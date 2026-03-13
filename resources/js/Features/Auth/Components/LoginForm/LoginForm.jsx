@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import InputError from '@/Components/InputError';
-import AuthSocialButtons from '@/Features/Auth/Components/AuthSocialButtons';
+import InputError from '@/Components/InputError/InputError';
+import AuthSocialButtons from '@/Features/Auth/Components/AuthSocialButtons/AuthSocialButtons';
 import { Link, useForm } from '@inertiajs/react';
+import './LoginForm.css';
 
 export default function LoginForm({ status, canResetPassword, autoFocus = false }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -119,3 +120,4 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
         </form>
     );
 }
+

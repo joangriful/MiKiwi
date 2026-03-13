@@ -1,4 +1,5 @@
 import { Link, useForm } from '@inertiajs/react';
+import './VerifyEmailForm.css';
 
 export default function VerifyEmailForm({ status }) {
     const { post, processing } = useForm({});

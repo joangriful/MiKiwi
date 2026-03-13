@@ -1,6 +1,7 @@
-import InputError from '@/Components/InputError';
+import InputError from '@/Components/InputError/InputError';
 import { Link, useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
+import './ConfirmPasswordForm.css';
 
 export default function ConfirmPasswordForm() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -51,3 +52,4 @@ export default function ConfirmPasswordForm() {
         </form>
     );
 }
+

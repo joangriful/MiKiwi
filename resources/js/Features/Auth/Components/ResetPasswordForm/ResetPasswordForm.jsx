@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
-import InputError from '@/Components/InputError';
+import InputError from '@/Components/InputError/InputError';
 import { Link, useForm } from '@inertiajs/react';
+import './ResetPasswordForm.css';
 
 export default function ResetPasswordForm({ token, email }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -95,3 +96,4 @@ export default function ResetPasswordForm({ token, email }) {
         </form>
     );
 }
+
