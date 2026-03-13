@@ -1,7 +1,7 @@
 import React from 'react';
 import { Head } from '@inertiajs/react';
-import Header from '@/Components/Common/Header';
-import Footer from '@/Components/Common/Footer';
+import Header from '@/Components/Common/Header/Header';
+import Footer from '@/Components/Common/Footer/Footer';
 
 export default function Sustainability({ heroImages = [] }) {
     return (
@@ -135,3 +135,4 @@ export default function Sustainability({ heroImages = [] }) {
         </div>
     );
 }
+

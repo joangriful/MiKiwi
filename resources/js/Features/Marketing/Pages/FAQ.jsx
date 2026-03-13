@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Header from '@/Components/Common/Header';
-import Footer from '@/Components/Common/Footer';
+import Header from '@/Components/Common/Header/Header';
+import Footer from '@/Components/Common/Footer/Footer';
 import { Head } from '@inertiajs/react';
 
 const faqData = [
@@ -86,3 +86,4 @@ export default function FAQ() {
         </div>
     );
 }
+
