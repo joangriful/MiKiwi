@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->boolean('is_featured')->default(false);
-        });
+        if (Schema::hasTable('products') && ! Schema::hasColumn('products', 'is_featured')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->boolean('is_featured')->default(false);
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('is_featured');
-        });
+        if (Schema::hasTable('products') && Schema::hasColumn('products', 'is_featured')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->dropColumn('is_featured');
+            });
+        }
     }
 };

@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('quiz_result_category')->nullable()->after('role');
-        });
+        if (Schema::hasTable('users') && ! Schema::hasColumn('users', 'quiz_result_category')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('quiz_result_category')->nullable();
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('quiz_result_category');
-        });
+        if (Schema::hasTable('users') && Schema::hasColumn('users', 'quiz_result_category')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('quiz_result_category');
+            });
+        }
     }
 };

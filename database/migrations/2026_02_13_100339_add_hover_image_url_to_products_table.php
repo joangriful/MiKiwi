@@ -10,9 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->string('hover_image_url')->nullable()->after('image_url');
-        });
+        if (Schema::hasTable('products') && ! Schema::hasColumn('products', 'hover_image_url')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->string('hover_image_url')->nullable();
+            });
+        }
     }
 
     /**
@@ -20,8 +22,10 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('hover_image_url');
-        });
+        if (Schema::hasTable('products') && Schema::hasColumn('products', 'hover_image_url')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->dropColumn('hover_image_url');
+            });
+        }
     }
 };

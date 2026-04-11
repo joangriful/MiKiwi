@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('hero_images', function (Blueprint $table) {
-            $table->string('type')->default('home');
-        });
+        if (Schema::hasTable('hero_images') && ! Schema::hasColumn('hero_images', 'type')) {
+            Schema::table('hero_images', function (Blueprint $table) {
+                $table->string('type')->default('home');
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('hero_images', function (Blueprint $table) {
-            $table->dropColumn('type');
-        });
+        if (Schema::hasTable('hero_images') && Schema::hasColumn('hero_images', 'type')) {
+            Schema::table('hero_images', function (Blueprint $table) {
+                $table->dropColumn('type');
+            });
+        }
     }
 };

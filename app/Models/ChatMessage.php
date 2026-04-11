@@ -11,8 +11,10 @@ class ChatMessage extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
+        'session_id',
         'message_body',
         'sender_type',
+        'is_read',
     ];
 
     protected $casts = [

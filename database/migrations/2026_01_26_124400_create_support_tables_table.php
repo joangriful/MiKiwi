@@ -11,22 +11,26 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('chat_sessions', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('status', 20)->default('active');
-            $table->string('subject', 100)->nullable();
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('chat_sessions')) {
+            Schema::create('chat_sessions', function (Blueprint $table) {
+                $table->uuid('id')->primary();
+                $table->foreignUuid('user_id')->nullable()->constrained()->nullOnDelete();
+                $table->string('status', 20)->default('active');
+                $table->string('subject', 100)->nullable();
+                $table->timestamps();
+            });
+        }
 
-        Schema::create('chat_messages', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('session_id')->constrained('chat_sessions')->cascadeOnDelete();
-            $table->string('sender_type', 20);
-            $table->text('message_body');
-            $table->boolean('is_read')->default(false);
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('chat_messages')) {
+            Schema::create('chat_messages', function (Blueprint $table) {
+                $table->uuid('id')->primary();
+                $table->foreignUuid('session_id')->constrained('chat_sessions')->cascadeOnDelete();
+                $table->string('sender_type', 20);
+                $table->text('message_body');
+                $table->boolean('is_read')->default(false);
+                $table->timestamps();
+            });
+        }
     }
 
     /**

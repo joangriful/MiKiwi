@@ -11,12 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('profile_photo_url')->nullable()->after('email');
-            $table->string('profile_photo_public_id')->nullable()->after('profile_photo_url');
-            $table->string('banner_url')->nullable()->after('profile_photo_public_id');
-            $table->string('banner_public_id')->nullable()->after('banner_url');
-        });
+        if (Schema::hasTable('users')) {
+            Schema::table('users', function (Blueprint $table) {
+                if (! Schema::hasColumn('users', 'profile_photo_url')) {
+                    $table->string('profile_photo_url')->nullable();
+                }
+                if (! Schema::hasColumn('users', 'profile_photo_public_id')) {
+                    $table->string('profile_photo_public_id')->nullable();
+                }
+                if (! Schema::hasColumn('users', 'banner_url')) {
+                    $table->string('banner_url')->nullable();
+                }
+                if (! Schema::hasColumn('users', 'banner_public_id')) {
+                    $table->string('banner_public_id')->nullable();
+                }
+            });
+        }
     }
 
     /**
@@ -24,13 +34,19 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn([
-                'profile_photo_url',
-                'profile_photo_public_id',
-                'banner_url',
-                'banner_public_id'
-            ]);
-        });
+        if (Schema::hasTable('users')) {
+            Schema::table('users', function (Blueprint $table) {
+                $columns = array_filter([
+                    Schema::hasColumn('users', 'profile_photo_url') ? 'profile_photo_url' : null,
+                    Schema::hasColumn('users', 'profile_photo_public_id') ? 'profile_photo_public_id' : null,
+                    Schema::hasColumn('users', 'banner_url') ? 'banner_url' : null,
+                    Schema::hasColumn('users', 'banner_public_id') ? 'banner_public_id' : null,
+                ]);
+
+                if ($columns !== []) {
+                    $table->dropColumn($columns);
+                }
+            });
+        }
     }
 };

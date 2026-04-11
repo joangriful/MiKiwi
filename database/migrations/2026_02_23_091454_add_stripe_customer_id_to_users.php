@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('stripe_customer_id')->nullable()->after('is_active');
-        });
+        if (Schema::hasTable('users') && ! Schema::hasColumn('users', 'stripe_customer_id')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('stripe_customer_id')->nullable();
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('stripe_customer_id');
-        });
+        if (Schema::hasTable('users') && Schema::hasColumn('users', 'stripe_customer_id')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('stripe_customer_id');
+            });
+        }
     }
 };
