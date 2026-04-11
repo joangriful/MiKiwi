@@ -7,6 +7,15 @@
 - `database/`: Migrations, seeders, and factories.
 - `tests/`: PHPUnit tests (`tests/Feature`, `tests/Unit`).
 - `public/`: Public assets and Vite build output.
+- `docs/`: Documentación clasificada por temas:
+  - `docs/setup/`: instalación, cloudinary, configuración inicial.
+  - `docs/db/`: base de datos (instrucciones y dumps).
+  - `docs/design/`: guías de diseño.
+  - `docs/backend/`: backend (controladores, factories, roadmap backend).
+  - `docs/roadmap/`: roadmap general.
+  - `docs/project/`: pilares, rúbrica, contingencias.
+  - `docs/refactor/`: planes y recaps de refactor.
+  - `docs/notes/`: notas internas.
 
 ## Build, Test, and Development Commands
 - `composer install`: Install PHP dependencies.

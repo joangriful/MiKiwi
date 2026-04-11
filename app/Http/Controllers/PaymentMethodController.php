@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\StripeService;
+use App\Domain\Payments\Services\StripeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

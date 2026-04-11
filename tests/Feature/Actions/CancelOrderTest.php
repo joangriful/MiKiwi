@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Actions;
 
-use App\Actions\Orders\CancelOrder;
+use App\Domain\Orders\Actions\CancelOrder;
 use App\Exceptions\InvalidOrderException;
 use App\Models\Order;
 use App\Models\OrderItem;

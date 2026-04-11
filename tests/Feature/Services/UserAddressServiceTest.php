@@ -6,7 +6,7 @@ namespace Tests\Feature\Services;
 
 use App\Models\User;
 use App\Models\UserAddress;
-use App\Services\UserAddressService;
+use App\Domain\Addresses\Services\UserAddressService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

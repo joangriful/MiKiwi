@@ -24,7 +24,7 @@ class ProductRoutingTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertInertia(fn ($page) => $page
-            ->component('ProductPage')
+            ->component('Catalog/ProductPage')
             ->has('product', fn ($json) => $json
                 ->where('slug', 'test-product-slug')
                 ->etc()
@@ -43,7 +43,7 @@ class ProductRoutingTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertInertia(fn ($page) => $page
-            ->component('Products')
+            ->component('Catalog/Products')
             ->has('category', fn ($json) => $json
                 ->where('slug', 'test-category-slug')
                 ->etc()

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CategoryService;
-use App\Services\ProductService;
+use App\Domain\Categories\Services\CategoryService;
+use App\Domain\Products\Services\ProductService;
 use Inertia\Inertia;
 
 class ColeccionesController extends Controller
@@ -31,7 +31,7 @@ class ColeccionesController extends Controller
         // Obtener categorías para navegación
         $categories = $this->categoryService->getNavigationCategories();
 
-        return Inertia::render('Colecciones/Index', [
+        return Inertia::render('Marketing/colecciones', [
             'products' => $products,
             'categories' => $categories,
             'pageTitle' => 'Catálogo de Productos - MiKiwi',

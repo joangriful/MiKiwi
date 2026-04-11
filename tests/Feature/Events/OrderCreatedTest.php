@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Events;
 
-use App\Actions\Orders\CreateOrder;
+use App\Domain\Orders\Actions\CreateOrder;
 use App\Events\OrderCreated;
 use App\Models\Product;
 use App\Models\User;
-use App\Services\CartService;
+use App\Domain\Carts\Services\CartService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;

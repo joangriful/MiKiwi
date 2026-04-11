@@ -7,7 +7,7 @@ namespace Tests\Feature\Services;
 use App\Exceptions\InsufficientStockException;
 use App\Exceptions\ProductNotFoundException;
 use App\Models\Product;
-use App\Services\CartService;
+use App\Domain\Carts\Services\CartService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;

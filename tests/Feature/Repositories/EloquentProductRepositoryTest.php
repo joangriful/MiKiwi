@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Repositories;
 
 use App\Models\Product;
-use App\Repositories\Eloquent\EloquentProductRepository;
+use App\Domain\Products\Repositories\Eloquent\EloquentProductRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

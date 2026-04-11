@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Services\CartService;
+use App\Domain\Carts\Services\CartService;
 use Illuminate\Console\Command;
 
 class CleanupExpiredCarts extends Command

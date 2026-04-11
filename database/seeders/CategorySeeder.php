@@ -17,9 +17,18 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         // Desactivar restricciones de clave foránea para limpiar la tabla
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        $driver = \DB::getDriverName();
+        if ($driver === 'mysql') {
+            \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        } elseif ($driver === 'sqlite') {
+            \DB::statement('PRAGMA foreign_keys = OFF;');
+        }
         Category::truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        if ($driver === 'mysql') {
+            \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        } elseif ($driver === 'sqlite') {
+            \DB::statement('PRAGMA foreign_keys = ON;');
+        }
 
         $structure = [
             // ─── 1. Estimulación Externa ───────────────────────────────────────────

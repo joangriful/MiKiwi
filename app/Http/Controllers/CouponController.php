@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Coupon;
-use App\Services\CartService;
+use App\Domain\Carts\Services\CartService;
+use App\Domain\Coupons\Services\CouponService;
 use Illuminate\Http\Request;
 
 class CouponController extends Controller
 {
     protected $cartService;
+    protected $couponService;
 
-    public function __construct(CartService $cartService)
+    public function __construct(CartService $cartService, CouponService $couponService)
     {
         $this->cartService = $cartService;
+        $this->couponService = $couponService;
     }
 
     public function apply(Request $request)
@@ -23,20 +25,20 @@ class CouponController extends Controller
             'code' => 'required|string|exists:coupons,code',
         ]);
 
-        $coupon = Coupon::where('code', $request->code)->first();
+        $coupon = $this->couponService->findByCode($request->code);
 
-        if (!$coupon) {
+        if (! $coupon) {
             \Log::info("Coupon validation failed: Code not found: {$request->code}");
             return redirect()->route('cart.index')->withErrors(['coupon' => 'El cupón no es válido.']);
         }
 
-        if (!$coupon->isValid()) {
+        if (! $this->couponService->isValid($coupon)) {
             \Log::info("Coupon validation failed: Invalid or expired: {$request->code}");
             return redirect()->route('cart.index')->withErrors(['coupon' => 'El cupón ha expirado o no es válido.']);
         }
 
         $cartTotal = $this->cartService->getCart()['total'];
-        $discount = $coupon->calculateDiscount($cartTotal);
+        $discount = $this->couponService->calculateDiscount($coupon, $cartTotal);
         
         \Log::info("Coupon valid. Total: $cartTotal, Discount: $discount");
 

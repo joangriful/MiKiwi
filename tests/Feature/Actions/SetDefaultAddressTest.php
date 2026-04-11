@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Actions;
 
-use App\Actions\Addresses\SetDefaultAddress;
+use App\Domain\Addresses\Actions\SetDefaultAddress;
 use App\Models\User;
 use App\Models\UserAddress;
 use Illuminate\Foundation\Testing\RefreshDatabase;

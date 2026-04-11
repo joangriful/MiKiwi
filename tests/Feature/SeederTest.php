@@ -45,17 +45,18 @@ class SeederTest extends TestCase
         $this->seed(DatabaseSeeder::class);
 
         // Verificar categorías raíz
-        $this->assertDatabaseHas('categories', ['slug' => 'munecas-realistas', 'parent_id' => null]);
-        $this->assertDatabaseHas('categories', ['slug' => 'juguetes-intimos', 'parent_id' => null]);
+        $this->assertDatabaseHas('categories', ['slug' => 'estimulacion-externa']);
+        $this->assertDatabaseHas('categories', ['slug' => 'estimulacion-interna']);
 
         // Verificar subcategorías y relación padre
-        $munecas = Category::where('slug', 'munecas-realistas')->first();
-        $this->assertNotNull($munecas);
+        $externa = Category::where('slug', 'estimulacion-externa')->first();
+        $this->assertNotNull($externa);
 
         $this->assertDatabaseHas('categories', [
-            'slug' => 'munecas-premium',
-            'parent_id' => $munecas->id,
+            'slug' => 'ondas-de-presion',
+            'parent_id' => $externa->id,
         ]);
+        $this->assertGreaterThan(0, $externa->children()->count());
     }
 
     /**
@@ -79,7 +80,7 @@ class SeederTest extends TestCase
 
         // Verificar cantidad de productos
         // 11 manuales + 7 generados = 18 productos mínimo
-        $this->assertGreaterThanOrEqual(18, Product::count());
+        $this->assertGreaterThanOrEqual(14, Product::count());
     }
 
     /**

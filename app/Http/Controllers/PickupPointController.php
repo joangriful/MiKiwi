@@ -9,7 +9,7 @@ class PickupPointController extends Controller
 {
     protected $correosService;
 
-    public function __construct(\App\Services\CorreosService $correosService)
+    public function __construct(\App\Domain\Shipping\Services\CorreosService $correosService)
     {
         $this->correosService = $correosService;
     }
