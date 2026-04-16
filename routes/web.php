@@ -8,11 +8,12 @@ use App\Http\Controllers\ProductController;
 
 // 👇 IMPORTAMOS LOS CONTROLADORES DE LA TIENDA
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserAddressController;
 use App\Domain\Media\Services\CloudinaryService;
+use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 /**
@@ -156,27 +157,28 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/perfil', function () {
         $recommendedProducts = collect();
-        $user = auth()->user();
+        /** @var User|null $user */
+        $user = Auth::user();
 
         if ($user && $user->quiz_result_category) {
             $categoryName = trim($user->quiz_result_category);
-            \Log::info('Quiz Result Category to match:', ['category' => $categoryName]);
+            Log::info('Quiz Result Category to match:', ['category' => $categoryName]);
 
             // Mapeo entre Resultados del Quiz y las Categorías/Subcategorías reales de Productos.
             // ACTUALIZADO: Ahora usa las NUEVAS colecciones (para-ella, para-el, parejas, experiencias)
             // y sus subcategorías correspondientes
             $quizCategoryMap = [
                 // PARA ELLA - Estimulación femenina
-                'Ondas de Presión' => 'para-ella',
+                'Succionadores' => 'para-ella',
                 'Estimuladores de Punto G' => 'para-ella',
                 'Vibradores Externos' => 'para-ella',
-                'Wands de Masaje' => 'para-ella',
+                'Varitas vibratorias' => 'para-ella',
                 'Estimuladores de Pezones' => 'para-ella',
                 'Estimulación Interna' => 'para-ella',
                 'Dildos' => 'para-ella',
                 'Vibradores Internos' => 'para-ella',
                 'Arneses y Strapless' => 'para-ella',
-                'Salud Íntima' => 'para-ella',
+                'Bienestar Íntimo' => 'para-ella',
                 
                 // PARA ÉL - Estimulación masculina
                 'Masturbadores' => 'para-el',
@@ -208,7 +210,7 @@ Route::middleware('auth')->group(function () {
             $collectionSlug = $quizCategoryMap[$categoryName] ?? null;
             
             if ($collectionSlug) {
-                \Log::info('Collection slug to search:', ['slug' => $collectionSlug]);
+                Log::info('Collection slug to search:', ['slug' => $collectionSlug]);
                 
                 // Buscar la categoría colección
                 $collection = \App\Models\Category::where('slug', $collectionSlug)->first();
@@ -216,7 +218,7 @@ Route::middleware('auth')->group(function () {
                 if ($collection) {
                     // Obtener todos los descendientes (hijos, nietos, etc.) de esta colección
                     $categoryIds = getDescendantCategoryIds($collection);
-                    \Log::info('Category IDs to search:', ['ids' => $categoryIds->toArray()]);
+                    Log::info('Category IDs to search:', ['ids' => $categoryIds->toArray()]);
                     
                     if ($categoryIds->isNotEmpty()) {
                         // Fetch the products related to those categories
@@ -230,22 +232,22 @@ Route::middleware('auth')->group(function () {
 
                         if ($products->isNotEmpty()) {
                             $recommendedProducts = $products;
-                            \Log::info('Found products via collection:', ['count' => $products->count()]);
+                            Log::info('Found products via collection:', ['count' => $products->count()]);
                         } else {
-                            \Log::info('No products found for collection categories');
+                            Log::info('No products found for collection categories');
                         }
                     }
                 } else {
-                    \Log::info('Collection not found:', ['slug' => $collectionSlug]);
+                    Log::info('Collection not found:', ['slug' => $collectionSlug]);
                 }
             } else {
-                \Log::info('No collection mapping found for quiz result:', ['category' => $categoryName]);
+                Log::info('No collection mapping found for quiz result:', ['category' => $categoryName]);
             }
         }
 
         // FALLBACK: Si no hay productos recomendados, mostrar los destacados
         if ($recommendedProducts->isEmpty()) {
-            \Log::info('No recommended products found, falling back to featured products');
+            Log::info('No recommended products found, falling back to featured products');
             $recommendedProducts = \App\Models\Product::with('category:id,name')
                 ->where('is_active', true)
                 ->where('stock_quantity', '>', 0)
@@ -256,7 +258,7 @@ Route::middleware('auth')->group(function () {
                 
             // Si aún no hay productos, mostrar los 4 más recientes
             if ($recommendedProducts->isEmpty()) {
-                \Log::info('No featured products, falling back to latest products');
+                Log::info('No featured products, falling back to latest products');
                 $recommendedProducts = \App\Models\Product::with('category:id,name')
                     ->where('is_active', true)
                     ->where('stock_quantity', '>', 0)
@@ -268,7 +270,7 @@ Route::middleware('auth')->group(function () {
 
         return Inertia::render('Profile/perfil', [
             'recommendedProducts' => $recommendedProducts,
-            'orders' => auth()->user()->orders()->with('items')->latest()->get(),
+            'orders' => $user ? $user->orders()->with('items')->latest()->get() : collect(),
         ]);
     })->name('perfil.view');
 
@@ -296,12 +298,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
         $users = \App\Models\User::all(['id', 'name', 'email', 'username', 'role', 'created_at']);
         $heroImages = \App\Models\HeroImage::orderBy('created_at', 'desc')->get();
 
-        // Fetch categories for Products Manager (padres con sus subcategorías)
+        // El panel admin debe poder asignar cualquier categoría disponible,
+        // aunque alguna esté inactiva para storefront.
         $categories = \App\Models\Category::whereNull('parent_id')
-            ->where('is_active', true)
             ->with([
                 'children' => function ($q) {
-                    $q->where('is_active', true)->orderBy('name')->select(['id', 'parent_id', 'name']);
+                    $q->orderBy('name')->select(['id', 'parent_id', 'name']);
                 },
             ])
             ->orderBy('name')
@@ -311,7 +313,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->orderBy('created_at', 'desc')
             ->get();
 
-        \Illuminate\Support\Facades\Log::info('Admin Products Count: ' . $products->count());
+        Log::info('Admin Products Count: ' . $products->count());
 
         $partPositions = $settingsController->getAllPartPositions();
 

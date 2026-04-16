@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
-import {
 import './CardsTab.css';
+import {
     Elements,
     CardElement,
     useStripe,

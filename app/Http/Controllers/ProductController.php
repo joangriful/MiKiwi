@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Domain\Products\Services\ProductService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -58,9 +59,15 @@ class ProductController extends Controller
         if ($request->has('category')) {
             $categoryParam = $request->query('category');
 
-            $category = \App\Models\Category::where('id', $categoryParam)
-                ->orWhere('slug', $categoryParam)
-                ->first();
+            $categoryQuery = \App\Models\Category::query();
+
+            if (Str::isUuid($categoryParam)) {
+                $categoryQuery->where('id', $categoryParam);
+            } else {
+                $categoryQuery->where('slug', $categoryParam);
+            }
+
+            $category = $categoryQuery->first();
 
             if ($category) {
                 // Special case: "parejas" collection shows all non-BDSM products
@@ -81,7 +88,16 @@ class ProductController extends Controller
 
         // Filtrar por subcategoría específica
         if ($request->has('subCategory')) {
-            $subCategory = \App\Models\Category::where('name', $request->subCategory)->first();
+            $subCategoryParam = $request->subCategory;
+
+            $subCategory = \App\Models\Category::query()
+                ->when(
+                    Str::isUuid($subCategoryParam),
+                    fn ($query) => $query->where('id', $subCategoryParam),
+                    fn ($query) => $query->where('name', $subCategoryParam)->orWhere('slug', $subCategoryParam)
+                )
+                ->first();
+
             if ($subCategory) {
                 $query->where('category_id', $subCategory->id);
             }

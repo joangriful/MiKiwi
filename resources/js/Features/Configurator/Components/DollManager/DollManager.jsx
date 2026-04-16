@@ -4,7 +4,6 @@ import DollPartConfigurator from './DollPartConfigurator/DollPartConfigurator';
 import DollZoomConfigurator from './DollZoomConfigurator/DollZoomConfigurator';
 import DollSectionOrderConfigurator from './DollSectionOrderConfigurator/DollSectionOrderConfigurator';
 import axios from 'axios';
-import './DollManager.css';
 
 const DollManager = forwardRef(({ views, defaultSettings, partPositions: initialPartPositions }, ref) => {
     const [activeSection, setActiveSection] = useState('default_images');
@@ -185,4 +184,3 @@ const DollManager = forwardRef(({ views, defaultSettings, partPositions: initial
 });
 
 export default DollManager;
-
