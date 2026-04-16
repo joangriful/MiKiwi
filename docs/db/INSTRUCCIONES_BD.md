@@ -1,54 +1,67 @@
-# 🛠️ Guía de Conexión a Base de Datos Compartida (Railway)
+# Guia de Base de Datos Compartida en Supabase
 
-Para que todo el equipo trabaje con los mismos datos realistas del catálogo **MiKiwi**, hemos movido la base de datos a la nube. Sigue estos pasos para sincronizarte.
+La base ahora vive en Supabase y el proyecto Laravel ya esta configurado para usar PostgreSQL. Esta guia deja el flujo minimo para levantar el esquema sin depender de Railway.
 
----
+## 1. Variables de entorno
 
-### 1. Configuración del Entorno (`.env`)
-Abre tu archivo `.env` en la raíz del proyecto y sustituye las variables de base de datos por las siguientes:
+En `.env` debes tener algo equivalente a esto:
 
 ```env
-DB_CONNECTION=mysql
-DB_HOST=hopper.proxy.rlwy.net
-DB_PORT=32366
-DB_DATABASE=railway
-DB_USERNAME=root
-DB_PASSWORD=gyyvyBGhQyVLuUapkkDjpSaHaAGhRuPI
+DB_CONNECTION=pgsql
+DB_HOST=aws-1-eu-central-2.pooler.supabase.com
+DB_PORT=6543
+DB_DATABASE=postgres
+DB_USERNAME=tu_usuario_supabase
+DB_PASSWORD=tu_password
+DB_SSLMODE=require
 ```
 
-> **Nota:** No es necesario que tengas MySQL activo en tu XAMPP local, ya que nos estamos conectando al servidor externo de Railway.
-
----
-
-### 2. Sincronización de Laravel
-
-Para que Laravel olvide la configuración anterior y lea los nuevos datos del servidor, ejecuta en tu terminal:
+Si cambias alguna variable, limpia la cache de configuracion:
 
 ```bash
 php artisan config:clear
 php artisan cache:clear
 ```
 
----
+## 2. Crear el esquema en Supabase
 
-### 3. Reglas de Supervivencia (IMPORTANTE) ⚠️
+Tienes dos caminos. Usa solo uno para evitar duplicar tablas.
 
-Al ser una **Base de Datos Única**, lo que tú hagas afecta a todos. Por favor, sigue estas normas:
+### Opcion A: Laravel migrations
 
-* **🚫 PROHIBIDO `php artisan migrate:fresh` sin avisar:** Este comando borra TODAS las tablas de la nube. Si lo ejecutas, eliminarás el trabajo de tus compañeros y los datos de prueba que ya están cargados.
-* **✅ Usa solo `php artisan migrate`:** Si creas una tabla nueva, este comando la subirá a la nube sin borrar las existentes.
-* **🌱 Seeders:** Si necesitas resetear los datos a su estado original (catálogo de muñecas, lubricantes, etc.), avisa al equipo y usa:
-  `php artisan migrate:fresh --seed`
+Es la opcion recomendada si el proyecto va a seguir evolucionando desde Laravel.
 
----
+```bash
+php artisan migrate
+```
 
-### 4. Diagrama de Conexión
+### Opcion B: SQL manual en Supabase
 
-Cada vez que guardas un registro desde tu `localhost:8000`, el dato viaja a Railway. Si otro compañero refresca su página, verá el cambio que tú hiciste.
+Si quieres crear el esquema manualmente desde Supabase:
 
----
+1. Abre `docs/db/BBDD.sql`
+2. Copia el contenido
+3. Ve a `Supabase -> SQL Editor`
+4. Ejecuta el script
 
-### 5. Solución de Problemas Comunes
+Este script ya esta adaptado para Supabase:
+- sin `ALTER DATABASE`
+- sin `CREATE ROLE`
+- sin referencias a `postgresql.conf` o `pg_hba.conf`
+- con `pgcrypto` y `gen_random_uuid()`
+- con triggers recreables
 
-* **Error de conexión (Timeout):** Revisa que tu internet sea estable y que el puerto sea el `32366`.
-* **Warnings de PHP:** Si al ejecutar comandos te salen avisos amarillos de "Module already loaded", ignóralos; es un tema estético de tu configuración de XAMPP y no afecta a la base de datos.
+## 3. Regla importante
+
+No mezcles el SQL manual con `php artisan migrate:fresh` sobre una base compartida si no sabes exactamente que ya existe.
+
+Regla practica:
+- si el equipo trabaja con Laravel, usa `php artisan migrate`
+- si necesitas una base limpia en Supabase, usa `docs/db/BBDD.sql` sobre una base vacia
+
+## 4. Problemas comunes
+
+- Si conecta pero no ves tablas, el esquema no se ha ejecutado todavia.
+- Si Laravel falla por credenciales, revisa `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD` y `DB_SSLMODE=require`.
+- Si la app sigue leyendo una config vieja, ejecuta `php artisan config:clear`.
+- Si ya tenias tablas creadas por migraciones, no vuelvas a correr un SQL alternativo sin revisar conflictos.
