@@ -100,4 +100,12 @@ class EloquentOrderRepository implements OrderRepositoryInterface
             ->limit($limit)
             ->get();
     }
+
+    public function getLatestUserOrders(string $userId): Collection
+    {
+        return Order::where('user_id', $userId)
+            ->with('items.product')
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
 }

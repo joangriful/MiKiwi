@@ -22,7 +22,7 @@ interface HeroImageRepositoryInterface
     /**
      * Crear nueva imagen desde respuesta de Cloudinary
      */
-    public function createFromCloudinary(array $cloudinaryData): HeroImage;
+    public function createFromCloudinary(array $cloudinaryData, array $attributes = []): HeroImage;
 
     /**
      * Eliminar imagen por ID

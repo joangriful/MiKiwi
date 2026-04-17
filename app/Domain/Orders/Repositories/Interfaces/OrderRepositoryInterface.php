@@ -37,4 +37,6 @@ interface OrderRepositoryInterface
      * Obtener pedidos recientes
      */
     public function getRecentOrders(int $limit = 10): Collection;
+
+    public function getLatestUserOrders(string $userId): Collection;
 }

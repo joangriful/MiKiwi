@@ -106,6 +106,11 @@ class OrderService
         return $this->orderRepository->getUserOrders($userId, $perPage);
     }
 
+    public function getLatestUserOrders(string $userId)
+    {
+        return $this->orderRepository->getLatestUserOrders($userId);
+    }
+
     /**
      * Obtener detalles de un pedido
      */

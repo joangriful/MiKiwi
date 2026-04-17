@@ -15,4 +15,14 @@ interface ProductRepositoryInterface
     public function getAccessories(string $productId): Collection;
 
     public function getAllActivePaginated(int $perPage = 12): LengthAwarePaginator;
+
+    public function getFeaturedActive(): Collection;
+
+    public function getRandomActiveInStockByCategoryIds(array $categoryIds, int $limit = 4): Collection;
+
+    public function getRandomFeaturedActive(int $limit = 4): Collection;
+
+    public function getLatestActiveInStock(int $limit = 4): Collection;
+
+    public function getAllForAdmin(): Collection;
 }

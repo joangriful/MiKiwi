@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\HeroImages\Services\HeroImageManagementService;
 use App\Models\HeroImage;
-use App\Domain\Media\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class ContentController extends Controller
 {
-    protected $cloudinaryService;
-
-    public function __construct(CloudinaryService $cloudinaryService)
-    {
-        $this->cloudinaryService = $cloudinaryService;
+    public function __construct(
+        private readonly HeroImageManagementService $heroImageManagementService,
+    ) {
     }
 
     public function uploadHeroImages(Request $request)
@@ -25,38 +23,12 @@ class ContentController extends Controller
         ]);
 
         try {
-            $uploadedImages = [];
-            $type = $request->input('type', 'home');
-            
-            // Map the type to the requested Cloudinary folder
-            $folderMap = [
-                'home' => 'hero_images/home',
-                'sustainability' => 'hero_images/sustainability',
-                'dolls' => 'home/doll_home',
-                'calibration' => 'home/calibracion'
-            ];
-            $cloudinaryFolder = $folderMap[$type] ?? 'hero_images/' . $type;
+            $uploadedCount = $this->heroImageManagementService->uploadImages(
+                $request->file('images'),
+                $request->input('type', 'home')
+            );
 
-            foreach ($request->file('images') as $image) {
-                // Upload to Cloudinary using mapped folder
-                $cloudinaryResponse = $this->cloudinaryService->uploadImage(
-                    $image,
-                    $cloudinaryFolder
-                );
-
-                // Store in database
-                $heroImage = HeroImage::create([
-                    'public_id' => $cloudinaryResponse['public_id'],
-                    'url' => $cloudinaryResponse['secure_url'],
-                    'width' => $cloudinaryResponse['width'] ?? null,
-                    'height' => $cloudinaryResponse['height'] ?? null,
-                    'type' => $type,
-                ]);
-
-                $uploadedImages[] = $heroImage;
-            }
-
-            return back()->with('success', count($uploadedImages).' imagen(es) subida(s) correctamente');
+            return back()->with('success', $uploadedCount.' imagen(es) subida(s) correctamente');
         } catch (\Exception $e) {
             Log::error('Error uploading hero images: '.$e->getMessage());
 
@@ -67,11 +39,7 @@ class ContentController extends Controller
     public function deleteHeroImage(HeroImage $heroImage)
     {
         try {
-            // Delete from Cloudinary
-            $this->cloudinaryService->deleteImage($heroImage->public_id);
-
-            // Delete from database
-            $heroImage->delete();
+            $this->heroImageManagementService->deleteImage($heroImage);
 
             return back()->with('success', 'Imagen eliminada correctamente');
         } catch (\Exception $e) {

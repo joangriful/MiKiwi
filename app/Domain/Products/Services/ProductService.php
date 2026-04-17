@@ -20,6 +20,31 @@ class ProductService
         return $this->productRepository->getAllActivePaginated(12);
     }
 
+    public function getFeaturedProducts()
+    {
+        return $this->productRepository->getFeaturedActive();
+    }
+
+    public function getRecommendedProductsByCategoryIds(array $categoryIds, int $limit = 4)
+    {
+        return $this->productRepository->getRandomActiveInStockByCategoryIds($categoryIds, $limit);
+    }
+
+    public function getRandomFeaturedProducts(int $limit = 4)
+    {
+        return $this->productRepository->getRandomFeaturedActive($limit);
+    }
+
+    public function getLatestAvailableProducts(int $limit = 4)
+    {
+        return $this->productRepository->getLatestActiveInStock($limit);
+    }
+
+    public function getAdminProducts()
+    {
+        return $this->productRepository->getAllForAdmin();
+    }
+
     public function getProductDetails(string $slug): array
     {
         $product = $this->productRepository->getActiveBySlug($slug);

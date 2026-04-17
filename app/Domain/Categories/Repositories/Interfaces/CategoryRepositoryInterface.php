@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface CategoryRepositoryInterface
 {
+    public function findBySlug(string $slug): ?Category;
+
     /**
      * Obtener categoría activa por slug
      */
@@ -22,6 +24,8 @@ interface CategoryRepositoryInterface
      */
     public function getRootCategories(): Collection;
 
+    public function getAdminRootCategories(): Collection;
+
     /**
      * Obtener subcategorías de una categoría
      */
@@ -31,4 +35,6 @@ interface CategoryRepositoryInterface
      * Obtener productos de una categoría (paginados)
      */
     public function getCategoryProductsPaginated(string $categoryId, int $perPage = 12);
+
+    public function getDescendantIds(Category $category): Collection;
 }

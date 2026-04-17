@@ -3,6 +3,7 @@
 namespace App\Domain\Categories\Services;
 
 use App\Domain\Categories\Repositories\Interfaces\CategoryRepositoryInterface;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CategoryService
@@ -30,6 +31,11 @@ class CategoryService
         return $this->categoryRepository->getRootCategories();
     }
 
+    public function getAdminAssignableCategories()
+    {
+        return $this->categoryRepository->getAdminRootCategories();
+    }
+
     /**
      * Obtener detalles de una categoría con sus productos
      */
@@ -53,6 +59,16 @@ class CategoryService
             'subcategories' => $subcategories,
             'breadcrumbs' => $this->buildBreadcrumbs($category),
         ];
+    }
+
+    public function findBySlug(string $slug): ?Category
+    {
+        return $this->categoryRepository->findBySlug($slug);
+    }
+
+    public function getDescendantIds(Category $category)
+    {
+        return $this->categoryRepository->getDescendantIds($category);
     }
 
     /**

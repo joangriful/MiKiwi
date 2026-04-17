@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
 use App\Domain\Media\Services\CloudinaryService;
+use App\Domain\Profile\Services\ProfilePageService;
+use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,8 +17,10 @@ class ProfileController extends Controller
 {
     protected $cloudinaryService;
 
-    public function __construct(CloudinaryService $cloudinaryService)
-    {
+    public function __construct(
+        CloudinaryService $cloudinaryService,
+        private readonly ProfilePageService $profilePageService,
+    ) {
         $this->cloudinaryService = $cloudinaryService;
     }
     /**
@@ -29,6 +32,11 @@ class ProfileController extends Controller
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
         ]);
+    }
+
+    public function show(Request $request): Response
+    {
+        return Inertia::render('Profile/Profile', $this->profilePageService->getPageData($request->user()));
     }
 
     /**

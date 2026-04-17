@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Domain\Admin\Services;
+
+use App\Domain\Categories\Services\CategoryService;
+use App\Domain\Dolls\Services\DollSettingsService;
+use App\Domain\HeroImages\Repositories\Interfaces\HeroImageRepositoryInterface;
+use App\Domain\Media\Services\CloudinaryService;
+use App\Domain\Products\Services\ProductService;
+use Illuminate\Support\Facades\Cache;
+
+class ComponentsManagerPageService
+{
+    public function __construct(
+        private readonly CloudinaryService $cloudinaryService,
+        private readonly DollSettingsService $dollSettingsService,
+        private readonly AdminUserService $adminUserService,
+        private readonly HeroImageRepositoryInterface $heroImageRepository,
+        private readonly ProductService $productService,
+        private readonly CategoryService $categoryService,
+    ) {
+    }
+
+    public function getPageData(): array
+    {
+        return [
+            'views' => $this->getCachedViews(),
+            'defaultSettings' => $this->dollSettingsService->getSettings(),
+            'partPositions' => $this->dollSettingsService->getAllPartPositions(),
+            'users' => $this->adminUserService->getComponentsManagerUsers(),
+            'heroImages' => $this->heroImageRepository->getAllOrdered(),
+            'products' => $this->productService->getAdminProducts(),
+            'categories' => $this->categoryService->getAdminAssignableCategories(),
+            'collectionImages' => $this->getCollectionImages(),
+        ];
+    }
+
+    private function getCachedViews()
+    {
+        $cacheDuration = app()->environment('local') ? 5 : 3600;
+
+        return Cache::remember('doll_parts_cloudinary', $cacheDuration, function () {
+            return $this->cloudinaryService->listDollParts();
+        });
+    }
+
+    private function getCollectionImages()
+    {
+        $homeCollectionImageModel = 'App\\Models\\HomeCollectionImage';
+
+        return class_exists($homeCollectionImageModel)
+            ? $homeCollectionImageModel::all()
+            : collect();
+    }
+}

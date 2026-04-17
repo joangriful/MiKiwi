@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Collection;
 
 class EloquentCategoryRepository implements CategoryRepositoryInterface
 {
+    public function findBySlug(string $slug): ?Category
+    {
+        return Category::where('slug', $slug)->first();
+    }
+
     /**
      * Obtener categoría activa por slug
      */
@@ -44,6 +49,18 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
             ->get();
     }
 
+    public function getAdminRootCategories(): Collection
+    {
+        return Category::whereNull('parent_id')
+            ->with([
+                'children' => function ($query) {
+                    $query->orderBy('name')->select(['id', 'parent_id', 'name']);
+                },
+            ])
+            ->orderBy('name')
+            ->get(['id', 'parent_id', 'name']);
+    }
+
     /**
      * Obtener subcategorías de una categoría
      */
@@ -71,5 +88,17 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
             ->with('category')
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
+    }
+
+    public function getDescendantIds(Category $category): Collection
+    {
+        $ids = collect([$category->id]);
+        $children = Category::where('parent_id', $category->id)->get();
+
+        foreach ($children as $child) {
+            $ids = $ids->merge($this->getDescendantIds($child));
+        }
+
+        return $ids;
     }
 }
