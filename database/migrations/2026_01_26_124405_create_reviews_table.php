@@ -14,6 +14,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        $driver = Schema::getConnection()->getDriverName();
+
         if (! Schema::hasTable('reviews')) {
             Schema::create('reviews', function (Blueprint $table) {
                 $table->uuid('id')->primary();
@@ -24,7 +26,7 @@ return new class extends Migration
                 $table->boolean('is_approved')->default(false);
                 $table->timestamps();
             });
-        } else {
+        } elseif ($driver === 'pgsql') {
             DB::statement(<<<'SQL'
 DO $$
 BEGIN

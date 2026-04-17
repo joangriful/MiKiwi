@@ -7,6 +7,7 @@ namespace App\Domain\Addresses\Repositories\Eloquent;
 use App\Models\UserAddress;
 use App\Domain\Addresses\Repositories\Interfaces\UserAddressRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Str;
 
 class EloquentUserAddressRepository implements UserAddressRepositoryInterface
 {
@@ -26,6 +27,10 @@ class EloquentUserAddressRepository implements UserAddressRepositoryInterface
      */
     public function findById(string $id): ?UserAddress
     {
+        if (! Str::isUuid($id)) {
+            return null;
+        }
+
         return UserAddress::find($id);
     }
 

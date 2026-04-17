@@ -19,6 +19,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        $driver = Schema::getConnection()->getDriverName();
+
         // Garantiza categorías consistente: crea si falta, o añade PK/FK si existe.
         if (! Schema::hasTable('categories')) {
             Schema::create('categories', function (Blueprint $table) {
@@ -28,9 +30,12 @@ return new class extends Migration
                 $table->string('slug')->unique();
                 $table->boolean('is_active')->default(true);
                 $table->timestamps();
+            });
+
+            Schema::table('categories', function (Blueprint $table) {
                 $table->foreign('parent_id')->references('id')->on('categories')->nullOnDelete();
             });
-        } else {
+        } elseif ($driver === 'pgsql') {
             // Asegura PK y FK sin romper datos existentes (Postgres).
             DB::statement(<<<'SQL'
 DO $$
@@ -78,7 +83,7 @@ SQL);
                 $table->timestamps();
                 $table->softDeletes();
             });
-        } else {
+        } elseif ($driver === 'pgsql') {
             DB::statement(<<<'SQL'
 DO $$
 BEGIN

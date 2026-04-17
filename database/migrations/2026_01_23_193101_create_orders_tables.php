@@ -14,6 +14,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        $driver = Schema::getConnection()->getDriverName();
+
         if (! Schema::hasTable('orders')) {
             Schema::create('orders', function (Blueprint $table) {
                 $table->uuid('id')->primary();
@@ -39,7 +41,6 @@ return new class extends Migration
                 $table->foreignUuid('order_id')->constrained()->cascadeOnDelete();
                 $table->foreignUuid('product_id')->nullable()->constrained()->nullOnDelete();
                 $table->uuid('parent_item_id')->nullable();
-                // self-FK se añade después de garantizar PK
 
                 $table->string('product_name_snapshot');
                 $table->string('sku_snapshot')->nullable();
@@ -47,7 +48,11 @@ return new class extends Migration
                 $table->decimal('unit_price', 10, 2);
                 $table->timestamps();
             });
-        } else {
+
+            Schema::table('order_items', function (Blueprint $table) {
+                $table->foreign('parent_item_id')->references('id')->on('order_items')->cascadeOnDelete();
+            });
+        } elseif ($driver === 'pgsql') {
             DB::statement(<<<'SQL'
 DO $$
 BEGIN
@@ -60,8 +65,8 @@ END$$;
 SQL);
         }
 
-        // Asegura la FK self-reference una vez garantizada la PK
-        DB::statement(<<<'SQL'
+        if (Schema::hasTable('order_items') && $driver === 'pgsql') {
+            DB::statement(<<<'SQL'
 DO $$
 BEGIN
     IF NOT EXISTS (
@@ -73,6 +78,7 @@ BEGIN
     END IF;
 END$$;
 SQL);
+        }
     }
 
     /**
