@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Prata&display=swap');
+
 /* Home.css - Redesign inspired by Strategic Creative Layout */
 
 :root {
@@ -13,8 +15,6 @@
     --font-body: 'Inter', sans-serif;
     --font-serif: 'Prata', serif;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Prata&display=swap');
 
 .home-container {
     background: var(--bg-white);

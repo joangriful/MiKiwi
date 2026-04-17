@@ -1,5 +1,5 @@
-import {
 import './Modal.css';
+import {
     Dialog,
     DialogPanel,
     Transition,

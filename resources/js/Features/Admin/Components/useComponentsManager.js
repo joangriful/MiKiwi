@@ -3,8 +3,8 @@ import { buildFileTree, flattenTree, parseColorsFromCss } from '@/Features/Admin
 import cssContent from '@/../css/global.css?raw';
 
 // Imports
-const componentImports = import.meta.glob('/resources/js/Features/**/Components/**/*.jsx');
-const pageImports = import.meta.glob('/resources/js/Features/**/Pages/**/*.jsx');
+const componentImports = import.meta.glob('/resources/js/Features/**/Components/**/*.jsx', { eager: true });
+const pageImports = import.meta.glob('/resources/js/Features/**/Pages/**/*.jsx', { eager: true });
 const componentRawStart = import.meta.glob('/resources/js/Features/**/Components/**/*.jsx', { query: '?raw', import: 'default' });
 const pageRawStart = import.meta.glob('/resources/js/Features/**/Pages/**/*.jsx', { query: '?raw', import: 'default' });
 const DYNAMIC_COLORS = parseColorsFromCss(cssContent);
@@ -145,7 +145,7 @@ export const useComponentsManager = () => {
     // Memoized Selects
     const SelectedSingleComponent = useMemo(() => {
         if (sourceType === 'components' && selectedComponentPath && currentImports[selectedComponentPath]) {
-            return React.lazy(currentImports[selectedComponentPath]);
+            return React.lazy(() => toLazyModule(currentImports[selectedComponentPath]));
         }
         return null; // Return null instead of a component
     }, [selectedComponentPath, currentImports, sourceType]);
@@ -155,7 +155,10 @@ export const useComponentsManager = () => {
         const selected = [];
         itemsList.forEach(item => {
             if (selectedPagePaths.has(item.path)) {
-                selected.push({ ...item, Component: React.lazy(currentImports[item.path]) });
+                selected.push({
+                    ...item,
+                    Component: React.lazy(() => toLazyModule(currentImports[item.path])),
+                });
             }
         });
         return selected;
@@ -178,3 +181,4 @@ export const useComponentsManager = () => {
         itemsList
     };
 };
+    const toLazyModule = (module) => Promise.resolve({ default: module.default });
