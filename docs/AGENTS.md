@@ -1,9 +1,9 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `app/`: Laravel domain code (Controllers, Models, Services, Policies, etc.).
+- `app/`: Laravel domain code (Controllers, Models, Policies, Domain services/actions/repositories, etc.).
 - `routes/`: HTTP entry points (`web.php`, `api.php`).
-- `resources/`: Frontend assets (React/Inertia in `resources/js`, Tailwind in `resources/css`, Blade in `resources/views`).
+- `resources/`: Frontend assets (React/Inertia in `resources/js`, global styles in `resources/css`, Blade in `resources/views`).
 - `database/`: Migrations, seeders, and factories.
 - `tests/`: PHPUnit tests (`tests/Feature`, `tests/Unit`).
 - `public/`: Public assets and Vite build output.
@@ -31,6 +31,19 @@
 - Indentation: 4 spaces (see `.editorconfig`).
 - PHP: PSR-12/Laravel conventions; classes `PascalCase`, methods `camelCase`.
 - JS/React: components `PascalCase`, hooks `useX`, files match exported component.
+- Frontend structure:
+  - No usar `resources/js/Features` como raíz objetivo.
+  - Todas las páginas Inertia deben vivir en `resources/js/Pages/<Area>/<PageName>/`.
+  - Cada página debe contener `PageName.jsx` + `PageName.module.css`.
+  - Los componentes reutilizables deben vivir en `resources/js/Components/<ComponentName>/`.
+  - No usar `resources/js/Components/Common`.
+  - Los hooks globales van en `resources/js/Hooks`.
+  - Las utilidades globales van en `resources/js/Utils`.
+  - Todo el naming estructural debe estar en inglés.
+- CSS conventions:
+  - `resources/css/global.css` solo para estilos realmente globales.
+  - Nuevas páginas y componentes deben usar `*.module.css`.
+  - Tailwind se mantiene como apoyo puntual o legacy; no como convención principal para nuevo código.
 - Formatting: run `./vendor/bin/pint` before committing PHP changes.
 
 ## Testing Guidelines
@@ -49,7 +62,7 @@
 
 ---
 
-# Guía de Proyecto Full-Stack: React + Laravel + Tailwind
+# Guía de Proyecto Full-Stack: React + Laravel + Inertia
 
 ## 🎯 Objetivo Principal
 
@@ -62,7 +75,8 @@ Actuar como **tutor experto en desarrollo de software** para guiar el aprendizaj
 ### Stack Tecnológico
 - **Frontend**: React (última versión estable)
 - **Backend**: Laravel (última versión estable)
-- **Estilos**: Tailwind CSS
+- **Renderizado**: Inertia.js
+- **Estilos**: CSS Modules como convención principal, con Tailwind solo como soporte puntual
 - **Objetivo**: Desarrollo Full-Stack de nivel empresarial
 
 ---
@@ -86,11 +100,11 @@ Actuar como **tutor experto en desarrollo de software** para guiar el aprendizaj
 
 ### 2. Arquitectura Moderna
 
-**En React:**
-- Arquitectura basada en componentes con separación clara de responsabilidades
+**En React/Inertia:**
+- Arquitectura basada en páginas y componentes con separación clara de responsabilidades
 - Custom Hooks para lógica reutilizable
 - Context API / State Management (Redux Toolkit, Zustand o similar)
-- Organización por features o por capas según escalabilidad
+- Organización por `Pages`, `Components`, `Hooks` y `Utils`
 - Composición sobre herencia
 
 **En Laravel:**
@@ -132,12 +146,12 @@ Actuar como **tutor experto en desarrollo de software** para guiar el aprendizaj
 - Service Providers para configuración
 - Testing con PHPUnit/Pest
 
-**Tailwind:**
-- Utility-first approach
-- Componentes reutilizables con @apply cuando sea necesario
-- Configuración personalizada del theme
+**Estilos:**
+- CSS Modules para páginas y componentes
+- `global.css` solo para variables, reset, tipografía global y utilidades muy justificadas
+- Tailwind solo como apoyo puntual o para convivir con legacy
 - Responsive design desde el inicio
-- Dark mode si aplica
+- Evitar acoplamientos frágiles entre estructura HTML y estilos
 
 ### 4. Código Limpio
 
@@ -306,24 +320,23 @@ Actuar como **tutor experto en desarrollo de software** para guiar el aprendizaj
 
 ## 🗂️ Estructura Sugerida del Proyecto
 
-### Frontend (React)
+### Frontend (React + Inertia)
 
 ```
-src/
-├── components/          # Componentes reutilizables
-│   ├── common/         # Botones, inputs, cards
-│   └── layout/         # Header, footer, sidebar
-├── features/           # Módulos por funcionalidad
-│   ├── auth/
-│   ├── users/
-│   └── dashboard/
-├── hooks/              # Custom hooks
-├── services/           # API calls
-├── utils/              # Funciones auxiliares
-├── contexts/           # Context providers
-├── routes/             # Configuración de rutas
-├── types/              # TypeScript types (si aplica)
-└── constants/          # Constantes globales
+resources/js/
+├── Pages/
+│   └── <Area>/
+│       └── <PageName>/
+│           ├── <PageName>.jsx
+│           └── <PageName>.module.css
+├── Components/
+│   └── <ComponentName>/
+│       ├── <ComponentName>.jsx
+│       └── <ComponentName>.module.css
+├── Layouts/
+├── Hooks/
+├── Utils/
+└── app.jsx
 ```
 
 ### Backend (Laravel)
@@ -335,11 +348,13 @@ app/
 │   ├── Requests/       # Form validations
 │   ├── Resources/      # API transformations
 │   └── Middleware/     # Middleware custom
-├── Services/           # Lógica de negocio
-├── Repositories/       # Acceso a datos
+├── Domain/
+│   └── <Module>/
+│       ├── Actions/
+│       ├── Services/
+│       ├── Repositories/
+│       └── Interfaces/
 ├── Models/             # Eloquent models
-├── DTOs/               # Data Transfer Objects
-├── Actions/            # Acciones específicas
 └── Events/             # Event-driven
 ```
 
@@ -483,4 +498,4 @@ Este no es solo un proyecto para completar, es un **viaje de aprendizaje** donde
 
 ---
 
-*Última actualización: Enero 2026*
+*Última actualización: Abril 2026*

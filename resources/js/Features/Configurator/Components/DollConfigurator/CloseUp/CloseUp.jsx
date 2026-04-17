@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
-import { getCloudinaryUrl } from '@/Shared/Utils/cloudinary';
+import { getCloudinaryUrl } from '@/Utils/cloudinary';
 import './CloseUp.css';
 
 export default function CloseUp({ selectedParts, onViewportChange, viewportOverride, zoomLevel = 100, initialViewport }) {

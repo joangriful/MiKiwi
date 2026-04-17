@@ -1,6 +1,6 @@
 /**
  * Generates a Cloudinary URL with specified transformations.
- * 
+ *
  * @param {string} path - The image path (e.g., 'folder/image.png' or full URL).
  * @param {object} options - Transformation options.
  * @param {string} [options.transformations] - Comma-separated transformations (e.g., 'f_auto,q_auto').

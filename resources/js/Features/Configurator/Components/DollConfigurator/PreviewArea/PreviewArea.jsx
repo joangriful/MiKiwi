@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useEffect } from 'react';
-import { getCloudinaryUrl } from '@/Shared/Utils/cloudinary';
+import { getCloudinaryUrl } from '@/Utils/cloudinary';
 import { usePartOptimization } from '@/Features/Configurator/Hooks/usePartOptimization';
 import './PreviewArea.css';
 
