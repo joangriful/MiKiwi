@@ -1,8 +1,10 @@
-import './ApplicationLogo.css';
-export default function ApplicationLogo(props) {
+import styles from './ApplicationLogo.module.css';
+
+export default function ApplicationLogo({ className = '', ...props }) {
     return (
         <svg
             {...props}
+            className={`${styles.root} ${className}`.trim()}
             viewBox="0 0 316 316"
             xmlns="http://www.w3.org/2000/svg"
         >

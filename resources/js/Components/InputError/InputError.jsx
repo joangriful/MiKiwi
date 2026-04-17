@@ -1,9 +1,10 @@
-import './InputError.css';
+import styles from './InputError.module.css';
+
 export default function InputError({ message, className = '', ...props }) {
     return message ? (
         <p
             {...props}
-            className={'text-sm text-red-600 ' + className}
+            className={`${styles.root} text-sm text-red-600 ` + className}
         >
             {message}
         </p>

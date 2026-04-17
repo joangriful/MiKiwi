@@ -1,10 +1,11 @@
 import React from 'react';
-import './MikiwiLogo.css';
+import styles from './MikiwiLogo.module.css';
 
-export default function MikiwiLogo(props) {
+export default function MikiwiLogo({ className = '', ...props }) {
     return (
         <svg
             {...props}
+            className={`${styles.root} ${className}`.trim()}
             viewBox="0 0 43 43"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"

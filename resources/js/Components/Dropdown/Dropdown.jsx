@@ -1,7 +1,7 @@
 import { Transition } from '@headlessui/react';
 import { Link } from '@inertiajs/react';
 import { createContext, useContext, useState } from 'react';
-import './Dropdown.css';
+import styles from './Dropdown.module.css';
 
 const DropDownContext = createContext();
 
@@ -14,7 +14,7 @@ const Dropdown = ({ children }) => {
 
     return (
         <DropDownContext.Provider value={{ open, setOpen, toggleOpen }}>
-            <div className="relative">{children}</div>
+            <div className={`${styles.root} relative`}>{children}</div>
         </DropDownContext.Provider>
     );
 };
