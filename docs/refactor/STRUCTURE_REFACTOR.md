@@ -1,111 +1,50 @@
-# Resumen del refactor de estructura (qué y por qué)
+# STRUCTURE_REFACTOR
 
-## Contexto rápido
-Este repositorio se ha reorganizado para escalar mejor un proyecto **Laravel + Inertia + React + Tailwind** sin cambiar la UI.  
-El objetivo fue **mejorar rendimiento, mantenibilidad y escalabilidad**, manteniendo el backend casi intacto y haciendo la migración **gradual**.
+Este documento queda como **referencia histórica** del refactor, pero ya no describe la arquitectura final vigente.
 
----
+Durante una fase intermedia del proyecto se trabajó con estas ideas:
 
-## Qué se cambió (alto nivel)
+- frontend organizado por `Features`;
+- reutilizables en `Shared`;
+- CSS local plano (`Component.css`);
+- resolver de Inertia orientado a `Features/**/Pages`.
 
-### 1) Frontend por *features*
-**Qué hicimos**
-- Todo el frontend se reorganizó en `resources/js/Features/`.
-- Cada feature contiene sus `Pages`, `Components`, `Hooks`, `Utils`, etc.
+Ese estado ya no es el actual.
 
-**Por qué**
-- Evita carpetas gigantes con responsabilidades mezcladas.
-- Facilita migraciones graduales por módulo.
-- Reduce dependencias cruzadas entre áreas.
+## Arquitectura final consolidada
 
----
+La estructura vigente es:
 
-### 2) Shared para reutilizables
-**Qué hicimos**
-- Los elementos comunes (utils, hooks, UI compartida) viven en `resources/js/Shared/`.
+### Frontend
 
-**Por qué**
-- Centralizar reutilizables evita duplicar lógica.
-- Hace más claro qué es “global” y qué es “feature‑specific”.
+- `resources/js/Pages`
+- `resources/js/Components`
+- `resources/js/Hooks`
+- `resources/js/Utils`
+- `resources/js/Layouts`
 
----
+### Backend
 
-### 3) Layouts separados
-**Qué hicimos**
-- Layouts globales están en `resources/js/Layouts/`.
+- `app/Http/Controllers` como capa fina
+- `app/Domain/<Modulo>/Services|Actions|Repositories`
+- `app/Models` para Eloquent y relaciones
 
-**Por qué**
-- Separar layouts evita dependencias cíclicas y acoplamientos con features.
+### Convenciones activas
 
----
+- No usar `resources/js/Features` como destino nuevo.
+- No usar `resources/js/Components/Common`.
+- Toda página Inertia debe vivir en:
+  - `resources/js/Pages/<Area>/<PageName>/`
+  - con `<PageName>.jsx` + `<PageName>.module.css`
+- Los componentes reutilizables usan carpeta propia con `*.module.css`.
+- Solo se permiten `hooks` y `utils` como subcarpetas internas justificadas en `Components`.
 
-### 4) Resolver de Inertia endurecido
-**Qué hicimos**
-- El resolver de Inertia ahora apunta a `Features/**/Pages`.
+## Documentos que sí mandan ahora
 
-**Por qué**
-- Obliga a una estructura consistente.
-- Evita que la app cargue páginas “legacy” sin querer.
+- [docs/AGENTS.md](C:\Users\Angel J Ragel\Desktop\MiKiwi\docs\AGENTS.md)
+- [docs/PROJECT_STRUCTURE.md](C:\Users\Angel J Ragel\Desktop\MiKiwi\docs\PROJECT_STRUCTURE.md)
+- [docs/refactor/COMMIT_PLAN.md](C:\Users\Angel J Ragel\Desktop\MiKiwi\docs\refactor\COMMIT_PLAN.md)
 
----
+## Para qué sirve todavía este archivo
 
-### 5) CSS local por componente
-**Qué hicimos**
-- Cada componente vive en una carpeta propia con su `Component.jsx` + `Component.css`.
-- El CSS local se crea aunque esté vacío.
-
-**Por qué**
-- Aísla estilos y evita colisiones.
-- Facilita limpiar CSS en el futuro sin romper otras pantallas.
-
----
-
-### 6) CSS global reducido
-**Qué hicimos**
-- `global.css` solo contiene tokens/variables.
-- `app.css` queda mínimo (tailwind + global).
-
-**Por qué**
-- Evita cargar CSS innecesario en todas las páginas.
-- Mejora rendimiento percibido y orden del styling.
-
----
-
-### 7) Backend con DDD-light (por dominios)
-**Qué hicimos**
-- Se creó `app/Domain/<Modulo>/` y se movieron services, actions, repositories por dominio.
-
-**Por qué**
-- Hace el backend más escalable y entendible.
-- Permite crecer sin “carpetas basurero”.
-
----
-
-### 8) Tests + CI
-**Qué hicimos**
-- `.env.testing` para tests locales.
-- GitHub Actions con MySQL para CI.
-
-**Por qué**
-- Validar cambios de forma automática.
-- Garantizar que la migración no rompe el proyecto.
-
----
-
-## Resultados directos
-- Estructura más clara y modular.
-- Menos riesgo al tocar features aislados.
-- Mejor base para mantener y escalar.
-- Estilos y componentes más controlados.
-
----
-
-## Referencias útiles
-- Plan detallado: `MIGRATION_PLAN.md`
-- Recap por fases: `PHASE_RECAP.md`
-
----
-
-## Nota sobre warnings
-Los subrayados rojos del editor **no bloquean** la ejecución de la app.  
-Los warnings de `composer dump-autoload` se limpiaron con `exclude-from-classmap` en `composer.json`.
+Solo para entender el razonamiento histórico del refactor y su evolución. No debe usarse para crear estructura nueva ni para validar si una ubicación actual es correcta.

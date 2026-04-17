@@ -18,6 +18,7 @@ La prioridad no es “mover archivos por mover”, sino:
 - Toda página debe tener `PageName.jsx` y `PageName.module.css`.
 - Todo componente reutilizable debe acabar en `resources/js/Components/<ComponentName>/`.
 - No usar `resources/js/Components/Common`.
+- Dentro de `resources/js/Components` se permiten carpetas `hooks` y `utils` cuando tengan sentido de área, pero no carpetas semánticas intermedias como `sections`.
 - Los hooks globales viven en `resources/js/Hooks`.
 - Las utilidades globales viven en `resources/js/Utils`.
 - `resources/css/global.css` solo debe contener estilos globales reales.
@@ -34,6 +35,34 @@ En cada commit se debe validar, como mínimo:
 3. que no haya regresiones visuales obvias en la pantalla tocada;
 4. que no aparezcan errores de consola o de servidor derivados del movimiento;
 5. que el commit no deje imports legacy apuntando a la ubicación vieja.
+
+## Estado actual
+
+- Commit 1: completado
+- Commit 2: completado
+- Commit 3: completado
+- Commit 4: completado
+- Commit 5: completado
+- Commit 6: completado
+- Commit 7: completado
+- Commit 8: completado
+- Commit 9: completado
+- Commit 10: completado
+- Commit 11: completado
+- Commit 12: completado
+- Commit 13: completado
+- Commit 14: completado
+- Commit 15: completado
+- Commit 16: completado
+- Commit 17: completado
+- Commit 18: completado
+- Commit 19: completado
+- Commit 20: completado
+- Commit 21: completado
+- Commit 22: completado
+- Commit 23: completado
+- Commit 24: completado
+- Commit 25: completado
 
 ## Orden oficial de commits
 
@@ -142,9 +171,7 @@ Eliminar `resources/js/Components/Common` y normalizar los componentes reutiliza
   - `resources/js/Components/Toast/Toast.jsx`
 - crear sus respectivos `*.module.css`;
 - ajustar imports en layouts y páginas;
-- revisar subcomponentes de footer para decidir si:
-  - viven dentro del componente `Footer`, o
-  - pasan a `resources/js/Components/Footer/<Subcomponent>/`.
+- aplanar subcomponentes de footer dentro de `resources/js/Components/Footer/`, sin carpetas tipo `sections`.
 
 **Por qué este commit va antes que las páginas**
 
@@ -610,6 +637,22 @@ Solo tiene sentido documentar la foto final cuando la foto final ya existe.
 **Resultado esperado**
 
 El refactor quedará cerrado, validado y explicable para cualquiera que entre al proyecto.
+
+## Cierre del plan
+
+El plan se considera cerrado con estos resultados:
+
+- la estructura final de frontend ya no depende de `resources/js/Features`;
+- `resources/js/Components/Common` ya no existe;
+- el resolver de Inertia apunta a `Pages`;
+- el backend delega la lógica relevante a `app/Domain`;
+- la documentación maestra quedó alineada con la foto final del repo.
+
+Deuda que queda fuera de este plan:
+
+- ampliar cobertura de tests sobre servicios y controladores extraídos;
+- limpiar o reutilizar `resources/js/Shared` si se decide su destino final;
+- seguir afinando documentación histórica secundaria que se conserva como contexto.
 
 ## Dependencias entre commits
 
