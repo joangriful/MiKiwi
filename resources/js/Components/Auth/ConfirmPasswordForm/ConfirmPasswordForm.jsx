@@ -21,7 +21,7 @@ export default function ConfirmPasswordForm() {
     };
 
     return (
-        <form onSubmit={submit} className={`${styles.root} space-y-5`}>
+        <form onSubmit={submit} className={styles.root}>
             <div className="mk-auth-field">
                 <label htmlFor="password" className="mk-auth-label">
                     Contraseña actual
@@ -31,21 +31,21 @@ export default function ConfirmPasswordForm() {
                     type="password"
                     name="password"
                     value={data.password}
-                    className="mk-auth-input w-full px-4 py-3.5 text-sm"
+                    className={`mk-auth-input ${styles.input}`}
                     autoFocus
                     required
                     placeholder=" "
                     onChange={(e) => setData('password', e.target.value)}
                 />
-                <InputError message={errors.password} className="mt-2 text-xs" />
+                <InputError message={errors.password} className={styles.error} />
             </div>
 
-            <button type="submit" className="mk-auth-btn-primary w-full py-4 text-xs font-semibold uppercase" disabled={processing}>
+            <button type="submit" className={`mk-auth-btn-primary ${styles.submitButton}`} disabled={processing}>
                 <span>{processing ? 'Confirmando...' : 'Confirmar acceso'}</span>
             </button>
 
-            <div className="text-center text-xs text-gray-500">
-                <Link href={route('login')} className="mk-auth-link font-medium">
+            <div className={styles.footerText}>
+                <Link href={route('login')} className={`mk-auth-link ${styles.inlineLink}`}>
                     Volver a login
                 </Link>
             </div>

@@ -24,7 +24,7 @@ export default function ResetPasswordForm({ token, email }) {
     };
 
     return (
-        <form onSubmit={submit} className={`${styles.root} space-y-5`}>
+        <form onSubmit={submit} className={styles.root}>
             <div className="mk-auth-field">
                 <label htmlFor="email" className="mk-auth-label">
                     Correo electrónico
@@ -34,13 +34,13 @@ export default function ResetPasswordForm({ token, email }) {
                     type="email"
                     name="email"
                     value={data.email}
-                    className="mk-auth-input w-full px-4 py-3.5 text-sm"
+                    className={`mk-auth-input ${styles.input}`}
                     autoComplete="username"
                     required
                     placeholder=" "
                     onChange={(e) => setData('email', e.target.value)}
                 />
-                <InputError message={errors.email} className="mt-2 text-xs" />
+                <InputError message={errors.email} className={styles.error} />
             </div>
 
             <div className="mk-auth-field">
@@ -52,14 +52,14 @@ export default function ResetPasswordForm({ token, email }) {
                     type="password"
                     name="password"
                     value={data.password}
-                    className="mk-auth-input w-full px-4 py-3.5 text-sm"
+                    className={`mk-auth-input ${styles.input}`}
                     autoComplete="new-password"
                     autoFocus
                     required
                     placeholder=" "
                     onChange={(e) => setData('password', e.target.value)}
                 />
-                <InputError message={errors.password} className="mt-2 text-xs" />
+                <InputError message={errors.password} className={styles.error} />
             </div>
 
             <div className="mk-auth-field">
@@ -71,7 +71,7 @@ export default function ResetPasswordForm({ token, email }) {
                     id="password_confirmation"
                     name="password_confirmation"
                     value={data.password_confirmation}
-                    className="mk-auth-input w-full px-4 py-3.5 text-sm"
+                    className={`mk-auth-input ${styles.input}`}
                     autoComplete="new-password"
                     required
                     placeholder=" "
@@ -80,16 +80,16 @@ export default function ResetPasswordForm({ token, email }) {
 
                 <InputError
                     message={errors.password_confirmation}
-                    className="mt-2 text-xs"
+                    className={styles.error}
                 />
             </div>
 
-            <button type="submit" className="mk-auth-btn-primary w-full py-4 text-xs font-semibold uppercase" disabled={processing}>
+            <button type="submit" className={`mk-auth-btn-primary ${styles.submitButton}`} disabled={processing}>
                 <span>{processing ? 'Actualizando...' : 'Actualizar contraseña'}</span>
             </button>
 
-            <div className="text-center text-xs text-gray-500">
-                <Link href={route('login')} className="mk-auth-link font-medium">
+            <div className={styles.footerText}>
+                <Link href={route('login')} className={`mk-auth-link ${styles.inlineLink}`}>
                     Volver a iniciar sesión
                 </Link>
             </div>

@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
 import { toast } from 'react-toastify';
+import { filterProductsBySearchTerm } from '@/Utils/productSearch';
 import styles from './FeaturedProductsManager.module.css';
-
-function getFilteredProducts(products, searchTerm) {
-    const normalizedSearchTerm = searchTerm.toLowerCase();
-
-    return products.filter((product) =>
-        product.name?.toLowerCase().includes(normalizedSearchTerm) ||
-        product.sku?.toLowerCase().includes(normalizedSearchTerm)
-    );
-}
 
 function ProductRow({ product, isLoading, onToggleFeatured }) {
     const rowClassName = `${styles.productRow} ${product.is_featured ? styles.productRowFeatured : ''}`;
@@ -63,7 +55,7 @@ export default function FeaturedProductsManager({ products = [] }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [loadingId, setLoadingId] = useState(null);
 
-    const allProducts = getFilteredProducts(products, searchTerm);
+    const allProducts = filterProductsBySearchTerm(products, searchTerm);
     const featuredProducts = products.filter((product) => product.is_featured);
 
     const toggleFeatured = (product) => {

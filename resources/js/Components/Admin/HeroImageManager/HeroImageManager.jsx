@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { router } from '@inertiajs/react';
 import Toast from '@/Components/Toast/Toast';
+import { extractImageFiles } from '@/Utils/imageFiles';
 import styles from './HeroImageManager.module.css';
 
 function UploadStatus({ uploading }) {
@@ -88,8 +89,7 @@ export default function HeroImageManager({
         e.stopPropagation();
         setIsDragging(false);
 
-        const files = Array.from(e.dataTransfer.files);
-        const imageFiles = files.filter((file) => file.type.startsWith('image/'));
+        const imageFiles = extractImageFiles(e.dataTransfer.files);
 
         if (imageFiles.length > 0) {
             uploadImages(imageFiles);
@@ -99,8 +99,7 @@ export default function HeroImageManager({
     };
 
     const handleFileSelect = (e) => {
-        const files = Array.from(e.target.files);
-        uploadImages(files);
+        uploadImages(extractImageFiles(e.target.files));
     };
 
     const uploadImages = (files) => {

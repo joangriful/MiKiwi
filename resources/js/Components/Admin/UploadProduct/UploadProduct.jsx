@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { extractImageFiles } from '@/Utils/imageFiles';
 import styles from './UploadProduct.module.css';
 
 function getMethodButtonClassName(stylesObject, uploadMethod, targetMethod) {
@@ -149,7 +150,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
             return;
         }
 
-        const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+        const files = extractImageFiles(e.dataTransfer.files);
         if (files.length === 0) return;
 
         await validateAndUploadImages(files);
@@ -161,7 +162,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
             return;
         }
 
-        const files = Array.from(e.target.files).filter(file => file.type.startsWith('image/'));
+        const files = extractImageFiles(e.target.files);
         if (files.length === 0) return;
 
         await validateAndUploadImages(files);

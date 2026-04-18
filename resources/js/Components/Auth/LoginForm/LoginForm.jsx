@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import InputError from '@/Components/InputError/InputError';
 import AuthSocialButtons from '@/Components/Auth/AuthSocialButtons/AuthSocialButtons';
+import { clearStoredQuizResultCategory, getStoredQuizResultCategory } from '@/Utils/authQuizResultStorage';
 import { Link, useForm } from '@inertiajs/react';
 import styles from './LoginForm.module.css';
 
@@ -13,17 +14,10 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
     });
 
     useEffect(() => {
-        // Load quiz result category from localStorage if available
-        const quizData = localStorage.getItem('quizData');
-        if (quizData) {
-            try {
-                const { resultCategory } = JSON.parse(quizData);
-                if (resultCategory) {
-                    setData('quiz_result_category', resultCategory);
-                }
-            } catch (e) {
-                console.error('Error loading quiz data from localStorage', e);
-            }
+        const quizResultCategory = getStoredQuizResultCategory();
+
+        if (quizResultCategory) {
+            setData('quiz_result_category', quizResultCategory);
         }
 
         return () => {
@@ -36,14 +30,13 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
 
         post(route('login'), {
             onSuccess: () => {
-                // Clear localStorage quiz data after successful login
-                localStorage.removeItem('quizData');
-            }
+                clearStoredQuizResultCategory();
+            },
         });
     };
 
     return (
-        <form onSubmit={submit} className={`${styles.root} space-y-5`}>
+        <form onSubmit={submit} className={styles.root}>
             {status && (
                 <div className="mk-auth-status-success">
                     {status}
@@ -59,14 +52,14 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
                     type="email"
                     name="email"
                     value={data.email}
-                    className="mk-auth-input mk-auth-input-access w-full px-4 py-3.5 text-sm"
+                    className={`mk-auth-input mk-auth-input-access ${styles.input}`}
                     autoComplete="username"
                     autoFocus={autoFocus}
                     required
                     placeholder=" "
                     onChange={(e) => setData('email', e.target.value)}
                 />
-                <InputError message={errors.email} className="mt-2 text-xs" />
+                <InputError message={errors.email} className={styles.error} />
             </div>
 
             <div className="mk-auth-field">
@@ -78,39 +71,39 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
                     type="password"
                     name="password"
                     value={data.password}
-                    className="mk-auth-input mk-auth-input-access w-full px-4 py-3.5 text-sm"
+                    className={`mk-auth-input mk-auth-input-access ${styles.input}`}
                     autoComplete="current-password"
                     required
                     placeholder=" "
                     onChange={(e) => setData('password', e.target.value)}
                 />
-                <InputError message={errors.password} className="mt-2 text-xs" />
+                <InputError message={errors.password} className={styles.error} />
             </div>
 
-            <div className="flex items-center justify-between pt-1">
-                <label className="group/check flex cursor-pointer items-center gap-2.5">
+            <div className={styles.checkboxRow}>
+                <label className={styles.checkboxLabel}>
                     <input
                         type="checkbox"
                         name="remember"
                         checked={data.remember}
-                        className="h-4 w-4 rounded border-gray-300 text-indigo-500 transition-all focus:ring-indigo-500"
+                        className={styles.checkboxInput}
                         onChange={(e) => setData('remember', e.target.checked)}
                     />
-                    <span className="text-xs text-gray-500 transition-colors group-hover/check:text-gray-700">
+                    <span className={styles.checkboxText}>
                         Recordarme
                     </span>
                 </label>
                 {canResetPassword && (
                     <Link
                         href={route('password.request')}
-                        className="mk-auth-link text-xs font-medium"
+                        className={`mk-auth-link ${styles.inlineLink}`}
                     >
                         ¿Has olvidado tu contraseña?
                     </Link>
                 )}
             </div>
 
-            <button type="submit" className="mk-auth-btn-primary mk-auth-btn-access mt-2 w-full py-4 text-xs font-semibold uppercase" disabled={processing}>
+            <button type="submit" className={`mk-auth-btn-primary mk-auth-btn-access ${styles.submitButton}`} disabled={processing}>
                 <span>
                     {processing ? 'Accediendo...' : 'Acceso'}
                 </span>

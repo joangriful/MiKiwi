@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
 import { toast } from 'react-toastify';
+import { filterProductsBySearchTerm } from '@/Utils/productSearch';
 import styles from './ProductsList.module.css';
 
 function SearchBar({ searchTerm, setSearchTerm }) {
@@ -33,10 +34,7 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [deletingId, setDeletingId] = useState(null);
 
-    const filteredProducts = products.filter((product) =>
-        product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.sku?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredProducts = filterProductsBySearchTerm(products, searchTerm);
 
     const handleDelete = (product) => {
         if (!confirm('¿Estás seguro de que deseas eliminar este producto?')) return;

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import InputError from '@/Components/InputError/InputError';
 import AuthSocialButtons from '@/Components/Auth/AuthSocialButtons/AuthSocialButtons';
+import { clearStoredQuizResultCategory, getStoredQuizResultCategory } from '@/Utils/authQuizResultStorage';
 import { Link, useForm } from '@inertiajs/react';
 import styles from './RegisterForm.module.css';
 
@@ -14,17 +15,10 @@ export default function RegisterForm({ autoFocus = false }) {
     });
 
     useEffect(() => {
-        // Load quiz result category from localStorage if available
-        const quizData = localStorage.getItem('quizData');
-        if (quizData) {
-            try {
-                const { resultCategory } = JSON.parse(quizData);
-                if (resultCategory) {
-                    setData('quiz_result_category', resultCategory);
-                }
-            } catch (e) {
-                console.error('Error loading quiz data from localStorage', e);
-            }
+        const quizResultCategory = getStoredQuizResultCategory();
+
+        if (quizResultCategory) {
+            setData('quiz_result_category', quizResultCategory);
         }
 
         return () => {
@@ -37,34 +31,33 @@ export default function RegisterForm({ autoFocus = false }) {
 
         post(route('register'), {
             onSuccess: () => {
-                // Clear localStorage quiz data after successful registration
-                localStorage.removeItem('quizData');
-            }
+                clearStoredQuizResultCategory();
+            },
         });
     };
 
     return (
-        <form onSubmit={submit} className={`${styles.root} space-y-5`}>
+        <form onSubmit={submit} className={styles.root}>
             <div className="mk-auth-field">
-                <label htmlFor="name" className="mk-auth-label md:text-right">
+                <label htmlFor="name" className={`mk-auth-label ${styles.desktopAlign}`}>
                     Nombre completo
                 </label>
                 <input
                     id="name"
                     name="name"
                     value={data.name}
-                    className="mk-auth-input mk-auth-input-lime w-full px-4 py-3.5 text-sm md:text-right"
+                    className={`mk-auth-input mk-auth-input-lime ${styles.input} ${styles.desktopAlign}`}
                     autoComplete="name"
                     autoFocus={autoFocus}
                     onChange={(e) => setData('name', e.target.value)}
                     placeholder=" "
                     required
                 />
-                <InputError message={errors.name} className="mt-2 text-xs md:text-right" />
+                <InputError message={errors.name} className={`${styles.error} ${styles.desktopAlign}`} />
             </div>
 
             <div className="mk-auth-field">
-                <label htmlFor="email" className="mk-auth-label md:text-right">
+                <label htmlFor="email" className={`mk-auth-label ${styles.desktopAlign}`}>
                     Correo electrónico
                 </label>
                 <input
@@ -72,17 +65,17 @@ export default function RegisterForm({ autoFocus = false }) {
                     type="email"
                     name="email"
                     value={data.email}
-                    className="mk-auth-input mk-auth-input-lime w-full px-4 py-3.5 text-sm md:text-right"
+                    className={`mk-auth-input mk-auth-input-lime ${styles.input} ${styles.desktopAlign}`}
                     autoComplete="username"
                     onChange={(e) => setData('email', e.target.value)}
                     placeholder=" "
                     required
                 />
-                <InputError message={errors.email} className="mt-2 text-xs md:text-right" />
+                <InputError message={errors.email} className={`${styles.error} ${styles.desktopAlign}`} />
             </div>
 
             <div className="mk-auth-field">
-                <label htmlFor="password" className="mk-auth-label md:text-right">
+                <label htmlFor="password" className={`mk-auth-label ${styles.desktopAlign}`}>
                     Contraseña
                 </label>
                 <input
@@ -90,17 +83,17 @@ export default function RegisterForm({ autoFocus = false }) {
                     type="password"
                     name="password"
                     value={data.password}
-                    className="mk-auth-input mk-auth-input-lime w-full px-4 py-3.5 text-sm md:text-right"
+                    className={`mk-auth-input mk-auth-input-lime ${styles.input} ${styles.desktopAlign}`}
                     autoComplete="new-password"
                     onChange={(e) => setData('password', e.target.value)}
                     placeholder=" "
                     required
                 />
-                <InputError message={errors.password} className="mt-2 text-xs md:text-right" />
+                <InputError message={errors.password} className={`${styles.error} ${styles.desktopAlign}`} />
             </div>
 
             <div className="mk-auth-field">
-                <label htmlFor="password_confirmation" className="mk-auth-label md:text-right">
+                <label htmlFor="password_confirmation" className={`mk-auth-label ${styles.desktopAlign}`}>
                     Confirmar contraseña
                 </label>
                 <input
@@ -108,7 +101,7 @@ export default function RegisterForm({ autoFocus = false }) {
                     type="password"
                     name="password_confirmation"
                     value={data.password_confirmation}
-                    className="mk-auth-input mk-auth-input-lime w-full px-4 py-3.5 text-sm md:text-right"
+                    className={`mk-auth-input mk-auth-input-lime ${styles.input} ${styles.desktopAlign}`}
                     autoComplete="new-password"
                     onChange={(e) => setData('password_confirmation', e.target.value)}
                     placeholder=" "
@@ -117,24 +110,24 @@ export default function RegisterForm({ autoFocus = false }) {
 
                 <InputError
                     message={errors.password_confirmation}
-                    className="mt-2 text-xs md:text-right"
+                    className={`${styles.error} ${styles.desktopAlign}`}
                 />
             </div>
 
-            <button type="submit" className="mk-auth-btn-lime mt-2 w-full py-4 text-xs font-semibold uppercase" disabled={processing}>
+            <button type="submit" className={`mk-auth-btn-lime ${styles.submitButton}`} disabled={processing}>
                 <span>{processing ? 'Creando cuenta...' : 'Crear mi cuenta'}</span>
             </button>
 
             <AuthSocialButtons dividerText="o regístrate con" />
 
 
-            <p className="text-[10px] leading-relaxed text-gray-400 md:text-right">
+            <p className={`${styles.legalText} ${styles.desktopAlign}`}>
                 Al registrarte, aceptas nuestros{' '}
-                <Link href={route('terms.use')} className="mk-auth-link font-medium">
+                <Link href={route('terms.use')} className={`mk-auth-link ${styles.inlineLink}`}>
                     Términos de uso
                 </Link>{' '}
                 y{' '}
-                <Link href={route('privacy.policy')} className="mk-auth-link font-medium">
+                <Link href={route('privacy.policy')} className={`mk-auth-link ${styles.inlineLink}`}>
                     Política de privacidad
                 </Link>
                 .
