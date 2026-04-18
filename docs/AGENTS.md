@@ -31,6 +31,8 @@
 - Indentation: 4 spaces (see `.editorconfig`).
 - PHP: PSR-12/Laravel conventions; classes `PascalCase`, methods `camelCase`.
 - JS/React: components `PascalCase`, hooks `useX`, files match exported component.
+  - Exportar componentes por defecto en la propia declaración: `export default function ComponentName() {}` o `export default class ComponentName extends React.Component {}`.
+  - Evitar el patrón de declarar primero y exportar al final (`export default ComponentName;`) salvo que exista una necesidad técnica clara.
 - Frontend structure:
   - No usar `resources/js/Features` como raíz objetivo.
   - Todas las páginas Inertia deben vivir en `resources/js/Pages/<Area>/<PageName>/`.
