@@ -1,67 +1,86 @@
 import React, { useState } from 'react';
 import HeroImageManager from '../HeroImageManager/HeroImageManager';
+import styles from './ContentManager.module.css';
+
+const HERO_SECTION = 'hero';
+
+const CONTENT_SECTIONS = [
+    {
+        id: HERO_SECTION,
+        label: 'Hero',
+        icon: 'image',
+    },
+];
+
+const HERO_IMAGE_GROUPS = [
+    {
+        key: 'home',
+        title: 'Imágenes del Hero (Home)',
+        description: 'Gestiona las imágenes de fondo del hero principal',
+        uploadType: 'home',
+        matchesType: (image) => image.type === 'home' || !image.type,
+    },
+    {
+        key: 'sustainability',
+        title: 'Imágenes del Hero (Sostenibilidad)',
+        description: 'Gestiona las imágenes del hero de la página de sostenibilidad',
+        uploadType: 'sustainability',
+        matchesType: (image) => image.type === 'sustainability',
+    },
+    {
+        key: 'dolls',
+        title: 'GIF / Imágenes Sección Muñecas (Home)',
+        description: 'Gestiona el GIF de fondo que aparece en la sección Sex Dolls de la página principal',
+        uploadType: 'dolls',
+        matchesType: (image) => image.type === 'dolls',
+    },
+    {
+        key: 'calibration',
+        title: 'Fondo Sección Calibración (Home)',
+        description: "Gestiona la imagen de fondo para la sección de 'Descubre tu personalidad'",
+        uploadType: 'calibration',
+        matchesType: (image) => image.type === 'calibration',
+    },
+];
 
 export default function ContentManager({ heroImages }) {
-    const [activeSection, setActiveSection] = useState('hero');
+    const [activeSection, setActiveSection] = useState(HERO_SECTION);
 
     return (
-        <div className="flex h-full bg-gray-50">
-            {/* Sidebar */}
-            <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
-                <div className="p-4 border-b border-gray-100">
-                    <h2 className="text-lg font-bold text-gray-800">Contenido</h2>
-                    <p className="text-xs text-gray-500">Gestión de contenido del sitio</p>
+        <div className={styles.layout}>
+            <div className={styles.sidebar}>
+                <div className={styles.sidebarHeader}>
+                    <h2 className={styles.sidebarTitle}>Contenido</h2>
+                    <p className={styles.sidebarDescription}>Gestión de contenido del sitio</p>
                 </div>
 
-                <div className="p-2 space-y-1">
-                    <button
-                        onClick={() => setActiveSection('hero')}
-                        className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeSection === 'hero'
-                            ? 'bg-[#99b849]/10 text-[#99b849]'
-                            : 'text-gray-600 hover:bg-gray-50'
-                            }`}
-                    >
-                        <span className="material-symbols-outlined text-[18px]">image</span>
-                        Hero
-                    </button>
+                <div className={styles.sidebarActions}>
+                    {CONTENT_SECTIONS.map((section) => (
+                        <button
+                            key={section.id}
+                            type="button"
+                            onClick={() => setActiveSection(section.id)}
+                            className={`${styles.sectionButton} ${activeSection === section.id ? styles.sectionButtonActive : ''}`}
+                        >
+                            <span className={`material-symbols-outlined ${styles.sectionButtonIcon}`}>{section.icon}</span>
+                            {section.label}
+                        </button>
+                    ))}
                 </div>
             </div>
 
-            {/* Main Content */}
-            <div className="flex-1 overflow-auto">
-                {activeSection === 'hero' && (
-                    <div className="flex flex-col gap-8 pb-10">
-                        {/* Home Hero Images */}
-                        <HeroImageManager
-                            images={heroImages.filter(img => img.type === 'home' || !img.type)}
-                            title="Imágenes del Hero (Home)"
-                            description="Gestiona las imágenes de fondo del hero principal"
-                            uploadType="home"
-                        />
-
-                        {/* Sustainability Hero Images */}
-                        <HeroImageManager
-                            images={heroImages.filter(img => img.type === 'sustainability')}
-                            title="Imágenes del Hero (Sostenibilidad)"
-                            description="Gestiona las imágenes del hero de la página de sostenibilidad"
-                            uploadType="sustainability"
-                        />
-
-                        {/* Dolls Section Images */}
-                        <HeroImageManager
-                            images={heroImages.filter(img => img.type === 'dolls')}
-                            title="GIF / Imágenes Sección Muñecas (Home)"
-                            description="Gestiona el GIF de fondo que aparece en la sección Sex Dolls de la página principal"
-                            uploadType="dolls"
-                        />
-
-                        {/* Calibration Section Images */}
-                        <HeroImageManager
-                            images={heroImages.filter(img => img.type === 'calibration')}
-                            title="Fondo Sección Calibración (Home)"
-                            description="Gestiona la imagen de fondo para la sección de 'Descubre tu personalidad'"
-                            uploadType="calibration"
-                        />
+            <div className={styles.content}>
+                {activeSection === HERO_SECTION && (
+                    <div className={styles.heroManagers}>
+                        {HERO_IMAGE_GROUPS.map((group) => (
+                            <HeroImageManager
+                                key={group.key}
+                                images={heroImages.filter(group.matchesType)}
+                                title={group.title}
+                                description={group.description}
+                                uploadType={group.uploadType}
+                            />
+                        ))}
                     </div>
                 )}
             </div>
