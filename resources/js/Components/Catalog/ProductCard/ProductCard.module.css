@@ -1,1 +1,156 @@
-.root {}
+.root {
+    position: relative;
+    display: flex;
+    width: 100%;
+    min-width: 17.5rem;
+    height: 100%;
+    flex-shrink: 0;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    background: var(--bg-surface);
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 5%);
+    transition: box-shadow 0.5s ease, transform 0.5s ease;
+}
+
+.root:hover {
+    box-shadow: inset 0 0 0 2px rgb(153 184 73 / 60%), 0 8px 32px rgb(153 184 73 / 18%);
+}
+
+.imageArea {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--color-surface-disabled);
+}
+
+.productImage,
+.productHoverImage {
+    width: 110%;
+    height: 110%;
+    max-width: none;
+    margin-top: -5%;
+    margin-left: -5%;
+    object-fit: cover;
+    transition: opacity 0.6s ease-in-out;
+}
+
+.productImageWithHover {
+    opacity: 1;
+}
+
+.root:hover .productImageWithHover {
+    opacity: 0;
+}
+
+.productHoverImage {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+}
+
+.root:hover .productHoverImage {
+    opacity: 1;
+}
+
+.likeButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1;
+    display: inline-flex;
+    width: 2.5rem;
+    height: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 60%);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.root:hover .likeButton {
+    opacity: 1;
+}
+
+.likeButton:hover {
+    background: var(--bg-surface);
+}
+
+.likeIcon {
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: background-color 0.2s ease;
+}
+
+.likeIconActive {
+    background: var(--color-danger-soft);
+}
+
+.likeIconInactive {
+    background: var(--color-black);
+}
+
+.infoSection {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.5rem 0.5rem 1rem;
+}
+
+.infoHeader {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.productName {
+    flex: 1;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-black);
+}
+
+.price {
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgb(0 0 0 / 80%);
+}
+
+.divider {
+    width: 3rem;
+    height: 1px;
+    background: rgb(0 0 0 / 5%);
+}
+
+.description {
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: rgb(0 0 0 / 40%);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@media (min-width: 640px) {
+    .root {
+        min-width: 20rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .root {
+        min-width: 0;
+        max-width: 23.75rem;
+        margin: 0 auto;
+    }
+}

@@ -15,45 +15,38 @@ export default function ProductImageCarousel({ images = [], selectedImage, onSel
     };
 
     return (
-        <div className={`${styles.root} w-full flex flex-col gap-6`}>
-            <div className="flex items-center gap-4 justify-between">
-                {/* Prev Button */}
+        <div className={styles.root}>
+            <div className={styles.layout}>
                 <button
                     onClick={handlePrev}
-                    className="p-2 rounded-full border border-gray-100 bg-white text-gray-400 hover:text-black hover:border-gray-200 transition-all active:scale-90"
+                    className={styles.navButton}
                     aria-label="Anterior imagen"
                 >
-                    <span className="material-symbols-outlined">chevron_left</span>
+                    <span className={`material-symbols-outlined ${styles.navIcon}`}>chevron_left</span>
                 </button>
 
-                {/* Thumbnails Container */}
-                <div className="flex-1 flex gap-4 overflow-x-auto py-2 px-1 custom-scrollbar justify-center">
+                <div className={styles.thumbnailTrack}>
                     {images.map((img, index) => (
                         <button
                             key={index}
                             onClick={() => onSelectImage(img)}
-                            className={`relative w-20 h-20 rounded-xl cursor-pointer transition-all duration-300 flex-shrink-0 overflow-hidden border-2 
-                                ${selectedImage === img
-                                    ? 'border-[#99b849] scale-105 shadow-md'
-                                    : 'border-transparent opacity-40 hover:opacity-100 hover:border-gray-100'}
-                            `}
+                            className={`${styles.thumbnailButton} ${selectedImage === img ? styles.thumbnailButtonActive : styles.thumbnailButtonInactive}`}
                         >
                             <img
                                 src={img}
                                 alt={`Vista ${index + 1}`}
-                                className="w-full h-full object-cover"
+                                className={styles.thumbnailImage}
                             />
                         </button>
                     ))}
                 </div>
 
-                {/* Next Button */}
                 <button
                     onClick={handleNext}
-                    className="p-2 rounded-full border border-gray-100 bg-white text-gray-400 hover:text-black hover:border-gray-200 transition-all active:scale-90"
+                    className={styles.navButton}
                     aria-label="Siguiente imagen"
                 >
-                    <span className="material-symbols-outlined">chevron_right</span>
+                    <span className={`material-symbols-outlined ${styles.navIcon}`}>chevron_right</span>
                 </button>
             </div>
         </div>

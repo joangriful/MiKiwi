@@ -1,1 +1,308 @@
-.root {}
+.root {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    padding-top: 0.5rem;
+}
+
+.notificationWrap {
+    overflow: hidden;
+    transition: max-height 0.5s ease, margin-bottom 0.5s ease, opacity 0.5s ease;
+}
+
+.notificationWrapVisible {
+    max-height: 5rem;
+    margin-bottom: 1rem;
+    opacity: 1;
+}
+
+.notificationWrapHidden {
+    max-height: 0;
+    margin-bottom: 0;
+    opacity: 0;
+}
+
+.notification {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 1rem;
+    border: 1px solid;
+}
+
+.notificationSuccess {
+    color: var(--color-success-strong);
+    background: var(--color-success-soft);
+    border-color: var(--color-success-border);
+}
+
+.notificationError {
+    color: var(--color-danger);
+    background: var(--color-danger-bg);
+    border-color: var(--color-danger-border);
+}
+
+.notificationIcon {
+    font-size: 1.25rem;
+}
+
+.notificationText {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+}
+
+.breadcrumbLink,
+.breadcrumbFallback {
+    padding: 0 0.25rem;
+}
+
+.breadcrumbLink {
+    transition: color 0.2s ease;
+}
+
+.breadcrumbLink:hover {
+    color: var(--color-primary);
+}
+
+.breadcrumbLinkActive,
+.breadcrumbFallback {
+    color: var(--color-primary);
+}
+
+.breadcrumbLinkActive:hover {
+    color: var(--color-primary-dark);
+}
+
+.breadcrumbDivider {
+    color: var(--color-border-strong);
+}
+
+.titleRow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.title {
+    margin: 0;
+    font-size: clamp(1.875rem, 6vw, 3rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    color: var(--color-text-strongest);
+}
+
+.favoriteButton {
+    padding: 0.75rem;
+    border-radius: 999px;
+    border: 1px solid;
+    transition: all 0.3s ease;
+}
+
+.favoriteButtonActive {
+    color: var(--color-danger-soft);
+    background: var(--color-danger-bg);
+    border-color: var(--color-danger-border);
+    box-shadow: var(--shadow-sm);
+    transform: scale(1.1);
+}
+
+.favoriteButtonInactive {
+    color: var(--color-text-subtle);
+    background: var(--bg-surface);
+    border-color: var(--color-border-soft);
+}
+
+.favoriteButtonInactive:hover {
+    color: var(--color-text-soft);
+    border-color: var(--color-border-default);
+}
+
+.favoriteIcon {
+    font-size: 2rem;
+}
+
+.favoriteIconFilled {
+    font-variation-settings: 'FILL' 1;
+}
+
+.priceRow {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.price {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--color-text-strongest);
+}
+
+.limitedBadge {
+    padding: 0.25rem 0.75rem;
+    border: 1px solid var(--color-border-soft);
+    border-radius: 999px;
+    background: var(--color-surface-subtle);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+}
+
+.descriptionBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.descriptionTitle {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-text-strongest);
+}
+
+.descriptionText {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.7;
+    font-weight: 300;
+    color: var(--color-text-soft);
+}
+
+.actions {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border-soft);
+}
+
+.quantitySelector {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border-soft);
+    border-radius: 1rem;
+    background: var(--color-surface-subtle);
+}
+
+.quantityButton {
+    display: inline-flex;
+    width: 3rem;
+    height: 3rem;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-subtle);
+    transition: color 0.2s ease;
+}
+
+.quantityButton:hover {
+    color: var(--color-text-strongest);
+}
+
+.quantityValue {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.quantityLabel {
+    margin-bottom: 0.25rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+}
+
+.quantityNumber {
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-text-strongest);
+}
+
+.addToCartButton,
+.buyNowButton {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: transform 0.2s ease, background-color 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+}
+
+.addToCartButton {
+    color: var(--color-white);
+    background: var(--color-black);
+    box-shadow: 0 12px 24px rgb(0 0 0 / 10%);
+}
+
+.addToCartButton:hover {
+    background: var(--color-text-strongest);
+}
+
+.buyNowButton {
+    color: var(--color-white);
+    background: var(--color-primary);
+    box-shadow: 0 12px 24px rgb(153 184 73 / 20%);
+}
+
+.buyNowButton:hover {
+    background: var(--color-primary-dark);
+}
+
+.addToCartButton:active,
+.buyNowButton:active {
+    transform: scale(0.95);
+}
+
+.addToCartButton:disabled,
+.buyNowButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.actionIcon {
+    font-size: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+    .root {
+        padding-top: 0;
+    }
+}

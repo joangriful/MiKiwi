@@ -2,6 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
 import styles from './FilterMenu.module.css';
 
+const NOISE_LEVELS = [
+    { value: 'Whisper', label: 'Ultra Silencioso' },
+    { value: 'Standard', label: 'Estándar V6' },
+];
+
+const USAGE_OPTIONS = ['Solo', 'En Pareja', 'Penetración', 'Licking', 'Estimulación Clitoriana'];
+
+const COLOR_OPTIONS = [
+    { name: 'Noir', hex: '#111' },
+    { name: 'Biolink', hex: '#99b849' },
+    { name: 'Aura', hex: '#f8b7ea' },
+    { name: 'Mist', hex: '#e2e0db' },
+];
+
 export default function FilterMenu({ isOpen, onClose, categories = [], filters = {} }) {
     // Local state to store changes before applying
     const [localFilters, setLocalFilters] = useState(filters);
@@ -65,83 +79,73 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
         onClose();
     };
 
-    return (
-        <div className={`${styles.root} fixed inset-0 z-[100] overflow-hidden flex justify-end`}>
-            {/* Backdrop */}
-            <div
-                className="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity animate-in fade-in duration-500"
-                onClick={onClose}
-            ></div>
+    const panelClassName = `${styles.panel} ${isOpen ? styles.panelOpen : ''}`;
 
-            {/* Menu Panel */}
-            <div className="relative w-full max-w-lg bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-500 ease-out">
-                {/* Header */}
-                <div className="p-10 border-b border-gray-100 flex justify-between items-center group">
-                    <div className="flex flex-col">
-                        <h2 className="text-3xl font-bold text-gray-900 tracking-tighter">Filtros Avanzados</h2>
-                        <span className="text-[10px] uppercase tracking-[0.2em] text-[#99b849] font-bold mt-1">Sincronía Sensorial</span>
+    return (
+        <div className={styles.root}>
+            <div
+                className={styles.backdrop}
+                onClick={onClose}
+            />
+
+            <div className={panelClassName}>
+                <div className={styles.header}>
+                    <div className={styles.headerText}>
+                        <h2 className={styles.title}>Filtros Avanzados</h2>
+                        <span className={styles.eyebrow}>Sincronía Sensorial</span>
                     </div>
-                    <button onClick={onClose} className="w-12 h-12 flex items-center justify-center hover:bg-gray-100 rounded-full transition-all active:scale-90">
-                        <span className="material-symbols-outlined text-gray-400 group-hover:text-black transition-colors">close</span>
+                    <button onClick={onClose} className={styles.closeButton}>
+                        <span className={`material-symbols-outlined ${styles.closeIcon}`}>close</span>
                     </button>
                 </div>
 
-                <div className="flex-grow overflow-y-auto px-10 py-12 space-y-16 scrollbar-thin scrollbar-thumb-gray-200">
+                <div className={styles.content}>
 
-                    {/* Stock & Highlights */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className={styles.toggleGrid}>
                         <button
                             onClick={() => updateLocalFilter({ stock: localFilters.stock ? null : 1 })}
-                            className={`flex items-center justify-between px-6 py-5 rounded-3xl border transition-all ${localFilters.stock ? 'bg-black border-black text-white shadow-xl shadow-black/10' : 'bg-gray-50 border-transparent hover:border-gray-200'}`}
+                            className={`${styles.toggleCard} ${localFilters.stock ? styles.toggleCardActive : styles.toggleCardInactive}`}
                         >
-                            <span className="text-xs font-bold uppercase tracking-widest text-inherit">En Stock</span>
-                            <div className={`w-2 h-2 rounded-full ${localFilters.stock ? 'bg-[#99b849]' : 'bg-gray-300'}`}></div>
+                            <span className={styles.toggleLabel}>En Stock</span>
+                            <div className={`${styles.toggleDot} ${localFilters.stock ? styles.toggleDotActive : styles.toggleDotInactive}`}></div>
                         </button>
 
                         <button
                             onClick={() => updateLocalFilter({ offer: localFilters.offer ? null : 1 })}
-                            className={`flex items-center justify-between px-6 py-5 rounded-3xl border transition-all ${localFilters.offer ? 'bg-black border-black text-white shadow-xl shadow-black/10' : 'bg-gray-50 border-transparent hover:border-gray-200'}`}
+                            className={`${styles.toggleCard} ${localFilters.offer ? styles.toggleCardActive : styles.toggleCardInactive}`}
                         >
-                            <span className="text-xs font-bold uppercase tracking-widest text-inherit">Descuentos</span>
-                            <span className="text-[10px] font-bold bg-[#99b849]/20 text-[#99b849] px-2 py-0.5 rounded-full">%</span>
+                            <span className={styles.toggleLabel}>Descuentos</span>
+                            <span className={styles.offerBadge}>%</span>
                         </button>
                     </div>
 
-                    {/* Categories Section */}
                     <section>
-                        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-8 border-l-2 border-[#99b849] pl-4">Explorar Colección</h3>
-                        <div className="grid grid-cols-2 gap-3 mb-6">
+                        <h3 className={styles.sectionTitle}>Explorar Colección</h3>
+                        <div className={styles.categoryGrid}>
                             {categories.map((category) => (
                                 <button
                                     key={category.id}
                                     onClick={() => handleCategoryClick(category)}
-                                    className={`px-5 py-4 rounded-3xl text-[11px] font-bold uppercase tracking-widest transition-all text-left border flex justify-between items-center ${localFilters.category == category.id
-                                        ? 'bg-black text-white border-black shadow-lg shadow-black/10'
-                                        : 'bg-gray-50 text-gray-600 border-transparent hover:border-gray-200'
-                                        }`}
+                                    className={`${styles.categoryButton} ${localFilters.category == category.id ? styles.categoryButtonActive : styles.categoryButtonInactive}`}
                                 >
                                     <span>{category.name}</span>
-                                    <span className={`text-[9px] px-2 py-0.5 rounded-full ${localFilters.category == category.id ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-400'}`}>
+                                    <span className={`${styles.categoryCount} ${localFilters.category == category.id ? styles.categoryCountActive : styles.categoryCountInactive}`}>
                                         {category.total_products_count || 0}
                                     </span>
                                 </button>
                             ))}
                         </div>
 
-                        {/* Sub-categories (Conditional) */}
                         {localFilters.activeChildren && localFilters.activeChildren.length > 0 && (
-                            <div className="flex flex-wrap gap-2 animate-in fade-in slide-in-from-top-2 duration-300 bg-gray-50/50 p-4 rounded-[2rem] border border-gray-100">
+                            <div className={styles.subCategoryWrap}>
                                 {localFilters.activeChildren.map((sub) => (
                                     <button
                                         key={sub.id}
                                         onClick={() => updateLocalFilter({ subCategory: localFilters.subCategory === sub.name ? null : sub.name })}
-                                        className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border flex items-center gap-2 ${localFilters.subCategory === sub.name
-                                            ? 'bg-[#99b849] text-white border-[#99b849] shadow-md shadow-[#99b849]/20'
-                                            : 'bg-white text-gray-400 border-gray-200 hover:border-black hover:text-black'
-                                            }`}
+                                        className={`${styles.subCategoryButton} ${localFilters.subCategory === sub.name ? styles.subCategoryButtonActive : styles.subCategoryButtonInactive}`}
                                     >
                                         <span>{sub.name}</span>
-                                        <span className={`text-[8px] px-1.5 py-0.5 rounded-full ${localFilters.subCategory === sub.name ? 'bg-white/30 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                                        <span className={`${styles.subCategoryCount} ${localFilters.subCategory === sub.name ? styles.subCategoryCountActive : styles.subCategoryCountInactive}`}>
                                             {sub.products_count || 0}
                                         </span>
                                     </button>
@@ -150,57 +154,45 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
                         )}
                     </section>
 
-                    {/* Ratings Section */}
                     <section>
-                        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-8 border-l-2 border-[#99b849] pl-4">Valoraciones</h3>
-                        <div className="flex gap-2">
+                        <h3 className={styles.sectionTitle}>Valoraciones</h3>
+                        <div className={styles.ratingRow}>
                             {[5, 4, 3, 2, 1].map((rating) => (
                                 <button
                                     key={rating}
                                     onClick={() => updateLocalFilter({ rating: localFilters.rating == rating ? null : rating })}
-                                    className={`flex-grow flex items-center justify-center gap-1 py-4 rounded-3xl transition-all border ${localFilters.rating == rating
-                                        ? 'bg-black text-white border-black'
-                                        : 'bg-gray-50 text-gray-400 border-transparent hover:border-gray-200'
-                                        }`}
+                                    className={`${styles.ratingButton} ${localFilters.rating == rating ? styles.ratingButtonActive : styles.ratingButtonInactive}`}
                                 >
-                                    <span className="text-xs font-bold">{rating}</span>
-                                    <span className={`material-symbols-outlined text-sm ${localFilters.rating == rating ? 'text-[#99b849]' : 'text-inherit'}`}>star</span>
+                                    <span className={styles.ratingLabel}>{rating}</span>
+                                    <span className={`material-symbols-outlined ${styles.ratingIcon} ${localFilters.rating == rating ? styles.ratingIconActive : ''}`}>star</span>
                                 </button>
                             ))}
                         </div>
                     </section>
 
-                    {/* Discreción (Noise Level) */}
                     <section>
-                        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-8 border-l-2 border-[#99b849] pl-4">Nivel de Silencio</h3>
-                        <div className="grid grid-cols-2 gap-3">
-                            {['Whisper', 'Standard'].map((level) => (
+                        <h3 className={styles.sectionTitle}>Nivel de Silencio</h3>
+                        <div className={styles.categoryGrid}>
+                            {NOISE_LEVELS.map((level) => (
                                 <button
-                                    key={level}
-                                    onClick={() => updateLocalFilter({ noise: localFilters.noise === level ? null : level })}
-                                    className={`px-5 py-4 rounded-3xl text-xs font-bold uppercase tracking-widest transition-all text-left border ${localFilters.noise === level
-                                        ? 'bg-black text-white border-black shadow-lg shadow-black/10'
-                                        : 'bg-gray-50 text-gray-600 border-transparent hover:border-gray-200'
-                                        }`}
+                                    key={level.value}
+                                    onClick={() => updateLocalFilter({ noise: localFilters.noise === level.value ? null : level.value })}
+                                    className={`${styles.categoryButton} ${localFilters.noise === level.value ? styles.categoryButtonActive : styles.categoryButtonInactive}`}
                                 >
-                                    {level === 'Whisper' ? 'Ultra Silencioso' : 'Estándar V6'}
+                                    {level.label}
                                 </button>
                             ))}
                         </div>
                     </section>
 
-                    {/* Usage & Types */}
                     <section>
-                        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-8 border-l-2 border-[#99b849] pl-4">Modo de Uso</h3>
-                        <div className="flex flex-wrap gap-2">
-                            {['Solo', 'En Pareja', 'Penetración', 'Licking', 'Estimulación Clitoriana'].map((use) => (
+                        <h3 className={styles.sectionTitle}>Modo de Uso</h3>
+                        <div className={styles.pillWrap}>
+                            {USAGE_OPTIONS.map((use) => (
                                 <button
                                     key={use}
                                     onClick={() => updateLocalFilter({ usage: localFilters.usage === use ? null : use })}
-                                    className={`px-6 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border ${localFilters.usage === use
-                                        ? 'bg-black text-[#99b849] border-black'
-                                        : 'bg-white text-gray-400 border-gray-200 hover:border-black hover:text-black'
-                                        }`}
+                                    className={`${styles.usageButton} ${localFilters.usage === use ? styles.usageButtonActive : styles.usageButtonInactive}`}
                                 >
                                     {use}
                                 </button>
@@ -208,47 +200,39 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
                         </div>
                     </section>
 
-                    {/* Color Picker */}
                     <section>
-                        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-8 border-l-2 border-[#99b849] pl-4">Acabados Sensoriales</h3>
-                        <div className="flex gap-4">
-                            {[
-                                { name: 'Noir', hex: '#111' },
-                                { name: 'Biolink', hex: '#99b849' },
-                                { name: 'Aura', hex: '#f8b7ea' },
-                                { name: 'Mist', hex: '#e2e0db' },
-                            ].map((color) => (
+                        <h3 className={styles.sectionTitle}>Acabados Sensoriales</h3>
+                        <div className={styles.colorRow}>
+                            {COLOR_OPTIONS.map((color) => (
                                 <button
                                     key={color.name}
                                     onClick={() => updateLocalFilter({ color: localFilters.color === color.name ? null : color.name })}
-                                    className={`w-12 h-12 rounded-full border-2 transition-all flex items-center justify-center p-1 ${localFilters.color === color.name ? 'border-black scale-110 shadow-lg' : 'border-transparent'
-                                        }`}
+                                    className={`${styles.colorButton} ${localFilters.color === color.name ? styles.colorButtonActive : ''}`}
                                 >
                                     <div
-                                        className="w-full h-full rounded-full shadow-inner"
+                                        className={styles.colorSwatch}
                                         style={{ backgroundColor: color.hex }}
                                         title={color.name}
-                                    ></div>
+                                    />
                                 </button>
                             ))}
                         </div>
                     </section>
                 </div>
 
-                {/* Footer Actions */}
-                <div className="p-10 border-t border-gray-100 bg-gray-50/50 flex gap-4">
+                <div className={styles.footer}>
                     <button
                         onClick={handleClear}
-                        className="flex-grow bg-white text-black border border-gray-200 py-5 rounded-[32px] font-bold hover:bg-gray-100 transition-all text-xs uppercase tracking-[0.2em]"
+                        className={styles.clearButton}
                     >
                         Limpiar Todo
                     </button>
                     <button
                         onClick={handleApply}
-                        className="flex-grow bg-black text-white py-5 rounded-[32px] font-bold hover:bg-gray-800 transition-all shadow-xl shadow-black/10 text-xs uppercase tracking-[0.2em] relative overflow-hidden group"
+                        className={styles.applyButton}
                     >
-                        <span className="relative z-10">Aplicar Filtros</span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                        <span className={styles.applyButtonLabel}>Aplicar Filtros</span>
+                        <div className={styles.applyButtonGlow}></div>
                     </button>
                 </div>
             </div>

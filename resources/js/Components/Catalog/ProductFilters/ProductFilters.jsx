@@ -16,16 +16,15 @@ export default function ProductFilters({ categories, filters }) {
     };
 
     return (
-        <div className={`${styles.root} w-64 flex-shrink-0 bg-white p-6 border-r border-gray-100 hidden md:block`}>
-            <h3 className="text-lg font-bold mb-6 text-gray-900">Filtros</h3>
+        <div className={styles.root}>
+            <h3 className={styles.title}>Filtros</h3>
 
-            {/* Categorías */}
-            <div className="mb-8">
-                <h4 className="font-semibold text-gray-700 mb-4">Categorías</h4>
-                <div className="space-y-2">
+            <div className={styles.section}>
+                <h4 className={styles.sectionTitle}>Categorías</h4>
+                <div className={styles.categoryList}>
                     <button
                         onClick={() => handleCategoryChange(null)}
-                        className={`block text-sm w-full text-left py-1 hover:text-blue-600 transition-colors ${!filters.category ? 'font-bold text-blue-600' : 'text-gray-500'}`}
+                        className={`${styles.categoryButton} ${!filters.category ? styles.categoryButtonActive : styles.categoryButtonInactive}`}
                     >
                         Todas
                     </button>
@@ -33,7 +32,7 @@ export default function ProductFilters({ categories, filters }) {
                         <button
                             key={category.id}
                             onClick={() => handleCategoryChange(category.id)}
-                            className={`block text-sm w-full text-left py-1 hover:text-blue-600 transition-colors ${filters.category == category.id ? 'font-bold text-blue-600' : 'text-gray-500'}`}
+                            className={`${styles.categoryButton} ${filters.category == category.id ? styles.categoryButtonActive : styles.categoryButtonInactive}`}
                         >
                             {category.name}
                         </button>
@@ -41,11 +40,9 @@ export default function ProductFilters({ categories, filters }) {
                 </div>
             </div>
 
-            {/* Precio (Placeholder) */}
-            <div>
-                <h4 className="font-semibold text-gray-700 mb-4">Precio</h4>
-                <div className="flex items-center gap-2">
-                    {/* Implement price range inputs here later if needed */}
+            <div className={styles.section}>
+                <h4 className={styles.sectionTitle}>Precio</h4>
+                <div className={styles.pricePlaceholder}>
                 </div>
             </div>
         </div>
