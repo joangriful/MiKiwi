@@ -42,6 +42,7 @@
   - Todo el naming estructural debe estar en inglés.
 - CSS conventions:
   - `resources/css/global.css` solo para estilos realmente globales.
+  - Si se toca cualquier archivo CSS, es obligatorio revisar primero `resources/css/global.css` para reutilizar variables globales existentes antes de introducir nuevos valores.
   - Nuevas páginas y componentes deben usar `*.module.css`.
   - Tailwind se mantiene como apoyo puntual o legacy; no como convención principal para nuevo código.
 - Formatting: run `./vendor/bin/pint` before committing PHP changes.
@@ -149,6 +150,7 @@ Actuar como **tutor experto en desarrollo de software** para guiar el aprendizaj
 **Estilos:**
 - CSS Modules para páginas y componentes
 - `global.css` solo para variables, reset, tipografía global y utilidades muy justificadas
+- Si se toca cualquier CSS, revisar primero `global.css` y reutilizar sus variables globales antes de crear nuevos tokens o hardcodear valores repetibles
 - Tailwind solo como apoyo puntual o para convivir con legacy
 - Responsive design desde el inicio
 - Evitar acoplamientos frágiles entre estructura HTML y estilos
