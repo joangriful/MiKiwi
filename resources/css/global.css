@@ -29,6 +29,7 @@
     --color-surface-overlay: rgb(0 0 0 / 50%);
     --color-white-soft: rgb(255 255 255 / 90%);
     --color-primary-soft: rgb(153 184 73 / 10%);
+    --color-primary-ring: rgb(153 184 73 / 20%);
     --color-info: #3b82f6;
     --color-info-soft: #eff6ff;
     --color-info-soft-hover: #dbeafe;
