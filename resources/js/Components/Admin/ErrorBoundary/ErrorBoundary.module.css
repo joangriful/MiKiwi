@@ -1,0 +1,17 @@
+.errorBox {
+    overflow: hidden;
+    padding: 0.5rem;
+    color: #dc2626;
+    font-size: 0.75rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 0.25rem;
+}
+
+.errorLabel {
+    font-weight: 700;
+}
+
+.errorMessage {
+    overflow-wrap: anywhere;
+}
