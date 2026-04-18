@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import styles from './PageScaler.module.css';
 
-// --- Page Scaler Component ---
-const PageScaler = ({ children }) => {
+const BASE_WIDTH = 1280;
+
+export default function PageScaler({ children }) {
     const containerRef = useRef(null);
     const [scale, setScale] = useState(1);
-    const BASE_WIDTH = 1280;
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -24,29 +25,17 @@ const PageScaler = ({ children }) => {
     }, []);
 
     return (
-        <div ref={containerRef} className="w-full h-full overflow-y-auto overflow-x-hidden relative bg-gray-200 no-scrollbar">
-            <style>{`
-                .no-scrollbar::-webkit-scrollbar {
-                    display: none;
-                }
-                .no-scrollbar {
-                    -ms-overflow-style: none;
-                    scrollbar-width: none;
-                }
-            `}</style>
-
+        <div ref={containerRef} className={styles.container}>
             <div
                 style={{
                     width: `${BASE_WIDTH}px`,
                     zoom: scale,
                     minHeight: '100%',
                 }}
-                className="bg-white origin-top-left"
+                className={styles.scaledContent}
             >
                 {children}
             </div>
         </div>
     );
-};
-
-export default PageScaler;
+}

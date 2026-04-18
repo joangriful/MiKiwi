@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from './StripeTestCards.module.css';
 
 const TEST_CARDS = [
     { brand: 'Visa', number: '4242 4242 4242 4242', exp: '12/26', cvc: '123', type: 'Success', icon: 'payments' },
@@ -19,56 +20,57 @@ export default function StripeTestCards() {
     };
 
     return (
-        <div className="p-8 bg-gray-50 min-h-full">
-            <div className="max-w-4xl mx-auto">
-                <header className="mb-8">
-                    <h2 className="text-3xl font-bold text-gray-900">Pasarela de Pagos (Stripe)</h2>
-                    <p className="text-gray-500 mt-2">Tarjetas de prueba para validación de flujos de pago en entorno de desarrollo.</p>
+        <div className={styles.container}>
+            <div className={styles.content}>
+                <header className={styles.header}>
+                    <h2 className={styles.title}>Pasarela de Pagos (Stripe)</h2>
+                    <p className={styles.description}>Tarjetas de prueba para validación de flujos de pago en entorno de desarrollo.</p>
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className={styles.grid}>
                     {TEST_CARDS.map((card, idx) => (
-                        <div key={idx} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="flex items-center gap-3">
-                                    <div className={`p-2 rounded-xl ${card.type === 'Success' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                        <div key={idx} className={styles.card}>
+                            <div className={styles.cardHeader}>
+                                <div className={styles.cardBrand}>
+                                    <div className={`${styles.cardIconWrapper} ${card.type === 'Success' ? styles.cardIconSuccess : styles.cardIconDanger}`}>
                                         <span className="material-symbols-outlined">{card.icon}</span>
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-gray-900">{card.brand}</h3>
-                                        <span className={`text-[10px] uppercase font-bold tracking-widest ${card.type === 'Success' ? 'text-green-500' : 'text-red-500'}`}>
+                                        <h3 className={styles.cardTitle}>{card.brand}</h3>
+                                        <span className={`${styles.cardType} ${card.type === 'Success' ? styles.cardTypeSuccess : styles.cardTypeDanger}`}>
                                             {card.type}
                                         </span>
                                     </div>
                                 </div>
-                                <button 
+                                <button
+                                    type="button"
                                     onClick={() => handleCopy(card.number.replace(/\s/g, ''), `num-${idx}`)}
-                                    className="text-gray-400 hover:text-gray-900 transition-colors"
+                                    className={styles.copyButton}
                                     title="Copiar número"
                                 >
-                                    <span className="material-symbols-outlined text-xl">
+                                    <span className={`material-symbols-outlined ${styles.copyButtonIcon}`}>
                                         {copied === `num-${idx}` ? 'check' : 'content_copy'}
                                     </span>
                                 </button>
                             </div>
 
-                            <div className="space-y-3">
-                                <div 
-                                    className="bg-gray-50 p-3 rounded-xl flex justify-between items-center cursor-pointer group"
+                            <div className={styles.cardFields}>
+                                <div
+                                    className={styles.numberField}
                                     onClick={() => handleCopy(card.number.replace(/\s/g, ''), `num-${idx}`)}
                                 >
-                                    <span className="text-lg font-mono tracking-wider text-gray-700">{card.number}</span>
-                                    <span className="text-[10px] font-bold text-gray-300 group-hover:text-gray-900 uppercase">Copiar</span>
+                                    <span className={styles.cardNumber}>{card.number}</span>
+                                    <span className={styles.copyHint}>Copiar</span>
                                 </div>
 
-                                <div className="flex gap-3">
-                                    <div className="flex-1 bg-gray-50 p-3 rounded-xl flex justify-between items-center">
-                                        <span className="text-xs text-gray-400 font-bold uppercase tracking-tight">Exp</span>
-                                        <span className="font-mono text-gray-700">{card.exp}</span>
+                                <div className={styles.metaFields}>
+                                    <div className={styles.metaField}>
+                                        <span className={styles.metaLabel}>Exp</span>
+                                        <span className={styles.metaValue}>{card.exp}</span>
                                     </div>
-                                    <div className="flex-1 bg-gray-50 p-3 rounded-xl flex justify-between items-center">
-                                        <span className="text-xs text-gray-400 font-bold uppercase tracking-tight">CVC</span>
-                                        <span className="font-mono text-gray-700">{card.cvc}</span>
+                                    <div className={styles.metaField}>
+                                        <span className={styles.metaLabel}>CVC</span>
+                                        <span className={styles.metaValue}>{card.cvc}</span>
                                     </div>
                                 </div>
                             </div>
@@ -76,16 +78,16 @@ export default function StripeTestCards() {
                     ))}
                 </div>
 
-                <div className="mt-12 bg-indigo-900 text-white p-8 rounded-3xl shadow-xl overflow-hidden relative">
-                    <div className="relative z-10">
-                        <h4 className="text-xl font-bold mb-2">Recordatorio de Desarrollo</h4>
-                        <p className="text-indigo-100 text-sm leading-relaxed max-w-2xl">
+                <div className={styles.noticeCard}>
+                    <div className={styles.noticeContent}>
+                        <h4 className={styles.noticeTitle}>Recordatorio de Desarrollo</h4>
+                        <p className={styles.noticeDescription}>
                             Estas tarjetas solo funcionan cuando la API de Stripe está en modo <strong>test</strong>. 
                             Cualquier intento de uso en producción resultará en error. 
                             El C.P. recomendado para España es <strong>28001</strong>.
                         </p>
                     </div>
-                    <span className="material-symbols-outlined absolute -right-8 -bottom-8 text-[160px] text-white/5 rotate-12">
+                    <span className={`material-symbols-outlined ${styles.noticeIcon}`}>
                         security
                     </span>
                 </div>

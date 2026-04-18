@@ -58,7 +58,7 @@
 
 .searchInput:focus {
     border-color: var(--color-info);
-    box-shadow: 0 0 0 3px rgb(59 130 246 / 20%);
+    box-shadow: 0 0 0 3px var(--color-info-ring);
 }
 
 .columns {

@@ -1,0 +1,19 @@
+.container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: var(--color-border-default);
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.container::-webkit-scrollbar {
+    display: none;
+}
+
+.scaledContent {
+    background: var(--bg-surface);
+    transform-origin: top left;
+}

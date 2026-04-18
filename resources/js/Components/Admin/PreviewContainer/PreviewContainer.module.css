@@ -1,0 +1,92 @@
+.container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-surface);
+    border: 1px solid var(--color-border-default);
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s ease;
+}
+
+.container:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.header {
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-shrink: 0;
+    padding: 0.75rem;
+    background: var(--color-surface-subtle);
+    border-bottom: 1px solid var(--color-border-soft);
+}
+
+.title {
+    overflow: hidden;
+    color: var(--color-text-soft);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.url {
+    color: var(--color-border-strong);
+    font-family: ui-monospace, SFMono-Regular, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: 0.625rem;
+}
+
+.linkButton {
+    padding: 0.25rem;
+    color: var(--color-text-subtle);
+    border-radius: 0.25rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.linkButton:hover {
+    color: var(--color-primary);
+    background: var(--color-surface-disabled);
+}
+
+.linkIcon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.previewArea {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--color-border-default);
+}
+
+.previewContent {
+    position: absolute;
+    inset: 0;
+}
+
+.loadingFallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: var(--color-surface-subtle);
+}
+
+.loadingText {
+    color: var(--color-text-subtle);
+    font-size: 0.75rem;
+}

@@ -2,6 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import styles from './UploadProduct.module.css';
+
+function getMethodButtonClassName(stylesObject, uploadMethod, targetMethod) {
+    return `${stylesObject.methodButton} ${uploadMethod === targetMethod ? stylesObject.methodButtonActive : ''}`;
+}
+
+function getDropzoneClassName(stylesObject, isDragging) {
+    return `${stylesObject.dropzone} ${isDragging ? stylesObject.dropzoneDragging : ''}`;
+}
+
+function getGalleryItemClassName(stylesObject, isMain) {
+    return `${stylesObject.galleryItem} ${isMain ? stylesObject.galleryItemMain : ''}`;
+}
+
+function getHoverToggleClassName(stylesObject, isHover) {
+    return `${stylesObject.hoverToggleButton} ${isHover ? stylesObject.hoverToggleButtonActive : stylesObject.hoverToggleButtonInactive}`;
+}
 
 export default function UploadProduct({ categories = [], initialData = null, onCancel }) {
     const isEdit = !!initialData;
@@ -19,7 +36,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
     });
 
     // ─── Categoría en cascada ──────────────────────────────────────────────────
-    const parentCategories = categories.filter(c => !c.parent_id);
+    const parentCategories = categories.filter((category) => !category.parent_id);
     const [selectedParentId, setSelectedParentId] = useState('');
     const [selectedSubId, setSelectedSubId] = useState('');
 
@@ -47,7 +64,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
         try {
             const response = await axios.post('/admin/products/link-folder', {
                 product_name: formData.name,
-                source: manualLinkFolder
+                source: manualLinkFolder,
             });
             if (response.data.success) {
                 toast.success(response.data.message);
@@ -60,7 +77,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
 
                 const fetchedImages = resImages.data.images || [];
                 if (fetchedImages.length > 0) {
-                    setGalleryImages(prev => {
+                    setGalleryImages((prev) => {
                         const merged = [...new Set([...prev, ...fetchedImages])];
                         if (!mainImage) setMainImage(merged[0]);
                         if (!hoverImage && merged.length > 1) setHoverImage(merged[1]);
@@ -158,14 +175,14 @@ export default function UploadProduct({ categories = [], initialData = null, onC
 
         try {
             const response = await axios.post('/admin/products/upload-images', data, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+                headers: { 'Content-Type': 'multipart/form-data' },
             });
 
             if (response.data.success) {
                 toast.success(response.data.message);
                 const newUrls = response.data.urls || [];
 
-                setGalleryImages(prev => {
+                setGalleryImages((prev) => {
                     const merged = [...prev, ...newUrls];
                     if (!mainImage && merged.length > 0) setMainImage(merged[0]);
                     if (!hoverImage && merged.length > 1) setHoverImage(merged[1]);
@@ -186,9 +203,9 @@ export default function UploadProduct({ categories = [], initialData = null, onC
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value
+            [name]: type === 'checkbox' ? checked : value,
         }));
     };
 
@@ -212,7 +229,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                 ...formData,
                 images: imagesToSend,
                 image_url: primary,
-                hover_image_url: hover
+                hover_image_url: hover,
             };
 
             const routeName = isEdit ? 'products.update' : 'products.upload';
@@ -230,7 +247,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                 onError: (errors) => {
                     toast.error(`Error: ${Object.values(errors).flat().join(' ')}`);
                 },
-                onFinish: () => setUploading(false)
+                onFinish: () => setUploading(false),
             });
         } catch (error) {
             setUploading(false);
@@ -255,9 +272,9 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                     toast.success('Imagen guardada automáticamente', { duration: 1500 });
                 },
                 onError: (errors) => {
-                    console.error("Auto-save failed", errors);
+                    console.error('Auto-save failed', errors);
                     toast.error('Error al guardar la imagen seleccionada automáticamente');
-                }
+                },
             });
         }
     };
@@ -273,41 +290,40 @@ export default function UploadProduct({ categories = [], initialData = null, onC
     };
 
     return (
-        <div className="h-full overflow-y-auto">
-            <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-8 space-y-8">
-                <div className="border-b border-gray-200 pb-4">
-                    <h2 className="text-2xl font-bold text-gray-800">
+        <div className={styles.container}>
+            <form onSubmit={handleSubmit} className={styles.form}>
+                <div className={styles.formHeader}>
+                    <h2 className={styles.title}>
                         {isEdit ? 'Editar Producto' : 'Subir Nuevo Producto'}
                     </h2>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className={styles.subtitle}>
                         {isEdit ? `Editando: ${formData.name}` : 'Complete los campos para crear un nuevo producto'}
                     </p>
                 </div>
 
-                {/* Sección de Imágenes (Subir vs Vincular) */}
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between border-b border-gray-200 pb-2">
-                        <h3 className="text-lg font-semibold text-gray-800">Galería del Producto</h3>
+                <div className={styles.section}>
+                    <div className={styles.sectionHeader}>
+                        <h3 className={styles.sectionTitle}>Galería del Producto</h3>
 
-                        <div className="flex bg-gray-100 rounded-lg p-1">
+                        <div className={styles.methodToggle}>
                             <button
                                 type="button"
                                 onClick={() => setUploadMethod('upload')}
-                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${uploadMethod === 'upload' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                className={getMethodButtonClassName(styles, uploadMethod, 'upload')}
                             >
                                 Subir Archivos
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setUploadMethod('link')}
-                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${uploadMethod === 'link' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                className={getMethodButtonClassName(styles, uploadMethod, 'link')}
                             >
                                 Vincular Carpeta
                             </button>
                         </div>
                     </div>
 
-                    {isUploadingImages && <span className="text-sm text-blue-500 flex items-center gap-2"><span className="material-symbols-outlined text-sm animate-spin">refresh</span> Subiendo imágenes...</span>}
+                    {isUploadingImages && <span className={styles.uploadingStatus}><span className={`material-symbols-outlined ${styles.spinningIcon}`}>refresh</span> Subiendo imágenes...</span>}
 
                     {uploadMethod === 'upload' ? (
                         <div
@@ -315,41 +331,41 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                             onDragOver={handleDragOver}
                             onDragLeave={handleDragLeave}
                             onDrop={handleDrop}
-                            className={`relative w-full h-32 border-2 border-dashed rounded-xl flex flex-col items-center justify-center transition-colors overflow-hidden ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'}`}
+                            className={getDropzoneClassName(styles, isDragging)}
                         >
                             <input
                                 type="file"
                                 multiple
                                 accept="image/*"
                                 onChange={handleFileSelect}
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                className={styles.dropzoneInput}
                             />
-                            <div className="flex flex-col items-center pointer-events-none text-gray-500 gap-2">
-                                <span className="material-symbols-outlined text-3xl">cloud_upload</span>
-                                <span className="font-medium text-sm">
+                            <div className={styles.dropzoneContent}>
+                                <span className={`material-symbols-outlined ${styles.dropzoneIcon}`}>cloud_upload</span>
+                                <span className={styles.dropzoneText}>
                                     {isDragging ? 'Suelta aquí' : (formData.name ? 'Arrastra imágenes o haz click para subir' : 'Escribe arriba el nombre del producto primero para poder subir fotos')}
                                 </span>
                             </div>
                         </div>
                     ) : (
-                        <div className="p-4 bg-blue-50 rounded-xl border border-blue-100 flex flex-col gap-3">
-                            <p className="text-sm text-blue-800">
+                        <div className={styles.linkPanel}>
+                            <p className={styles.linkDescription}>
                                 <strong>¿Ya tienes las fotos en Cloudinary?</strong> Escribe el nombre exacto de la carpeta (o pega la URL de una foto). La carpeta será vinculada y renombrada automáticamente a "productos/{formData.name || '{nombre-del-producto}'}".
                             </p>
-                            <div className="flex gap-2 relative z-20">
+                            <div className={styles.linkControls}>
                                 <input
                                     type="text"
                                     placeholder="Ej: mobiliario-oficina, o URL..."
                                     value={manualLinkFolder}
                                     onChange={(e) => setManualLinkFolder(e.target.value)}
-                                    className="flex-1 px-3 py-2 border border-blue-200 rounded-lg text-sm bg-white outline-none focus:border-blue-500"
+                                    className={styles.linkInput}
                                     onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()}
                                 />
                                 <button
                                     type="button"
                                     onClick={handleLinkFolder}
                                     disabled={isLinking || !manualLinkFolder.trim() || !formData.name}
-                                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm disabled:opacity-50 transition-colors cursor-pointer"
+                                    className={styles.linkButton}
                                 >
                                     {isLinking ? 'Vinculando...' : 'Vincular y Renombrar'}
                                 </button>
@@ -357,38 +373,37 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                         </div>
                     )}
 
-                    {/* --- ENLACES MANUALES --- */}
-                    <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mt-4 space-y-4">
-                        <div className="flex items-center gap-2 mb-2">
-                            <span className="material-symbols-outlined text-blue-600">link</span>
-                            <h4 className="font-bold text-gray-700 uppercase p-0 m-0 text-sm">Enlaces manuales de Cloudinary</h4>
+                    <div className={styles.manualLinks}>
+                        <div className={styles.manualLinksHeader}>
+                            <span className={`material-symbols-outlined ${styles.manualLinksIcon}`}>link</span>
+                            <h4 className={styles.manualLinksTitle}>Enlaces manuales de Cloudinary</h4>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-1">
-                                <label className="text-[11px] font-bold text-gray-500 uppercase">Imagen Principal (URL)</label>
+                        <div className={styles.manualLinksGrid}>
+                            <div className={styles.fieldGroup}>
+                                <label className={styles.compactLabel}>Imagen Principal (URL)</label>
                                 <input
                                     type="text"
                                     value={mainImage}
                                     onChange={(e) => setMainImage(e.target.value)}
                                     placeholder="https://res.cloudinary.com/..."
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className={styles.textInput}
                                 />
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-[11px] font-bold text-gray-500 uppercase">Imagen Hover (URL)</label>
+                            <div className={styles.fieldGroup}>
+                                <label className={styles.compactLabel}>Imagen Hover (URL)</label>
                                 <input
                                     type="text"
                                     value={hoverImage}
                                     onChange={(e) => setHoverImage(e.target.value)}
                                     placeholder="https://res.cloudinary.com/..."
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+                                    className={`${styles.textInput} ${styles.textInputPurpleFocus}`}
                                 />
                             </div>
                         </div>
 
-                        <div className="space-y-1">
-                            <label className="text-[11px] font-bold text-gray-500 uppercase">Imágenes del Carrusel (Una por línea o separadas por comas)</label>
+                        <div className={styles.fieldGroup}>
+                            <label className={styles.compactLabel}>Imágenes del Carrusel (Una por línea o separadas por comas)</label>
                             <textarea
                                 value={galleryImages.join('\n')}
                                 onChange={(e) => {
@@ -398,53 +413,50 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                                 }}
                                 rows={3}
                                 placeholder="Pega aquí todos los enlaces del carrusel..."
-                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                className={`${styles.textInput} ${styles.textArea}`}
                             />
                         </div>
                     </div>
 
                     {isUploadingImages && (
-                        <div className="mb-4 text-center text-sm font-medium text-blue-600 animate-pulse bg-blue-50 py-2 rounded">
+                        <div className={styles.uploadNotice}>
                             Subiendo a Cloudinary... por favor, espera.
                         </div>
                     )}
 
                     {galleryImages.length > 0 && (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        <div className={styles.galleryGrid}>
                             {galleryImages.map((imgUrl, idx) => {
                                 const isMain = mainImage === imgUrl;
                                 const isHover = hoverImage === imgUrl;
                                 return (
-                                    <div key={idx} className={`relative group rounded-lg overflow-hidden border-2 transition-all ${isMain ? 'border-blue-500 shadow-md transform scale-[1.02]' : 'border-gray-200 hover:border-gray-300'}`}>
-                                        <div className="aspect-square bg-gray-100 cursor-pointer" onClick={() => autoSaveImages(imgUrl, hoverImage)}>
-                                            <img src={imgUrl} alt={`Product ${idx}`} className="w-full h-full object-cover" />
+                                    <div key={idx} className={getGalleryItemClassName(styles, isMain)}>
+                                        <div className={styles.galleryImageWrapper} onClick={() => autoSaveImages(imgUrl, hoverImage)}>
+                                            <img src={imgUrl} alt={`Product ${idx}`} className={styles.galleryImage} />
                                         </div>
 
-                                        {/* Badges / Controls */}
-                                        <div className="absolute top-2 left-2 flex flex-col gap-1">
-                                            {isMain && <span className="bg-blue-500 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded shadow-sm">Principal</span>}
-                                            {isHover && <span className="bg-purple-500 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded shadow-sm">Hover</span>}
+                                        <div className={styles.galleryBadges}>
+                                            {isMain && <span className={styles.mainBadge}>Principal</span>}
+                                            {isHover && <span className={styles.hoverBadge}>Hover</span>}
                                         </div>
 
-                                        {/* Drop action button to remove */}
                                         <button
                                             type="button"
-                                            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                            className={styles.removeImageButton}
                                             onClick={() => {
-                                                setGalleryImages(prev => prev.filter(v => v !== imgUrl));
+                                                setGalleryImages((prev) => prev.filter((value) => value !== imgUrl));
                                                 if (isMain) setMainImage('');
                                                 if (isHover) setHoverImage('');
                                             }}
                                         >
-                                            <span className="material-symbols-outlined text-xs">close</span>
+                                            <span className={`material-symbols-outlined ${styles.removeImageIcon}`}>close</span>
                                         </button>
 
-                                        {/* Hover Actions */}
-                                        <div className={`absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm p-2 flex justify-between items-center transition-transform ${(!isMain && !isHover) ? 'translate-y-full group-hover:translate-y-0' : ''}`}>
+                                        <div className={`${styles.galleryActions} ${!isMain && !isHover ? styles.galleryActionsHidden : ''}`}>
                                             <button
                                                 type="button"
                                                 onClick={() => autoSaveImages(mainImage, isHover ? '' : imgUrl)}
-                                                className={`text-[10px] font-bold px-2 py-1 rounded w-full transition-colors ${isHover ? 'bg-purple-100 text-purple-700 hover:bg-purple-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                                                className={getHoverToggleClassName(styles, isHover)}
                                             >
                                                 {isHover ? 'Quitar Hover' : 'Hacer Hover'}
                                             </button>
@@ -456,53 +468,52 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                     )}
 
                     {galleryImages.length > 0 && (
-                        <p className="text-xs text-gray-500 mt-2">
-                            Haz clic en una imagen para hacerla <strong className="text-blue-500">Principal</strong>. Usa el botón inferior para marcarla o desmarcarla como <strong className="text-purple-500">Hover</strong>. Todas las imágenes mostradas formarán parte de la galería del producto.
+                        <p className={styles.galleryHint}>
+                            Haz clic en una imagen para hacerla <strong className={styles.hintPrimary}>Principal</strong>. Usa el botón inferior para marcarla o desmarcarla como <strong className={styles.hintPurple}>Hover</strong>. Todas las imágenes mostradas formarán parte de la galería del producto.
                         </p>
                     )}
                 </div>
 
-                {/* Basic Information */}
-                <div className="grid grid-cols-2 gap-6">
-                    <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Nombre del Producto *</label>
+                <div className={styles.formGrid}>
+                    <div className={styles.fullWidthField}>
+                        <label className={styles.label}>Nombre del Producto *</label>
                         <input
                             type="text"
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            className={styles.textInput}
                             required
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">SKU</label>
-                        <div className="flex gap-2">
+                    <div className={styles.fieldGroup}>
+                        <label className={styles.label}>SKU</label>
+                        <div className={styles.inlineField}>
                             <input
                                 type="text"
                                 name="sku"
                                 value={formData.sku}
                                 onChange={handleChange}
-                                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                className={styles.textInput}
                             />
                             <button
                                 type="button"
                                 onClick={() => setFormData(p => ({ ...p, sku: `PRD-${Date.now().toString().slice(-6)}` }))}
-                                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm"
+                                className={styles.autoButton}
                             >
                                 Auto
                             </button>
                         </div>
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
-                        <div className="flex flex-col gap-2">
+                    <div className={styles.fieldGroup}>
+                        <label className={styles.label}>Categoría</label>
+                        <div className={styles.selectGroup}>
                             <select
                                 value={selectedParentId}
                                 onChange={(e) => { setSelectedParentId(e.target.value); setSelectedSubId(''); }}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white"
+                                className={styles.selectInput}
                             >
                                 <option value="">— Seleccionar Padre —</option>
                                 {parentCategories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
@@ -512,7 +523,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                                 <select
                                     value={selectedSubId}
                                     onChange={(e) => setSelectedSubId(e.target.value)}
-                                    className="w-full px-4 py-2 border border-[#99b849] rounded-lg bg-white text-sm"
+                                    className={`${styles.selectInput} ${styles.selectInputPrimary}`}
                                 >
                                     <option value="">— Seleccionar Subcategoría —</option>
                                     {subCategories.map(sub => <option key={sub.id} value={sub.id}>{sub.name}</option>)}
@@ -522,68 +533,65 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                     </div>
                 </div>
 
-                {/* Description */}
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+                <div className={styles.fieldGroup}>
+                    <label className={styles.label}>Descripción</label>
                     <textarea
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
                         rows={4}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                        className={`${styles.textInput} ${styles.textArea}`}
                     />
                 </div>
 
-                {/* Pricing & Inventory */}
-                <div className="grid grid-cols-2 gap-6">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Precio Base (€) *</label>
+                <div className={styles.formGrid}>
+                    <div className={styles.fieldGroup}>
+                        <label className={styles.label}>Precio Base (€) *</label>
                         <input
                             type="number"
                             name="base_price"
                             value={formData.base_price}
                             onChange={handleChange}
                             step="0.01"
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            className={styles.textInput}
                             required
                         />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Stock</label>
+                    <div className={styles.fieldGroup}>
+                        <label className={styles.label}>Stock</label>
                         <input
                             type="number"
                             name="stock_quantity"
                             value={formData.stock_quantity}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            className={styles.textInput}
                         />
                     </div>
                 </div>
 
-                {/* Booleans */}
-                <div className="flex gap-6">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" name="is_adult_only" checked={formData.is_adult_only} onChange={handleChange} className="w-4 h-4" />
-                        <span className="text-sm text-gray-700">Solo adultos</span>
+                <div className={styles.checkboxRow}>
+                    <label className={styles.checkboxLabel}>
+                        <input type="checkbox" name="is_adult_only" checked={formData.is_adult_only} onChange={handleChange} className={styles.checkbox} />
+                        <span className={styles.checkboxText}>Solo adultos</span>
                     </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleChange} className="w-4 h-4" />
-                        <span className="text-sm text-gray-700">Producto Activo</span>
+                    <label className={styles.checkboxLabel}>
+                        <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleChange} className={styles.checkbox} />
+                        <span className={styles.checkboxText}>Producto Activo</span>
                     </label>
                 </div>
 
-                <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
+                <div className={styles.footerActions}>
                     <button
                         type="button"
                         onClick={onCancel || resetForm}
-                        className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                        className={styles.secondaryButton}
                     >
                         {isEdit ? 'Cancelar' : 'Limpiar'}
                     </button>
                     <button
                         type="submit"
                         disabled={uploading}
-                        className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
+                        className={styles.primaryButton}
                     >
                         {uploading ? 'Guardando...' : (isEdit ? 'Guardar Cambios' : 'Crear Producto')}
                     </button>

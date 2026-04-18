@@ -1,8 +1,9 @@
 import React from 'react';
 import FileExplorer from '../FileExplorer/FileExplorer';
 import ColorFilter from '../ColorFilter/ColorFilter';
+import styles from './ManagerSidebar.module.css';
 
-const ManagerSidebar = ({
+export default function ManagerSidebar({
     sourceType,
     setSourceType,
     definedColors,
@@ -15,9 +16,9 @@ const ManagerSidebar = ({
     openFolders,
     handleFolderToggle,
     handleItemSelect
-}) => {
+}) {
     return (
-        <aside className="w-80 bg-white border-r border-gray-200 overflow-hidden flex flex-col shrink-0 h-full">
+        <aside className={styles.sidebar}>
             <FileExplorer
                 sourceType={sourceType}
                 setSourceType={setSourceType}
@@ -37,6 +38,4 @@ const ManagerSidebar = ({
             />
         </aside>
     );
-};
-
-export default ManagerSidebar;
+}

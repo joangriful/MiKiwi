@@ -2,16 +2,43 @@ import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
 import Toast from '@/Components/Toast/Toast';
 import AdminConfirmationModal from '../AdminConfirmationModal/AdminConfirmationModal';
+import styles from './UsersManager.module.css';
+
+const USER_FILTERS = [
+    { id: 'all', label: 'Todos los usuarios' },
+    { id: 'admin', label: 'Administradores' },
+];
+
+function SearchBar({ searchTerm, setSearchTerm }) {
+    return (
+        <div className={styles.searchBar}>
+            <span className={`material-symbols-outlined ${styles.searchIcon}`}>search</span>
+            <input
+                type="text"
+                placeholder="Buscar por nombre, usuario o email..."
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                className={styles.searchInput}
+            />
+        </div>
+    );
+}
+
+function EmptyState() {
+    return (
+        <div className={styles.emptyState}>
+            <p>No se encontraron usuarios.</p>
+        </div>
+    );
+}
 
 export default function UsersManager({ users }) {
     const [searchTerm, setSearchTerm] = useState('');
-    const [filter, setFilter] = useState('all'); // 'all' | 'admin'
-
-    // UI State
+    const [filter, setFilter] = useState('all');
     const [toast, setToast] = useState(null);
     const [modalConfig, setModalConfig] = useState({ isOpen: false, user: null, actionType: null });
 
-    const filteredUsers = users.filter(user => {
+    const filteredUsers = users.filter((user) => {
         const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
             (user.username && user.username.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -24,8 +51,8 @@ export default function UsersManager({ users }) {
     const handleToggleClick = (user) => {
         setModalConfig({
             isOpen: true,
-            user: user,
-            actionType: user.role === 'admin' ? 'remove' : 'add'
+            user,
+            actionType: user.role === 'admin' ? 'remove' : 'add',
         });
     };
 
@@ -38,22 +65,22 @@ export default function UsersManager({ users }) {
             onSuccess: () => {
                 setToast({
                     message: `Successfully ${user.role === 'admin' ? 'removed admin rights from' : 'granted admin rights to'} ${user.name}`,
-                    type: 'success'
+                    type: 'success',
                 });
                 setModalConfig({ isOpen: false, user: null, actionType: null });
             },
             onError: () => {
                 setToast({
                     message: 'Failed to update user role. Please try again.',
-                    type: 'error'
+                    type: 'error',
                 });
                 setModalConfig({ isOpen: false, user: null, actionType: null });
-            }
+            },
         });
     };
 
     return (
-        <div className="flex h-full bg-gray-50 relative">
+        <div className={styles.layout}>
             {toast && (
                 <Toast
                     message={toast.message}
@@ -70,79 +97,59 @@ export default function UsersManager({ users }) {
                 actionType={modalConfig.actionType}
             />
 
-            {/* Sidebar / Filter */}
-            <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
-                <div className="p-4 border-b border-gray-100">
-                    <h2 className="text-lg font-bold text-gray-800">Usuarios</h2>
-                    <p className="text-xs text-gray-500">Gestión de roles</p>
+            <div className={styles.sidebar}>
+                <div className={styles.sidebarHeader}>
+                    <h2 className={styles.sidebarTitle}>Usuarios</h2>
+                    <p className={styles.sidebarDescription}>Gestión de roles</p>
                 </div>
 
-                <div className="p-2 space-y-1">
-                    <button
-                        onClick={() => setFilter('all')}
-                        className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === 'all' ? 'bg-[#99b849]/10 text-[#99b849]' : 'text-gray-600 hover:bg-gray-50'}`}
-                    >
-                        Todos los usuarios
-                    </button>
-                    <button
-                        onClick={() => setFilter('admin')}
-                        className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === 'admin' ? 'bg-[#99b849]/10 text-[#99b849]' : 'text-gray-600 hover:bg-gray-50'}`}
-                    >
-                        Administradores
-                    </button>
+                <div className={styles.sidebarFilters}>
+                    {USER_FILTERS.map((filterOption) => (
+                        <button
+                            key={filterOption.id}
+                            type="button"
+                            onClick={() => setFilter(filterOption.id)}
+                            className={`${styles.filterButton} ${filter === filterOption.id ? styles.filterButtonActive : ''}`}
+                        >
+                            {filterOption.label}
+                        </button>
+                    ))}
                 </div>
             </div>
 
-            {/* Main Content */}
-            <div className="flex-1 flex flex-col overflow-hidden">
-                {/* Search Bar */}
-                <div className="p-4 bg-white border-b border-gray-200 flex gap-4">
-                    <div className="relative flex-1 max-w-md">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined text-[20px]">search</span>
-                        <input
-                            type="text"
-                            placeholder="Buscar por nombre, usuario o email..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#99b849]/50 focus:border-[#99b849]"
-                        />
-                    </div>
+            <div className={styles.content}>
+                <div className={styles.searchArea}>
+                    <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
                 </div>
 
-                {/* Table */}
-                <div className="flex-1 overflow-auto p-6">
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                        <table className="w-full text-left text-sm">
-                            <thead className="bg-gray-50 text-gray-500 font-medium">
+                <div className={styles.tableArea}>
+                    <div className={styles.tableContainer}>
+                        <table className={styles.table}>
+                            <thead className={styles.tableHead}>
                                 <tr>
-                                    <th className="px-6 py-4">Nombre</th>
-                                    <th className="px-6 py-4">Usuario</th>
-                                    <th className="px-6 py-4">Correo Electrónico</th>
-                                    <th className="px-6 py-4 text-center">Rol</th>
-                                    <th className="px-6 py-4 text-right">Acciones</th>
+                                    <th className={styles.heading}>Nombre</th>
+                                    <th className={styles.heading}>Usuario</th>
+                                    <th className={styles.heading}>Correo Electrónico</th>
+                                    <th className={`${styles.heading} ${styles.headingCentered}`}>Rol</th>
+                                    <th className={`${styles.heading} ${styles.headingRight}`}>Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody>
                                 {filteredUsers.map((user) => (
-                                    <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
-                                        <td className="px-6 py-4 font-medium text-gray-900">{user.name}</td>
-                                        <td className="px-6 py-4 text-gray-600">{user.username || '-'}</td>
-                                        <td className="px-6 py-4 text-gray-600">{user.email}</td>
-                                        <td className="px-6 py-4 text-center">
-                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${user.role === 'admin'
-                                                    ? 'bg-purple-50 text-purple-700 border-purple-200'
-                                                    : 'bg-blue-50 text-blue-700 border-blue-200'
-                                                }`}>
+                                    <tr key={user.id} className={styles.tableRow}>
+                                        <td className={`${styles.cell} ${styles.nameCell}`}>{user.name}</td>
+                                        <td className={styles.cell}>{user.username || '-'}</td>
+                                        <td className={styles.cell}>{user.email}</td>
+                                        <td className={`${styles.cell} ${styles.cellCentered}`}>
+                                            <span className={`${styles.roleBadge} ${user.role === 'admin' ? styles.roleBadgeAdmin : styles.roleBadgeUser}`}>
                                                 {user.role}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right">
+                                        <td className={`${styles.cell} ${styles.cellRight}`}>
                                             <button
+                                                type="button"
                                                 onClick={() => handleToggleClick(user)}
-                                                className={`text-xs font-semibold px-3 py-1.5 rounded-md transition-colors ${user.role === 'admin'
-                                                        ? 'text-red-600 hover:bg-red-50'
-                                                        : 'text-[#99b849] hover:bg-[#99b849]/10'
-                                                    }`}
+                                                className={`${styles.actionButton} ${user.role === 'admin' ? styles.actionButtonDanger : styles.actionButtonPrimary}`}
                                             >
                                                 {user.role === 'admin' ? 'Quitar Admin' : 'Hacer Admin'}
                                             </button>
@@ -153,9 +160,7 @@ export default function UsersManager({ users }) {
                         </table>
 
                         {filteredUsers.length === 0 && (
-                            <div className="p-12 text-center text-gray-400">
-                                <p>No se encontraron usuarios.</p>
-                            </div>
+                            <EmptyState />
                         )}
                     </div>
                 </div>

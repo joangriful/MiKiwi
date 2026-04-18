@@ -7,6 +7,7 @@
     --color-secondary: #f8b7ea;
     --color-secondary-dark: #d697c8;
     --color-white: #ffffff;
+    --color-black: #000000;
 
     /* Light Mode (Base) */
     --bg-main: #f8f5f0;
@@ -34,10 +35,20 @@
     --color-info-soft: #eff6ff;
     --color-info-soft-hover: #dbeafe;
     --color-info-strong: #1d4ed8;
-    --color-info-border: #dbeafe;
+    --color-info-border: var(--color-info-soft-hover);
+    --color-info-ring: rgb(59 130 246 / 20%);
+    --color-purple: #8b5cf6;
+    --color-purple-soft: #f3e8ff;
+    --color-purple-strong: #7c3aed;
+    --color-purple-border: #e9d5ff;
+    --color-purple-ring: rgb(139 92 246 / 20%);
+    --color-success: #22c55e;
+    --color-success-soft: #ecfdf5;
+    --color-success-strong: #047857;
+    --color-success-border: #d1fae5;
     --color-warning: #eab308;
 
-    --color-border-soft: #f3f4f6;
+    --color-border-soft: var(--color-surface-disabled);
     --color-border-default: #e5e7eb;
     --color-border-strong: #d1d5db;
 
@@ -78,7 +89,7 @@
     --color-surface-subtle-transparent: rgb(55 65 81 / 50%);
     --color-surface-disabled: #4b5563;
 
-    --color-border-soft: #4b5563;
+    --color-border-soft: var(--color-surface-disabled);
     --color-border-default: #6b7280;
     --color-border-strong: #9ca3af;
 

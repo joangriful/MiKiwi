@@ -1,0 +1,242 @@
+.layout {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--color-surface-subtle);
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    background: var(--bg-surface);
+    border-right: 1px solid var(--color-border-default);
+}
+
+.sidebarHeader {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-border-soft);
+}
+
+.sidebarTitle {
+    margin: 0;
+    color: var(--color-text-strong);
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.sidebarDescription {
+    margin: 0.25rem 0 0;
+    color: var(--color-text-muted-ui);
+    font-size: 0.75rem;
+}
+
+.sidebarFilters {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.5rem;
+}
+
+.filterButton {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    color: var(--color-text-soft);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.filterButton:hover {
+    background: var(--color-surface-subtle);
+}
+
+.filterButtonActive {
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+}
+
+.content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.searchArea {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+.searchBar {
+    position: relative;
+    flex: 1;
+    max-width: 28rem;
+}
+
+.searchIcon {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    color: var(--color-text-subtle);
+    font-size: 1.25rem;
+    transform: translateY(-50%);
+}
+
+.searchInput {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    font-size: 0.875rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--color-border-default);
+    border-radius: 0.5rem;
+    outline: none;
+}
+
+.searchInput:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-ring);
+}
+
+.tableArea {
+    flex: 1;
+    padding: 1.5rem;
+    overflow: auto;
+}
+
+.tableContainer {
+    overflow: hidden;
+    background: var(--bg-surface);
+    border: 1px solid var(--color-border-default);
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+.tableHead {
+    background: var(--color-surface-subtle);
+    color: var(--color-text-muted-ui);
+}
+
+.heading {
+    padding: 1rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.headingCentered {
+    text-align: center;
+}
+
+.headingRight {
+    text-align: right;
+}
+
+.tableRow {
+    transition: background-color 0.2s ease;
+}
+
+.tableRow:hover {
+    background: var(--color-surface-subtle-transparent);
+}
+
+.cell {
+    padding: 1rem 1.5rem;
+    color: var(--color-text-soft);
+    border-top: 1px solid var(--color-border-soft);
+}
+
+.nameCell {
+    color: var(--color-text-strongest);
+    font-weight: 500;
+}
+
+.cellCentered {
+    text-align: center;
+}
+
+.cellRight {
+    text-align: right;
+}
+
+.roleBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+    border-radius: 999px;
+}
+
+.roleBadgeAdmin {
+    color: var(--color-purple-strong);
+    background: var(--color-purple-soft);
+    border-color: var(--color-purple-border);
+}
+
+.roleBadgeUser {
+    color: var(--color-info-strong);
+    background: var(--color-info-soft);
+    border-color: var(--color-info-border);
+}
+
+.actionButton {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 0;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.actionButtonDanger {
+    color: var(--color-danger);
+    background: transparent;
+}
+
+.actionButtonDanger:hover {
+    background: var(--color-danger-bg);
+}
+
+.actionButtonPrimary {
+    color: var(--color-primary);
+    background: transparent;
+}
+
+.actionButtonPrimary:hover {
+    background: var(--color-primary-soft);
+}
+
+.emptyState {
+    padding: 3rem;
+    color: var(--color-text-subtle);
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .layout {
+        flex-direction: row;
+    }
+
+    .sidebar {
+        width: 16rem;
+    }
+}

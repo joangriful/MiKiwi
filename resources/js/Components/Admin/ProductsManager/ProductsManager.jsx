@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import UploadProduct from '../UploadProduct/UploadProduct';
 import ProductsList from '../ProductsList/ProductsList';
 import FeaturedProductsManager from '../FeaturedProductsManager/FeaturedProductsManager';
+import styles from './ProductsManager.module.css';
+
+const PRODUCT_SECTIONS = [
+    { id: 'upload', label: 'Subir Producto', icon: 'upload' },
+    { id: 'list', label: 'Lista de Productos', icon: 'list' },
+    { id: 'featured', label: 'Productos Destacados', icon: 'star' },
+];
 
 export default function ProductsManager({ categories, products, debugCount }) {
     console.log('ProductsManager received products:', products, 'DebugCount:', debugCount);
     const [activeSection, setActiveSection] = useState('list');
     const [editingProduct, setEditingProduct] = useState(null);
-
-    const sections = [
-        { id: 'upload', label: 'Subir Producto', icon: 'upload' },
-        { id: 'list', label: 'Lista de Productos', icon: 'list' },
-        { id: 'featured', label: 'Productos Destacados', icon: 'star' },
-    ];
 
     const handleEdit = (product) => {
         setEditingProduct(product);
@@ -21,39 +22,35 @@ export default function ProductsManager({ categories, products, debugCount }) {
 
     const handleTabChange = (sectionId) => {
         if (sectionId === 'upload') {
-            setEditingProduct(null); // Reset if going to "New Product"
+            setEditingProduct(null);
         }
         setActiveSection(sectionId);
     };
 
     return (
-        <div className="flex flex-1 overflow-hidden h-full relative">
-            {/* Sidebar */}
-            <aside className="w-64 bg-gray-50 border-r border-gray-200 flex flex-col shrink-0">
-                <div className="p-4 border-b border-gray-200">
-                    <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+        <div className={styles.layout}>
+            <aside className={styles.sidebar}>
+                <div className={styles.sidebarHeader}>
+                    <h2 className={styles.sidebarTitle}>
                         Gestión de Productos
                     </h2>
                 </div>
-                <nav className="flex-1 overflow-y-auto p-2 space-y-1">
-                    {sections.map(section => (
+                <nav className={styles.sidebarNav}>
+                    {PRODUCT_SECTIONS.map((section) => (
                         <button
                             key={section.id}
+                            type="button"
                             onClick={() => handleTabChange(section.id)}
-                            className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${activeSection === section.id
-                                ? 'bg-blue-50 text-blue-700'
-                                : 'text-gray-700 hover:bg-gray-100'
-                                }`}
+                            className={`${styles.navButton} ${activeSection === section.id ? styles.navButtonActive : ''}`}
                         >
-                            <span className="material-symbols-outlined text-base">{section.icon}</span>
+                            <span className={`material-symbols-outlined ${styles.navButtonIcon}`}>{section.icon}</span>
                             {section.label}
                         </button>
                     ))}
                 </nav>
             </aside>
 
-            {/* Main Content Area */}
-            <main className="flex-1 bg-white overflow-hidden relative">
+            <main className={styles.content}>
                 {activeSection === 'upload' && (
                     <UploadProduct
                         categories={categories}
