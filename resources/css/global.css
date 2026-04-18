@@ -6,6 +6,7 @@
     --color-primary-dark: #7a943a;
     --color-secondary: #f8b7ea;
     --color-secondary-dark: #d697c8;
+    --color-white: #ffffff;
 
     /* Light Mode (Base) */
     --bg-main: #f8f5f0;
@@ -14,6 +15,32 @@
     --text-muted: #66672a;
     --border: #e2e0db;
     --color-accent: #FF2D20;
+
+    /* Neutral UI Tokens */
+    --color-text-strong: #1f2937;
+    --color-text-soft: #4b5563;
+    --color-text-muted-ui: #6b7280;
+    --color-text-subtle: #9ca3af;
+    --color-text-strongest: #111827;
+
+    --color-surface-subtle: #f9fafb;
+    --color-surface-subtle-transparent: rgb(249 250 251 / 50%);
+    --color-surface-disabled: #f3f4f6;
+    --color-surface-overlay: rgb(0 0 0 / 50%);
+    --color-white-soft: rgb(255 255 255 / 90%);
+    --color-primary-soft: rgb(153 184 73 / 10%);
+
+    --color-border-soft: #f3f4f6;
+    --color-border-default: #e5e7eb;
+    --color-border-strong: #d1d5db;
+
+    /* Danger UI Tokens */
+    --color-danger: #dc2626;
+    --color-danger-soft: #ef4444;
+    --color-danger-strong: #b91c1c;
+    --color-danger-bg: #fef2f2;
+    --color-danger-border: #fecaca;
+    --color-danger-ring: rgb(239 68 68 / 20%);
 
     /* Shadows */
     --shadow-sm: 0 2px 4px rgba(34, 43, 36, 0.05);
@@ -33,6 +60,20 @@
     --text-main: #f8f5f0;
     --text-muted: #99b849;
     --border: #424d44;
+
+    --color-text-strong: #f8f5f0;
+    --color-text-soft: #d1d5db;
+    --color-text-muted-ui: #9ca3af;
+    --color-text-subtle: #6b7280;
+    --color-text-strongest: #ffffff;
+
+    --color-surface-subtle: #374151;
+    --color-surface-subtle-transparent: rgb(55 65 81 / 50%);
+    --color-surface-disabled: #4b5563;
+
+    --color-border-soft: #4b5563;
+    --color-border-default: #6b7280;
+    --color-border-strong: #9ca3af;
 
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.4);

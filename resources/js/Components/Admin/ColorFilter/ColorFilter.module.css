@@ -1,8 +1,8 @@
 .container {
     flex-shrink: 0;
     padding: 1rem;
-    background: rgb(249 250 251 / 50%);
-    border-top: 1px solid #f3f4f6;
+    background: var(--color-surface-subtle-transparent);
+    border-top: 1px solid var(--color-border-soft);
 }
 
 .header {
@@ -14,7 +14,7 @@
 }
 
 .title {
-    color: #9ca3af;
+    color: var(--color-text-subtle);
     font-size: 0.75rem;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -23,7 +23,7 @@
 
 .clearButton {
     padding: 0;
-    color: #9ca3af;
+    color: var(--color-text-subtle);
     font-size: 0.625rem;
     text-decoration: underline;
     background: transparent;
@@ -33,7 +33,7 @@
 }
 
 .clearButton:hover {
-    color: #4b5563;
+    color: var(--color-text-soft);
 }
 
 .grid {
@@ -41,7 +41,7 @@
     grid-template-columns: repeat(8, minmax(0, 1fr));
     gap: 0;
     overflow: hidden;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--color-border-default);
     border-radius: 0.5rem;
 }
 
@@ -66,12 +66,12 @@
 
 .colorButtonSelected {
     z-index: 10;
-    box-shadow: inset 0 0 0 2px #fff;
+    box-shadow: inset 0 0 0 2px var(--color-white);
 }
 
 .checkIcon {
     width: 0.75rem;
     height: 0.75rem;
-    color: rgb(255 255 255 / 90%);
+    color: var(--color-white-soft);
     filter: drop-shadow(0 4px 4px rgb(0 0 0 / 15%));
 }

@@ -1,7 +1,7 @@
 .layout {
     display: flex;
     height: 100%;
-    background: #f9fafb;
+    background: var(--color-surface-subtle);
 }
 
 .sidebar {
@@ -10,17 +10,17 @@
     flex-shrink: 0;
     width: 16rem;
     background: var(--bg-surface);
-    border-right: 1px solid #e5e7eb;
+    border-right: 1px solid var(--color-border-default);
 }
 
 .sidebarHeader {
     padding: 1rem;
-    border-bottom: 1px solid #f3f4f6;
+    border-bottom: 1px solid var(--color-border-soft);
 }
 
 .sidebarTitle {
     margin: 0;
-    color: #1f2937;
+    color: var(--color-text-strong);
     font-family: var(--font-body);
     font-size: 1.125rem;
     font-weight: 700;
@@ -30,7 +30,7 @@
 
 .sidebarDescription {
     margin: 0.25rem 0 0;
-    color: #6b7280;
+    color: var(--color-text-muted-ui);
     font-size: 0.75rem;
 }
 
@@ -46,7 +46,7 @@
     gap: 0.5rem;
     width: 100%;
     padding: 0.5rem 1rem;
-    color: #4b5563;
+    color: var(--color-text-soft);
     font-size: 0.875rem;
     font-weight: 500;
     text-align: left;
@@ -58,12 +58,12 @@
 }
 
 .sectionButton:hover {
-    background: #f9fafb;
+    background: var(--color-surface-subtle);
 }
 
 .sectionButtonActive {
     color: var(--color-primary);
-    background: rgb(153 184 73 / 10%);
+    background: var(--color-primary-soft);
 }
 
 .sectionButtonIcon {
