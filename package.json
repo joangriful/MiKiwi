@@ -3,7 +3,8 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build",
+        "build": "node scripts/build-report.mjs",
+        "build:raw": "vite build",
         "dev": "vite",
         "start": "concurrently \"php artisan serve\" \"npm run dev\""
     },
