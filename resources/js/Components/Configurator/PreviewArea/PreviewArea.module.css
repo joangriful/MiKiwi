@@ -1,0 +1,38 @@
+.layerImage {
+    pointer-events: none;
+    user-select: none;
+}
+
+.root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.emptyState {
+    color: var(--color-text-subtle);
+    font-weight: 500;
+    z-index: 0;
+}
+
+.canvas {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.viewportIndicator {
+    position: absolute;
+    border: 2px solid var(--color-danger);
+    box-shadow: var(--shadow-md);
+    background: rgb(234 179 8 / 10%);
+    pointer-events: none;
+    z-index: 900;
+    transition: opacity 200ms ease;
+}

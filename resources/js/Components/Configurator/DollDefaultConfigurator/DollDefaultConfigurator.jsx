@@ -3,6 +3,7 @@ import PreviewArea from '@/Components/Configurator/PreviewArea/PreviewArea';
 import CloseUp from '@/Components/Configurator/CloseUp/CloseUp';
 import PartSelector from '@/Components/Configurator/PartSelector/PartSelector';
 import OptionsBar from '@/Components/Configurator/OptionsBar/OptionsBar';
+import styles from './DollDefaultConfigurator.module.css';
 
 export default function DollDefaultConfigurator({ views, currentSelections, onSelectionChange, saving, partPositions }) {
     const [currentView, setCurrentView] = useState('front');
@@ -59,14 +60,11 @@ export default function DollDefaultConfigurator({ views, currentSelections, onSe
     };
 
     return (
-        <div className="flex flex-col h-full bg-gray-50">
-            {/* Configurator Layout */}
-            <div className="flex-1 flex overflow-hidden">
-                {/* Left Content Area (Images + Options Bar) */}
-                <div className="w-2/3 flex flex-col border-r border-gray-200 bg-white">
-                    <div className="flex-1 flex relative overflow-hidden">
-                        {/* Left: Preview */}
-                        <div className="w-1/2 relative bg-gray-200 border-r border-gray-200">
+        <div className={styles.root}>
+            <div className={styles.layout}>
+                <div className={styles.workspace}>
+                    <div className={styles.previewRow}>
+                        <div className={styles.previewPane}>
                             <PreviewArea
                                 selectedParts={selectedParts}
                                 viewportInfo={viewportInfo}
@@ -75,8 +73,7 @@ export default function DollDefaultConfigurator({ views, currentSelections, onSe
                             />
                         </div>
 
-                        {/* Center: CloseUp */}
-                        <div className="w-1/2 relative bg-gray-100 overflow-hidden">
+                        <div className={styles.closeUpPane}>
                             <CloseUp
                                 selectedParts={selectedParts}
                                 onViewportChange={setViewportInfo}
@@ -86,8 +83,7 @@ export default function DollDefaultConfigurator({ views, currentSelections, onSe
                         </div>
                     </div>
 
-                    {/* Options Bar */}
-                    <div className="flex-none z-40 relative">
+                    <div className={styles.optionsBarSlot}>
                         <OptionsBar
                             currentView={currentView}
                             onViewChange={setCurrentView}
@@ -97,8 +93,7 @@ export default function DollDefaultConfigurator({ views, currentSelections, onSe
                     </div>
                 </div>
 
-                {/* Right: Selector */}
-                <div className="w-1/3 bg-white overflow-hidden flex flex-col">
+                <div className={styles.selectorPane}>
                     <PartSelector
                         parts={availableParts}
                         selectedParts={selectedParts}

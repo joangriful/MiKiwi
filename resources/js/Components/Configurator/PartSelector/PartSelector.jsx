@@ -1,5 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import PartCarousel from '../PartCarousel/PartCarousel';
+import styles from './PartSelector.module.css';
 
 const DEFAULT_ORDER = ['pelo', 'ojos', 'cejas', 'boca', 'nariz', 'orejas', 'manos', 'pies', 'vientre', 'pechos', 'vello', 'ropa'];
 
@@ -25,8 +26,8 @@ const PartSelector = memo(({ parts, selectedParts, onSelect, sectionOrder, selec
     }, [parts, sectionOrder]);
 
     return (
-        <div className="h-full flex flex-col bg-transparent">
-            <div className="flex-1 overflow-y-auto p-6 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+        <div className={styles.root}>
+            <div className={styles.content}>
                 {sortedParts.map(([category, items], index) => (
                     <PartCarousel
                         key={category}
@@ -48,7 +49,7 @@ const PartSelector = memo(({ parts, selectedParts, onSelect, sectionOrder, selec
                 ))}
 
                 {Object.keys(parts).length === 0 && (
-                    <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+                    <div className={styles.emptyState}>
                         <p>No options available.</p>
                     </div>
                 )}

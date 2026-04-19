@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { getCloudinaryUrl } from '@/Utils/cloudinary';
+import styles from './PartPositionEditor.module.css';
 
 export default function PartPositionEditor({ part, view, onClose, onSave }) {
     const [position, setPosition] = useState({ x: 0, y: 0, scale: 1 });
@@ -75,57 +76,55 @@ export default function PartPositionEditor({ part, view, onClose, onSave }) {
     const imageUrl = getCloudinaryUrl(part.thumbnail || part.url, { transformations: 'f_auto,q_auto' });
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-            <div className="bg-white rounded-xl overflow-hidden shadow-2xl w-[90vw] h-[90vh] flex flex-col">
-                {/* Header */}
-                <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+        <div className={styles.backdrop}>
+            <div className={styles.dialog}>
+                <div className={styles.header}>
                     <div>
-                        <h3 className="text-lg font-bold text-gray-900">Editor de Posición: {part.id}</h3>
-                        <p className="text-sm text-gray-500">Arrastra para mover • Rueda para zoom</p>
+                        <h3 className={styles.title}>Editor de Posición: {part.id}</h3>
+                        <p className={styles.subtitle}>Arrastra para mover • Rueda para zoom</p>
                     </div>
-                    <div className="flex gap-3">
-                        <button onClick={onClose} className="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-lg">
+                    <div className={styles.headerActions}>
+                        <button
+                            onClick={onClose}
+                            className={`${styles.button} ${styles.secondaryButton}`}
+                        >
                             Cancelar
                         </button>
-                        <button onClick={handleSave} className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg font-medium shadow-md">
+                        <button
+                            onClick={handleSave}
+                            className={`${styles.button} ${styles.primaryButton}`}
+                        >
                             Guardar Posición
                         </button>
                     </div>
                 </div>
 
-                {/* Editor Canvas */}
                 <div
-                    className="flex-1 relative bg-[#e5e5f7] overflow-hidden cursor-move flex items-center justify-center"
-                    style={{
-                        backgroundImage: 'radial-gradient(#444cf7 0.5px, transparent 0.5px), radial-gradient(#444cf7 0.5px, #e5e5f7 0.5px)',
-                        backgroundSize: '20px 20px',
-                        backgroundPosition: '0 0, 10px 10px'
-                    }}
+                    className={styles.canvas}
                     ref={containerRef}
                     onMouseDown={handleMouseDown}
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
                     onMouseLeave={handleMouseUp}
                 >
-                    <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-10">
-                        <div className="w-[500px] h-[500px] border-2 border-dashed border-black rounded-2xl"></div>
+                    <div className={styles.guideOverlay}>
+                        <div className={styles.guideFrame}></div>
                     </div>
 
                     <img
                         ref={imgRef}
                         src={imageUrl}
                         alt={part.id}
-                        className="max-w-none origin-center pointer-events-none select-none transition-transform duration-75" // Fast manual transform
+                        className={styles.image}
                         style={{
                             transform: `translate(${position.x}px, ${position.y}px) scale(${position.scale})`
                         }}
                     />
                 </div>
 
-                {/* Footer Controls */}
-                <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex gap-6">
-                    <div className="flex-1">
-                        <label className="text-xs font-bold text-gray-500 uppercase">Zoom: {position.scale.toFixed(2)}x</label>
+                <div className={styles.footer}>
+                    <div className={styles.sliderGroup}>
+                        <label className={styles.label}>Zoom: {position.scale.toFixed(2)}x</label>
                         <input
                             type="range"
                             min="0.1"
@@ -133,22 +132,22 @@ export default function PartPositionEditor({ part, view, onClose, onSave }) {
                             step="0.01"
                             value={position.scale}
                             onChange={(e) => setPosition(prev => ({ ...prev, scale: parseFloat(e.target.value) }))}
-                            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer mt-1"
+                            className={styles.slider}
                         />
                     </div>
-                    <div className="flex gap-4 border-l pl-6">
-                        <div className="flex flex-col">
-                            <span className="text-xs font-bold text-gray-500 uppercase">Pos X</span>
-                            <span className="font-mono">{position.x.toFixed(0)}px</span>
+                    <div className={styles.metrics}>
+                        <div className={styles.metric}>
+                            <span className={styles.label}>Pos X</span>
+                            <span className={styles.metricValue}>{position.x.toFixed(0)}px</span>
                         </div>
-                        <div className="flex flex-col">
-                            <span className="text-xs font-bold text-gray-500 uppercase">Pos Y</span>
-                            <span className="font-mono">{position.y.toFixed(0)}px</span>
+                        <div className={styles.metric}>
+                            <span className={styles.label}>Pos Y</span>
+                            <span className={styles.metricValue}>{position.y.toFixed(0)}px</span>
                         </div>
                     </div>
                     <button
                         onClick={() => setPosition({ x: 0, y: 0, scale: 1 })}
-                        className="text-xs text-blue-600 hover:underline self-center"
+                        className={styles.resetButton}
                     >
                         Resetear
                     </button>

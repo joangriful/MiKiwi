@@ -243,7 +243,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                                     onViewChange={setCurrentView}
                                     zoomLevel={zoomLevel}
                                     onZoomChange={setZoomLevel}
-                                    bgColor="bg-transparent"
+                                    surface="transparent"
                                 />
                             </div>
 

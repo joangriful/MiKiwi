@@ -1,0 +1,51 @@
+.container {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    position: relative;
+    background: var(--color-surface-subtle);
+    cursor: grab;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.container:active {
+    cursor: grabbing;
+}
+
+.container::-webkit-scrollbar {
+    display: none;
+}
+
+.content {
+    position: relative;
+    transform-origin: top left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-surface);
+}
+
+.emptyState {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-subtle);
+    font-size: 1.5rem;
+    font-weight: 700;
+    z-index: 0;
+}
+
+.layerImage {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%;
+    width: auto;
+    max-width: none;
+    object-fit: contain;
+    pointer-events: none;
+    user-select: none;
+}

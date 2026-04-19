@@ -1,6 +1,7 @@
 import React, { useMemo, useRef, useEffect } from 'react';
 import { getCloudinaryUrl } from '@/Utils/cloudinary';
 import { usePartOptimization } from '@/Components/Configurator/hooks/usePartOptimization';
+import styles from './PreviewArea.module.css';
 
 // Sub-component to handle individual layer optimization and rendering
 const LayerImage = ({ layer, partPositions }) => {
@@ -36,7 +37,7 @@ const LayerImage = ({ layer, partPositions }) => {
             src={src}
             alt={layer.key}
             fetchpriority="high"
-            className="pointer-events-none select-none"
+            className={styles.layerImage}
             style={combinedStyle}
         />
     );
@@ -181,18 +182,16 @@ export default function PreviewArea({ selectedParts, viewportInfo, onViewportCha
     return (
         <div
             ref={containerRef}
-            className={`relative w-full h-full flex items-center justify-center overflow-hidden ${className}`}
+            className={[styles.root, className].filter(Boolean).join(' ')}
             onMouseDown={handleMouseDown}
-        // onWheel attached manually
         >
             {renderedLayers.length === 0 && (
-                <div className="text-gray-300 font-medium z-0">
+                <div className={styles.emptyState}>
                     Vista Previa
                 </div>
             )}
 
-            {/* Size Container */}
-            <div className="relative h-full w-full flex justify-center">
+            <div className={styles.canvas}>
                 {renderedLayers.map(layer => (
                     <LayerImage
                         key={layer.key}
@@ -205,7 +204,7 @@ export default function PreviewArea({ selectedParts, viewportInfo, onViewportCha
             {/* Viewport Indicator Overlay */}
             {viewportInfo && viewportInfo.visible && (
                 <div
-                    className="absolute border-2 border-red-500 shadow-md bg-yellow-400/10 pointer-events-none z-[900] transition-opacity duration-200"
+                    className={styles.viewportIndicator}
                     style={{
                         top: `${viewportInfo.y * 100}%`,
                         left: `${viewportInfo.x * 100}%`,

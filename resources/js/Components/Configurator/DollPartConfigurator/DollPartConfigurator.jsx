@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PartSelector from '@/Components/Configurator/PartSelector/PartSelector';
 // PartPositionEditor import removed as it is superseded by In-Card/Overlay editing and was unused in render
 import OptionsBar from '@/Components/Configurator/OptionsBar/OptionsBar';
+import styles from './DollPartConfigurator.module.css';
 
 export default function DollPartConfigurator({ views, saving, setMessage, partPositions, onSavePosition }) {
     const [currentView, setCurrentView] = useState('front');
@@ -25,28 +26,26 @@ export default function DollPartConfigurator({ views, saving, setMessage, partPo
     // DollManager handles the API call and message.
 
     return (
-        <div className="flex flex-col h-full bg-gray-50 relative">
-            <div className="flex-1 flex overflow-hidden">
-                {/* Full Width: Part List (Image Mode) */}
-                <div className="w-full bg-white flex flex-col">
-                    <div className="p-4 border-b bg-gray-50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className={styles.root}>
+            <div className={styles.layout}>
+                <div className={styles.panel}>
+                    <div className={styles.panelHeader}>
                         <div>
-                            <h3 className="font-bold text-gray-700">Partes Disponibles</h3>
-                            <p className="text-xs text-gray-500">Haz clic en el lápiz para editar posición/zoom directamente en la tarjeta</p>
+                            <h3 className={styles.title}>Partes Disponibles</h3>
+                            <p className={styles.subtitle}>Haz clic en el lápiz para editar posición/zoom directamente en la tarjeta</p>
                         </div>
 
-                        {/* View Switcher */}
-                        <div className="w-full sm:w-auto">
+                        <div className={styles.toolbarSlot}>
                             <OptionsBar
                                 currentView={currentView}
                                 onViewChange={setCurrentView}
                                 hideZoom={true}
-                                bgColor="bg-white border md:border-gray-200 rounded-lg"
+                                surface="elevated"
                             />
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-hidden relative">
+                    <div className={styles.selectorSlot}>
                         <PartSelector
                             parts={availableParts}
                             selectedParts={selectedParts}

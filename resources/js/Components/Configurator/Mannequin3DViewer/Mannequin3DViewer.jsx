@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Environment, ContactShadows } from '@react-three/drei';
 import MannequinModel from '../MannequinModel/MannequinModel';
 import ModelErrorBoundary from '@/Components/Configurator/ModelErrorBoundary/ModelErrorBoundary';
+import styles from './Mannequin3DViewer.module.css';
 
 const availableModels = [
     {
@@ -88,9 +89,9 @@ function Scene({ modelPath, texturePath, normalPath, modelId, rotationY, color, 
 
 function Loader() {
     return (
-        <div className="flex flex-col items-center justify-center w-full h-full bg-white">
-            <div className="w-12 h-12 border-4 border-black/10 border-t-black rounded-full animate-spin mb-4"></div>
-            <p className="text-gray-500 font-medium font-outfit">Cargando modelo 3D...</p>
+        <div className={styles.loader}>
+            <div className={styles.spinner}></div>
+            <p className={styles.loaderText}>Cargando modelo 3D...</p>
         </div>
     );
 }
@@ -112,9 +113,8 @@ export default function Mannequin3DViewer() {
     };
 
     return (
-        <div className="flex flex-col lg:flex-row w-full h-full overflow-hidden bg-gray-50">
-            {/* Viewport Area */}
-            <div className="flex-1 relative bg-gradient-to-b from-gray-100 to-gray-200">
+        <div className={styles.root}>
+            <div className={styles.viewportArea}>
                 <Suspense fallback={<Loader />}>
                     <Canvas shadows dpr={[1, 2]}>
                         <Scene
@@ -129,20 +129,23 @@ export default function Mannequin3DViewer() {
                     </Canvas>
                 </Suspense>
 
-                {/* Overlay Model Selector */}
-                <div className="absolute top-4 right-4 flex flex-col gap-3 max-w-[140px] z-50">
-                    <p className="text-[12px] font-bold text-gray-800 uppercase tracking-widest bg-white/90 backdrop-blur-sm p-3 rounded-xl text-center shadow-lg border border-white/20">
+                <div className={styles.selectorOverlay}>
+                    <p className={styles.selectorTitle}>
                         Modelos
                     </p>
-                    <div className="flex flex-col gap-3 overflow-y-auto max-h-[70vh] p-1 scrollbar-hide">
+                    <div className={styles.selectorList}>
                         {availableModels.map((model) => (
                             <button
                                 key={model.id}
                                 onClick={() => setSelectedModel(model)}
-                                className={`group p-4 rounded-2xl transition-all border-2 text-center h-24 flex items-center justify-center font-bold text-xs uppercase tracking-tight ${selectedModel.id === model.id
-                                    ? 'bg-black text-white border-black shadow-2xl scale-105 z-10'
-                                    : 'bg-white/80 backdrop-blur-md text-gray-600 border-white hover:border-black/10 hover:bg-white shadow-sm'
-                                    }`}
+                                className={[
+                                    styles.modelButton,
+                                    selectedModel.id === model.id
+                                        ? styles.modelButtonActive
+                                        : '',
+                                ]
+                                    .filter(Boolean)
+                                    .join(' ')}
                             >
                                 {model.name}
                             </button>
