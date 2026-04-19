@@ -11,63 +11,51 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
         name: 'Usuario MiKiwi',
         email: 'usuario@mikiwi.com',
         profile_photo_url: null,
-        banner_url: null
+        banner_url: null,
     };
 
-    // State for image uploads
     const [uploadingProfile, setUploadingProfile] = useState(false);
     const [uploadingBanner, setUploadingBanner] = useState(false);
-
-    // Current displayed images (updated after successful upload)
     const [currentProfileImage, setCurrentProfileImage] = useState(user.profile_photo_url);
     const [currentBannerImage, setCurrentBannerImage] = useState(user.banner_url);
-
-    // Image editor state
     const [editorOpen, setEditorOpen] = useState(false);
-    const [editingType, setEditingType] = useState('profile'); // 'profile' or 'banner'
-    const [existingImage, setExistingImage] = useState(null); // Track the existing image for the editor
+    const [editingType, setEditingType] = useState('profile');
+    const [existingImage, setExistingImage] = useState(null);
 
-    // Open editor for profile image
     const handleEditProfileImage = () => {
         setEditingType('profile');
         setExistingImage(currentProfileImage);
         setEditorOpen(true);
     };
 
-    // Open editor for banner
     const handleEditBanner = () => {
         setEditingType('banner');
         setExistingImage(currentBannerImage);
         setEditorOpen(true);
     };
 
-    // Handle save from image editor
     const handleEditorSave = async (croppedBlob) => {
         if (editingType === 'profile') {
             await uploadProfileImage(croppedBlob);
-        } else {
-            await uploadBanner(croppedBlob);
+            return;
         }
+
+        await uploadBanner(croppedBlob);
     };
 
-    // Upload profile image
     const uploadProfileImage = async (blob) => {
         setUploadingProfile(true);
-
         const formData = new FormData();
         formData.append('image', blob, 'profile.jpg');
 
         try {
             const response = await axios.post(route('profile.image.update'), formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+                headers: { 'Content-Type': 'multipart/form-data' },
             });
 
             if (response.data.success) {
                 setCurrentProfileImage(response.data.profile_photo_url);
                 toast.success('✓ Foto de perfil actualizada correctamente');
-                // Force page props update
                 router.reload({ only: ['auth'] });
             } else {
                 toast.error(response.data.message || 'Error al subir la imagen');
@@ -80,24 +68,19 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
         }
     };
 
-    // Upload banner
     const uploadBanner = async (blob) => {
         setUploadingBanner(true);
-
         const formData = new FormData();
         formData.append('image', blob, 'banner.jpg');
 
         try {
             const response = await axios.post(route('profile.banner.update'), formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+                headers: { 'Content-Type': 'multipart/form-data' },
             });
 
             if (response.data.success) {
                 setCurrentBannerImage(response.data.banner_url);
                 toast.success('✓ Banner actualizado correctamente');
-                // Force page props update
                 router.reload({ only: ['auth'] });
             } else {
                 toast.error(response.data.message || 'Error al subir el banner');
@@ -111,8 +94,7 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
     };
 
     return (
-        <div className={`${styles.root} space-y-6`}>
-            {/* Image Editor Modal */}
+        <div className={`${styles.root} ${styles.stack}`}>
             <ImageEditorModal
                 isOpen={editorOpen}
                 onClose={() => setEditorOpen(false)}
@@ -122,39 +104,33 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                 existingImageUrl={existingImage}
             />
 
-            {/* Main Profile Card with Banner */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                {/* Banner with Edit Overlay */}
-                <div className="h-48 w-full relative group">
-                    {/* Banner Image */}
+            <div className={styles.profileCard}>
+                <div className={styles.bannerArea}>
                     <div
-                        className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600"
+                        className={styles.bannerBackground}
                         style={currentBannerImage ? {
                             backgroundImage: `url(${currentBannerImage})`,
                             backgroundSize: 'cover',
-                            backgroundPosition: 'center'
+                            backgroundPosition: 'center',
                         } : {}}
                     >
-                        {!currentBannerImage && (
-                            <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                        )}
+                        {!currentBannerImage && <div className={styles.bannerPattern}></div>}
                     </div>
 
-                    {/* Edit Overlay */}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
+                    <div className={styles.bannerOverlay}>
                         <button
                             onClick={handleEditBanner}
                             disabled={uploadingBanner}
-                            className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 px-4 py-2 bg-white text-gray-800 rounded-lg font-medium shadow-lg hover:bg-gray-100 flex items-center gap-2 disabled:opacity-50"
+                            className={styles.bannerButton}
                         >
                             {uploadingBanner ? (
                                 <>
-                                    <span className="material-symbols-outlined animate-spin text-sm">refresh</span>
+                                    <span className={`${styles.materialIcon} ${styles.spin}`}>refresh</span>
                                     Subiendo...
                                 </>
                             ) : (
                                 <>
-                                    <span className="material-symbols-outlined text-sm">edit</span>
+                                    <span className={styles.materialIcon}>edit</span>
                                     {currentBannerImage ? 'Editar Banner' : 'Añadir Banner'}
                                 </>
                             )}
@@ -162,57 +138,45 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                     </div>
                 </div>
 
-                {/* Profile Info (overlapping banner) */}
-                <div className="px-8 pb-8">
-                    <div className="relative flex justify-between items-end -mt-12 mb-6">
-                        <div className="flex items-end gap-6">
-                            {/* Avatar with Edit Overlay */}
-                            <div className="relative group">
-                                <div className="h-32 w-32 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
+                <div className={styles.profileBody}>
+                    <div className={styles.profileHeader}>
+                        <div className={styles.profileIdentity}>
+                            <div className={styles.avatarWrap}>
+                                <div className={styles.avatarFrame}>
                                     <img
                                         src={currentProfileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random&size=256`}
                                         alt={user.name}
-                                        className="h-full w-full object-cover"
+                                        className={styles.avatarImage}
                                     />
                                 </div>
 
-                                {/* Edit Button Overlay */}
                                 {!uploadingProfile && (
                                     <button
                                         onClick={handleEditProfileImage}
                                         disabled={uploadingProfile}
-                                        className="absolute inset-0 bg-black/0 group-hover:bg-black/50 rounded-full transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100"
+                                        className={styles.avatarEdit}
                                     >
-                                        <span className="material-symbols-outlined text-white text-3xl">edit</span>
+                                        <span className={styles.materialIconLarge}>edit</span>
                                     </button>
                                 )}
 
-                                {/* Uploading Indicator */}
                                 {uploadingProfile && (
-                                    <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
-                                        <span className="material-symbols-outlined text-white text-3xl animate-spin">refresh</span>
+                                    <div className={styles.avatarLoading}>
+                                        <span className={`${styles.materialIconLarge} ${styles.spin}`}>refresh</span>
                                     </div>
                                 )}
 
-                                {/* Online/Status Indicator */}
-                                {!uploadingProfile && (
-                                    <div className="absolute bottom-2 right-2 h-5 w-5 bg-green-500 border-4 border-white rounded-full"></div>
-                                )}
+                                {!uploadingProfile && <div className={styles.statusDot}></div>}
                             </div>
 
-                            {/* Text Info */}
-                            <div className="mb-1">
-                                <h2 className="text-3xl font-bold text-gray-900">{user.name}</h2>
-                                <p className="text-gray-500 font-medium">{user.email}</p>
+                            <div className={styles.identityText}>
+                                <h2 className={styles.userName}>{user.name}</h2>
+                                <p className={styles.userEmail}>{user.email}</p>
                             </div>
                         </div>
 
-                        {/* Action Button (e.g., Edit Profile) */}
-                        <div className="mb-2 hidden sm:block">
-                            <button
-                                onClick={() => setActiveTab('edit-account')}
-                                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors text-sm"
-                            >
+                        <div className={styles.profileActions}>
+                            <button onClick={() => setActiveTab('edit-account')} className={styles.secondaryButton}>
                                 Editar perfil
                             </button>
                         </div>
@@ -220,86 +184,70 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                 </div>
             </div>
 
-            {/* Recommendaciones basadas en el Quiz */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[#99b849]">magic_button</span>
+            <div className={styles.recommendationsCard}>
+                <div className={styles.recommendationsHeader}>
+                    <h3 className={styles.recommendationsTitle}>
+                        <span className={`${styles.materialIcon} ${styles.titleIcon}`}>magic_button</span>
                         Recomendados para ti
                     </h3>
+
                     {recommendedProducts && recommendedProducts.length > 0 && (
-                        <Link href="/configurador/quiz" className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors text-sm flex items-center gap-2">
-                            <span className="material-symbols-outlined text-sm">refresh</span>
+                        <Link href="/configurador/quiz" className={styles.secondaryLink}>
+                            <span className={styles.materialIcon}>refresh</span>
                             Repetir Quiz
                         </Link>
                     )}
                 </div>
 
-                {/* Contenedor dinámico: Mostrar prompt de Quiz o Productos */}
                 {recommendedProducts && recommendedProducts.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className={styles.productsGrid}>
                         {recommendedProducts.map((product) => (
-                            <div key={product.id} className="flex flex-col bg-white group relative transition-all duration-500 hover:-translate-y-2 flex-shrink-0 min-w-[280px] sm:min-w-[320px] md:min-w-0 md:max-w-[380px] md:mx-auto overflow-hidden rounded-[24px]">
-                                {/* Category Badge - Inside Card, Top Left */}
+                            <div key={product.id} className={styles.productCard}>
                                 {product.category && (
-                                    <div className="absolute top-3 left-3 z-20 bg-[#99b849] text-white px-3 py-1 rounded-full transition-all duration-500 group-hover:scale-110">
-                                        <span className="text-xs font-semibold">{product.category.name}</span>
+                                    <div className={styles.categoryBadge}>
+                                        <span className={styles.categoryText}>{product.category.name}</span>
                                     </div>
                                 )}
 
-                                {/* Image Container */}
-                                <div className="relative aspect-[4/5] bg-[#F3F3F3] overflow-hidden">
+                                <div className={styles.productImageBox}>
                                     {product.image_url ? (
                                         <>
-                                            <img
-                                                src={product.image_url}
-                                                alt={product.name}
-                                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                                            />
+                                            <img src={product.image_url} alt={product.name} className={styles.productImage} />
                                             {product.hover_image_url && (
                                                 <img
                                                     src={product.hover_image_url}
                                                     alt={`${product.name} hover`}
-                                                    className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-1000"
+                                                    className={styles.productHoverImage}
                                                 />
                                             )}
                                         </>
                                     ) : (
-                                        <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300" />
+                                        <div className={styles.productPlaceholder}></div>
                                     )}
 
-                                    {/* Like Button - Minimalist Overlay */}
                                     <button
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                        }}
-                                        className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center transition-all bg-white/60 hover:bg-white rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100"
+                                        onClick={(event) => event.preventDefault()}
+                                        className={styles.favoriteButton}
                                     >
-                                        <div className="w-5 h-5 transition-colors duration-200 bg-black"
+                                        <div
+                                            className={styles.favoriteIcon}
                                             style={{
                                                 maskImage: `url('/assets/icons/MdiCardsHeartOutline.svg')`,
-                                                maskSize: 'contain',
-                                                maskRepeat: 'no-repeat',
-                                                maskPosition: 'center',
                                                 WebkitMaskImage: `url('/assets/icons/MdiCardsHeartOutline.svg')`,
-                                                WebkitMaskSize: 'contain',
-                                                WebkitMaskRepeat: 'no-repeat',
-                                                WebkitMaskPosition: 'center',
                                             }}
                                         ></div>
                                     </button>
                                 </div>
 
-                                {/* Info Section - Minimalist & Prioritizing Text */}
-                                <div className="flex flex-col pt-6 pb-4 px-2 space-y-2">
-                                    <div className="flex justify-between items-baseline gap-4">
-                                        <h3 className="text-base font-bold text-black uppercase tracking-widest leading-tight flex-1">{product.name}</h3>
-                                        <span className="text-base font-medium text-black/80">
+                                <div className={styles.productInfo}>
+                                    <div className={styles.productHeading}>
+                                        <h4 className={styles.productName}>{product.name}</h4>
+                                        <span className={styles.productPrice}>
                                             {new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(product.base_price)}
                                         </span>
                                     </div>
-                                    <div className="h-px bg-black/5 w-12 transition-all duration-500 group-hover:w-full" />
-                                    <p className="text-xs text-black/40 line-clamp-2 leading-relaxed transition-colors group-hover:text-black/60">
+                                    <div className={styles.productDivider}></div>
+                                    <p className={styles.productDescription}>
                                         {product.description || 'Ingeniería sensorial premium'}
                                     </p>
                                 </div>
@@ -307,13 +255,13 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                         ))}
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-xl border border-dashed border-gray-200 text-center">
-                        <span className="material-symbols-outlined text-4xl text-[#99b849] mb-4">quiz</span>
-                        <h4 className="text-lg font-semibold text-gray-800 mb-2">Descubre tu estilo ideal</h4>
-                        <p className="text-sm text-gray-500 max-w-md mb-6">
+                    <div className={styles.emptyQuizState}>
+                        <span className={`${styles.materialIconLarge} ${styles.emptyQuizIcon}`}>quiz</span>
+                        <h4 className={styles.emptyQuizTitle}>Descubre tu estilo ideal</h4>
+                        <p className={styles.emptyQuizText}>
                             Completa nuestro quiz inicial para que podamos recomendarte los productos que mejor se adapten a tus gustos y preferencias.
                         </p>
-                        <Link href="/configurador/quiz" className="px-6 py-2 bg-[#99b849] hover:bg-[#86a340] text-white font-medium rounded-lg transition-colors">
+                        <Link href="/configurador/quiz" className={styles.primaryLink}>
                             Realizar el Quiz
                         </Link>
                     </div>

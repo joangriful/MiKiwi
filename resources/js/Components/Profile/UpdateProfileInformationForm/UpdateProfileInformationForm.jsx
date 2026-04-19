@@ -19,81 +19,77 @@ export default function UpdateProfileInformation({
             email: user.email,
         });
 
-    const submit = (e) => {
-        e.preventDefault();
-
+    const submit = (event) => {
+        event.preventDefault();
         patch(route('profile.update'));
     };
 
     return (
-        <section className={`${styles.root} ${className}`}>
-            <header>
-                <h2 className="text-lg font-medium text-gray-900">
-                    Profile Information
-                </h2>
+        <section className={`${styles.root} ${styles.section} ${className}`}>
+            <header className={styles.header}>
+                <h2 className={styles.title}>Profile Information</h2>
 
-                <p className="mt-1 text-sm text-gray-600">
+                <p className={styles.description}>
                     Update your account's profile information and email address.
                 </p>
             </header>
 
-            <form onSubmit={submit} className="mt-6 space-y-6">
-                <div>
+            <form onSubmit={submit} className={styles.form}>
+                <div className={styles.field}>
                     <InputLabel htmlFor="name" value="Name" />
 
                     <TextInput
                         id="name"
-                        className="mt-1 block w-full"
+                        className={styles.input}
                         value={data.name}
-                        onChange={(e) => setData('name', e.target.value)}
+                        onChange={(event) => setData('name', event.target.value)}
                         required
                         isFocused
                         autoComplete="name"
                     />
 
-                    <InputError className="mt-2" message={errors.name} />
+                    <InputError className={styles.error} message={errors.name} />
                 </div>
 
-                <div>
+                <div className={styles.field}>
                     <InputLabel htmlFor="email" value="Email" />
 
                     <TextInput
                         id="email"
                         type="email"
-                        className="mt-1 block w-full"
+                        className={styles.input}
                         value={data.email}
-                        onChange={(e) => setData('email', e.target.value)}
+                        onChange={(event) => setData('email', event.target.value)}
                         required
                         autoComplete="username"
                     />
 
-                    <InputError className="mt-2" message={errors.email} />
+                    <InputError className={styles.error} message={errors.email} />
                 </div>
 
                 {mustVerifyEmail && user.email_verified_at === null && (
-                    <div>
-                        <p className="mt-2 text-sm text-gray-800">
+                    <div className={styles.verificationBlock}>
+                        <p className={styles.verificationText}>
                             Your email address is unverified.
                             <Link
                                 href={route('verification.send')}
                                 method="post"
                                 as="button"
-                                className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                className={styles.verificationLink}
                             >
                                 Click here to re-send the verification email.
                             </Link>
                         </p>
 
                         {status === 'verification-link-sent' && (
-                            <div className="mt-2 text-sm font-medium text-green-600">
-                                A new verification link has been sent to your
-                                email address.
+                            <div className={styles.verificationSuccess}>
+                                A new verification link has been sent to your email address.
                             </div>
                         )}
                     </div>
                 )}
 
-                <div className="flex items-center gap-4">
+                <div className={styles.actions}>
                     <PrimaryButton disabled={processing}>Save</PrimaryButton>
 
                     <Transition
@@ -103,9 +99,7 @@ export default function UpdateProfileInformation({
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-gray-600">
-                            Saved.
-                        </p>
+                        <p className={styles.savedMessage}>Saved.</p>
                     </Transition>
                 </div>
             </form>

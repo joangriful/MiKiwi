@@ -51,6 +51,8 @@
     --color-success-strong: #047857;
     --color-success-border: #d1fae5;
     --color-warning: #eab308;
+    --color-warning-soft: #fef3c7;
+    --color-warning-strong: #92400e;
 
     --color-border-soft: var(--color-surface-disabled);
     --color-border-default: #e5e7eb;
