@@ -1,70 +1,11 @@
-import React, { useState, Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei';
+import React, { lazy, Suspense, useState } from 'react';
 import { Head } from '@inertiajs/react';
 import ConfiguratorLayout from '@/Layouts/ConfiguratorLayout';
-import DollModel from '@/Components/Configurator/DollModel/DollModel';
 import CustomizationPanel from '@/Components/Configurator/CustomizationPanel/CustomizationPanel';
+import useDeferredThreeScene from '@/Features/Configurator/hooks/useDeferredThreeScene';
 import styles from './DollConfigurator.module.css';
 
-function Scene({ hairStyle, hairColor, eyeColor, eyeSize, skinTone, bodyProportions }) {
-    return (
-        <>
-            <PerspectiveCamera makeDefault position={[0, 0.5, 3.5]} fov={50} />
-            <OrbitControls
-                enablePan={false}
-                minDistance={2}
-                maxDistance={6}
-                minPolarAngle={Math.PI / 4}
-                maxPolarAngle={Math.PI / 1.8}
-                enableDamping
-                dampingFactor={0.05}
-            />
-
-            {/* Lighting */}
-            <ambientLight intensity={0.6} />
-            <directionalLight
-                position={[5, 5, 5]}
-                intensity={1}
-                castShadow
-                shadow-mapSize-width={2048}
-                shadow-mapSize-height={2048}
-                shadow-camera-far={50}
-                shadow-camera-left={-10}
-                shadow-camera-right={10}
-                shadow-camera-top={10}
-                shadow-camera-bottom={-10}
-            />
-            <directionalLight position={[-5, 3, -5]} intensity={0.4} />
-            <spotLight position={[0, 5, 0]} intensity={0.3} angle={0.6} penumbra={1} />
-
-            {/* Environment for reflections */}
-            <Environment preset="studio" />
-
-            {/* Doll Model */}
-            <DollModel
-                hairStyle={hairStyle}
-                hairColor={hairColor}
-                eyeColor={eyeColor}
-                eyeSize={eyeSize}
-                skinTone={skinTone}
-                bodyProportions={bodyProportions}
-            />
-
-            {/* Ground */}
-            <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.5, 0]}>
-                <planeGeometry args={[10, 10]} />
-                <shadowMaterial opacity={0.2} />
-            </mesh>
-
-            {/* Background gradient circle */}
-            <mesh position={[0, 0, -3]}>
-                <circleGeometry args={[4, 64]} />
-                <meshBasicMaterial color="#f8f5f0" />
-            </mesh>
-        </>
-    );
-}
+const DollConfiguratorCanvas = lazy(() => import('./DollConfiguratorCanvas'));
 
 function Loading() {
     return (
@@ -76,6 +17,8 @@ function Loading() {
 }
 
 export default function DollConfigurator() {
+    const { shouldRenderScene, shouldShowGate, enableScene } = useDeferredThreeScene();
+
     // State for customization options
     const [hairStyle, setHairStyle] = useState('long');
     const [hairColor, setHairColor] = useState('#8b4513');
@@ -96,9 +39,9 @@ export default function DollConfigurator() {
             <div className={`${styles.root} configurator-container`}>
                 {/* 3D Canvas */}
                 <div className="canvas-container">
-                    <Suspense fallback={<Loading />}>
-                        <Canvas shadows>
-                            <Scene
+                    {shouldRenderScene ? (
+                        <Suspense fallback={<Loading />}>
+                            <DollConfiguratorCanvas
                                 hairStyle={hairStyle}
                                 hairColor={hairColor}
                                 eyeColor={eyeColor}
@@ -106,8 +49,20 @@ export default function DollConfigurator() {
                                 skinTone={skinTone}
                                 bodyProportions={bodyProportions}
                             />
-                        </Canvas>
-                    </Suspense>
+                        </Suspense>
+                    ) : null}
+
+                    {shouldShowGate ? (
+                        <div className="canvas-deferred-gate" role="region" aria-label="Activación de vista 3D">
+                            <h2 className="canvas-deferred-title">Vista 3D bajo demanda</h2>
+                            <p className="canvas-deferred-message">
+                                Activa la vista 3D cuando quieras para priorizar una carga inicial mas fluida en movil.
+                            </p>
+                            <button type="button" className="canvas-deferred-button" onClick={enableScene}>
+                                Iniciar vista 3D
+                            </button>
+                        </div>
+                    ) : null}
 
                     {/* Branding overlay */}
                     <div className="brand-overlay">

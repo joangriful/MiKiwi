@@ -3,8 +3,6 @@ import React, { useState, useRef, useEffect } from 'react';
 export default function OptionsBar({ currentView, onViewChange, zoomLevel, onZoomChange, bgColor = 'bg-white', hideZoom = false }) {
     const [showViewOptions, setShowViewOptions] = useState(false);
     const [showZoomOptions, setShowZoomOptions] = useState(false);
-    // Debug prop
-    // console.log('OptionsBar render', { hideZoom, currentView });
     const viewRef = useRef(null);
     const zoomRef = useRef(null);
 

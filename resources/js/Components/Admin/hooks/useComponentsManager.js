@@ -1,12 +1,28 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { buildFileTree, flattenTree, parseColorsFromCss } from '@/Components/Admin/utils/managerUtils';
 import cssContent from '@/../css/global.css?raw';
 
 // Imports
-const componentImports = import.meta.glob('/resources/js/Components/**/*.jsx', { eager: true });
-const pageImports = import.meta.glob('/resources/js/Pages/**/*.jsx', { eager: true });
-const componentRawStart = import.meta.glob('/resources/js/Components/**/*.jsx', { query: '?raw', import: 'default' });
-const pageRawStart = import.meta.glob('/resources/js/Pages/**/*.jsx', { query: '?raw', import: 'default' });
+const componentImports = import.meta.glob([
+    '/resources/js/Components/**/*.jsx',
+    '!/resources/js/Components/Admin/**/*.jsx',
+    '!/resources/js/Components/**/*.test.jsx',
+]);
+const pageImports = import.meta.glob([
+    '/resources/js/Pages/**/*.jsx',
+    '!/resources/js/Pages/Admin/**/*.jsx',
+    '!/resources/js/Pages/**/*.test.jsx',
+]);
+const componentRawStart = import.meta.glob([
+    '/resources/js/Components/**/*.jsx',
+    '!/resources/js/Components/Admin/**/*.jsx',
+    '!/resources/js/Components/**/*.test.jsx',
+], { query: '?raw', import: 'default' });
+const pageRawStart = import.meta.glob([
+    '/resources/js/Pages/**/*.jsx',
+    '!/resources/js/Pages/Admin/**/*.jsx',
+    '!/resources/js/Pages/**/*.test.jsx',
+], { query: '?raw', import: 'default' });
 const DYNAMIC_COLORS = parseColorsFromCss(cssContent);
 
 const toRelativePath = (path) => path
@@ -101,7 +117,7 @@ export const useComponentsManager = () => {
     }, [fileTree, openFolders]);
 
     // Handlers
-    const handleFolderToggle = (item) => {
+    const handleFolderToggle = useCallback((item) => {
         const index = visibleItems.findIndex(i => i.path === item.path);
         if (index !== -1) setFocusedIndex(index);
         setOpenFolders(prev => {
@@ -109,9 +125,9 @@ export const useComponentsManager = () => {
             next.has(item.path) ? next.delete(item.path) : next.add(item.path);
             return next;
         });
-    };
+    }, [visibleItems]);
 
-    const handleItemSelect = (item, isChecked) => {
+    const handleItemSelect = useCallback((item, isChecked) => {
         const index = visibleItems.findIndex(i => i.path === item.path);
         if (index !== -1) setFocusedIndex(index);
         if (item.isFolder) return;
@@ -133,7 +149,7 @@ export const useComponentsManager = () => {
         } else {
             setSelectedComponentPath(item.path);
         }
-    };
+    }, [sourceType, visibleItems]);
 
     // Keyboard Nav
     useEffect(() => {
@@ -162,7 +178,7 @@ export const useComponentsManager = () => {
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [visibleItems, focusedIndex, openFolders, sourceType]);
+    }, [visibleItems, focusedIndex, sourceType, handleFolderToggle, handleItemSelect]);
 
     useEffect(() => {
         setSelectedPagePaths(new Set());
@@ -211,4 +227,10 @@ export const useComponentsManager = () => {
     };
 };
 
-const toLazyModule = (module) => Promise.resolve({ default: module.default });
+const toLazyModule = (moduleOrLoader) => {
+    if (typeof moduleOrLoader === 'function') {
+        return moduleOrLoader();
+    }
+
+    return Promise.resolve({ default: moduleOrLoader.default });
+};

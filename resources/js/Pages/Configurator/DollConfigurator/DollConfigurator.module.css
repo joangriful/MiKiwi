@@ -15,6 +15,64 @@
     overflow: hidden;
 }
 
+:global(.canvas-deferred-gate) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    height: 100%;
+    padding: 48px;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(153, 184, 73, 0.22), rgba(153, 184, 73, 0) 45%),
+        linear-gradient(145deg, #f6f4ef, #ece8de);
+}
+
+:global(.canvas-deferred-title) {
+    margin: 0;
+    font-family: 'Sugo Pro Display', serif;
+    font-size: 2rem;
+    color: var(--text-main);
+    letter-spacing: -0.4px;
+}
+
+:global(.canvas-deferred-message) {
+    margin: 0;
+    max-width: 460px;
+    font-family: 'Mulish', sans-serif;
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+}
+
+:global(.canvas-deferred-button) {
+    margin-top: 8px;
+    border: 0;
+    border-radius: 999px;
+    padding: 12px 20px;
+    font-family: 'Mulish', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(110deg, #99b849, #80a03a);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 12px 28px rgba(153, 184, 73, 0.32);
+}
+
+:global(.canvas-deferred-button:hover) {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px rgba(153, 184, 73, 0.38);
+}
+
+:global(.canvas-deferred-button:focus-visible) {
+    outline: 2px solid rgba(128, 160, 58, 0.45);
+    outline-offset: 3px;
+}
+
 :global(.canvas-container canvas) {
     display: block;
     width: 100% !important;
@@ -88,6 +146,14 @@
 }
 
 @media (max-width: 1024px) {
+    :global(.canvas-deferred-gate) {
+        padding: 28px;
+    }
+
+    :global(.canvas-deferred-title) {
+        font-size: 1.55rem;
+    }
+
     :global(.brand-title) {
         font-size: 2rem;
     }
@@ -100,6 +166,24 @@
 
     :global(.canvas-container) {
         height: 50vh;
+    }
+
+    :global(.canvas-deferred-gate) {
+        padding: 20px;
+        gap: 10px;
+    }
+
+    :global(.canvas-deferred-title) {
+        font-size: 1.35rem;
+    }
+
+    :global(.canvas-deferred-message) {
+        font-size: 0.92rem;
+    }
+
+    :global(.canvas-deferred-button) {
+        width: 100%;
+        text-align: center;
     }
 
     :global(.brand-overlay) {

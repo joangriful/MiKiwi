@@ -1,6 +1,9 @@
 import React, { useState, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Environment, ContactShadows } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei/core/OrbitControls';
+import { PerspectiveCamera } from '@react-three/drei/core/PerspectiveCamera';
+import { Environment } from '@react-three/drei/core/Environment';
+import { ContactShadows } from '@react-three/drei/core/ContactShadows';
 import MannequinModel from '../MannequinModel/MannequinModel';
 import ModelErrorBoundary from '@/Components/Configurator/ModelErrorBoundary/ModelErrorBoundary';
 

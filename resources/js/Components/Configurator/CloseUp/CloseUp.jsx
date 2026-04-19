@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react';
+import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import { getCloudinaryUrl } from '@/Utils/cloudinary';
 
 export default function CloseUp({ selectedParts, onViewportChange, viewportOverride, zoomLevel = 100, initialViewport }) {
@@ -46,7 +46,7 @@ export default function CloseUp({ selectedParts, onViewportChange, viewportOverr
         return layers.sort((a, b) => a.zIndex - b.zIndex);
     }, [selectedParts]);
 
-    const handleScroll = () => {
+    const handleScroll = useCallback(() => {
         if (!containerRef.current || !contentRef.current) return;
 
         // Mark as scrolling to avoid fighting with external updates (optional optimization)
@@ -74,7 +74,7 @@ export default function CloseUp({ selectedParts, onViewportChange, viewportOverr
         timeoutRef.current = setTimeout(() => {
             onViewportChange({ ...info, visible: false });
         }, 1000); // Hide after 1 second of no movement
-    };
+    }, [onViewportChange]);
 
     // Auto-scroll to center OR initial position on mount
     useEffect(() => {
@@ -109,7 +109,7 @@ export default function CloseUp({ selectedParts, onViewportChange, viewportOverr
                 handleScroll();
             });
         }
-    }, [initialViewport]);
+    }, [initialViewport, handleScroll]);
 
     // Center on Zoom Change
     React.useLayoutEffect(() => {
@@ -135,7 +135,7 @@ export default function CloseUp({ selectedParts, onViewportChange, viewportOverr
                 behavior: 'instant' // Ensure instant jump to center
             });
         }
-    }, [zoomLevel]);
+    }, [zoomLevel, initialViewport]);
 
     return (
         <div

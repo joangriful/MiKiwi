@@ -1,18 +1,27 @@
-import { useRef, useState } from 'react';
-import DollManager from '@/Components/Configurator/DollManager/DollManager';
+import { Suspense, lazy, useRef, useState } from 'react';
 import { Head } from '@inertiajs/react';
 import ManagerHeader from '@/Components/Admin/ManagerHeader/ManagerHeader';
 import ManagerSidebar from '@/Components/Admin/ManagerSidebar/ManagerSidebar';
 import SingleComponentView from '@/Components/Admin/SingleComponentView/SingleComponentView';
 import PagesGridView from '@/Components/Admin/PagesGridView/PagesGridView';
-import UsersManager from '@/Components/Admin/UsersManager/UsersManager';
-import ContentManager from '@/Components/Admin/ContentManager/ContentManager';
-import ProductsManager from '@/Components/Admin/ProductsManager/ProductsManager';
-import StripeTestCards from '@/Components/Admin/StripeTestCards/StripeTestCards';
 import { useComponentsManager } from '@/Components/Admin/hooks/useComponentsManager';
 import styles from './ComponentsManager.module.css';
 
-export default function ComponentsManager({ views, defaultSettings, partPositions, users, heroImages, categories, products, debugCount }) {
+const DollManager = lazy(() => import('@/Components/Configurator/DollManager/DollManager'));
+const UsersManager = lazy(() => import('@/Components/Admin/UsersManager/UsersManager'));
+const ContentManager = lazy(() => import('@/Components/Admin/ContentManager/ContentManager'));
+const ProductsManager = lazy(() => import('@/Components/Admin/ProductsManager/ProductsManager'));
+const StripeTestCards = lazy(() => import('@/Components/Admin/StripeTestCards/StripeTestCards'));
+
+function ManagerLoadingFallback() {
+    return (
+        <div className="h-full flex items-center justify-center bg-white">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">Cargando panel...</div>
+        </div>
+    );
+}
+
+export default function ComponentsManager({ views, defaultSettings, partPositions, users, heroImages, categories, products }) {
     const [activeManager, setActiveManager] = useState('components'); // 'components' | 'doll' | 'users' | 'content'
 
     const {
@@ -117,23 +126,33 @@ export default function ComponentsManager({ views, defaultSettings, partPosition
                 )}
 
                 {activeManager === 'doll' && (
-                    <DollManager ref={dollManagerRef} views={views} defaultSettings={defaultSettings} partPositions={partPositions} />
+                    <Suspense fallback={<ManagerLoadingFallback />}>
+                        <DollManager ref={dollManagerRef} views={views} defaultSettings={defaultSettings} partPositions={partPositions} />
+                    </Suspense>
                 )}
 
                 {activeManager === 'users' && (
-                    <UsersManager users={users} />
+                    <Suspense fallback={<ManagerLoadingFallback />}>
+                        <UsersManager users={users} />
+                    </Suspense>
                 )}
 
                 {activeManager === 'content' && (
-                    <ContentManager heroImages={heroImages} />
+                    <Suspense fallback={<ManagerLoadingFallback />}>
+                        <ContentManager heroImages={heroImages} />
+                    </Suspense>
                 )}
 
                 {activeManager === 'products' && (
-                    <ProductsManager categories={categories} products={products} debugCount={debugCount} />
+                    <Suspense fallback={<ManagerLoadingFallback />}>
+                        <ProductsManager categories={categories} products={products} />
+                    </Suspense>
                 )}
-                
+
                 {activeManager === 'payments' && (
-                    <StripeTestCards />
+                    <Suspense fallback={<ManagerLoadingFallback />}>
+                        <StripeTestCards />
+                    </Suspense>
                 )}
             </div>
         </div>

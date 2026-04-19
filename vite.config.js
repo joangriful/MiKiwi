@@ -23,20 +23,16 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks(id) {
+                    if (id.includes('preload-helper')) {
+                        return 'preload-helper';
+                    }
+
                     if (!id.includes('node_modules')) {
                         return;
                     }
 
                     if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('@inertiajs')) {
                         return 'react-stack';
-                    }
-
-                    if (id.includes('\\three\\') || id.includes('/three/')) {
-                        return 'three-core';
-                    }
-
-                    if (id.includes('@react-three/fiber') || id.includes('@react-three/drei')) {
-                        return 'react-three';
                     }
 
                     if (id.includes('@stripe')) {

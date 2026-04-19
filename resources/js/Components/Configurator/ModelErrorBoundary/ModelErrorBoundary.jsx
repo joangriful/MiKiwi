@@ -1,7 +1,8 @@
 import React, { useRef } from 'react';
-import { Html, useTexture } from '@react-three/drei';
+import { Html } from '@react-three/drei/web/Html';
+import { useTexture } from '@react-three/drei/core/Texture';
 import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import { DoubleSide } from 'three';
 
 function FallbackImagePlane({ imagePath }) {
     // Load the texture safely. If this fails, it might default to a placeholder or error out silently in console.
@@ -11,7 +12,7 @@ function FallbackImagePlane({ imagePath }) {
     return (
         <mesh position={[0, 1.6, 0]}>
             <planeGeometry args={[1.5, 3.2]} />
-            <meshBasicMaterial map={texture} transparent side={THREE.DoubleSide} alphaTest={0.5} />
+            <meshBasicMaterial map={texture} transparent side={DoubleSide} alphaTest={0.5} />
         </mesh>
     );
 }

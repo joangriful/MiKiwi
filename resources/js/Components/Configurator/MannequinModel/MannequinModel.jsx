@@ -1,12 +1,19 @@
 import React, { useRef, useEffect, useMemo, useState } from 'react';
-import { useTexture } from '@react-three/drei';
+import { useTexture } from '@react-three/drei/core/Texture';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-import * as THREE from 'three';
+import {
+    Box3,
+    DoubleSide,
+    MeshStandardMaterial,
+    NoColorSpace,
+    SRGBColorSpace,
+    Vector3,
+} from 'three';
 
 // Procedural Hair Component (Stable)
 const Hair = ({ style, color }) => {
-    const material = useMemo(() => new THREE.MeshStandardMaterial({
+    const material = useMemo(() => new MeshStandardMaterial({
         color: color || '#000000',
         roughness: 0.8,
         metalness: 0.1
@@ -83,9 +90,9 @@ export default function MannequinModel({
             if (t && t.image) {
                 t.flipY = true;
                 if (t === normalTexture) {
-                    t.colorSpace = THREE.NoColorSpace;
+                    t.colorSpace = NoColorSpace;
                 } else {
-                    t.colorSpace = THREE.SRGBColorSpace;
+                    t.colorSpace = SRGBColorSpace;
                 }
                 t.needsUpdate = true;
             }
@@ -95,7 +102,7 @@ export default function MannequinModel({
     // 3. State & Refs
     const bones = useRef({});
     const [normScale, setNormScale] = useState(1);
-    const [offset, setOffset] = useState(new THREE.Vector3(0, 0, 0));
+    const [offset, setOffset] = useState(new Vector3(0, 0, 0));
 
     // 4. Setup Model Geometry & Materials
     useEffect(() => {
@@ -108,14 +115,14 @@ export default function MannequinModel({
         fbx.updateMatrixWorld(true);
 
         // B. Measure rotated geometry for precise centering
-        const box = new THREE.Box3().setFromObject(fbx);
-        const center = new THREE.Vector3();
+        const box = new Box3().setFromObject(fbx);
+        const center = new Vector3();
         box.getCenter(center);
 
         const h = box.max.y - box.min.y;
         if (h > 0.1) {
             setNormScale(1.75 / h);
-            setOffset(new THREE.Vector3(-center.x, -box.min.y, -center.z));
+            setOffset(new Vector3(-center.x, -box.min.y, -center.z));
         }
 
         // C. Clean up meshes and materials
@@ -125,8 +132,8 @@ export default function MannequinModel({
                 obj.visible = true;
                 // Standardize materials
                 const replaceMat = (m) => {
-                    const n = new THREE.MeshStandardMaterial({
-                        side: THREE.DoubleSide,
+                    const n = new MeshStandardMaterial({
+                        side: DoubleSide,
                         roughness: 0.6,
                         metalness: 0.05
                     });
