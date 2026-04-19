@@ -1,1 +1,12 @@
-.root {}
+.root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.title {
+    color: var(--color-text-strong);
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+}

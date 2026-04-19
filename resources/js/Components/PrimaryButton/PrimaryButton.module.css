@@ -1,1 +1,42 @@
-.root {}
+.root {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid transparent;
+    border-radius: 0.75rem;
+    background: var(--color-text-strongest);
+    padding: 0.625rem 1rem;
+    color: var(--color-white);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transition:
+        background-color 150ms ease,
+        box-shadow 150ms ease,
+        opacity 150ms ease;
+}
+
+.root:hover,
+.root:focus-visible {
+    background: var(--color-text-strong);
+}
+
+.root:focus-visible {
+    outline: none;
+    box-shadow:
+        0 0 0 3px var(--color-primary-ring),
+        0 0 0 1px var(--color-white);
+}
+
+.root:active {
+    background: var(--color-black);
+}
+
+.disabled,
+.root:disabled {
+    cursor: not-allowed;
+    opacity: 0.25;
+}

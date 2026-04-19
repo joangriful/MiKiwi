@@ -9,10 +9,7 @@ export default function InputLabel({
     return (
         <label
             {...props}
-            className={
-                `${styles.root} block text-sm font-medium text-gray-700 ` +
-                className
-            }
+            className={[styles.root, className].filter(Boolean).join(' ')}
         >
             {value ? value : children}
         </label>

@@ -2,10 +2,7 @@ import styles from './InputError.module.css';
 
 export default function InputError({ message, className = '', ...props }) {
     return message ? (
-        <p
-            {...props}
-            className={`${styles.root} text-sm text-red-600 ` + className}
-        >
+        <p {...props} className={[styles.root, className].filter(Boolean).join(' ')}>
             {message}
         </p>
     ) : null;
