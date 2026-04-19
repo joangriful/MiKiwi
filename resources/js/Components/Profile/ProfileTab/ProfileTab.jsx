@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { usePage, router, Link } from '@inertiajs/react';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import ImageEditorModal from '@/Components/Profile/ImageEditorModal/ImageEditorModal';
+import useProfileMediaUpload from '@/Features/Profile/hooks/useProfileMediaUpload';
+import { getErrorMessage } from '@/Shared/Errors/errorMessage';
 import styles from './ProfileTab.module.css';
 
 export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
+    const { uploadAvatarImage, uploadBannerImage } = useProfileMediaUpload();
     const { auth } = usePage().props;
     const user = auth?.user || {
         name: 'Usuario MiKiwi',
@@ -58,23 +60,19 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
         formData.append('image', blob, 'profile.jpg');
 
         try {
-            const response = await axios.post(route('profile.image.update'), formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+            const response = await uploadAvatarImage(formData);
 
-            if (response.data.success) {
-                setCurrentProfileImage(response.data.profile_photo_url);
+            if (response.success) {
+                setCurrentProfileImage(response.profile_photo_url);
                 toast.success('✓ Foto de perfil actualizada correctamente');
                 // Force page props update
                 router.reload({ only: ['auth'] });
             } else {
-                toast.error(response.data.message || 'Error al subir la imagen');
+                toast.error(response.message || 'Error al subir la imagen');
             }
         } catch (error) {
             console.error('Upload error:', error);
-            toast.error(error.response?.data?.message || 'Error al subir la imagen. Por favor, inténtalo de nuevo.');
+            toast.error(getErrorMessage(error, 'Error al subir la imagen. Por favor, inténtalo de nuevo.'));
         } finally {
             setUploadingProfile(false);
         }
@@ -88,23 +86,19 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
         formData.append('image', blob, 'banner.jpg');
 
         try {
-            const response = await axios.post(route('profile.banner.update'), formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+            const response = await uploadBannerImage(formData);
 
-            if (response.data.success) {
-                setCurrentBannerImage(response.data.banner_url);
+            if (response.success) {
+                setCurrentBannerImage(response.banner_url);
                 toast.success('✓ Banner actualizado correctamente');
                 // Force page props update
                 router.reload({ only: ['auth'] });
             } else {
-                toast.error(response.data.message || 'Error al subir el banner');
+                toast.error(response.message || 'Error al subir el banner');
             }
         } catch (error) {
             console.error('Upload error:', error);
-            toast.error(error.response?.data?.message || 'Error al subir el banner. Por favor, inténtalo de nuevo.');
+            toast.error(getErrorMessage(error, 'Error al subir el banner. Por favor, inténtalo de nuevo.'));
         } finally {
             setUploadingBanner(false);
         }

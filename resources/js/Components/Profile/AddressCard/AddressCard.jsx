@@ -74,7 +74,9 @@ export default function AddressCard({ address, onSave, onDelete, onSetDefault, i
                         }));
                     }
                 })
-                .catch(err => console.log('Zippopotam error or zip not found:', err));
+                .catch(() => {
+                    // Keep manual city/state input when zip lookup fails.
+                });
         }
     }, [formData.zip]);
 

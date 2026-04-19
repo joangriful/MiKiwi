@@ -40,7 +40,18 @@ export default function Header() {
                 <div className="relative group flex items-center h-full cursor-default">
                     <span className="text-[13px] font-bold text-white uppercase tracking-[0.2em] group-hover:text-[#99b849] transition-colors flex items-center gap-1">
                         Estimulación
-                        <span className="material-symbols-outlined text-xs translate-y-[1px]">keyboard_arrow_down</span>
+                        <svg
+                            className="h-3 w-3 translate-y-[1px]"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                        >
+                            <path
+                                fillRule="evenodd"
+                                d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.168l3.71-3.938a.75.75 0 1 1 1.08 1.04l-4.25 4.5a.75.75 0 0 1-1.08 0l-4.25-4.5a.75.75 0 0 1 .02-1.06z"
+                                clipRule="evenodd"
+                            />
+                        </svg>
                     </span>
 
                     {/* Dropdown Content */}
@@ -87,7 +98,11 @@ export default function Header() {
             {/* Right: Icons (Profile, Cart) */}
             <div className="flex items-center gap-5 md:gap-8">
                 <Link href="/perfil" className="hover:opacity-80 transition-opacity flex items-center">
-                    <span className="material-symbols-outlined text-white text-3xl lg:text-4xl">person</span>
+                    <img
+                        src="/assets/icons/perfil.svg"
+                        alt="Perfil"
+                        className="h-7 w-7 lg:h-9 lg:w-9"
+                    />
                 </Link>
 
                 {user?.role === 'admin' && (

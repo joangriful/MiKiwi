@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import axios from "axios";
 import InputLabel from "@/Components/InputLabel/InputLabel";
+import useSavedPaymentMethods from "@/Features/Checkout/hooks/useSavedPaymentMethods";
 import styles from "./PaymentStep.module.css";
 
 const TEST_CARDS = [
@@ -53,12 +53,15 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
     const elements = useElements();
     const [cardError, setCardError] = useState(null);
     const [isConfirming, setIsConfirming] = useState(false);
-    const [savedCards, setSavedCards] = useState([]);
-    const [isLoadingCards, setIsLoadingCards] = useState(false);
     const [paymentOption, setPaymentOption] = useState("new");
     const [showAdminTestCards, setShowAdminTestCards] = useState(false);
     const [copiedId, setCopiedId] = useState(null);
     const [isCardComplete, setIsCardComplete] = useState(false);
+    const {
+        savedCards,
+        isLoadingCards,
+        savedCardsError,
+    } = useSavedPaymentMethods({ enabled: Boolean(auth?.user) });
 
     useEffect(() => {
         if (!processing) {
@@ -67,31 +70,54 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
     }, [processing]);
 
     useEffect(() => {
-        if (auth?.user) {
-            fetchSavedCards();
-        }
-    }, [auth?.user]);
-
-    const fetchSavedCards = async () => {
-        setIsLoadingCards(true);
-
-        try {
-            const { data: cards } = await axios.get(route("payment-methods.index"));
-            setSavedCards(cards);
-
-            if (cards.length > 0) {
-                setPaymentOption(cards[0].id);
-                setData("selected_payment_method", cards[0].id);
-            } else {
+        if (!auth?.user) {
+            if (paymentOption !== "new") {
                 setPaymentOption("new");
+            }
+
+            if (data.selected_payment_method !== null) {
                 setData("selected_payment_method", null);
             }
-        } catch (error) {
-            console.error("Error fetching saved cards:", error);
-        } finally {
-            setIsLoadingCards(false);
+
+            return;
         }
-    };
+
+        if (savedCards.length === 0) {
+            if (paymentOption !== "new") {
+                setPaymentOption("new");
+            }
+
+            if (data.selected_payment_method !== null) {
+                setData("selected_payment_method", null);
+            }
+
+            return;
+        }
+
+        const hasSelectedCard = paymentOption === "new" || savedCards.some((card) => card.id === paymentOption);
+        const nextOption = hasSelectedCard ? paymentOption : savedCards[0].id;
+        const nextSelectedPaymentMethod = nextOption === "new" ? null : nextOption;
+
+        if (nextOption !== paymentOption) {
+            setPaymentOption(nextOption);
+        }
+
+        if (data.selected_payment_method !== nextSelectedPaymentMethod) {
+            setData("selected_payment_method", nextSelectedPaymentMethod);
+        }
+    }, [
+        auth?.user,
+        data.selected_payment_method,
+        paymentOption,
+        savedCards,
+        setData,
+    ]);
+
+    useEffect(() => {
+        if (savedCardsError) {
+            console.error("Error fetching saved cards:", savedCardsError);
+        }
+    }, [savedCardsError]);
 
     const handleOptionChange = (optionId) => {
         setPaymentOption(optionId);

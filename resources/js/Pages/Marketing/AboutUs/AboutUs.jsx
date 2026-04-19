@@ -1,7 +1,5 @@
 import React from 'react';
 import { Head } from '@inertiajs/react';
-import Header from '@/Components/Header/Header';
-import Footer from '@/Components/Footer/Footer';
 
 const content = {
     title: 'Sobre Nosotros',
@@ -75,8 +73,6 @@ export default function AboutUs() {
     return (
         <div className="min-h-screen flex flex-col bg-white font-sans select-none cursor-default text-gray-800">
             <Head title={`${content.title} - MiKiwi`} />
-
-            <Header />
 
             <main className="flex-1 w-full max-w-5xl mx-auto py-12 md:py-16 px-6 md:px-12">
                 <h1 className="text-2xl md:text-4xl font-bold mb-8 text-gray-900 border-b border-gray-100 pb-6 leading-tight">{content.title}</h1>
@@ -193,8 +189,6 @@ export default function AboutUs() {
                     </section>
                 </div>
             </main>
-
-            <Footer />
         </div>
     );
 }

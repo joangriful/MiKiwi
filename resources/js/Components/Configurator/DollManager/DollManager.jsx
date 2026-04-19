@@ -3,9 +3,11 @@ import DollDefaultConfigurator from '../DollDefaultConfigurator/DollDefaultConfi
 import DollPartConfigurator from '../DollPartConfigurator/DollPartConfigurator';
 import DollZoomConfigurator from '../DollZoomConfigurator/DollZoomConfigurator';
 import DollSectionOrderConfigurator from '../DollSectionOrderConfigurator/DollSectionOrderConfigurator';
-import axios from 'axios';
+import useDollSettings from '@/Features/Configurator/hooks/useDollSettings';
+import { getErrorMessage } from '@/Shared/Errors/errorMessage';
 
 const DollManager = forwardRef(({ views, defaultSettings, partPositions: initialPartPositions }, ref) => {
+    const { savePartPosition, saveSettings: persistDollSettings } = useDollSettings();
     const [activeSection, setActiveSection] = useState('default_images');
 
     // Master State for all defaults
@@ -44,7 +46,7 @@ const DollManager = forwardRef(({ views, defaultSettings, partPositions: initial
             [key]: { x: data.x, y: data.y, scale: data.scale }
         }));
 
-        axios.post(route('doll.settings.savePosition'), data)
+        savePartPosition(data)
             .then(() => {
                 setMessage({ type: 'success', text: 'Posición guardada correctamente' });
             })
@@ -52,7 +54,7 @@ const DollManager = forwardRef(({ views, defaultSettings, partPositions: initial
                 console.error(err);
                 // Revert on failure
                 setPartPositions(oldPositions);
-                const msg = err.response?.data?.message || err.message || 'Error desconocido';
+                const msg = getErrorMessage(err, 'Error desconocido');
                 setMessage({ type: 'error', text: `Error al guardar: ${msg}` });
             });
     };
@@ -62,7 +64,7 @@ const DollManager = forwardRef(({ views, defaultSettings, partPositions: initial
         setMessage(null);
 
         try {
-            await axios.post(route('doll.settings.save'), { settings: fullSettings });
+            await persistDollSettings(fullSettings);
             setMessage({ type: 'success', text: 'Settings saved successfully!' });
         } catch (error) {
             setMessage({ type: 'error', text: 'Failed to save settings.' });

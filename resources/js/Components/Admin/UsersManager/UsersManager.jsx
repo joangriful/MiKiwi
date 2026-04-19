@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
 import Toast from '@/Components/Toast/Toast';
-import AdminConfirmationModal from '../AdminConfirmationModal/AdminConfirmationModal';
+import { useConfirm } from '@/Shared/Confirm/ConfirmProvider';
 import styles from './UsersManager.module.css';
 
 const USER_FILTERS = [
@@ -36,7 +36,7 @@ export default function UsersManager({ users }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filter, setFilter] = useState('all');
     const [toast, setToast] = useState(null);
-    const [modalConfig, setModalConfig] = useState({ isOpen: false, user: null, actionType: null });
+    const confirmAction = useConfirm();
 
     const filteredUsers = users.filter((user) => {
         const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -48,33 +48,35 @@ export default function UsersManager({ users }) {
         return matchesSearch && matchesFilter;
     });
 
-    const handleToggleClick = (user) => {
-        setModalConfig({
-            isOpen: true,
-            user,
-            actionType: user.role === 'admin' ? 'remove' : 'add',
+    const handleToggleClick = async (user) => {
+        const isAdminUser = user.role === 'admin';
+        const confirmed = await confirmAction({
+            title: isAdminUser ? 'Quitar permisos de administrador' : 'Otorgar permisos de administrador',
+            message: isAdminUser
+                ? `¿Seguro que quieres quitar permisos de administrador a ${user.name}?`
+                : `¿Seguro que quieres otorgar permisos de administrador a ${user.name}?`,
+            confirmText: isAdminUser ? 'Quitar permisos' : 'Otorgar permisos',
+            cancelText: 'Cancelar',
+            tone: isAdminUser ? 'danger' : 'neutral',
         });
-    };
 
-    const handleConfirmToggle = () => {
-        const { user } = modalConfig;
-        if (!user) return;
+        if (!confirmed) {
+            return;
+        }
 
         router.post(route('users.toggleRole', user.id), {}, {
             preserveScroll: true,
             onSuccess: () => {
                 setToast({
-                    message: `Successfully ${user.role === 'admin' ? 'removed admin rights from' : 'granted admin rights to'} ${user.name}`,
+                    message: `Successfully ${isAdminUser ? 'removed admin rights from' : 'granted admin rights to'} ${user.name}`,
                     type: 'success',
                 });
-                setModalConfig({ isOpen: false, user: null, actionType: null });
             },
             onError: () => {
                 setToast({
                     message: 'Failed to update user role. Please try again.',
                     type: 'error',
                 });
-                setModalConfig({ isOpen: false, user: null, actionType: null });
             },
         });
     };
@@ -88,14 +90,6 @@ export default function UsersManager({ users }) {
                     onClose={() => setToast(null)}
                 />
             )}
-
-            <AdminConfirmationModal
-                isOpen={modalConfig.isOpen}
-                onClose={() => setModalConfig({ ...modalConfig, isOpen: false })}
-                onConfirm={handleConfirmToggle}
-                user={modalConfig.user}
-                actionType={modalConfig.actionType}
-            />
 
             <div className={styles.sidebar}>
                 <div className={styles.sidebarHeader}>

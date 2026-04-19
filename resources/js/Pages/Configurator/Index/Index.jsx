@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Head, Link } from '@inertiajs/react';
+import { toast } from 'react-toastify';
 import themeStyles from '@/Layouts/ConfiguratorTheme.module.css';
 import styles from './Index.module.css';
 
@@ -279,7 +280,7 @@ export default function Index() {
                             )}
                             <button
                                 className="btn-minimal btn-primary px-[28px] py-[14px]"
-                                onClick={() => currentStep < 3 ? changeStep(1) : alert('Pedido finalizado')}
+                                onClick={() => currentStep < 3 ? changeStep(1) : toast.success('Pedido finalizado')}
                             >
                                 {currentStep === 3 ? 'Finalizar Pedido' : 'Siguiente'} &rarr;
                             </button>

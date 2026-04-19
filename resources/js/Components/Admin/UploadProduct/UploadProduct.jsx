@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import { extractImageFiles } from '@/Utils/imageFiles';
+import useProductMedia from '@/Features/AdminProducts/hooks/useProductMedia';
+import { getErrorMessage } from '@/Shared/Errors/errorMessage';
 import styles from './UploadProduct.module.css';
 
 function getMethodButtonClassName(stylesObject, uploadMethod, targetMethod) {
@@ -23,6 +24,11 @@ function getHoverToggleClassName(stylesObject, isHover) {
 
 export default function UploadProduct({ categories = [], initialData = null, onCancel }) {
     const isEdit = !!initialData;
+    const {
+        linkFolder,
+        fetchCloudinaryImages,
+        uploadImages,
+    } = useProductMedia();
 
     const [formData, setFormData] = useState({
         name: '',
@@ -63,20 +69,21 @@ export default function UploadProduct({ categories = [], initialData = null, onC
         if (!manualLinkFolder.trim() || !formData.name) return;
         setIsLinking(true);
         try {
-            const response = await axios.post('/admin/products/link-folder', {
-                product_name: formData.name,
+            const response = await linkFolder({
+                productName: formData.name,
                 source: manualLinkFolder,
             });
-            if (response.data.success) {
-                toast.success(response.data.message);
+
+            if (response.success) {
+                toast.success(response.message);
                 setManualLinkFolder('');
 
                 // Fetch resulting images
-                const resImages = await axios.get('/admin/products/cloudinary-images', {
-                    params: { product_name: formData.name }
+                const cloudinaryData = await fetchCloudinaryImages({
+                    productName: formData.name,
                 });
 
-                const fetchedImages = resImages.data.images || [];
+                const fetchedImages = cloudinaryData.images || [];
                 if (fetchedImages.length > 0) {
                     setGalleryImages((prev) => {
                         const merged = [...new Set([...prev, ...fetchedImages])];
@@ -87,7 +94,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                 }
             }
         } catch (error) {
-            toast.error(error.response?.data?.error || 'Error al vincular la carpeta');
+            toast.error(getErrorMessage(error, 'Error al vincular la carpeta'));
         } finally {
             setIsLinking(false);
         }
@@ -170,18 +177,16 @@ export default function UploadProduct({ categories = [], initialData = null, onC
 
     const validateAndUploadImages = async (files) => {
         setIsUploadingImages(true);
-        const data = new FormData();
-        files.forEach(file => data.append('images[]', file));
-        data.append('product_name', formData.name);
 
         try {
-            const response = await axios.post('/admin/products/upload-images', data, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+            const response = await uploadImages({
+                productName: formData.name,
+                files,
             });
 
-            if (response.data.success) {
-                toast.success(response.data.message);
-                const newUrls = response.data.urls || [];
+            if (response.success) {
+                toast.success(response.message);
+                const newUrls = response.urls || [];
 
                 setGalleryImages((prev) => {
                     const merged = [...prev, ...newUrls];
@@ -191,7 +196,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                 });
             }
         } catch (error) {
-            toast.error(error.response?.data?.error || 'Error subiendo imágenes');
+            toast.error(getErrorMessage(error, 'Error subiendo imágenes'));
         } finally {
             setIsUploadingImages(false);
         }
@@ -252,7 +257,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
             });
         } catch (error) {
             setUploading(false);
-            toast.error('Error al procesar');
+            toast.error(getErrorMessage(error, 'Error al procesar'));
         }
     };
 

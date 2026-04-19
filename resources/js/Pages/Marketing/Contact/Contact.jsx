@@ -1,6 +1,4 @@
 import React from 'react';
-import Header from '@/Components/Header/Header';
-import Footer from '@/Components/Footer/Footer';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { toast } from 'react-toastify';
 
@@ -63,7 +61,6 @@ export default function Contact() {
     return (
         <div className="min-h-screen bg-bg-main text-text-main font-body">
             <Head title="Contacto - MiKiwi" />
-            <Header />
 
             <main className="container mx-auto px-6 py-12 max-w-6xl">
                 <h1 className="text-[32px] font-bold mb-12 font-head uppercase tracking-wider text-secondary-dark">Contacto</h1>
@@ -252,8 +249,6 @@ export default function Contact() {
 
                 </div>
             </main>
-
-            <Footer />
         </div>
     );
 }

@@ -54,7 +54,7 @@ export default function InfoStep({ data, setData, onNext, onBack, user, errors }
             if (!data.email) setData("email", user.email || "");
             if (!data.dni) setData("dni", user.dni || "");
         }
-    }, [user]);
+    }, [user, data.first_name, data.email, data.dni, setData]);
 
     const validateDNI = (value) => {
         const letters = "TRWAGMYFPDXBNJZSQVHLCKE";

@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
+import { toast } from 'react-toastify';
 import styles from './ImageEditorModal.module.css';
 
 export default function ImageEditorModal({
@@ -28,14 +29,14 @@ export default function ImageEditorModal({
 
         // Validate file type
         if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
-            alert('Por favor selecciona una imagen JPEG o PNG');
+            toast.error('Por favor selecciona una imagen JPEG o PNG.');
             return;
         }
 
         // Validate file size
         const maxSize = type === 'banner' ? 10 * 1024 * 1024 : 5 * 1024 * 1024;
         if (file.size > maxSize) {
-            alert(`La imagen debe ser menor a ${type === 'banner' ? '10MB' : '5MB'}`);
+            toast.error(`La imagen debe ser menor a ${type === 'banner' ? '10MB' : '5MB'}.`);
             return;
         }
 

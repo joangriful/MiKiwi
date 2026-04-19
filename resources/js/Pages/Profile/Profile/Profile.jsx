@@ -1,6 +1,4 @@
 
-import Header from "@/Components/Header/Header";
-import Footer from "@/Components/Footer/Footer";
 import ProfileSidebar from "@/Components/Profile/ProfileSidebar/ProfileSidebar";
 import ProfileTab from "@/Components/Profile/ProfileTab/ProfileTab";
 import AddressesTab from "@/Components/Profile/AddressesTab/AddressesTab";
@@ -42,7 +40,6 @@ export default function Profile({ recommendedProducts, orders = [], initialTab =
             <Head title="Mi Perfil - MiKiwi" />
 
             <div className="flex flex-col min-h-[98vh]">
-                <Header />
                 <main className="flex-1 flex flex-col lg:flex-row text-gray-800">
                     {/* Sidebar de navegación */}
                     <ProfileSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -55,8 +52,6 @@ export default function Profile({ recommendedProducts, orders = [], initialTab =
                     </section>
                 </main>
             </div>
-
-            <Footer />
         </div>
     );
 }

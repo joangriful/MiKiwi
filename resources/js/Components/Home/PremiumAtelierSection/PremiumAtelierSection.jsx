@@ -1,24 +1,21 @@
 import React, { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
-import axios from 'axios';
+import useCartActions from '@/Features/Cart/hooks/useCartActions';
 import styles from './PremiumAtelierSection.module.css';
 
 export default function PremiumAtelierSection() {
+    const { buyNow, resolveBuyNowUrl } = useCartActions();
     const [isLoading, setIsLoading] = useState(false);
 
     const handleBuyNow = async () => {
         setIsLoading(true);
         try {
-            const { data: responseData } = await axios.post(route("cart.buy-now"), {
-                product_slug: 'mobi',
+            const responseData = await buyNow({
+                productSlug: 'mobi',
                 quantity: 1,
             });
 
-            if (responseData.redirect) {
-                router.visit(responseData.redirect);
-            } else {
-                router.visit(route("cart.index", { buy_now: 1 }));
-            }
+            router.visit(resolveBuyNowUrl(responseData));
         } catch (error) {
             console.error("Error buying now:", error);
             setIsLoading(false);

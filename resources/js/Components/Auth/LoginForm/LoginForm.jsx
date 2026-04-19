@@ -23,7 +23,7 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
         return () => {
             reset('password');
         };
-    }, []);
+    }, [reset, setData]);
 
     const submit = (e) => {
         e.preventDefault();

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
-import axios from 'axios';
 import ConfiguratorLayout from '@/Layouts/ConfiguratorLayout';
+import useQuizResult from '@/Features/Configurator/hooks/useQuizResult';
 import styles from './Quiz.module.css';
 
 const QUIZ_STEPS = [
@@ -132,6 +132,7 @@ const QUIZ_STEPS = [
 ];
 
 export default function Quiz() {
+    const { saveQuizResult } = useQuizResult();
     const [currentStep, setCurrentStep] = useState(0);
     const [scores, setScores] = useState({});
     const [history, setHistory] = useState([]);
@@ -200,7 +201,7 @@ export default function Quiz() {
 
         if (auth?.user) {
             // If authenticated, save immediately to database
-            axios.post(route('profile.quiz.save'), { category: bestCategory })
+            saveQuizResult(bestCategory)
                 .catch(err => console.error('Error saving quiz result', err));
         } else {
             // If not authenticated, quiz data is saved to localStorage via useEffect

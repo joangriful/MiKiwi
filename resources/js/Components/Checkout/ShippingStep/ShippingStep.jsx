@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import usePickupPoints from "@/Features/Checkout/hooks/usePickupPoints";
 import styles from "./ShippingStep.module.css";
 
 const SHIPPING_METHODS = [
@@ -24,39 +24,32 @@ function getPickupPointCheckClassName(isSelected) {
 }
 
 export default function ShippingStep({ data, setData, onNext, onBack }) {
-    const [pickupPoints, setPickupPoints] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [searchCity, setSearchCity] = useState("");
+    const bootstrapQuery = data.city || data.postal_code || "";
+    const {
+        pickupPoints,
+        isLoadingPickupPoints,
+        pickupPointsError,
+        loadPickupPoints,
+    } = usePickupPoints({
+        enabled: data.shipping_method === "pickup",
+        initialQuery: bootstrapQuery,
+    });
 
     useEffect(() => {
-        if (data.shipping_method === "pickup") {
-            const initialSearch = searchCity || data.city || data.postal_code || "";
-            fetchPickupPoints(initialSearch);
+        if (pickupPointsError) {
+            console.error("Error fetching pickup points:", pickupPointsError);
         }
-    }, [data.shipping_method]);
+    }, [pickupPointsError]);
 
-    const fetchPickupPoints = async (query = "") => {
-        setLoading(true);
+    const handleSearch = async (event) => {
+        event.preventDefault();
 
         try {
-            const isPostalCode = /^\d{4,5}$/.test(query.trim());
-            const response = await axios.get(route("pickup-points.index"), {
-                params: isPostalCode
-                    ? { postal_code: query.trim() }
-                    : { city: query.trim() },
-            });
-
-            setPickupPoints(response.data);
-        } catch (error) {
-            console.error("Error fetching pickup points:", error);
-        } finally {
-            setLoading(false);
+            await loadPickupPoints(searchCity);
+        } catch {
+            // Error state is already handled by the hook.
         }
-    };
-
-    const handleSearch = (event) => {
-        event.preventDefault();
-        fetchPickupPoints(searchCity);
     };
 
     const isPickupSelectionMissing =
@@ -122,14 +115,20 @@ export default function ShippingStep({ data, setData, onNext, onBack }) {
                                         </button>
                                     </form>
 
-                                    {loading ? (
+                                    {isLoadingPickupPoints ? (
                                         <div className={styles.loadingState}>
                                             <div className={styles.spinner}></div>
                                             <span className={styles.loadingLabel}>Localizando puntos...</span>
                                         </div>
                                     ) : (
                                         <div className={styles.pickupList}>
-                                            {pickupPoints.length > 0 ? (
+                                            {pickupPointsError ? (
+                                                <div className={styles.emptyPickupState}>
+                                                    <p className={styles.emptyPickupText}>
+                                                        No hemos podido cargar los puntos de recogida ahora mismo.
+                                                    </p>
+                                                </div>
+                                            ) : pickupPoints.length > 0 ? (
                                                 pickupPoints.map((point) => {
                                                     const isPointSelected = data.pickup_point_id === point.id;
 

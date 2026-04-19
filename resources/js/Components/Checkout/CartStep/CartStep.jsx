@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useForm, router } from "@inertiajs/react";
+import { useConfirm } from "@/Shared/Confirm/ConfirmProvider";
 import styles from "./CartStep.module.css";
 
 function getProductImage(product) {
@@ -90,7 +91,7 @@ function EmptyCart({ popularProducts, addToCart }) {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth="1"
-                        d="M16 11V7a4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                     />
                 </svg>
 
@@ -111,6 +112,7 @@ function EmptyCart({ popularProducts, addToCart }) {
 
 export default function CartStep({ cart, onNext, popularProducts = [] }) {
     const { delete: destroy, processing } = useForm();
+    const confirmAction = useConfirm();
 
     const addToCart = (product) => {
         router.post(
@@ -139,12 +141,22 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
         );
     };
 
-    const removeItem = (id) => {
-        if (confirm("¿Estás seguro de eliminar este producto?")) {
-            destroy(route("cart.remove", id), {
-                preserveScroll: true,
-            });
+    const removeItem = async (id) => {
+        const confirmed = await confirmAction({
+            title: 'Eliminar producto',
+            message: '¿Seguro que quieres eliminar este producto del carrito?',
+            confirmText: 'Eliminar',
+            cancelText: 'Cancelar',
+            tone: 'danger',
+        });
+
+        if (!confirmed) {
+            return;
         }
+
+        destroy(route("cart.remove", id), {
+            preserveScroll: true,
+        });
     };
 
     if (!cart.items || cart.items.length === 0) {

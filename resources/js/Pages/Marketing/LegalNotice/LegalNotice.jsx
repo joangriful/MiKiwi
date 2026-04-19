@@ -1,7 +1,5 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import Header from '@/Components/Header/Header';
-import Footer from '@/Components/Footer/Footer';
 
 const Section = ({ title, children }) => (
     <section className="mb-10">
@@ -16,7 +14,6 @@ export default function LegalNotice() {
     return (
         <div className="min-h-screen flex flex-col bg-white text-gray-900 font-sans">
             <Head title="Aviso Legal - MiKiwi" />
-            <Header />
 
             <main className="flex-grow container mx-auto px-6 py-12 md:py-16 max-w-3xl">
                 {/* Breadcrumb */}
@@ -126,8 +123,6 @@ export default function LegalNotice() {
                     </p>
                 </Section>
             </main>
-
-            <Footer />
         </div>
     );
 }

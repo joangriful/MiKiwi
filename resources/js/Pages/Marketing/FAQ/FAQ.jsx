@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import Header from '@/Components/Header/Header';
-import Footer from '@/Components/Footer/Footer';
 import { Head } from '@inertiajs/react';
 
 const faqData = [
@@ -32,7 +30,6 @@ export default function FAQ() {
     return (
         <div className="min-h-screen bg-bg-main text-text-main font-body">
             <Head title="Preguntas Frecuentes - MiKiwi" />
-            <Header />
             <main className="container mx-auto px-6 py-12 md:py-20 max-w-4xl">
                 <h1 className="text-2xl md:text-[32px] font-bold mb-10 md:mb-12 text-center text-secondary-dark font-head uppercase tracking-widest leading-tight">Preguntas frecuentes</h1>
 
@@ -82,7 +79,6 @@ export default function FAQ() {
                     </a>
                 </div>
             </main>
-            <Footer />
         </div>
     );
 }

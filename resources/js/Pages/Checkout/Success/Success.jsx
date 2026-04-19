@@ -1,14 +1,11 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import Header from '@/Components/Header/Header';
-import Footer from '@/Components/Footer/Footer';
 import styles from './Success.module.css';
 
 export default function Success() {
     return (
         <div className={`${styles.root} flex flex-col min-h-screen bg-gray-50 font-sans`}>
             <Head title="Pedido Completado – MiKiwi" />
-            <Header />
 
             <main className="flex-1 flex items-center justify-center px-4 py-20">
                 <div className="max-w-xl w-full text-center">
@@ -42,8 +39,6 @@ export default function Success() {
                     </div>
                 </div>
             </main>
-
-            <Footer />
         </div>
     );
 }

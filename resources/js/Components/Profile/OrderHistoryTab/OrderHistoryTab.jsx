@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { router, usePage } from '@inertiajs/react';
+import { useConfirm } from '@/Shared/Confirm/ConfirmProvider';
 import styles from './OrderHistoryTab.module.css';
 
 const STATUS_LABELS = {
@@ -17,9 +18,21 @@ export default function OrderHistoryTab({ orders = [] }) {
     const [expandedId, setExpandedId] = useState(null);
     const [cancellingId, setCancellingId] = useState(null);
     const flash = props.flash || {};
+    const confirmAction = useConfirm();
 
-    const handleCancel = (orderId) => {
-        if (!confirm('¿Estás seguro de que quieres cancelar este pedido?')) return;
+    const handleCancel = async (orderId) => {
+        const confirmed = await confirmAction({
+            title: 'Cancelar pedido',
+            message: '¿Seguro que quieres cancelar este pedido?',
+            confirmText: 'Cancelar pedido',
+            cancelText: 'Volver',
+            tone: 'danger',
+        });
+
+        if (!confirmed) {
+            return;
+        }
+
         setCancellingId(orderId);
         router.patch(route('orders.cancel', orderId), {}, {
             onFinish: () => setCancellingId(null),

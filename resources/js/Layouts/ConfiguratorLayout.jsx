@@ -1,17 +1,9 @@
-import Header from '@/Components/Header/Header';
-import Footer from '@/Components/Footer/Footer';
 import styles from './ConfiguratorTheme.module.css';
 
 export default function ConfiguratorLayout({ children }) {
     return (
-        <div className={`${styles.root} min-h-screen flex flex-col justify-between cursor-default select-none`}>
-            <div>
-                <Header />
-                <main>
-                    {children}
-                </main>
-            </div>
-            <Footer />
+        <div className={`${styles.root} cursor-default select-none`}>
+            <main>{children}</main>
 
             {/* Injecting fonts locally if needed, though they should be in the main app layout or imported here */}
             <style dangerouslySetInnerHTML={{

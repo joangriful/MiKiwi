@@ -1,13 +1,10 @@
 import React from 'react';
 import { Head } from '@inertiajs/react';
-import Header from '@/Components/Header/Header';
-import Footer from '@/Components/Footer/Footer';
 
 export default function Sustainability({ heroImages = [] }) {
     return (
         <div className="min-h-screen flex flex-col bg-white font-sans text-gray-800">
             <Head title="Sostenibilidad - MiKiwi" />
-            <Header />
 
             <main className="flex-grow">
                 {/* Hero Section */}
@@ -130,8 +127,6 @@ export default function Sustainability({ heroImages = [] }) {
                     </div>
                 </div>
             </main>
-
-            <Footer />
         </div>
     );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { router } from '@inertiajs/react';
 import Toast from '@/Components/Toast/Toast';
+import { useConfirm } from '@/Shared/Confirm/ConfirmProvider';
 import { extractImageFiles } from '@/Utils/imageFiles';
 import styles from './HeroImageManager.module.css';
 
@@ -66,6 +67,7 @@ export default function HeroImageManager({
     const [uploading, setUploading] = useState(false);
     const [toast, setToast] = useState(null);
     const fileInputRef = useRef(null);
+    const confirmAction = useConfirm();
 
     const handleDragEnter = (e) => {
         e.preventDefault();
@@ -124,18 +126,28 @@ export default function HeroImageManager({
         });
     };
 
-    const handleDelete = (imageId) => {
-        if (window.confirm('¿Estás seguro de eliminar esta imagen?')) {
-            router.delete(route('content.hero.delete', imageId), {
-                preserveScroll: true,
-                onSuccess: () => {
-                    setToast({ message: 'Imagen eliminada correctamente', type: 'success' });
-                },
-                onError: () => {
-                    setToast({ message: 'Error al eliminar la imagen', type: 'error' });
-                },
-            });
+    const handleDelete = async (imageId) => {
+        const confirmed = await confirmAction({
+            title: 'Eliminar imagen',
+            message: '¿Seguro que quieres eliminar esta imagen del hero?',
+            confirmText: 'Eliminar',
+            cancelText: 'Cancelar',
+            tone: 'danger',
+        });
+
+        if (!confirmed) {
+            return;
         }
+
+        router.delete(route('content.hero.delete', imageId), {
+            preserveScroll: true,
+            onSuccess: () => {
+                setToast({ message: 'Imagen eliminada correctamente', type: 'success' });
+            },
+            onError: () => {
+                setToast({ message: 'Error al eliminar la imagen', type: 'error' });
+            },
+        });
     };
 
     const uploadCardClassName = getUploadCardClassName(isDragging);

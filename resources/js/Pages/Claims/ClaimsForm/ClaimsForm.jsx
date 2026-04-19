@@ -1,7 +1,5 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import Header from '@/Components/Header/Header';
-import Footer from '@/Components/Footer/Footer';
 import ClaimsFormComponent from '@/Components/Claims/ClaimsFormComponent/ClaimsFormComponent';
 import styles from './ClaimsForm.module.css';
 
@@ -9,7 +7,6 @@ export default function ClaimsForm() {
     return (
         <div className={`${styles.root} min-h-screen flex flex-col bg-white font-sans`}>
             <Head title="Formulario de Reclamaciones - MiKiwi" />
-            <Header />
 
             <main className="flex-grow container mx-auto px-6 py-16 max-w-4xl">
                 {/* Breadcrumb */}
@@ -28,8 +25,6 @@ export default function ClaimsForm() {
 
                 <ClaimsFormComponent />
             </main>
-
-            <Footer />
         </div>
     );
 }

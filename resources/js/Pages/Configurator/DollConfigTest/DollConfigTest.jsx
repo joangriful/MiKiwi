@@ -1,17 +1,20 @@
 import React, { useState, useEffect, useMemo, useRef, Suspense, lazy } from 'react';
 import { Head } from '@inertiajs/react';
-import axios from 'axios';
+import { toast } from 'react-toastify';
 import ConfiguratorLayout from '@/Layouts/ConfiguratorLayout';
 import PreviewArea from '@/Components/Configurator/PreviewArea/PreviewArea';
 import PartSelector from '@/Components/Configurator/PartSelector/PartSelector';
 import CloseUp from '@/Components/Configurator/CloseUp/CloseUp';
 import OptionsBar from '@/Components/Configurator/OptionsBar/OptionsBar';
+import useDollSettings from '@/Features/Configurator/hooks/useDollSettings';
+import { getErrorMessage } from '@/Shared/Errors/errorMessage';
 import styles from './DollConfigTest.module.css';
 
 // Lazy load the correct 3D viewer
 const Mannequin3DViewer = lazy(() => import('@/Components/Configurator/Mannequin3DViewer/Mannequin3DViewer'));
 
 export default function DollConfigTest({ views, defaultSettings, partPositions: initialPartPositions }) {
+    const { savePartPosition } = useDollSettings();
     const [activeTab, setActiveTab] = useState('customize'); // 'customize' or 'ready'
     const [allSelections, setAllSelections] = useState({ front: {}, back: {} });
     const [currentView, setCurrentView] = useState('front');
@@ -39,15 +42,13 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
             [key]: { x: data.x, y: data.y, scale: data.scale }
         }));
 
-        axios.post(route('doll.settings.savePosition'), data)
-            .then(() => {
-                console.log('Position saved successfully');
-            })
+        savePartPosition(data)
+            .then(() => {})
             .catch(err => {
                 console.error(err);
                 // Revert on failure
                 setPartPositions(oldPositions);
-                alert(`Error al guardar: ${err.response?.data?.message || err.message}`);
+                toast.error(`Error al guardar: ${getErrorMessage(err, 'Error desconocido')}`);
             });
     };
 

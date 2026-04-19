@@ -1,8 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 
-import Header from '@/Components/Header/Header';
-import Footer from '@/Components/Footer/Footer';
 import CalibrationSection from '@/Components/Home/CalibrationSection/CalibrationSection';
 import FeaturedProductsSection from '@/Components/Home/FeaturedProductsSection/FeaturedProductsSection';
 import useLenisScroll from '@/Hooks/useLenisScroll';
@@ -30,7 +28,6 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
     return (
         <div className={`${styles.root} home-container select-none cursor-default`}>
             <Head title="MiKiwi | Ingeniería Sensorial y Diseño Exclusivo" />
-            <Header />
 
             <main>
                 {/* --- Hero Section --- */}
@@ -177,8 +174,6 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
 
                 {/* SEO Text Removed */}
             </main>
-
-            <Footer />
         </div>
     );
 }

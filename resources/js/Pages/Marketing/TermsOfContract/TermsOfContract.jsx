@@ -1,7 +1,5 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import Header from '@/Components/Header/Header';
-import Footer from '@/Components/Footer/Footer';
 
 const Section = ({ title, children }) => (
     <section className="mb-10">
@@ -16,7 +14,6 @@ export default function TermsOfContract() {
     return (
         <div className="min-h-screen flex flex-col bg-white font-sans text-gray-800">
             <Head title="Condiciones de Contratación - MiKiwi" />
-            <Header />
 
             <main className="flex-grow container mx-auto px-6 py-12 md:py-16 max-w-3xl">
                 {/* Breadcrumb */}
@@ -146,8 +143,6 @@ export default function TermsOfContract() {
                     </p>
                 </Section>
             </main>
-
-            <Footer />
         </div>
     );
 }

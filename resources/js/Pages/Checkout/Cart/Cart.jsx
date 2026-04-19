@@ -1,18 +1,16 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { Head, useForm, Link, router } from '@inertiajs/react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
-import axios from 'axios';
+import { toast } from 'react-toastify';
 import CartStep from '@/Components/Checkout/CartStep/CartStep';
 import InfoStep from '@/Components/Checkout/InfoStep/InfoStep';
 import ShippingStep from '@/Components/Checkout/ShippingStep/ShippingStep';
-import PaymentStep from '@/Components/Checkout/PaymentStep/PaymentStep';
-import Header from '@/Components/Header/Header';
-import Footer from '@/Components/Footer/Footer';
+import useCheckoutPaymentIntent from '@/Features/Checkout/hooks/useCheckoutPaymentIntent';
+import { getErrorMessage } from '@/Shared/Errors/errorMessage';
 import styles from './Cart.module.css';
 
-// Load Stripe outside of component to avoid recreation
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY || '');
+const PaymentStep = lazy(() => import('@/Components/Checkout/PaymentStep/PaymentStep'));
 
 function CheckoutContent({
     cart,
@@ -31,6 +29,7 @@ function CheckoutContent({
 }) {
     const stripe = useStripe();
     const elements = useElements();
+    const { requestPaymentIntent } = useCheckoutPaymentIntent();
     const [isInternalProcessing, setIsInternalProcessing] = useState(false);
 
     const handleSubmitOrder = async () => {
@@ -45,9 +44,7 @@ function CheckoutContent({
             // 1. Create Payment Intent on backend
             const dynamicTotal = total - (formData.coupon_code && cart.coupon ? cart.coupon.discount : 0);
 
-            const { data: intentData } = await axios.post(route('payment-intent.create'), {
-                amount: Math.round(dynamicTotal * 100) / 100,
-            });
+            const intentData = await requestPaymentIntent(dynamicTotal);
 
             // 2. Confirm payment on frontend with Stripe
             const confirmData = {
@@ -74,7 +71,7 @@ function CheckoutContent({
             const result = await stripe.confirmCardPayment(intentData.clientSecret, confirmData);
 
             if (result.error) {
-                alert(result.error.message);
+                toast.error(result.error.message || 'No se pudo confirmar el pago.');
                 setIsInternalProcessing(false);
                 return;
             }
@@ -111,15 +108,15 @@ function CheckoutContent({
                     onFinish: () => setIsInternalProcessing(false),
                     onError: (errors) => {
                         console.error('Order store errors:', errors);
-                        alert('Hubo un error al guardar tu pedido. Contacta con soporte con tu referencia de pago: ' + result.paymentIntent.id);
+                        toast.error(`No se pudo guardar tu pedido. Referencia de pago: ${result.paymentIntent.id}`);
                         setIsInternalProcessing(false);
                     },
                 });
             }
         } catch (error) {
             console.error('Order submission error:', error);
-            const message = error?.response?.data?.message || error.message || 'Error desconocido';
-            alert(`Hubo un error al procesar tu pedido: ${message}`);
+            const message = getErrorMessage(error, 'Error desconocido');
+            toast.error(`Hubo un error al procesar tu pedido: ${message}`);
             setIsInternalProcessing(false);
         }
     };
@@ -152,25 +149,31 @@ function CheckoutContent({
                 />
             )}
             {step === 4 && (
-                <PaymentStep
-                    data={formData}
-                    setData={setFormData}
-                    auth={auth}
-                    onSubmit={handleSubmitOrder}
-                    onBack={prevStep}
-                    processing={formProcessing || isInternalProcessing}
-                />
+                <Suspense fallback={<div className="py-10 text-sm text-gray-500">Cargando módulo de pago...</div>}>
+                    <PaymentStep
+                        data={formData}
+                        setData={setFormData}
+                        auth={auth}
+                        onSubmit={handleSubmitOrder}
+                        onBack={prevStep}
+                        processing={formProcessing || isInternalProcessing}
+                    />
+                </Suspense>
             )}
         </div>
     );
 }
 
 export default function Cart({ cart = { items: [], total: 0 }, auth = { user: null }, popularProducts = [], stripeKey, coupon, isBuyNow }) {
-    console.log('Cart received stripeKey:', stripeKey);
-    const finalStripePromise = useMemo(() => {
-        return stripeKey ? loadStripe(stripeKey) : stripePromise;
-    }, [stripeKey]);
     const [step, setStep] = useState(1);
+    const resolvedStripeKey = stripeKey || import.meta.env.VITE_STRIPE_KEY || '';
+    const finalStripePromise = useMemo(() => {
+        if (step !== 4 || !resolvedStripeKey) {
+            return null;
+        }
+
+        return loadStripe(resolvedStripeKey);
+    }, [step, resolvedStripeKey]);
 
     const { data, setData, post, processing, transform, errors, delete: destroy } = useForm({
         // Info Step
@@ -245,7 +248,6 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
         <Elements stripe={finalStripePromise}>
             <div className={`${styles.root} min-h-screen flex flex-col bg-white`}>
                 <Head title="Checkout - MiKiwi" />
-                <Header user={auth.user} />
 
                 <main className="flex-grow flex flex-col md:flex-row w-full max-w-screen-2xl mx-auto px-4 md:px-0 lg:px-0">
                     <div className="w-full md:w-3/5 p-6 md:p-12 lg:p-16 bg-white">
@@ -453,7 +455,6 @@ export default function Cart({ cart = { items: [], total: 0 }, auth = { user: nu
                         </div>
                     </div>
                 </main>
-                <Footer />
             </div>
         </Elements>
     );

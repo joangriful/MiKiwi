@@ -4,8 +4,6 @@ import NavLink from '@/Components/NavLink/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
@@ -173,18 +171,6 @@ export default function AuthenticatedLayout({ header, children }) {
             )}
 
             <main>{children}</main>
-            <ToastContainer
-                position="bottom-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="colored"
-            />
         </div>
     );
 }

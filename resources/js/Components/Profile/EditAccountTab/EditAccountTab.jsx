@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { usePage } from '@inertiajs/react';
+import { toast } from 'react-toastify';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import es from 'react-phone-input-2/lang/es.json';
@@ -29,9 +30,7 @@ export default function EditAccountTab() {
     };
 
     const handleSave = () => {
-        // Here you would typically make an Inertia put/patch request
-        console.log('Saving account details:', formData);
-        // router.put(route('profile.update'), formData);
+        toast.info('Este flujo de guardado se implementará en la siguiente fase.');
     };
 
     return (

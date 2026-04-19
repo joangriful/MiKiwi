@@ -15,7 +15,7 @@ export default function ResetPasswordForm({ token, email }) {
         return () => {
             reset('password', 'password_confirmation');
         };
-    }, []);
+    }, [reset]);
 
     const submit = (e) => {
         e.preventDefault();

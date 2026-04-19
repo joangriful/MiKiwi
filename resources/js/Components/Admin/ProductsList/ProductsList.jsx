@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
 import { toast } from 'react-toastify';
+import { useConfirm } from '@/Shared/Confirm/ConfirmProvider';
 import { filterProductsBySearchTerm } from '@/Utils/productSearch';
 import styles from './ProductsList.module.css';
 
@@ -29,15 +30,25 @@ function EmptyState() {
     );
 }
 
-export default function ProductsList({ products = [], onEdit, debugCount }) {
-    console.log('ProductsList received products:', products, 'DebugCount:', debugCount);
+export default function ProductsList({ products = [], onEdit }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [deletingId, setDeletingId] = useState(null);
+    const confirmAction = useConfirm();
 
     const filteredProducts = filterProductsBySearchTerm(products, searchTerm);
 
-    const handleDelete = (product) => {
-        if (!confirm('¿Estás seguro de que deseas eliminar este producto?')) return;
+    const handleDelete = async (product) => {
+        const confirmed = await confirmAction({
+            title: 'Eliminar producto',
+            message: `¿Seguro que quieres eliminar "${product.name}"? Esta acción no se puede deshacer.`,
+            confirmText: 'Eliminar',
+            cancelText: 'Cancelar',
+            tone: 'danger',
+        });
+
+        if (!confirmed) {
+            return;
+        }
 
         setDeletingId(product.id);
         router.delete(route('products.delete', product.id), {
@@ -57,7 +68,7 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
             <div className={styles.header}>
                 <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
                 <div className={styles.summary}>
-                    Total: {filteredProducts.length} productos (Raw prop: {products?.length}, Debug Count: {debugCount})
+                    Total: {filteredProducts.length} productos
                 </div>
             </div>
 

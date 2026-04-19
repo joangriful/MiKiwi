@@ -1,7 +1,5 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import Header from '@/Components/Header/Header';
-import Footer from '@/Components/Footer/Footer';
 
 export default function Sitemap() {
     const sitemapLinks = [
@@ -45,8 +43,6 @@ export default function Sitemap() {
         <div className="min-h-screen flex flex-col bg-white text-gray-900 font-sans">
             <Head title="Mapa del sitio - MiKiwi" />
 
-            <Header />
-
             <main className="flex-grow container mx-auto px-6 py-16">
                 <div className="max-w-5xl mx-auto">
                     <h1 className="text-4xl font-bold mb-12 text-gray-900 border-b pb-6">Mapa del sitio</h1>
@@ -72,8 +68,6 @@ export default function Sitemap() {
                     </div>
                 </div>
             </main>
-
-            <Footer />
         </div>
     );
 }

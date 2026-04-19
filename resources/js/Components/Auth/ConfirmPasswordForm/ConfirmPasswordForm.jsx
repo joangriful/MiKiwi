@@ -12,7 +12,7 @@ export default function ConfirmPasswordForm() {
         return () => {
             reset('password');
         };
-    }, []);
+    }, [reset]);
 
     const submit = (e) => {
         e.preventDefault();

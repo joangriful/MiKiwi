@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link, router } from "@inertiajs/react";
-import axios from "axios";
+import useCartActions from "@/Features/Cart/hooks/useCartActions";
 import styles from './ProductInfo.module.css';
 
 export default function ProductInfo({ product }) {
+    const { addToCart, buyNow, resolveBuyNowUrl } = useCartActions();
     const [isFavorite, setIsFavorite] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [notification, setNotification] = useState(null); // 'added' | 'error' | null
@@ -21,9 +22,9 @@ export default function ProductInfo({ product }) {
         if (!product?.slug) return;
         setIsLoading(true);
         try {
-            await axios.post(route("cart.add"), {
-                product_slug: product.slug,
-                quantity: quantity,
+            await addToCart({
+                productSlug: product.slug,
+                quantity,
             });
             showNotification("added");
             setTimeout(() => {
@@ -41,16 +42,12 @@ export default function ProductInfo({ product }) {
         if (!product?.slug) return;
         setIsLoading(true);
         try {
-            const { data: responseData } = await axios.post(route("cart.buy-now"), {
-                product_slug: product.slug,
-                quantity: quantity,
+            const responseData = await buyNow({
+                productSlug: product.slug,
+                quantity,
             });
 
-            if (responseData.redirect) {
-                router.visit(responseData.redirect);
-            } else {
-                router.visit(route("cart.index", { buy_now: 1 }));
-            }
+            router.visit(resolveBuyNowUrl(responseData));
         } catch (error) {
             console.error("Error buying now:", error);
             showNotification("error");

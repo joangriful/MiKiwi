@@ -10,8 +10,7 @@ const PRODUCT_SECTIONS = [
     { id: 'featured', label: 'Productos Destacados', icon: 'star' },
 ];
 
-export default function ProductsManager({ categories, products, debugCount }) {
-    console.log('ProductsManager received products:', products, 'DebugCount:', debugCount);
+export default function ProductsManager({ categories, products }) {
     const [activeSection, setActiveSection] = useState('list');
     const [editingProduct, setEditingProduct] = useState(null);
 
@@ -59,7 +58,7 @@ export default function ProductsManager({ categories, products, debugCount }) {
                     />
                 )}
                 {activeSection === 'list' && (
-                    <ProductsList products={products} onEdit={handleEdit} debugCount={debugCount} />
+                    <ProductsList products={products} onEdit={handleEdit} />
                 )}
                 {activeSection === 'featured' && (
                     <FeaturedProductsManager products={products} />

@@ -1,8 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { debounce } from 'lodash';
-import Header from '@/Components/Header/Header';
-import Footer from '@/Components/Footer/Footer';
 import ProductCard from '@/Components/Catalog/ProductCard/ProductCard';
 import FilterMenu from '@/Components/Catalog/FilterMenu/FilterMenu';
 import styles from './Products.module.css';
@@ -11,8 +9,8 @@ export default function Products({ products, categories = [], filters }) {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
 
-    const debouncedSearch = useCallback(
-        debounce((term) => {
+    const debouncedSearch = useMemo(
+        () => debounce((term) => {
             router.get(
                 route('products.index'),
                 { ...filters, search: term },
@@ -21,6 +19,12 @@ export default function Products({ products, categories = [], filters }) {
         }, 300),
         [filters]
     );
+
+    useEffect(() => {
+        return () => {
+            debouncedSearch.cancel();
+        };
+    }, [debouncedSearch]);
 
     const handleSearchChange = (e) => {
         const value = e.target.value;
@@ -31,8 +35,6 @@ export default function Products({ products, categories = [], filters }) {
     return (
         <div className={`${styles.root} min-h-screen flex flex-col bg-[#FDFDFD] text-gray-900 font-sans selection:bg-[#99b849]/30`}>
             <Head title="Nuestros Productos - MIKIWI" />
-
-            <Header />
 
             <main className="flex-grow py-20 px-6 max-w-[1600px] mx-auto w-full">
                 {/* Minimalist Header */}
@@ -152,8 +154,6 @@ export default function Products({ products, categories = [], filters }) {
                     )}
                 </div>
             </main >
-
-            <Footer />
         </div >
     );
 }

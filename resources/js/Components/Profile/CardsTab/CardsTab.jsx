@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { usePage } from '@inertiajs/react';
-import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
+import { toast } from 'react-toastify';
 import styles from './CardsTab.module.css';
+import usePaymentMethods from '@/Features/Payments/hooks/usePaymentMethods';
+import usePaymentMethodSetupIntent from '@/Features/Payments/hooks/usePaymentMethodSetupIntent';
+import { getErrorMessage } from '@/Shared/Errors/errorMessage';
+import { useConfirm } from '@/Shared/Confirm/ConfirmProvider';
 import {
     Elements,
     CardElement,
@@ -17,6 +21,7 @@ const TEST_CARDS = [
 function CardForm({ onCancel, onSuccess }) {
     const stripe = useStripe();
     const elements = useElements();
+    const { requestSetupIntent } = usePaymentMethodSetupIntent();
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState(null);
     const [holder, setHolder] = useState('');
@@ -29,9 +34,8 @@ function CardForm({ onCancel, onSuccess }) {
         setError(null);
 
         try {
-            // 1. Get SetupIntent client secret
-            const { data } = await axios.post(route('payment-methods.setup-intent'));
-            const clientSecret = data.clientSecret;
+            const setupIntent = await requestSetupIntent();
+            const clientSecret = setupIntent.clientSecret;
 
             // 2. Confirm card setup
             const result = await stripe.confirmCardSetup(clientSecret, {
@@ -48,7 +52,7 @@ function CardForm({ onCancel, onSuccess }) {
                 onSuccess();
             }
         } catch (err) {
-            setError('Error al iniciar el proceso de registro.');
+            setError(getErrorMessage(err, 'Error al iniciar el proceso de registro.'));
             setIsProcessing(false);
         }
     };
@@ -128,12 +132,18 @@ function CardForm({ onCancel, onSuccess }) {
 export default function CardsTab() {
     const { stripeKey } = usePage().props;
     const [stripePromise] = useState(() => loadStripe(stripeKey));
-    const [cards, setCards] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
     const [copiedId, setCopiedId] = useState(null);
     const { auth } = usePage().props;
     const isAdmin = auth?.user?.role === 'admin';
+    const {
+        cards,
+        isLoadingCards,
+        cardsError,
+        reloadCards,
+        deleteCard,
+    } = usePaymentMethods();
+    const confirmAction = useConfirm();
 
     const handleCopy = (text, id) => {
         navigator.clipboard.writeText(text);
@@ -141,30 +151,30 @@ export default function CardsTab() {
         setTimeout(() => setCopiedId(null), 2000);
     };
 
-    const fetchCards = async () => {
-        setIsLoading(true);
-        try {
-            const { data } = await axios.get(route('payment-methods.index'));
-            setCards(data);
-        } catch (err) {
-            console.error('Error fetching cards:', err);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     useEffect(() => {
-        fetchCards();
-    }, []);
+        if (cardsError) {
+            console.error('Error fetching cards:', cardsError);
+        }
+    }, [cardsError]);
 
     const handleDelete = async (id) => {
-        if (!confirm('¿Estás seguro de que quieres eliminar esta tarjeta?')) return;
-        
+        const confirmed = await confirmAction({
+            title: 'Eliminar tarjeta',
+            message: '¿Seguro que quieres eliminar esta tarjeta guardada?',
+            confirmText: 'Eliminar',
+            cancelText: 'Cancelar',
+            tone: 'danger',
+        });
+
+        if (!confirmed) {
+            return;
+        }
+
         try {
-            await axios.delete(route('payment-methods.destroy', id));
-            setCards(cards.filter(c => c.id !== id));
+            await deleteCard(id);
+            toast.success('Tarjeta eliminada correctamente.');
         } catch (err) {
-            alert('Error al eliminar la tarjeta.');
+            toast.error(getErrorMessage(err, 'Error al eliminar la tarjeta.'));
         }
     };
 
@@ -193,7 +203,7 @@ export default function CardsTab() {
                 </button>
             </div>
 
-            {isLoading ? (
+            {isLoadingCards ? (
                 <div className="flex flex-col items-center justify-center py-20 grayscale opacity-20">
                     <div className="w-12 h-12 border-4 border-gray-200 border-t-gray-400 rounded-full animate-spin mb-4"></div>
                     <span className="text-[10px] font-black uppercase tracking-widest">Sincronizando con Stripe...</span>
@@ -254,7 +264,9 @@ export default function CardsTab() {
                         onCancel={() => setIsAdding(false)} 
                         onSuccess={() => {
                             setIsAdding(false);
-                            fetchCards();
+                            reloadCards().catch(() => {
+                                // Cards error state is managed by hook.
+                            });
                         }} 
                     />
                 </Elements>

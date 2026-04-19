@@ -24,7 +24,7 @@ export default function RegisterForm({ autoFocus = false }) {
         return () => {
             reset('password', 'password_confirmation');
         };
-    }, []);
+    }, [reset, setData]);
 
     const submit = (e) => {
         e.preventDefault();

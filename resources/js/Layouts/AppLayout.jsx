@@ -1,3 +1,3 @@
-export default function AppLayout({ children }) {
-    return children;
-}
+import PublicLayout from './PublicLayout';
+
+export default PublicLayout;
