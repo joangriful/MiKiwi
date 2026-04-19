@@ -1,1 +1,35 @@
-.root {}
+.root {
+    width: 100%;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 0.75rem;
+    background: var(--bg-surface);
+    padding: 0.75rem 0.9rem;
+    color: var(--color-text-strong);
+    box-shadow: var(--shadow-sm);
+    transition:
+        border-color 150ms ease,
+        box-shadow 150ms ease,
+        background-color 150ms ease;
+}
+
+.root::placeholder {
+    color: var(--color-text-subtle);
+}
+
+.root:hover {
+    border-color: var(--color-border-default);
+}
+
+.root:focus-visible {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow:
+        0 0 0 3px var(--color-primary-ring),
+        var(--shadow-sm);
+}
+
+.root:disabled {
+    cursor: not-allowed;
+    background: var(--color-surface-disabled);
+    color: var(--color-text-muted-ui);
+}

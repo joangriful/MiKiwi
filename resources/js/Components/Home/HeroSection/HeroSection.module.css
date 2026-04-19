@@ -1,1 +1,24 @@
-.root {}
+.root {
+    position: relative;
+    display: flex;
+    min-height: 100vh;
+    align-items: flex-end;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
+.content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 20vh;
+}
+
+.logo {
+    position: absolute;
+    right: 5%;
+    bottom: 0;
+    z-index: 1;
+    display: block;
+    width: clamp(120px, 20vw, 320px);
+    height: auto;
+}

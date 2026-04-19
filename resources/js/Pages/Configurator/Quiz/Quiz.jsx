@@ -264,13 +264,13 @@ export default function Quiz() {
         <ConfiguratorLayout>
             <Head title="Quiz de Identidad - MiKiwi" />
 
-            <main className={`${styles.root} quiz-main`}>
-                <div className="quiz-blob quiz-blob-1"></div>
-                <div className="quiz-blob quiz-blob-2"></div>
+            <main className={`${styles.root} ${styles.main}`}>
+                <div className={`${styles.blob} ${styles.blobOne}`}></div>
+                <div className={`${styles.blob} ${styles.blobTwo}`}></div>
 
-                <div className="quiz-card">
+                <div className={styles.card}>
                     {!isFinished ? (
-                        <div key={currentStep} className="animate-step">
+                        <div key={currentStep} className={styles.step}>
                             <div className="flex justify-between items-center w-full mb-4">
                                 {currentStep > 0 ? (
                                     <button 
@@ -284,45 +284,45 @@ export default function Quiz() {
                                     <div></div>
                                 )}
                             </div>
-                            <div className="quiz-step-indicator">
+                            <div className={styles.stepIndicator}>
                                 {QUIZ_STEPS.map((_, idx) => (
                                     <div
                                         key={idx}
-                                        className={`step-dot ${idx <= currentStep ? 'active' : ''}`}
+                                        className={`${styles.stepDot} ${idx <= currentStep ? styles.stepDotActive : ''}`}
                                     />
                                 ))}
                             </div>
 
-                            <span className="quiz-question-tag">
+                            <span className={styles.questionTag}>
                                 {QUIZ_STEPS[currentStep].tag} • Pregunta {currentStep + 1} de {QUIZ_STEPS.length}
                             </span>
 
-                            <h2 className="quiz-title">
+                            <h2 className={styles.title}>
                                 {QUIZ_STEPS[currentStep].title}
                             </h2>
 
-                            <div className="quiz-options">
+                            <div className={styles.options}>
                                 {QUIZ_STEPS[currentStep].options.map((option) => (
                                     <button
                                         key={option.id}
-                                        className="option-button"
+                                        className={styles.optionButton}
                                         onClick={() => handleOptionClick(option.scores)}
                                     >
-                                        <span className="option-label">{option.label}</span>
-                                        <span className="option-description">{option.desc}</span>
+                                        <span className={styles.optionLabel}>{option.label}</span>
+                                        <span className={styles.optionDescription}>{option.desc}</span>
                                     </button>
                                 ))}
                             </div>
                         </div>
                     ) : (
-                        <div className="animate-step text-center">
-                            <div className="result-header">
-                                <div className="result-icon">✨</div>
-                                <span className="quiz-question-tag">Tu Perfil de Identidad</span>
-                                <h2 className="result-category">{resultContent.title}</h2>
+                        <div className={`${styles.step} text-center`}>
+                            <div className={styles.resultHeader}>
+                                <div className={styles.resultIcon}>✨</div>
+                                <span className={styles.questionTag}>Tu Perfil de Identidad</span>
+                                <h2 className={styles.resultCategory}>{resultContent.title}</h2>
                             </div>
 
-                            <p className="result-text">
+                            <p className={styles.resultText}>
                                 {resultContent.text}
                             </p>
 
@@ -331,13 +331,13 @@ export default function Quiz() {
                                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                     <Link
                                         href="/perfil"
-                                        className="btn-minimal bg-[#99b849] text-white px-8 py-4 rounded-lg font-bold hover:scale-105 transition-all"
+                                        className={`${styles.ctaButton} ${styles.ctaPrimary}`}
                                     >
                                         Ver mis recomendaciones
                                     </Link>
                                     <button
                                         onClick={resetQuiz}
-                                        className="btn-restart"
+                                        className={styles.restartButton}
                                     >
                                         Repetir Test
                                     </button>
@@ -351,20 +351,20 @@ export default function Quiz() {
                                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                         <Link
                                             href="/register"
-                                            className="btn-minimal bg-[#99b849] text-white px-8 py-4 rounded-lg font-bold hover:scale-105 transition-all"
+                                            className={`${styles.ctaButton} ${styles.ctaPrimary}`}
                                         >
                                             Crear Cuenta
                                         </Link>
                                         <Link
                                             href="/login"
-                                            className="btn-minimal border-2 border-[#99b849] text-[#99b849] px-8 py-4 rounded-lg font-bold hover:bg-[#99b849] hover:text-white transition-all"
+                                            className={`${styles.ctaButton} ${styles.ctaOutline}`}
                                         >
                                             Iniciar Sesión
                                         </Link>
                                     </div>
                                     <button
                                         onClick={resetQuiz}
-                                        className="btn-restart mt-4"
+                                        className={`${styles.restartButton} mt-4`}
                                     >
                                         Repetir Test
                                     </button>

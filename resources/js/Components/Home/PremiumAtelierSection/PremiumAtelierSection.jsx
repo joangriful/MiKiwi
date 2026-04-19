@@ -1,58 +1,62 @@
 import React, { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
-import useCartActions from '@/Features/Cart/hooks/useCartActions';
+import axios from 'axios';
 import styles from './PremiumAtelierSection.module.css';
 
 export default function PremiumAtelierSection() {
-    const { buyNow, resolveBuyNowUrl } = useCartActions();
     const [isLoading, setIsLoading] = useState(false);
 
     const handleBuyNow = async () => {
         setIsLoading(true);
+
         try {
-            const responseData = await buyNow({
-                productSlug: 'mobi',
+            const { data: responseData } = await axios.post(route('cart.buy-now'), {
+                product_slug: 'mobi',
                 quantity: 1,
             });
 
-            router.visit(resolveBuyNowUrl(responseData));
+            if (responseData.redirect) {
+                router.visit(responseData.redirect);
+                return;
+            }
+
+            router.visit(route('cart.index', { buy_now: 1 }));
         } catch (error) {
-            console.error("Error buying now:", error);
+            console.error('Error buying now:', error);
             setIsLoading(false);
-            // Fallback redirect if API fails or product not found
             router.visit(route('products.show', 'mobi'));
         }
     };
 
     return (
-        <section className={`${styles.root} premium-atelier`}>
-            <div className="atelier-bg-visual"></div>
-            <div className="atelier-content">
-                <span className="atelier-tag">EXPERIMENTAL DIVISION</span>
-                <h2>Zona Premium,<br />Tu Muñeca.</h2>
+        <section className={styles.root}>
+            <div className={styles.backgroundVisual}></div>
 
-                <div className="config-preview-box">
-                    <div className="config-item">
+            <div className={styles.content}>
+                <span className={styles.tag}>EXPERIMENTAL DIVISION</span>
+                <h2 className={styles.title}>Zona Premium,<br />Tu Muñeca.</h2>
+
+                <div className={styles.previewBox}>
+                    <div className={styles.previewItem}>
                         <span>POLÍMERO</span>
                         <p>OBSIDIAN</p>
                     </div>
-                    <div className="config-item">
+                    <div className={styles.previewItem}>
                         <span>ID SYNC</span>
                         <p>ELITE-01</p>
                     </div>
-                    <div className="config-item">
+                    <div className={styles.previewItem}>
                         <span>FINISH</span>
                         <p>MATTE</p>
                     </div>
                 </div>
 
-                <div className="flex gap-4 mt-8">
-                    <Link href={route('configurador.index')} className="atelier-btn">Lanzar Configurador</Link>
+                <div className={styles.actions}>
+                    <Link href={route('configurador.index')} className={styles.button}>Lanzar Configurador</Link>
                     <button
                         onClick={handleBuyNow}
                         disabled={isLoading}
-                        className="atelier-btn ivory"
-                        style={{ background: 'var(--primary)', border: 'none' }}
+                        className={`${styles.button} ${styles.buttonAccent}`}
                     >
                         {isLoading ? 'PROCESANDO...' : 'COMPRAR MOBI AHORA'}
                     </button>

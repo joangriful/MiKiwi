@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { toast } from 'react-toastify';
-import themeStyles from '@/Layouts/ConfiguratorTheme.module.css';
 import styles from './Index.module.css';
 
 export default function Index() {
@@ -75,7 +73,7 @@ export default function Index() {
     };
 
     return (
-        <div className={`${themeStyles.root} ${styles.root} h-screen overflow-hidden flex flex-col bg-[var(--bg-main)] font-['Montserrat']`}>
+        <div className={`${styles.root} h-screen overflow-hidden flex flex-col bg-[var(--bg-main)] font-['Montserrat']`}>
             <Head title="Configurador" />
 
             {/* TOP BAR */}
@@ -118,7 +116,7 @@ export default function Index() {
 
                     {/* STEP 1 */}
                     {currentStep === 1 && (
-                        <div className="animate-fade-in-slide flex-1 flex flex-col">
+                        <div className={`${styles.stepPanel} flex-1 flex flex-col`}>
                             <div className="mb-[40px]">
                                 <div className="text-[0.8rem] uppercase text-[var(--color-primary)] mb-[8px] tracking-[2px] font-bold">PASO 01</div>
                                 <div className="text-[2.2rem] font-semibold tracking-[-1px] text-[var(--text-main)]">Elige tu base</div>
@@ -168,7 +166,7 @@ export default function Index() {
 
                     {/* STEP 2 */}
                     {currentStep === 2 && (
-                        <div className="animate-fade-in-slide flex-1 flex flex-col">
+                        <div className={`${styles.stepPanel} flex-1 flex flex-col`}>
                             <div className="mb-[40px]">
                                 <div className="text-[0.8rem] uppercase text-[var(--color-primary)] mb-[8px] tracking-[2px] font-bold">PASO 02</div>
                                 <div className="text-[2.2rem] font-semibold tracking-[-1px] text-[var(--text-main)]">Personalización</div>
@@ -218,7 +216,7 @@ export default function Index() {
 
                     {/* STEP 3 */}
                     {currentStep === 3 && (
-                        <div className="animate-fade-in-slide flex-1 flex flex-col">
+                        <div className={`${styles.stepPanel} flex-1 flex flex-col`}>
                             <div className="mb-[40px]">
                                 <div className="text-[0.8rem] uppercase text-[var(--color-primary)] mb-[8px] tracking-[2px] font-bold">PASO 03</div>
                                 <div className="text-[2.2rem] font-semibold tracking-[-1px] text-[var(--text-main)]">Extras y Resumen</div>
@@ -274,13 +272,16 @@ export default function Index() {
                         </div>
                         <div className="flex gap-[15px]">
                             {currentStep > 1 && (
-                                <button className="btn-minimal btn-outline px-[28px] py-[14px]" onClick={() => changeStep(-1)}>
+                                <button
+                                    className={`${styles.actionButton} ${styles.outlineButton} px-[28px] py-[14px]`}
+                                    onClick={() => changeStep(-1)}
+                                >
                                     Atrás
                                 </button>
                             )}
                             <button
-                                className="btn-minimal btn-primary px-[28px] py-[14px]"
-                                onClick={() => currentStep < 3 ? changeStep(1) : toast.success('Pedido finalizado')}
+                                className={`${styles.actionButton} ${styles.primaryButton} px-[28px] py-[14px]`}
+                                onClick={() => currentStep < 3 ? changeStep(1) : alert('Pedido finalizado')}
                             >
                                 {currentStep === 3 ? 'Finalizar Pedido' : 'Siguiente'} &rarr;
                             </button>

@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import { getCloudinaryUrl } from '@/Utils/cloudinary';
+import styles from './CloseUp.module.css';
 
 export default function CloseUp({ selectedParts, onViewportChange, viewportOverride, zoomLevel = 100, initialViewport }) {
     const containerRef = useRef(null);
@@ -140,20 +141,19 @@ export default function CloseUp({ selectedParts, onViewportChange, viewportOverr
     return (
         <div
             ref={containerRef}
-            className="w-full h-full overflow-auto bg-gray-50 relative cursor-grab active:cursor-grabbing [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
+            className={styles.container}
             onScroll={handleScroll}
-        // Optional: Add drag-to-scroll logic if native scrollbars are hidden/styled
         >
             <div
                 ref={contentRef}
-                className="relative origin-top-left flex items-center justify-center bg-white"
+                className={styles.content}
                 style={{
                     width: `${zoomLevel * 3}%`, // 100% -> 300% width, 25% -> 75% width (approx fit)
                     height: `${zoomLevel * 3}%`
                 }}
             >
                 {renderedLayers.length === 0 && (
-                    <div className="absolute inset-0 flex items-center justify-center text-gray-300 text-2xl font-bold z-0">
+                    <div className={styles.emptyState}>
                         Close Up View
                     </div>
                 )}
@@ -164,7 +164,7 @@ export default function CloseUp({ selectedParts, onViewportChange, viewportOverr
                         src={layer.url}
                         alt={layer.key}
                         fetchpriority="high"
-                        className="absolute h-full w-auto max-w-none object-contain pointer-events-none select-none left-1/2 -translate-x-1/2"
+                        className={styles.layerImage}
                         style={{
                             zIndex: layer.zIndex,
                             mixBlendMode: layer.blendMode

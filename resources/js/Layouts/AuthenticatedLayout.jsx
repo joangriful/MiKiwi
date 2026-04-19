@@ -4,6 +4,9 @@ import NavLink from '@/Components/NavLink/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import styles from './AuthenticatedLayout.module.css';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
@@ -12,18 +15,18 @@ export default function AuthenticatedLayout({ header, children }) {
         useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
-                        <div className="flex">
-                            <div className="flex shrink-0 items-center">
+        <div className={styles.root}>
+            <nav className={styles.nav}>
+                <div className={styles.navContainer}>
+                    <div className={styles.navInner}>
+                        <div className={styles.leftSection}>
+                            <div className={styles.logoSlot}>
                                 <Link href="/">
                                     <ApplicationLogo size="sm" tone="strong" />
                                 </Link>
                             </div>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div className={styles.desktopNav}>
                                 <NavLink
                                     href={route('dashboard')}
                                     active={route().current('dashboard')}
@@ -33,19 +36,19 @@ export default function AuthenticatedLayout({ header, children }) {
                             </div>
                         </div>
 
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
+                        <div className={styles.desktopActions}>
+                            <div className={styles.dropdownAnchor}>
                                 <Dropdown>
                                     <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
+                                        <span className={styles.dropdownTriggerShell}>
                                             <button
                                                 type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                                                className={styles.userMenuButton}
                                             >
                                                 {user.name}
 
                                                 <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
+                                                    className={styles.userMenuIcon}
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 20 20"
                                                     fill="currentColor"
@@ -78,17 +81,17 @@ export default function AuthenticatedLayout({ header, children }) {
                             </div>
                         </div>
 
-                        <div className="-me-2 flex items-center sm:hidden">
+                        <div className={styles.mobileToggleWrap}>
                             <button
                                 onClick={() =>
                                     setShowingNavigationDropdown(
                                         (previousState) => !previousState,
                                     )
                                 }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
+                                className={styles.mobileToggle}
                             >
                                 <svg
-                                    className="h-6 w-6"
+                                    className={styles.mobileToggleIcon}
                                     stroke="currentColor"
                                     fill="none"
                                     viewBox="0 0 24 24"
@@ -96,8 +99,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                     <path
                                         className={
                                             !showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
+                                                ? styles.isVisible
+                                                : styles.isHidden
                                         }
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
@@ -107,8 +110,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                     <path
                                         className={
                                             showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
+                                                ? styles.isVisible
+                                                : styles.isHidden
                                         }
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
@@ -122,12 +125,9 @@ export default function AuthenticatedLayout({ header, children }) {
                 </div>
 
                 <div
-                    className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
-                    }
+                    className={`${showingNavigationDropdown ? styles.isVisible : styles.isHidden} ${styles.mobilePanel}`}
                 >
-                    <div className="space-y-1 pb-3 pt-2">
+                    <div className={styles.mobileNavLinks}>
                         <ResponsiveNavLink
                             href={route('dashboard')}
                             active={route().current('dashboard')}
@@ -136,17 +136,17 @@ export default function AuthenticatedLayout({ header, children }) {
                         </ResponsiveNavLink>
                     </div>
 
-                    <div className="border-t border-gray-200 pb-1 pt-4">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800">
+                    <div className={styles.mobileUserBlock}>
+                        <div className={styles.mobileUserIdentity}>
+                            <div className={styles.mobileUserName}>
                                 {user.name}
                             </div>
-                            <div className="text-sm font-medium text-gray-500">
+                            <div className={styles.mobileUserEmail}>
                                 {user.email}
                             </div>
                         </div>
 
-                        <div className="mt-3 space-y-1">
+                        <div className={styles.mobileUserLinks}>
                             <ResponsiveNavLink href={route('perfil.view')}>
                                 Profile
                             </ResponsiveNavLink>
@@ -163,14 +163,26 @@ export default function AuthenticatedLayout({ header, children }) {
             </nav>
 
             {header && (
-                <header className="bg-white shadow">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <header className={styles.header}>
+                    <div className={styles.headerInner}>
                         {header}
                     </div>
                 </header>
             )}
 
             <main>{children}</main>
+            <ToastContainer
+                position="bottom-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </div>
     );
 }

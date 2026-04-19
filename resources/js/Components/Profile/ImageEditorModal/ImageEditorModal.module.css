@@ -1,1 +1,247 @@
 .root {}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(0 0 0 / 90%);
+}
+
+.dialog {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 72rem;
+    max-height: 100vh;
+    height: 100%;
+    padding: 2rem;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.title {
+    margin: 0;
+    color: var(--color-white);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.closeButton {
+    color: var(--color-white);
+    transition: var(--transition);
+}
+
+.closeButton:hover {
+    color: var(--color-border-strong);
+}
+
+.emptyArea {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropZone {
+    width: 100%;
+    max-width: 42rem;
+    padding: 4rem;
+    border: 4px dashed;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.dropZoneActive {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+}
+
+.dropZoneIdle {
+    border-color: var(--color-surface-disabled);
+    background: var(--color-surface-subtle-transparent);
+}
+
+.dropZoneIdle:hover {
+    border-color: var(--color-border-default);
+}
+
+.dropZoneContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    text-align: center;
+}
+
+.dropZoneIcon {
+    color: var(--color-text-subtle);
+}
+
+.dropZoneTitle {
+    margin: 0 0 0.5rem;
+    color: var(--color-white);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.dropZoneSubtitle {
+    margin: 0;
+    color: var(--color-text-subtle);
+    font-size: 1.125rem;
+}
+
+.dropZoneMeta {
+    color: var(--color-text-muted-ui);
+    font-size: 0.875rem;
+}
+
+.hiddenInput {
+    display: none;
+}
+
+.cropperArea {
+    position: relative;
+    flex: 1;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background: #111827;
+}
+
+.controlsPanel {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background: #1f2937;
+}
+
+.controlGroup + .controlGroup {
+    margin-top: 1rem;
+}
+
+.controlLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-white);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.slider {
+    width: 100%;
+    height: 0.5rem;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+}
+
+.rotationActions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.secondaryAction,
+.secondaryActionGrow,
+.primaryAction {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.secondaryAction,
+.secondaryActionGrow {
+    background: var(--color-surface-subtle);
+    color: var(--color-white);
+}
+
+.secondaryAction:hover,
+.secondaryActionGrow:hover {
+    background: var(--color-surface-disabled);
+}
+
+.secondaryActionGrow,
+.primaryAction {
+    flex: 1;
+}
+
+.primaryAction {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.primaryAction:hover {
+    background: var(--color-primary-dark);
+}
+
+.primaryAction:disabled,
+.secondaryActionGrow:disabled {
+    opacity: 0.5;
+}
+
+.footerActions {
+    display: flex;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+}
+
+.materialIcon,
+.materialIconLarge,
+.materialIconHero {
+    font-family: 'Material Symbols Outlined';
+    line-height: 1;
+}
+
+.materialIcon {
+    font-size: 1.125rem;
+}
+
+.materialIconLarge {
+    font-size: 1.875rem;
+}
+
+.materialIconHero {
+    font-size: 5rem;
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 767px) {
+    .dialog {
+        padding: 1rem;
+    }
+
+    .dropZone {
+        padding: 2rem;
+    }
+
+    .rotationActions,
+    .footerActions {
+        flex-direction: column;
+    }
+}

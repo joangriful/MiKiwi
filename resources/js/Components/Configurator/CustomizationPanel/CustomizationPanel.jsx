@@ -1,6 +1,22 @@
 import React from 'react';
 import styles from './CustomizationPanel.module.css';
 
+function getOptionButtonClassName(isActive) {
+    return [styles.optionButton, isActive ? styles.optionButtonActive : '']
+        .filter(Boolean)
+        .join(' ');
+}
+
+function getColorSwatchClassName({ isActive, isSkinTone = false }) {
+    return [
+        styles.colorSwatch,
+        isSkinTone ? styles.skinToneSwatch : '',
+        isActive ? styles.colorSwatchActive : '',
+    ]
+        .filter(Boolean)
+        .join(' ');
+}
+
 export default function CustomizationPanel({
     hairStyle,
     setHairStyle,
@@ -53,69 +69,79 @@ export default function CustomizationPanel({
     ];
 
     return (
-        <div className={`${styles.root} customization-panel`}>
-            <div className="panel-header">
+        <div className={styles.root}>
+            <div className={styles.panelHeader}>
                 <h2>Personalización</h2>
-                <p className="panel-subtitle">Diseña tu muñeca ideal</p>
+                <p className={styles.panelSubtitle}>Diseña tu muñeca ideal</p>
             </div>
 
-            <div className="panel-content">
+            <div className={styles.panelContent}>
                 {/* Hair Style */}
-                <section className="customization-section">
-                    <h3 className="section-title">Estilo de Cabello</h3>
-                    <div className="options-grid hair-styles">
+                <section className={styles.customizationSection}>
+                    <h3 className={styles.sectionTitle}>Estilo de Cabello</h3>
+                    <div className={styles.optionsGrid}>
                         {hairStyles.map((style) => (
                             <button
                                 key={style.id}
-                                className={`option-button ${hairStyle === style.id ? 'active' : ''}`}
+                                className={getOptionButtonClassName(
+                                    hairStyle === style.id
+                                )}
                                 onClick={() => setHairStyle(style.id)}
                             >
-                                <span className="option-label">{style.name}</span>
+                                <span className={styles.optionLabel}>{style.name}</span>
                             </button>
                         ))}
                     </div>
                 </section>
 
                 {/* Hair Color */}
-                <section className="customization-section">
-                    <h3 className="section-title">Color de Cabello</h3>
-                    <div className="color-grid">
+                <section className={styles.customizationSection}>
+                    <h3 className={styles.sectionTitle}>Color de Cabello</h3>
+                    <div className={styles.colorGrid}>
                         {hairColors.map((color) => (
                             <button
                                 key={color.id}
-                                className={`color-swatch ${hairColor === color.color ? 'active' : ''}`}
+                                className={getColorSwatchClassName({
+                                    isActive: hairColor === color.color,
+                                })}
                                 style={{ backgroundColor: color.color }}
                                 onClick={() => setHairColor(color.color)}
                                 title={color.name}
                             >
-                                {hairColor === color.color && <span className="checkmark">✓</span>}
+                                {hairColor === color.color && (
+                                    <span className={styles.checkmark}>✓</span>
+                                )}
                             </button>
                         ))}
                     </div>
                 </section>
 
                 {/* Eye Color */}
-                <section className="customization-section">
-                    <h3 className="section-title">Color de Ojos</h3>
-                    <div className="color-grid">
+                <section className={styles.customizationSection}>
+                    <h3 className={styles.sectionTitle}>Color de Ojos</h3>
+                    <div className={styles.colorGrid}>
                         {eyeColors.map((color) => (
                             <button
                                 key={color.id}
-                                className={`color-swatch ${eyeColor === color.color ? 'active' : ''}`}
+                                className={getColorSwatchClassName({
+                                    isActive: eyeColor === color.color,
+                                })}
                                 style={{ backgroundColor: color.color }}
                                 onClick={() => setEyeColor(color.color)}
                                 title={color.name}
                             >
-                                {eyeColor === color.color && <span className="checkmark">✓</span>}
+                                {eyeColor === color.color && (
+                                    <span className={styles.checkmark}>✓</span>
+                                )}
                             </button>
                         ))}
                     </div>
                 </section>
 
                 {/* Eye Size */}
-                <section className="customization-section">
-                    <h3 className="section-title">Tamaño de Ojos</h3>
-                    <div className="slider-container">
+                <section className={styles.customizationSection}>
+                    <h3 className={styles.sectionTitle}>Tamaño de Ojos</h3>
+                    <div className={styles.sliderContainer}>
                         <input
                             type="range"
                             min="0.7"
@@ -123,9 +149,9 @@ export default function CustomizationPanel({
                             step="0.1"
                             value={eyeSize}
                             onChange={(e) => setEyeSize(parseFloat(e.target.value))}
-                            className="custom-slider"
+                            className={styles.customSlider}
                         />
-                        <div className="slider-labels">
+                        <div className={styles.sliderLabels}>
                             <span>Pequeños</span>
                             <span>Grandes</span>
                         </div>
@@ -133,32 +159,37 @@ export default function CustomizationPanel({
                 </section>
 
                 {/* Skin Tone */}
-                <section className="customization-section">
-                    <h3 className="section-title">Tono de Piel</h3>
-                    <div className="color-grid">
+                <section className={styles.customizationSection}>
+                    <h3 className={styles.sectionTitle}>Tono de Piel</h3>
+                    <div className={styles.colorGrid}>
                         {skinTones.map((tone) => (
                             <button
                                 key={tone.id}
-                                className={`color-swatch skin-tone ${skinTone === tone.color ? 'active' : ''}`}
+                                className={getColorSwatchClassName({
+                                    isActive: skinTone === tone.color,
+                                    isSkinTone: true,
+                                })}
                                 style={{ backgroundColor: tone.color }}
                                 onClick={() => setSkinTone(tone.color)}
                                 title={tone.name}
                             >
-                                {skinTone === tone.color && <span className="checkmark">✓</span>}
+                                {skinTone === tone.color && (
+                                    <span className={styles.checkmark}>✓</span>
+                                )}
                             </button>
                         ))}
                     </div>
                 </section>
 
                 {/* Body Proportions */}
-                <section className="customization-section">
-                    <h3 className="section-title">Proporciones Corporales</h3>
+                <section className={styles.customizationSection}>
+                    <h3 className={styles.sectionTitle}>Proporciones Corporales</h3>
 
-                    <div className="proportion-controls">
-                        <div className="proportion-item">
-                            <label>
-                                <span className="proportion-label">Altura</span>
-                                <span className="proportion-value">{bodyProportions.height.toFixed(2)}</span>
+                    <div className={styles.proportionControls}>
+                        <div className={styles.proportionItem}>
+                            <label className={styles.proportionHeader}>
+                                <span className={styles.proportionLabel}>Altura</span>
+                                <span className={styles.proportionValue}>{bodyProportions.height.toFixed(2)}</span>
                             </label>
                             <input
                                 type="range"
@@ -167,14 +198,14 @@ export default function CustomizationPanel({
                                 step="0.01"
                                 value={bodyProportions.height}
                                 onChange={(e) => setBodyProportions({ ...bodyProportions, height: parseFloat(e.target.value) })}
-                                className="custom-slider"
+                                className={styles.customSlider}
                             />
                         </div>
 
-                        <div className="proportion-item">
-                            <label>
-                                <span className="proportion-label">Busto</span>
-                                <span className="proportion-value">{bodyProportions.bust.toFixed(2)}</span>
+                        <div className={styles.proportionItem}>
+                            <label className={styles.proportionHeader}>
+                                <span className={styles.proportionLabel}>Busto</span>
+                                <span className={styles.proportionValue}>{bodyProportions.bust.toFixed(2)}</span>
                             </label>
                             <input
                                 type="range"
@@ -183,14 +214,14 @@ export default function CustomizationPanel({
                                 step="0.01"
                                 value={bodyProportions.bust}
                                 onChange={(e) => setBodyProportions({ ...bodyProportions, bust: parseFloat(e.target.value) })}
-                                className="custom-slider"
+                                className={styles.customSlider}
                             />
                         </div>
 
-                        <div className="proportion-item">
-                            <label>
-                                <span className="proportion-label">Cintura</span>
-                                <span className="proportion-value">{bodyProportions.waist.toFixed(2)}</span>
+                        <div className={styles.proportionItem}>
+                            <label className={styles.proportionHeader}>
+                                <span className={styles.proportionLabel}>Cintura</span>
+                                <span className={styles.proportionValue}>{bodyProportions.waist.toFixed(2)}</span>
                             </label>
                             <input
                                 type="range"
@@ -199,14 +230,14 @@ export default function CustomizationPanel({
                                 step="0.01"
                                 value={bodyProportions.waist}
                                 onChange={(e) => setBodyProportions({ ...bodyProportions, waist: parseFloat(e.target.value) })}
-                                className="custom-slider"
+                                className={styles.customSlider}
                             />
                         </div>
 
-                        <div className="proportion-item">
-                            <label>
-                                <span className="proportion-label">Caderas</span>
-                                <span className="proportion-value">{bodyProportions.hips.toFixed(2)}</span>
+                        <div className={styles.proportionItem}>
+                            <label className={styles.proportionHeader}>
+                                <span className={styles.proportionLabel}>Caderas</span>
+                                <span className={styles.proportionValue}>{bodyProportions.hips.toFixed(2)}</span>
                             </label>
                             <input
                                 type="range"
@@ -215,25 +246,25 @@ export default function CustomizationPanel({
                                 step="0.01"
                                 value={bodyProportions.hips}
                                 onChange={(e) => setBodyProportions({ ...bodyProportions, hips: parseFloat(e.target.value) })}
-                                className="custom-slider"
+                                className={styles.customSlider}
                             />
                         </div>
                     </div>
                 </section>
 
                 {/* Instructions */}
-                <section className="instructions">
-                    <div className="instruction-header">Instrucciones de Uso</div>
-                    <div className="instruction-item">
-                        <span className="instruction-label">Rotar:</span>
+                <section className={styles.instructions}>
+                    <div className={styles.instructionHeader}>Instrucciones de Uso</div>
+                    <div className={styles.instructionItem}>
+                        <span className={styles.instructionLabel}>Rotar:</span>
                         <span>Clic izquierdo + arrastrar</span>
                     </div>
-                    <div className="instruction-item">
-                        <span className="instruction-label">Zoom:</span>
+                    <div className={styles.instructionItem}>
+                        <span className={styles.instructionLabel}>Zoom:</span>
                         <span>Rueda del ratón</span>
                     </div>
-                    <div className="instruction-item">
-                        <span className="instruction-label">Mover:</span>
+                    <div className={styles.instructionItem}>
+                        <span className={styles.instructionLabel}>Mover:</span>
                         <span>Clic derecho + arrastrar</span>
                     </div>
                 </section>

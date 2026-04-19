@@ -55,7 +55,7 @@
     padding: 0.25rem;
     color: var(--color-white);
     font-size: 0.875rem;
-    background: rgb(255 255 255 / 10%);
+    background: var(--color-white-faint);
     border: 1px solid rgb(255 255 255 / 30%);
     border-radius: 0.25rem;
     outline: none;

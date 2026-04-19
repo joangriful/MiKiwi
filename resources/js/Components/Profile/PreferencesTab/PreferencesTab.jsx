@@ -3,9 +3,9 @@ import styles from './PreferencesTab.module.css';
 
 export default function PreferencesTab() {
     return (
-        <div className={`${styles.root} bg-white rounded-2xl shadow-sm border border-gray-100 p-8 min-h-[400px]`}>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Gestiona tus preferencias</h2>
-            <p className="text-gray-600">Configura tus preferencias de usuario.</p>
+        <div className={`${styles.root} ${styles.panel}`}>
+            <h2 className={styles.title}>Gestiona tus preferencias</h2>
+            <p className={styles.description}>Configura tus preferencias de usuario.</p>
         </div>
     );
 }

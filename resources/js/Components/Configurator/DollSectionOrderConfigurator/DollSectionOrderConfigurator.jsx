@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import styles from './DollSectionOrderConfigurator.module.css';
 
 export default function DollSectionOrderConfigurator({ views, currentOrder, onSave, saving, message }) {
     const [orderedSections, setOrderedSections] = useState([]);
@@ -115,54 +116,43 @@ export default function DollSectionOrderConfigurator({ views, currentOrder, onSa
     };
 
     return (
-        <div className="h-full flex flex-col">
-            <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
-                <h2 className="text-lg font-semibold text-gray-800">Section Order Configuration</h2>
-                <div className="flex items-center space-x-4">
+        <div className={styles.root}>
+            <div className={styles.header}>
+                <h2 className={styles.title}>Section Order Configuration</h2>
+                <div className={styles.headerActions}>
                     {message && (
-                        <span className={`text-sm ${message.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+                        <span
+                            className={`${styles.message} ${
+                                message.type === 'success'
+                                    ? styles.messageSuccess
+                                    : styles.messageError
+                            }`}
+                        >
                             {message.text}
                         </span>
                     )}
                     <button
                         onClick={() => onSave(orderedSections)}
                         disabled={saving}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                        className={styles.saveButton}
                     >
                         {saving ? 'Saving...' : 'Save Order'}
                     </button>
                 </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 bg-gray-50" ref={listRef}>
-                <div className="max-w-2xl mx-auto space-y-0 relative"> {/* Cleaned space-y for custom gaps */}
-                    <p className="text-sm text-gray-500 mb-4 px-1">
+            <div className={styles.content} ref={listRef}>
+                <div className={styles.list}>
+                    <p className={styles.description}>
                         Ordena las secciones que aparecen en el configurador de la muñeca.
                     </p>
 
-                    <style>{`
-                        @keyframes expand {
-                            0% { height: 0; opacity: 0; margin-bottom: 0; }
-                            100% { height: 4rem; opacity: 1; margin-bottom: 0.5rem; }
-                        }
-                        .animate-expand {
-                            animation: expand 0.2s ease-out forwards;
-                        }
-                    `}</style>
-
-
                     {orderedSections.map((section, index) => {
                         const isDragged = draggedItemIndex === index;
-
-                        // Check if we should render a placeholder BEFORE this item
                         const showPlaceholderBefore = dropPlaceholderIndex === index && draggedItemIndex !== index;
-
-                        // Check if we show placeholder AFTER this item (only for the very last item if dropping at end)
-                        // Actually, simplified logic: always show before, except if index is length
 
                         return (
                             <React.Fragment key={section}>
-                                {/* Gap Placeholder Logic */}
                                 {showPlaceholderBefore && (
                                     <div
                                         onDragOver={(e) => {
@@ -170,7 +160,8 @@ export default function DollSectionOrderConfigurator({ views, currentOrder, onSa
                                             e.dataTransfer.dropEffect = 'move';
                                         }}
                                         onDrop={handleDrop}
-                                        className="border-2 border-dashed border-blue-300 bg-blue-50 rounded-lg mb-2 flex items-center justify-center text-blue-400 font-medium overflow-hidden animate-expand">
+                                        className={`${styles.dropZone} ${styles.dropZoneExpanded}`}
+                                    >
                                         Drop here
                                     </div>
                                 )}
@@ -181,42 +172,56 @@ export default function DollSectionOrderConfigurator({ views, currentOrder, onSa
                                     onDragOver={(e) => handleDragOver(e, index)}
                                     onDragEnd={handleDragEnd}
                                     onDrop={handleDrop}
-                                    className={`
-                                        flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border border-gray-200 
-                                        group hover:border-blue-300 transition-all cursor-move mb-2 select-none
-                                        ${isDragged ? 'opacity-50 ring-2 ring-blue-400' : ''}
-                                    `}
+                                    className={`${styles.row} ${
+                                        isDragged ? styles.rowDragged : ''
+                                    }`}
                                 >
-                                    <div className="flex items-center gap-3">
-                                        <div className="cursor-grab text-gray-300 hover:text-gray-500">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <div className={styles.rowMain}>
+                                        <div className={styles.dragHandle}>
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className={styles.dragIcon}
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                                             </svg>
                                         </div>
-                                        <span className="font-medium text-gray-700 capitalize">
-                                            <span className="text-gray-400 mr-2 w-6 inline-block text-right">{index + 1}.</span>
+                                        <span className={styles.sectionLabel}>
+                                            <span className={styles.index}>{index + 1}.</span>
                                             {section}
                                         </span>
                                     </div>
 
-                                    <div className="flex space-x-2">
+                                    <div className={styles.controls}>
                                         <button
                                             onClick={() => moveUp(index)}
                                             disabled={index === 0}
-                                            className="p-1 text-gray-400 hover:text-blue-600 disabled:text-gray-200 transition-colors"
+                                            className={styles.controlButton}
                                             title="Move Up"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className={styles.controlIcon}
+                                                viewBox="0 0 20 20"
+                                                fill="currentColor"
+                                            >
                                                 <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
                                             </svg>
                                         </button>
                                         <button
                                             onClick={() => moveDown(index)}
                                             disabled={index === orderedSections.length - 1}
-                                            className="p-1 text-gray-400 hover:text-blue-600 disabled:text-gray-200 transition-colors"
+                                            className={styles.controlButton}
                                             title="Move Down"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className={styles.controlIcon}
+                                                viewBox="0 0 20 20"
+                                                fill="currentColor"
+                                            >
                                                 <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                                             </svg>
                                         </button>
@@ -234,13 +239,14 @@ export default function DollSectionOrderConfigurator({ views, currentOrder, onSa
                                 e.dataTransfer.dropEffect = 'move';
                             }}
                             onDrop={handleDrop}
-                            className="h-16 border-2 border-dashed border-blue-300 bg-blue-50 rounded-lg mb-2 flex items-center justify-center text-blue-400 font-medium transition-all animate-in fade-in zoom-in-95 duration-200">
+                            className={`${styles.dropZone} ${styles.dropZoneEnd}`}
+                        >
                             Drop here
                         </div>
                     )}
 
                     {orderedSections.length === 0 && (
-                        <div className="text-center py-10 text-gray-400">
+                        <div className={styles.emptyState}>
                             No sections found.
                         </div>
                     )}

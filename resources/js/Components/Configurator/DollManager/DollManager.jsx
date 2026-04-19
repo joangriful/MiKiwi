@@ -3,11 +3,10 @@ import DollDefaultConfigurator from '../DollDefaultConfigurator/DollDefaultConfi
 import DollPartConfigurator from '../DollPartConfigurator/DollPartConfigurator';
 import DollZoomConfigurator from '../DollZoomConfigurator/DollZoomConfigurator';
 import DollSectionOrderConfigurator from '../DollSectionOrderConfigurator/DollSectionOrderConfigurator';
-import useDollSettings from '@/Features/Configurator/hooks/useDollSettings';
-import { getErrorMessage } from '@/Shared/Errors/errorMessage';
+import axios from 'axios';
+import styles from './DollManager.module.css';
 
 const DollManager = forwardRef(({ views, defaultSettings, partPositions: initialPartPositions }, ref) => {
-    const { savePartPosition, saveSettings: persistDollSettings } = useDollSettings();
     const [activeSection, setActiveSection] = useState('default_images');
 
     // Master State for all defaults
@@ -46,7 +45,7 @@ const DollManager = forwardRef(({ views, defaultSettings, partPositions: initial
             [key]: { x: data.x, y: data.y, scale: data.scale }
         }));
 
-        savePartPosition(data)
+        axios.post(route('doll.settings.savePosition'), data)
             .then(() => {
                 setMessage({ type: 'success', text: 'Posición guardada correctamente' });
             })
@@ -54,7 +53,7 @@ const DollManager = forwardRef(({ views, defaultSettings, partPositions: initial
                 console.error(err);
                 // Revert on failure
                 setPartPositions(oldPositions);
-                const msg = getErrorMessage(err, 'Error desconocido');
+                const msg = err.response?.data?.message || err.message || 'Error desconocido';
                 setMessage({ type: 'error', text: `Error al guardar: ${msg}` });
             });
     };
@@ -64,7 +63,7 @@ const DollManager = forwardRef(({ views, defaultSettings, partPositions: initial
         setMessage(null);
 
         try {
-            await persistDollSettings(fullSettings);
+            await axios.post(route('doll.settings.save'), { settings: fullSettings });
             setMessage({ type: 'success', text: 'Settings saved successfully!' });
         } catch (error) {
             setMessage({ type: 'error', text: 'Failed to save settings.' });
@@ -109,30 +108,37 @@ const DollManager = forwardRef(({ views, defaultSettings, partPositions: initial
     ];
 
     return (
-        <div className="flex flex-1 overflow-hidden h-full relative">
-            {/* Global Message Toast */}
+        <div className={styles.root}>
             {message && (
-                <div className={`absolute bottom-4 right-4 px-4 py-2 rounded shadow-lg z-50 transition-opacity duration-300 ${message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                <div className={[
+                    styles.toast,
+                    message.type === 'success'
+                        ? styles.toastSuccess
+                        : styles.toastError,
+                ].join(' ')}>
                     {message.text}
                 </div>
             )}
 
-            {/* Sidebar */}
-            <aside className="w-64 bg-gray-50 border-r border-gray-200 flex flex-col shrink-0">
-                <div className="p-4 border-b border-gray-200">
-                    <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <aside className={styles.sidebar}>
+                <div className={styles.sidebarHeader}>
+                    <h2 className={styles.sidebarTitle}>
                         Doll Configuration
                     </h2>
                 </div>
-                <nav className="flex-1 overflow-y-auto p-2 space-y-1">
+                <nav className={styles.nav}>
                     {sections.map(section => (
                         <button
                             key={section.id}
                             onClick={() => setActiveSection(section.id)}
-                            className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === section.id
-                                ? 'bg-blue-50 text-blue-700'
-                                : 'text-gray-700 hover:bg-gray-100'
-                                }`}
+                            className={[
+                                styles.navButton,
+                                activeSection === section.id
+                                    ? styles.navButtonActive
+                                    : '',
+                            ]
+                                .filter(Boolean)
+                                .join(' ')}
                         >
                             {section.label}
                         </button>
@@ -140,8 +146,7 @@ const DollManager = forwardRef(({ views, defaultSettings, partPositions: initial
                 </nav>
             </aside>
 
-            {/* Main Content Area */}
-            <main className="flex-1 bg-transparent overflow-hidden relative">
+            <main className={styles.main}>
                 {activeSection === 'default_images' && (
                     <DollDefaultConfigurator
                         views={views}

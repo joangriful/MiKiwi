@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
-import { Html } from '@react-three/drei/web/Html';
-import { useTexture } from '@react-three/drei/core/Texture';
+import { Html, useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { DoubleSide } from 'three';
+import * as THREE from 'three';
+import styles from './ModelErrorBoundary.module.css';
 
 function FallbackImagePlane({ imagePath }) {
     // Load the texture safely. If this fails, it might default to a placeholder or error out silently in console.
@@ -12,7 +12,7 @@ function FallbackImagePlane({ imagePath }) {
     return (
         <mesh position={[0, 1.6, 0]}>
             <planeGeometry args={[1.5, 3.2]} />
-            <meshBasicMaterial map={texture} transparent side={DoubleSide} alphaTest={0.5} />
+            <meshBasicMaterial map={texture} transparent side={THREE.DoubleSide} alphaTest={0.5} />
         </mesh>
     );
 }
@@ -41,8 +41,8 @@ class ModelErrorBoundary extends React.Component {
                     </React.Suspense>
 
                     <Html position={[0, 3.5, 0]} center>
-                        <div className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm border border-gray-200">
-                            <p className="text-[10px] text-gray-500 font-medium">⚠️ Modo 2D (Modelo 3D no encontrado)</p>
+                        <div className={styles.badge}>
+                            <p className={styles.text}>⚠️ Modo 2D (Modelo 3D no encontrado)</p>
                         </div>
                     </Html>
                 </group>

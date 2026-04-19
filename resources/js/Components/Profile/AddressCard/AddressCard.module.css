@@ -1,1 +1,339 @@
-.root {}
+.root {
+    margin-bottom: 1rem;
+}
+
+.editorCard,
+.card {
+    border-radius: 1rem;
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.editorCard {
+    padding: 1.5rem;
+    border: 1px solid var(--color-border-default);
+}
+
+.editorTitle {
+    margin: 0 0 1rem;
+    color: var(--color-text-strongest);
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.fullWidthField {
+    grid-column: 1 / -1;
+}
+
+.label {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--color-text-soft);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 0.75rem;
+    color: var(--color-text-strong);
+    background: var(--bg-surface);
+    transition: var(--transition);
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-ring);
+}
+
+.autocompleteField {
+    position: relative;
+}
+
+.suggestions {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    max-height: 10rem;
+    margin: 0.25rem 0 0;
+    padding: 0.25rem 0;
+    overflow-y: auto;
+    list-style: none;
+    border: 1px solid var(--color-border-default);
+    border-radius: 0.75rem;
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-md);
+}
+
+.suggestionItem {
+    padding: 0.65rem 0.85rem;
+    color: var(--color-text-strong);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.suggestionItem:hover {
+    background: var(--color-surface-subtle);
+}
+
+.suggestionMeta {
+    margin-left: 0.4rem;
+    color: var(--color-text-muted-ui);
+    font-size: 0.75rem;
+}
+
+.phoneContainer {
+    width: 100%;
+}
+
+.phoneSearch {
+    width: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+}
+
+.phoneInput {
+    width: 100% !important;
+    height: 42px !important;
+    padding-left: 48px !important;
+    border: 1px solid var(--color-border-strong) !important;
+    border-radius: 0.75rem !important;
+    color: var(--color-text-strong) !important;
+    font-size: 1rem !important;
+    transition: var(--transition) !important;
+}
+
+.phoneInput:focus {
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 3px var(--color-primary-ring) !important;
+}
+
+.phoneButton {
+    border-color: var(--color-border-strong) !important;
+    border-radius: 0.75rem 0 0 0.75rem !important;
+    background: var(--bg-surface) !important;
+}
+
+.phoneDropdown {
+    margin-top: 0.25rem !important;
+    border: 1px solid var(--color-border-default) !important;
+    border-radius: 0.75rem !important;
+    box-shadow: var(--shadow-md) !important;
+    text-align: left !important;
+    z-index: 1000 !important;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.cancelButton,
+.saveButton,
+.editButton,
+.selectButton,
+.deleteButton {
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.cancelButton {
+    padding: 0.65rem 1rem;
+    color: var(--color-text-soft);
+}
+
+.cancelButton:hover {
+    color: var(--color-text-strong);
+}
+
+.saveButton {
+    padding: 0.65rem 1.5rem;
+    background: var(--color-primary);
+    color: var(--color-white);
+    box-shadow: var(--shadow-sm);
+}
+
+.saveButton:hover {
+    background: var(--color-primary-dark);
+}
+
+.card {
+    position: relative;
+    padding: 1.5rem;
+    border: 1px solid var(--color-border-default);
+}
+
+.cardStandard:hover {
+    border-color: var(--color-border-strong);
+}
+
+.cardDefault {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+.cardBody {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.cardTitle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.25rem;
+    color: var(--color-text-strongest);
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.defaultBadge {
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.cardLine {
+    margin: 0;
+    color: var(--color-text-soft);
+}
+
+.cardPhone {
+    margin: 0.5rem 0 0;
+    color: var(--color-text-muted-ui);
+    font-size: 0.875rem;
+}
+
+.cardActions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.editButton {
+    padding: 0.45rem 0.75rem;
+    border: 1px solid var(--color-border-default);
+    background: var(--color-surface-subtle);
+    color: var(--color-text-soft);
+    font-size: 0.875rem;
+}
+
+.editButton:hover {
+    background: var(--color-surface-disabled);
+}
+
+.selectButton {
+    padding: 0.45rem 0.75rem;
+    color: var(--color-primary);
+    font-size: 0.875rem;
+}
+
+.selectButton:hover {
+    background: var(--color-primary-soft);
+}
+
+.deleteButton {
+    padding: 0.45rem 0.75rem;
+    color: var(--color-danger-soft);
+    font-size: 0.875rem;
+}
+
+.deleteButton:hover {
+    background: var(--color-danger-bg);
+}
+
+.root :global(.react-tel-input .country-list::-webkit-scrollbar) {
+    display: none;
+}
+
+.root :global(.react-tel-input .country-list) {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.root :global(.react-tel-input .country-list .country) {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px !important;
+}
+
+.root :global(.react-tel-input .country-list .country:hover) {
+    background: var(--color-surface-subtle) !important;
+}
+
+.root :global(.react-tel-input .country-list .country .flag) {
+    order: 1;
+    margin-right: 12px !important;
+    transform: scale(1.2);
+}
+
+.root :global(.react-tel-input .country-list .country .dial-code) {
+    order: 2;
+    margin-right: 8px;
+    color: var(--color-text-strong);
+    font-weight: 600;
+}
+
+.root :global(.react-tel-input .country-list .country .country-name) {
+    order: 3;
+    color: var(--color-text-muted-ui);
+}
+
+.root :global(.react-tel-input .country-list .country.highlight) {
+    background: var(--color-surface-disabled) !important;
+}
+
+.root :global(.react-tel-input .selected-flag) {
+    border-radius: 0.75rem 0 0 0.75rem !important;
+}
+
+.root :global(.react-tel-input .selected-flag:hover),
+.root :global(.react-tel-input .selected-flag:focus) {
+    background: var(--color-surface-disabled) !important;
+    border-radius: 0.75rem 0 0 0.75rem !important;
+}
+
+@media (min-width: 768px) {
+    .formGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 767px) {
+    .cardBody {
+        flex-direction: column;
+    }
+
+    .cardActions {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+}
