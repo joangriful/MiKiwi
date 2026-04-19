@@ -1,0 +1,28 @@
+.root {
+    display: flex;
+    justify-content: flex-start;
+    flex: 1;
+    margin-bottom: 2.5rem;
+}
+
+.logo {
+    width: 12rem;
+    height: auto;
+    color: var(--color-white);
+    opacity: 0.9;
+    transition: transform 300ms ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+@media (min-width: 768px) {
+    .root {
+        margin-bottom: 0;
+    }
+
+    .logo {
+        width: 16rem;
+    }
+}

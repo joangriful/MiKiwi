@@ -1,23 +1,22 @@
-import FooterLogo from './FooterLogo';
-import FooterLinks from './FooterLinks';
-import FooterSocial from './FooterSocial';
-import FooterNewsletter from './FooterNewsletter';
-import FooterBottom from './FooterBottom';
+import FooterBottom from './FooterBottom/FooterBottom';
+import FooterLinks from './FooterLinks/FooterLinks';
+import FooterLogo from './FooterLogo/FooterLogo';
+import FooterNewsletter from './FooterNewsletter/FooterNewsletter';
+import FooterSocial from './FooterSocial/FooterSocial';
 import styles from './Footer.module.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function Footer() {
     return (
-        <footer className={`${styles.root} bg-black text-white pt-16 pb-8 border-t border-gray-800 overflow-hidden relative`}>
-            <div className="container mx-auto px-6">
-                <div className="flex flex-col md:flex-row justify-between items-start mb-12 lg:gap-32 gap-12">
+        <footer className={styles.root}>
+            <div className={styles.container}>
+                <div className={styles.topRow}>
                     <FooterLogo />
                     <FooterLinks />
                 </div>
 
-                {/* Social & Newsletter Row */}
-                <div className="flex flex-col md:flex-row justify-between items-end gap-8 pb-12 mb-8 border-b border-gray-800">
+                <div className={styles.middleRow}>
                     <FooterSocial />
                     <FooterNewsletter />
                 </div>

@@ -24,29 +24,36 @@ export default function FooterNewsletter() {
     };
 
     return (
-        <div className={`${styles.root} w-full md:w-auto flex flex-col items-center md:items-end text-center md:text-right md:pr-12 relative lg:mt-[-40px]`}>
-            <div className="mb-4">
-                <h4 className="text-white font-medium mb-1 text-lg font-head uppercase tracking-tight">Únete al círculo exclusivo de MiKiwi</h4>
-                <p className="text-gray-500 text-[10px] italic">Recibe ofertas especiales y recetas frescas.</p>
+        <div className={styles.root}>
+            <div className={styles.copyBlock}>
+                <h4 className={styles.title}>
+                    Únete al círculo exclusivo de MiKiwi
+                </h4>
+                <p className={styles.subtitle}>
+                    Recibe ofertas especiales y recetas frescas.
+                </p>
             </div>
-            <form onSubmit={handleSubmit} className="flex gap-2 w-full md:w-auto md:min-w-[350px]">
+            <form onSubmit={handleSubmit} className={styles.form}>
                 <input
                     type="email"
                     value={data.email}
                     onChange={(e) => setData('email', e.target.value)}
                     placeholder="Tu correo electrónico"
                     required
-                    className="bg-zinc-900/50 border border-zinc-800 text-gray-300 text-sm rounded-lg block w-full p-2.5 focus:ring-[#d697c8] focus:border-[#d697c8] outline-none transition-colors"
+                    className={styles.input}
                     disabled={processing}
                 />
                 <button
                     type="submit"
                     disabled={processing}
-                    className="text-white bg-[#d697c8] hover:bg-[#f8b7ea] focus:ring-4 focus:ring-[#d697c8]/30 font-bold rounded-lg text-sm px-6 py-2.5 transition-all disabled:opacity-50 uppercase tracking-widest"
+                    className={styles.button}
                 >
                     {processing ? 'Enviando...' : 'Suscribirse'}
                 </button>
             </form>
+            {errors.email ? (
+                <p className={styles.error}>{errors.email}</p>
+            ) : null}
         </div>
     );
 }
