@@ -28,6 +28,10 @@
     --color-surface-subtle-transparent: rgb(249 250 251 / 50%);
     --color-surface-disabled: #f3f4f6;
     --color-surface-overlay: rgb(0 0 0 / 50%);
+    --color-black-faint: rgb(0 0 0 / 10%);
+    --color-white-faint: rgb(255 255 255 / 10%);
+    --color-white-muted: rgb(255 255 255 / 60%);
+    --color-white-dim: rgb(255 255 255 / 70%);
     --color-white-soft: rgb(255 255 255 / 90%);
     --color-primary-soft: rgb(153 184 73 / 10%);
     --color-primary-ring: rgb(153 184 73 / 20%);

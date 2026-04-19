@@ -103,7 +103,7 @@
 
 .dropdownPanel {
     min-width: 15rem;
-    border: 1px solid rgb(255 255 255 / 10%);
+    border: 1px solid var(--color-white-faint);
     border-radius: 1rem;
     background: rgb(0 0 0 / 95%);
     backdrop-filter: blur(10px);
@@ -120,7 +120,7 @@
 .dropdownLink {
     display: block;
     padding-block: 0.25rem;
-    color: rgb(255 255 255 / 70%);
+    color: var(--color-white-dim);
     font-size: 0.6875rem;
 }
 
