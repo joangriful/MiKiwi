@@ -1,5 +1,7 @@
+import React, { useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import MikiwiLogo from '@/Components/MikiwiLogo/MikiwiLogo';
+import BurgerMenu from './BurgerMenu';
 import styles from './Header.module.css';
 
 const primaryLinks = [
@@ -29,6 +31,7 @@ const stimulationLinks = [
 export default function Header() {
     const { auth, cartCount } = usePage().props;
     const user = auth?.user;
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
         <header className={styles.root}>
@@ -111,7 +114,22 @@ export default function Header() {
                         </span>
                     )}
                 </Link>
+
+                <button 
+                    className={styles.burgerButton} 
+                    onClick={() => setIsMenuOpen(true)}
+                    aria-label="Open menu"
+                >
+                    <span className="material-symbols-outlined">menu</span>
+                </button>
             </div>
+
+            <BurgerMenu 
+                isOpen={isMenuOpen} 
+                onClose={() => setIsMenuOpen(false)}
+                primaryLinks={primaryLinks}
+                stimulationLinks={stimulationLinks}
+            />
         </header>
     );
 }

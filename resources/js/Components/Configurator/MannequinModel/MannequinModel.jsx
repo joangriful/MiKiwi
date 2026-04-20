@@ -67,10 +67,24 @@ export default function MannequinModel({
     hairParams = {},
     rotationY = 0
 }) {
+    const loadStart = useRef(performance.now());
+    
+    useEffect(() => {
+        loadStart.current = performance.now();
+        console.log(`%c[3D Model] %cIniciando carga de geometría: ${modelPath}`, "color: #FF9800; font-weight: bold", "color: #666");
+    }, [modelPath]);
+
     // 1. Load Model (Using useLoader for better resource control)
     const fbx = useLoader(FBXLoader, modelPath, (loader) => {
         loader.setResourcePath('');
     });
+
+    useEffect(() => {
+        if (fbx) {
+            const end = performance.now();
+            console.log(`%c[3D Model] %cGeometría lista: ${modelPath} (%c${Math.round(end - loadStart.current)}ms%c)`, "color: #4CAF50; font-weight: bold", "color: #666", "color: #4CAF50", "color: #666");
+        }
+    }, [fbx, modelPath]);
 
     // 2. Load Textures
     const emptyPix = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';

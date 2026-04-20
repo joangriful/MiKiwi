@@ -51,10 +51,7 @@ class ConfiguratorPageController extends Controller
 
     private function getCachedViews()
     {
-        $cacheDuration = app()->environment('local') ? 5 : 3600;
-
-        return Cache::remember('doll_parts_cloudinary', $cacheDuration, function () {
-            return $this->cloudinaryService->listDollParts();
-        });
+        // Read directly from cache (Pre-warmed by RefreshCloudinaryAssets command)
+        return Cache::get('doll_parts_cloudinary', ['front' => [], 'back' => []]);
     }
 }

@@ -1,9 +1,8 @@
-import React, { useState, Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Environment, ContactShadows } from '@react-three/drei';
-import MannequinModel from '../MannequinModel/MannequinModel';
-import ModelErrorBoundary from '@/Components/Configurator/ModelErrorBoundary/ModelErrorBoundary';
+import React, { useState, Suspense, lazy } from 'react';
 import styles from './Mannequin3DViewer.module.css';
+
+// Lazy load the 3D scene component
+const MannequinScene3D = lazy(() => import('./components/MannequinScene3D'));
 
 const availableModels = [
     {
@@ -42,50 +41,6 @@ const availableModels = [
     },
 ];
 
-function Scene({ modelPath, texturePath, normalPath, modelId, rotationY, color, bodyParams }) {
-    return (
-        <>
-            <PerspectiveCamera makeDefault position={[0, 1.5, 4]} fov={50} />
-            <OrbitControls
-                minDistance={1}
-                maxDistance={10}
-                minPolarAngle={0}
-                maxPolarAngle={Math.PI / 1.7}
-                enableDamping
-                target={[0, 1, 0]}
-            />
-
-            <ambientLight intensity={0.7} />
-            <directionalLight position={[5, 10, 5]} intensity={1.2} castShadow />
-            <directionalLight position={[-5, 5, -5]} intensity={0.5} />
-
-            <Environment preset="studio" />
-
-            <group position={[0, 0, 0]}>
-                <ModelErrorBoundary key={modelPath}>
-                    <MannequinModel
-                        modelPath={modelPath}
-                        texturePath={texturePath}
-                        normalPath={normalPath}
-                        modelId={modelId}
-                        color={color}
-                        bodyParams={bodyParams}
-                        rotationY={rotationY}
-                    />
-                </ModelErrorBoundary>
-                <ContactShadows
-                    resolution={1024}
-                    scale={10}
-                    blur={2}
-                    opacity={0.4}
-                    far={10}
-                    color="#000000"
-                    position={[0, 0.01, 0]}
-                />
-            </group>
-        </>
-    );
-}
 
 function Loader() {
     return (
@@ -116,17 +71,15 @@ export default function Mannequin3DViewer() {
         <div className={styles.root}>
             <div className={styles.viewportArea}>
                 <Suspense fallback={<Loader />}>
-                    <Canvas shadows dpr={[1, 2]}>
-                        <Scene
-                            modelPath={selectedModel.path}
-                            texturePath={selectedModel.texturePath}
-                            normalPath={selectedModel.normalPath}
-                            modelId={selectedModel.id}
-                            rotationY={selectedModel.rotationY || 0}
-                            color="#ffd5b4"
-                            bodyParams={bodyParams}
-                        />
-                    </Canvas>
+                    <MannequinScene3D
+                        modelPath={selectedModel.path}
+                        texturePath={selectedModel.texturePath}
+                        normalPath={selectedModel.normalPath}
+                        modelId={selectedModel.id}
+                        rotationY={selectedModel.rotationY || 0}
+                        color="#ffd5b4"
+                        bodyParams={bodyParams}
+                    />
                 </Suspense>
 
                 <div className={styles.selectorOverlay}>

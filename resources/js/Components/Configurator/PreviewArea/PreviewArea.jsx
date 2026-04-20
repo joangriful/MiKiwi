@@ -37,6 +37,8 @@ const LayerImage = ({ layer, partPositions }) => {
             src={src}
             alt={layer.key}
             fetchpriority="high"
+            loading="eager"
+            onLoad={() => layer.onLoad && layer.onLoad(layer.key)}
             className={styles.layerImage}
             style={combinedStyle}
         />
@@ -44,7 +46,7 @@ const LayerImage = ({ layer, partPositions }) => {
 };
 
 
-export default function PreviewArea({ selectedParts, viewportInfo, onViewportChange, className = '', partPositions }) {
+export default function PreviewArea({ selectedParts, viewportInfo, onViewportChange, className = '', partPositions, onReady }) {
 
     // Flatten all layers
     const renderedLayers = useMemo(() => {
@@ -79,6 +81,36 @@ export default function PreviewArea({ selectedParts, viewportInfo, onViewportCha
 
         return layers.sort((a, b) => a.zIndex - b.zIndex);
     }, [selectedParts]);
+
+    // Tracking for the ready signal
+    const loadedLayers = useRef(new Set());
+    const onReadyCalled = useRef(false);
+
+    const handleLayerLoad = (key) => {
+        loadedLayers.current.add(key);
+        
+        if (loadedLayers.current.size >= renderedLayers.length && !onReadyCalled.current) {
+            onReadyCalled.current = true;
+            if (typeof onReady === 'function') {
+                onReady();
+            }
+        }
+    };
+
+    // Reset ready state if the number of layers changes significantly
+    // (though usually we just want to know when the INITIAL doll is ready)
+    useEffect(() => {
+        if (renderedLayers.length === 0 && !onReadyCalled.current) {
+            // Safety trigger: if no layers are rendered after 500ms, assume ready
+            const timer = setTimeout(() => {
+                if (!onReadyCalled.current) {
+                    onReadyCalled.current = true;
+                    if (typeof onReady === 'function') onReady();
+                }
+            }, 500);
+            return () => clearTimeout(timer);
+        }
+    }, [renderedLayers.length]);
 
     const containerRef = useRef(null);
     const draggingRef = useRef(false);
@@ -195,7 +227,7 @@ export default function PreviewArea({ selectedParts, viewportInfo, onViewportCha
                 {renderedLayers.map(layer => (
                     <LayerImage
                         key={layer.key}
-                        layer={layer}
+                        layer={{ ...layer, onLoad: handleLayerLoad }}
                         partPositions={partPositions}
                     />
                 ))}
