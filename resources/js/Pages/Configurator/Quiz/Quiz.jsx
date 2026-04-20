@@ -263,24 +263,25 @@ export default function Quiz() {
         <ConfiguratorLayout>
             <Head title="Quiz de Identidad - MiKiwi" />
 
-            <main className={`${styles.root} ${styles.main}`}>
+            <main className={styles.main}>
                 <div className={`${styles.blob} ${styles.blobOne}`}></div>
                 <div className={`${styles.blob} ${styles.blobTwo}`}></div>
 
                 <div className={styles.card}>
                     {!isFinished ? (
                         <div key={currentStep} className={styles.step}>
-                            <div className="flex justify-between items-center w-full mb-4">
+                            <div className={styles.navigationRow}>
                                 {currentStep > 0 ? (
-                                    <button 
-                                        onClick={handleBack} 
-                                        className="text-gray-500 hover:text-[#99b849] transition-colors flex items-center gap-1 text-sm font-medium z-10 cursor-pointer"
+                                    <button
+                                        type="button"
+                                        onClick={handleBack}
+                                        className={styles.backButton}
                                     >
-                                        <span className="material-symbols-outlined text-base">arrow_back</span>
+                                        <span className={`material-symbols-outlined ${styles.backIcon}`}>arrow_back</span>
                                         Volver
                                     </button>
                                 ) : (
-                                    <div></div>
+                                    <div className={styles.navigationSpacer}></div>
                                 )}
                             </div>
                             <div className={styles.stepIndicator}>
@@ -314,7 +315,7 @@ export default function Quiz() {
                             </div>
                         </div>
                     ) : (
-                        <div className={`${styles.step} text-center`}>
+                        <div className={`${styles.step} ${styles.resultStep}`}>
                             <div className={styles.resultHeader}>
                                 <div className={styles.resultIcon}>✨</div>
                                 <span className={styles.questionTag}>Tu Perfil de Identidad</span>
@@ -327,7 +328,7 @@ export default function Quiz() {
 
                             {auth?.user ? (
                                 // Authenticated user
-                                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                <div className={styles.resultActions}>
                                     <Link
                                         href="/perfil"
                                         className={`${styles.ctaButton} ${styles.ctaPrimary}`}
@@ -335,6 +336,7 @@ export default function Quiz() {
                                         Ver mis recomendaciones
                                     </Link>
                                     <button
+                                        type="button"
                                         onClick={resetQuiz}
                                         className={styles.restartButton}
                                     >
@@ -343,11 +345,11 @@ export default function Quiz() {
                                 </div>
                             ) : (
                                 // Unauthenticated user
-                                <div className="flex flex-col gap-4 justify-center">
-                                    <p className="text-gray-600 mb-4">
+                                <div className={styles.resultActions}>
+                                    <p className={styles.guestNote}>
                                         Crea una cuenta o inicia sesión para guardar tus recomendaciones
                                     </p>
-                                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                    <div className={styles.resultActionsRow}>
                                         <Link
                                             href="/register"
                                             className={`${styles.ctaButton} ${styles.ctaPrimary}`}
@@ -362,8 +364,9 @@ export default function Quiz() {
                                         </Link>
                                     </div>
                                     <button
+                                        type="button"
                                         onClick={resetQuiz}
-                                        className={`${styles.restartButton} mt-4`}
+                                        className={styles.restartButton}
                                     >
                                         Repetir Test
                                     </button>

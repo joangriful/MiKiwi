@@ -1,4 +1,6 @@
-.root {}
+.section {
+    padding: 150px 5%;
+}
 
 .header {
     margin-bottom: 80px;
@@ -50,9 +52,12 @@
 }
 
 .previewShape {
+    --collections-shape-bg: #eee;
     width: 100px;
     height: 300px;
+    border: 1px solid var(--color-black-faint);
     border-radius: 50px;
+    background: var(--collections-shape-bg);
     box-shadow: var(--shadow-lg);
     transition: transform 700ms ease;
 }

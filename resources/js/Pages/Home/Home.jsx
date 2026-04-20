@@ -28,24 +28,24 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
     ];
 
     return (
-        <div className={`${styles.root} home-container select-none cursor-default`}>
+        <div className={`${styles.page} select-none cursor-default`}>
             <Head title="MiKiwi | Ingeniería Sensorial y Diseño Exclusivo" />
             <Header />
 
             <main>
                 {/* --- Hero Section --- */}
-                <section className="hero-minimal hero-v2">
-                    <div className="hero-main-content">
+                <section className={styles.heroSection}>
+                    <div className={styles.heroMainContent}>
                         {/* Wrapper for text and logo to handle split layout on desktop */}
-                        <div className="hero-split-container">
+                        <div className={styles.heroSplit}>
                             {/* Brand Logo - appearing first on mobile, right on desktop */}
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 1.2, ease: "easeOut" }}
-                                className="hero-brand-logo"
+                                className={styles.heroBrandLogo}
                             >
-                                <img src="/assets/icons/mikiwi_logo.svg" alt="MiKiwi Logo" />
+                                <img src="/assets/icons/mikiwi_logo.svg" alt="MiKiwi Logo" className={styles.heroBrandLogoImage} />
                             </motion.div>
 
                             {/* Actions & Slogan - appearing second on mobile, left on desktop */}
@@ -53,14 +53,14 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.8, delay: 0.6 }}
-                                className="hero-text-side"
+                                className={styles.heroTextSide}
                             >
-                                <h1 className="hero-slogan">
+                                <h1 className={styles.heroSlogan}>
                                     Ingeniería sensorial + diseño<br />
                                     exclusivo para elevar tu placer.
                                 </h1>
-                                <div className="hero-cta-box">
-                                    <Link href={route('register')} className="btn-pill btn-hover-effect">
+                                <div className={styles.heroCtaBox}>
+                                    <Link href={route('register')} className={styles.pillButton}>
                                         ÚNETE A MIKIWI
                                     </Link>
                                 </div>
@@ -71,8 +71,8 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
 
                 {/* --- Keywords Section --- */}
                 <ScrollReveal direction="right" distance={50} delay={0.2}>
-                    <div className="work-section">
-                        <p className="work-keywords">
+                    <div className={styles.workSection}>
+                        <p className={styles.workKeywords}>
                             Diseño Propio.<br />
                             Fabricación Española.<br />
                             Calidad Premium.<br />
@@ -82,16 +82,16 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
                 </ScrollReveal>
 
                 {/* --- Benefits Section (Por qué elegirnos) --- */}
-                <section className="benefits-section">
-                    <div className="benefits-grid">
+                <section className={styles.benefitsSection}>
+                    <div className={styles.benefitsGrid}>
                         {benefits.map((benefit, i) => (
                             <ScrollReveal key={i} direction="up" delay={i * 0.15}>
-                                <div className="benefit-card">
-                                    <div className="benefit-img">
-                                        <img src={benefit.img} alt={benefit.title} />
+                                <div className={styles.benefitCard}>
+                                    <div className={styles.benefitImageWrap}>
+                                        <img src={benefit.img} alt={benefit.title} className={styles.benefitImage} />
                                     </div>
-                                    <h3 className="uppercase tracking-widest text-sm mb-2">{benefit.title}</h3>
-                                    <p>{benefit.desc}</p>
+                                    <h3 className={styles.benefitTitle}>{benefit.title}</h3>
+                                    <p className={styles.benefitDescription}>{benefit.desc}</p>
                                 </div>
                             </ScrollReveal>
                         ))}
@@ -109,25 +109,25 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
                 </ScrollReveal>
 
                 {/* --- Collection Grid --- */}
-                <section className="method-section">
+                <section className={styles.methodSection}>
                     <ScrollReveal direction="right">
-                        <div className="method-header">
-                            <h2>Colecciones.</h2>
-                            <div>
-                                <p>Universos sensoriales cuidadosamente curados por MiKiwi.</p>
-                                <Link href={route('products.index')} className="btn-pill">Ver todas</Link>
+                        <div className={styles.methodHeader}>
+                            <h2 className={styles.methodTitle}>Colecciones.</h2>
+                            <div className={styles.methodHeaderText}>
+                                <p className={styles.methodDescription}>Universos sensoriales cuidadosamente curados por MiKiwi.</p>
+                                <Link href={route('products.index')} className={styles.pillButton}>Ver todas</Link>
                             </div>
                         </div>
                     </ScrollReveal>
 
-                    <div className="collection-grid-new">
+                    <div className={styles.collectionGrid}>
                         {collections.map((col, i) => (
                             <ScrollReveal key={i} direction="left" delay={i * 0.1} distance={30}>
-                                <Link href={col.link} className="collection-item-new group">
-                                    <div className="collection-img-box rounded-2xl">
-                                        <img src={col.img} alt={col.title} />
+                                <Link href={col.link} className={styles.collectionItem}>
+                                    <div className={styles.collectionImageBox}>
+                                        <img src={col.img} alt={col.title} className={styles.collectionImage} />
                                     </div>
-                                    <h3 className="mt-4">{col.title}</h3>
+                                    <h3 className={styles.collectionTitle}>{col.title}</h3>
                                 </Link>
                             </ScrollReveal>
                         ))}
@@ -136,37 +136,33 @@ export default function HomePage({ auth, laravelVersion, phpVersion, heroImages 
 
 
                 {/* --- Doll Customization Teaser --- */}
-                <section className="doll-teaser-section relative bg-white">
+                <section className={styles.teaserSection}>
                     {/* Background Overlay with requested image and transparency */}
-                    <div className="teaser-bg-overlay absolute inset-0 z-0">
+                    <div className={styles.teaserBgOverlay}>
                         <img
                             src="https://res.cloudinary.com/dquwonjie/image/upload/v1771872987/46bfb4f33999ce12ffa791b9df263c4f_vuktao.jpg"
                             alt="Background Modelo"
-                            className="w-full h-full object-cover object-center opacity-[0.4] filter blur-[0.5px]"
+                            className={styles.teaserBgImage}
                         />
-                        {/* 
-                          Full-width gradient overlay to "cover" the photo more. 
-                          Starts solid white and fades out but keeps a white tint. 
-                        */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/60 to-white/20"></div>
+                        <div className={styles.teaserGradient}></div>
                     </div>
 
-                    <div className="teaser-content relative z-10">
+                    <div className={styles.teaserContent}>
                         <ScrollReveal direction="right" distance={40}>
-                            <span className="font-sugo text-pink-500 text-xs tracking-[.3em] uppercase mb-4 block">Personalización Avanzada</span>
-                            <h2 className="font-sugo text-black text-5xl md:text-8xl font-black uppercase leading-[0.85] mb-8 tracking-widest">
+                            <span className={styles.teaserTag}>Personalización Avanzada</span>
+                            <h2 className={styles.teaserTitle}>
                                 CREA TU<br />PROPIA MODELO.
                             </h2>
                         </ScrollReveal>
 
                         <ScrollReveal direction="left" distance={40} delay={0.2}>
-                            <p className="text-black/60 max-w-lg text-lg mb-10 font-light">
+                            <p className={styles.teaserText}>
                                 Accede a nuestro configurador biométrico de alta fidelidad. Define cada detalle, textura y polímero de tu compañera ideal.
                             </p>
                         </ScrollReveal>
 
                         <ScrollReveal direction="up" delay={0.4}>
-                            <Link href={route('doll.config.test')} className="btn-pill">
+                            <Link href={route('doll.config.test')} className={styles.pillButton}>
                                 LANZAR CONFIGURADOR
                             </Link>
                         </ScrollReveal>

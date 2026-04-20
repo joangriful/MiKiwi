@@ -10,9 +10,9 @@ const DollScene3D = lazy(() => import('./components/DollScene3D'));
 
 function Loading() {
     return (
-        <div className="loading-screen">
-            <div className="loading-spinner"></div>
-            <p>Cargando configurador...</p>
+        <div className={styles.loadingScreen}>
+            <div className={styles.loadingSpinner}></div>
+            <p className={styles.loadingText}>Cargando configurador...</p>
         </div>
     );
 }
@@ -35,9 +35,9 @@ export default function DollConfigurator() {
         <ConfiguratorLayout>
             <Head title="Configurador de Muñecas - MiKiwi" />
 
-            <div className={`${styles.root} configurator-container`}>
+            <div className={styles.container}>
                 {/* 3D Canvas */}
-                <div className="canvas-container">
+                <div className={styles.canvasContainer}>
                     <Suspense fallback={<Loading />}>
                     <Suspense fallback={<Loading />}>
                         <DollScene3D
@@ -52,9 +52,9 @@ export default function DollConfigurator() {
                     </Suspense>
 
                     {/* Branding overlay */}
-                    <div className="brand-overlay">
-                        <h1 className="brand-title">Configurador de Muñecas</h1>
-                        <p className="brand-subtitle">MIKIWI Collection</p>
+                    <div className={styles.brandOverlay}>
+                        <h1 className={styles.brandTitle}>Configurador de Muñecas</h1>
+                        <p className={styles.brandSubtitle}>MIKIWI Collection</p>
                     </div>
                 </div>
 

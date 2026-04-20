@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import InputError from '@/Components/InputError/InputError';
+import { authClass } from '@/Components/Auth/AuthShell/authShellStyles';
 import { Link, useForm } from '@inertiajs/react';
 import styles from './ResetPasswordForm.module.css';
 
@@ -25,8 +26,8 @@ export default function ResetPasswordForm({ token, email }) {
 
     return (
         <form onSubmit={submit} className={styles.root}>
-            <div className="mk-auth-field">
-                <label htmlFor="email" className="mk-auth-label">
+            <div className={authClass('mk-auth-field')}>
+                <label htmlFor="email" className={authClass('mk-auth-label')}>
                     Correo electrónico
                 </label>
                 <input
@@ -34,7 +35,7 @@ export default function ResetPasswordForm({ token, email }) {
                     type="email"
                     name="email"
                     value={data.email}
-                    className={`mk-auth-input ${styles.input}`}
+                    className={`${authClass('mk-auth-input')} ${styles.input}`}
                     autoComplete="username"
                     required
                     placeholder=" "
@@ -43,8 +44,8 @@ export default function ResetPasswordForm({ token, email }) {
                 <InputError message={errors.email} className={styles.error} />
             </div>
 
-            <div className="mk-auth-field">
-                <label htmlFor="password" className="mk-auth-label">
+            <div className={authClass('mk-auth-field')}>
+                <label htmlFor="password" className={authClass('mk-auth-label')}>
                     Nueva contraseña
                 </label>
                 <input
@@ -52,7 +53,7 @@ export default function ResetPasswordForm({ token, email }) {
                     type="password"
                     name="password"
                     value={data.password}
-                    className={`mk-auth-input ${styles.input}`}
+                    className={`${authClass('mk-auth-input')} ${styles.input}`}
                     autoComplete="new-password"
                     autoFocus
                     required
@@ -62,8 +63,8 @@ export default function ResetPasswordForm({ token, email }) {
                 <InputError message={errors.password} className={styles.error} />
             </div>
 
-            <div className="mk-auth-field">
-                <label htmlFor="password_confirmation" className="mk-auth-label">
+            <div className={authClass('mk-auth-field')}>
+                <label htmlFor="password_confirmation" className={authClass('mk-auth-label')}>
                     Confirmar contraseña
                 </label>
                 <input
@@ -71,7 +72,7 @@ export default function ResetPasswordForm({ token, email }) {
                     id="password_confirmation"
                     name="password_confirmation"
                     value={data.password_confirmation}
-                    className={`mk-auth-input ${styles.input}`}
+                    className={`${authClass('mk-auth-input')} ${styles.input}`}
                     autoComplete="new-password"
                     required
                     placeholder=" "
@@ -84,12 +85,12 @@ export default function ResetPasswordForm({ token, email }) {
                 />
             </div>
 
-            <button type="submit" className={`mk-auth-btn-primary ${styles.submitButton}`} disabled={processing}>
+            <button type="submit" className={`${authClass('mk-auth-btn-primary')} ${styles.submitButton}`} disabled={processing}>
                 <span>{processing ? 'Actualizando...' : 'Actualizar contraseña'}</span>
             </button>
 
             <div className={styles.footerText}>
-                <Link href={route('login')} className={`mk-auth-link ${styles.inlineLink}`}>
+                <Link href={route('login')} className={`${authClass('mk-auth-link')} ${styles.inlineLink}`}>
                     Volver a iniciar sesión
                 </Link>
             </div>

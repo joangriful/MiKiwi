@@ -135,57 +135,119 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
 
     return (
         <ConfiguratorLayout>
-            <Head title="Doll Configurator | Test" />
-            <ConfiguratorTabs activeTab={activeTab} setActiveTab={handleTabChange} />
-            
-            <div className="flex-none flex flex-col min-[724px]:flex-row min-[724px]:flex-wrap min-[724px]:content-start lg:flex-nowrap bg-gray-50 relative h-[calc(100vh-150px)] min-h-[650px] overflow-hidden">
-                
-                {/* 2D View (Customize) */}
-                <div 
-                    className="w-full h-full flex flex-col lg:flex-row flex-1"
-                    style={{ 
-                        opacity: activeTab === 'customize' ? 1 : 0, 
-                        pointerEvents: activeTab === 'customize' ? 'auto' : 'none', 
-                        position: activeTab === 'customize' ? 'relative' : 'absolute', 
-                        inset: 0 
-                    }}
-                >
-                    <MainEditorLayout
-                        topSectionHeight={topSectionHeight}
-                        handleDragStart={() => { isDraggingRef.current = true; }}
-                        selectedParts={selectedParts}
-                        viewportInfo={viewportInfo}
-                        setViewportInfo={setViewportInfo}
-                        partPositions={partPositions}
-                        handle2DReady={handle2DReady}
-                        defaultZoom={defaultZoom}
-                        zoomLevel={zoomLevel}
-                        setZoomLevel={setZoomLevel}
-                        currentView={currentView}
-                        setCurrentView={setCurrentView}
-                        availableParts={availableParts}
-                        handleSelectPart={handleSelectPart}
-                        sectionOrder={sectionOrder}
-                        handleSavePosition={handleSavePosition}
-                    />
-                </div>
+            <Head title="Doll Configurator" />
 
-                {/* 3D View (Ready Dolls) - Gated Mount */}
-                <div 
-                    className="flex-1 w-full h-full flex flex-col items-center justify-center bg-white z-30 relative overflow-hidden"
-                    style={{ 
-                        opacity: activeTab === 'ready' ? 1 : 0, 
-                        pointerEvents: activeTab === 'ready' ? 'auto' : 'none', 
-                        position: activeTab === 'ready' ? 'relative' : 'absolute', 
-                        inset: 0 
-                    }}
-                >
-                    {/* ONLY mount the 3D Viewer if the user switches to the tab OR if they are idle for 10s */}
-                    {(activeTab === 'ready' || canStartBackgroundWarming) && (
+            {/* Static Header with Tabs */}
+            <div className={`${styles.root} ${styles.header}`}>
+                <div className={styles.tabsBar}>
+                    <div className={styles.tabsInner}>
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab('customize')}
+                            className={`${styles.tabButton} ${activeTab === 'customize' ? styles.tabButtonActive : ''}`}
+                        >
+                            PERSONALIZAR
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab('ready')}
+                            className={`${styles.tabButton} ${activeTab === 'ready' ? styles.tabButtonActive : ''}`}
+                        >
+                            MUÑECAS LISTAS
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Main Layout */}
+            <div className={styles.mainLayout}>
+
+                {activeTab === 'customize' ? (
+                    <>
+                        {/* Left Content Area (Images ONLY) */}
+                        <div className={styles.leftColumn}>
+
+                            {/* Images Row */}
+                            <div className={styles.imagesRow}>
+
+                                {/* Preview Area */}
+                                <div
+                                    className={styles.previewPanel}
+                                    style={{
+                                        bottom: window.innerWidth < 724 ? `calc(${100 - topSectionHeight}% + 1rem)` : undefined
+                                    }}
+                                >
+                                    <div className={styles.previewContent}>
+                                        <PreviewArea
+                                            selectedParts={selectedParts}
+                                            viewportInfo={viewportInfo}
+                                            onViewportChange={setViewportInfo}
+                                            className={styles.previewArea}
+                                            partPositions={partPositions}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* CloseUp Area */}
+                                <div className={styles.closeUpPanel}>
+                                    <CloseUp
+                                        selectedParts={selectedParts}
+                                        onViewportChange={setViewportInfo}
+                                        viewportOverride={viewportInfo}
+                                        initialViewport={defaultZoom}
+                                        zoomLevel={zoomLevel}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Drag Handle - Mobile/Tablet Only */}
+                        {window.innerWidth < 1024 && (
+                            <div
+                                onMouseDown={handleDragStart}
+                                onTouchStart={handleDragStart}
+                                className={styles.dragHandle}
+                                style={{ bottom: `${100 - topSectionHeight}%`, transform: 'translateY(50%)' }}
+                            >
+                                <div className={styles.dragHandleKnob} />
+                            </div>
+                        )}
+
+                        {/* Right Column: Options Bar + Controls */}
+                        <div
+                            className={styles.rightColumn}
+                            style={{ height: window.innerWidth < 1024 ? `${100 - topSectionHeight}%` : '100%' }}
+                        >
+                            <div className={styles.optionsBarShell}>
+                                <OptionsBar
+                                    currentView={currentView}
+                                    onViewChange={setCurrentView}
+                                    zoomLevel={zoomLevel}
+                                    onZoomChange={setZoomLevel}
+                                    surface="transparent"
+                                />
+                            </div>
+
+                            <div className={styles.selectorShell}>
+                                <PartSelector
+                                    parts={availableParts}
+                                    selectedParts={selectedParts}
+                                    onSelect={handleSelectPart}
+                                    sectionOrder={sectionOrder}
+                                    showImages={true}
+                                    partPositions={partPositions}
+                                    currentView={currentView}
+                                    onSavePosition={handleSavePosition}
+                                />
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <div className={styles.readyView}>
                         <Suspense fallback={
-                            <div className="flex flex-col items-center justify-center w-full h-full bg-white">
-                                <div className="w-12 h-12 border-4 border-black/10 border-t-black rounded-full animate-spin mb-4"></div>
-                                <p className="text-gray-500 font-medium font-outfit">Inicializando motor 3D...</p>
+                            <div className={styles.viewerLoading}>
+                                <div className={styles.viewerSpinner}></div>
+                                <p className={styles.viewerText}>Inicializando motor 3D...</p>
                             </div>
                         }>
                             <Mannequin3DViewer 

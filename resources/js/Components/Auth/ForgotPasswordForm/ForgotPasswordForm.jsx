@@ -1,4 +1,5 @@
 import InputError from '@/Components/InputError/InputError';
+import { authClass } from '@/Components/Auth/AuthShell/authShellStyles';
 import { Link, useForm } from '@inertiajs/react';
 import styles from './ForgotPasswordForm.module.css';
 
@@ -16,13 +17,13 @@ export default function ForgotPasswordForm({ status }) {
     return (
         <form onSubmit={submit} className={styles.root}>
             {status && (
-                <div className="mk-auth-status-success">
+                <div className={authClass('mk-auth-status-success')}>
                     {status}
                 </div>
             )}
 
-            <div className="mk-auth-field">
-                <label htmlFor="email" className="mk-auth-label">
+            <div className={authClass('mk-auth-field')}>
+                <label htmlFor="email" className={authClass('mk-auth-label')}>
                     Correo electrónico
                 </label>
                 <input
@@ -30,7 +31,7 @@ export default function ForgotPasswordForm({ status }) {
                     type="email"
                     name="email"
                     value={data.email}
-                    className={`mk-auth-input ${styles.input}`}
+                    className={`${authClass('mk-auth-input')} ${styles.input}`}
                     autoFocus
                     required
                     placeholder=" "
@@ -40,12 +41,12 @@ export default function ForgotPasswordForm({ status }) {
 
             <InputError message={errors.email} className={styles.error} />
 
-            <button type="submit" className={`mk-auth-btn-primary ${styles.submitButton}`} disabled={processing}>
+            <button type="submit" className={`${authClass('mk-auth-btn-primary')} ${styles.submitButton}`} disabled={processing}>
                 <span>{processing ? 'Enviando...' : 'Enviar enlace de recuperación'}</span>
             </button>
 
             <div className={styles.footerText}>
-                <Link href={route('login')} className={`mk-auth-link ${styles.inlineLink}`}>
+                <Link href={route('login')} className={`${authClass('mk-auth-link')} ${styles.inlineLink}`}>
                     Volver a iniciar sesión
                 </Link>
             </div>
