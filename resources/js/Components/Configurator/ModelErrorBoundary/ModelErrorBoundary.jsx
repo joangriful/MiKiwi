@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Html, useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import { DoubleSide } from 'three';
 import styles from './ModelErrorBoundary.module.css';
 
 function FallbackImagePlane({ imagePath }) {
@@ -12,7 +12,7 @@ function FallbackImagePlane({ imagePath }) {
     return (
         <mesh position={[0, 1.6, 0]}>
             <planeGeometry args={[1.5, 3.2]} />
-            <meshBasicMaterial map={texture} transparent side={THREE.DoubleSide} alphaTest={0.5} />
+            <meshBasicMaterial map={texture} transparent side={DoubleSide} alphaTest={0.5} />
         </mesh>
     );
 }

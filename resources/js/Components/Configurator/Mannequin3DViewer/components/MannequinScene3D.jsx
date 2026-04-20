@@ -17,10 +17,12 @@ export default function MannequinScene3D({
     modelId, 
     rotationY, 
     color, 
-    bodyParams 
+    bodyParams,
+    onModelMounted,
+    isActive = false
 }) {
     return (
-        <Canvas shadows dpr={[1, 2]}>
+        <Canvas shadows dpr={[1, 2]} frameloop={isActive ? "always" : "demand"}>
             <PerspectiveCamera makeDefault position={[0, 1.5, 4]} fov={50} />
             <OrbitControls
                 minDistance={1}
@@ -34,7 +36,8 @@ export default function MannequinScene3D({
             <ambientLight intensity={0.7} />
             <directionalLight position={[5, 10, 5]} intensity={1.2} castShadow />
             <directionalLight position={[-5, 5, -5]} intensity={0.5} />
-
+            
+            {/* Environment always mounted to allow background initialization (pre-warming) */}
             <Environment preset="studio" />
 
             <group position={[0, 0, 0]}>
@@ -47,8 +50,10 @@ export default function MannequinScene3D({
                         color={color}
                         bodyParams={bodyParams}
                         rotationY={rotationY}
+                        onModelMounted={onModelMounted}
                     />
                 </ModelErrorBoundary>
+                {/* Shadows always mounted to allow background initialization (pre-warming) */}
                 <ContactShadows
                     resolution={1024}
                     scale={10}

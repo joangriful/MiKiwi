@@ -4,8 +4,8 @@ import CartStep from '@/Components/Checkout/CartStep/CartStep';
 import InfoStep from '@/Components/Checkout/InfoStep/InfoStep';
 import ShippingStep from '@/Components/Checkout/ShippingStep/ShippingStep';
 import PaymentStep from '@/Components/Checkout/PaymentStep/PaymentStep';
-import Header from '@/Components/Common/Header';
-import Footer from '@/Components/Common/Footer';
+import Header from '@/Components/Header/Header';
+import Footer from '@/Components/Footer/Footer';
 
 export default function Cart({ cart = { items: [], total: 0 }, auth = { user: null }, popularProducts = [] }) {
     const [step, setStep] = useState(1);

@@ -1,4 +1,4 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import styles from './Mannequin3DViewer.module.css';
 
 // Lazy load the 3D scene component
@@ -51,8 +51,9 @@ function Loader() {
     );
 }
 
-export default function Mannequin3DViewer() {
+export default function Mannequin3DViewer({ onModelMounted, isActive = false }) {
     const [selectedModel, setSelectedModel] = useState(availableModels[0]);
+    const [isModelReady, setIsModelReady] = useState(false);
     const [bodyParams, setBodyParams] = useState({
         height: 0.5,
         bust: 0.5,
@@ -63,6 +64,16 @@ export default function Mannequin3DViewer() {
         head: 0.5
     });
 
+    // Reset ready state when model changes to show loader during transitions
+    useEffect(() => {
+        setIsModelReady(false);
+    }, [selectedModel.id]);
+
+    const handleModelMounted = () => {
+        setIsModelReady(true);
+        if (onModelMounted) onModelMounted();
+    };
+
     const updateBodyParam = (key, value) => {
         setBodyParams(prev => ({ ...prev, [key]: parseFloat(value) }));
     };
@@ -70,6 +81,9 @@ export default function Mannequin3DViewer() {
     return (
         <div className={styles.root}>
             <div className={styles.viewportArea}>
+                {/* Persistent Loader Overlay: Visible until ModelContent signals completion */}
+                {(!isModelReady && isActive) && <Loader />}
+
                 <Suspense fallback={<Loader />}>
                     <MannequinScene3D
                         modelPath={selectedModel.path}
@@ -79,6 +93,8 @@ export default function Mannequin3DViewer() {
                         rotationY={selectedModel.rotationY || 0}
                         color="#ffd5b4"
                         bodyParams={bodyParams}
+                        onModelMounted={handleModelMounted}
+                        isActive={isActive}
                     />
                 </Suspense>
 

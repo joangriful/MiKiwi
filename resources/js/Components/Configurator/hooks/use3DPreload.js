@@ -35,7 +35,8 @@ export function use3DPreload(views, defaultSettings) {
         const tasks = [
             load3DEngine(), // Engine code
             preloadAsset('/models/naked-queen/source/NakedQueen.fbx', 'fetch'), // Main model
-            preloadAsset('/models/naked-queen/textures/NakedQueen.jpeg', 'image') // Texture
+            preloadAsset('/models/naked-queen/textures/NakedQueen.jpeg', 'image'), // Texture
+            preloadAsset('https://raw.githack.com/pmndrs/drei-assets/master/hdri/studio_small_08_1k.hdr', 'fetch') // Environment HDR
         ];
 
         Promise.all(tasks).then(() => {

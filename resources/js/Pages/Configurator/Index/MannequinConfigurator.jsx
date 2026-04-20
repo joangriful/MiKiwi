@@ -1,12 +1,12 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Head } from '@inertiajs/react';
-import ConfiguradorLayout from '@/Layouts/ConfiguradorLayout';
-import SegmentedDoll2D from '@/Components/Configurador/SegmentedDoll2D';
-import BodyPartSelector from '@/Components/Configurador/BodyPartSelector';
-import { availableModels } from '@/Components/Configurador/modelsMetadata';
+import ConfiguratorLayout from '@/Layouts/ConfiguratorLayout';
+import SegmentedDoll2D from '@/Components/Configurator/PreviewArea/components/SegmentedDoll2D';
+import BodyPartSelector from '@/Components/Configurator/CustomizationPanel/BodyPartSelector';
+import { availableModels } from '@/Components/Configurator/MannequinModel/modelsMetadata';
 
 // Lazy load the 3D scene to defer loading of Three.js and heavy dependencies
-const MannequinScene3D = lazy(() => import('@/Components/Configurador/MannequinScene3D'));
+const MannequinScene3D = lazy(() => import('@/Components/Configurator/Mannequin3DViewer/components/MannequinScene3D'));
 
 
 
@@ -119,7 +119,7 @@ export default function MannequinConfigurator() {
     };
 
     return (
-        <ConfiguradorLayout>
+        <ConfiguratorLayout>
             <Head title="Configurador de Maniquí Avanzado" />
 
             <div className="flex flex-col lg:flex-row h-[calc(100vh-80px)] overflow-hidden bg-gray-50">
@@ -261,6 +261,6 @@ export default function MannequinConfigurator() {
                     </div>
                 </div>
             </div>
-        </ConfiguradorLayout>
+        </ConfiguratorLayout>
     );
 }
