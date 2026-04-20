@@ -1,4 +1,5 @@
 import InputError from '@/Components/InputError/InputError';
+import { authClass } from '@/Components/Auth/AuthShell/authShellStyles';
 import { Link, useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
 import styles from './ConfirmPasswordForm.module.css';
@@ -22,8 +23,8 @@ export default function ConfirmPasswordForm() {
 
     return (
         <form onSubmit={submit} className={styles.root}>
-            <div className="mk-auth-field">
-                <label htmlFor="password" className="mk-auth-label">
+            <div className={authClass('mk-auth-field')}>
+                <label htmlFor="password" className={authClass('mk-auth-label')}>
                     Contraseña actual
                 </label>
                 <input
@@ -31,7 +32,7 @@ export default function ConfirmPasswordForm() {
                     type="password"
                     name="password"
                     value={data.password}
-                    className={`mk-auth-input ${styles.input}`}
+                    className={`${authClass('mk-auth-input')} ${styles.input}`}
                     autoFocus
                     required
                     placeholder=" "
@@ -40,12 +41,12 @@ export default function ConfirmPasswordForm() {
                 <InputError message={errors.password} className={styles.error} />
             </div>
 
-            <button type="submit" className={`mk-auth-btn-primary ${styles.submitButton}`} disabled={processing}>
+            <button type="submit" className={`${authClass('mk-auth-btn-primary')} ${styles.submitButton}`} disabled={processing}>
                 <span>{processing ? 'Confirmando...' : 'Confirmar acceso'}</span>
             </button>
 
             <div className={styles.footerText}>
-                <Link href={route('login')} className={`mk-auth-link ${styles.inlineLink}`}>
+                <Link href={route('login')} className={`${authClass('mk-auth-link')} ${styles.inlineLink}`}>
                     Volver a login
                 </Link>
             </div>

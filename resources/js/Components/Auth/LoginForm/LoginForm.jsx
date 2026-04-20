@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import InputError from '@/Components/InputError/InputError';
 import AuthSocialButtons from '@/Components/Auth/AuthSocialButtons/AuthSocialButtons';
+import { authClass } from '@/Components/Auth/AuthShell/authShellStyles';
 import { clearStoredQuizResultCategory, getStoredQuizResultCategory } from '@/Utils/authQuizResultStorage';
 import { Link, useForm } from '@inertiajs/react';
 import styles from './LoginForm.module.css';
@@ -38,13 +39,13 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
     return (
         <form onSubmit={submit} className={styles.root}>
             {status && (
-                <div className="mk-auth-status-success">
+                <div className={authClass('mk-auth-status-success')}>
                     {status}
                 </div>
             )}
 
-            <div className="mk-auth-field">
-                <label htmlFor="email" className="mk-auth-label">
+            <div className={authClass('mk-auth-field')}>
+                <label htmlFor="email" className={authClass('mk-auth-label')}>
                     Correo electrónico
                 </label>
                 <input
@@ -52,7 +53,7 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
                     type="email"
                     name="email"
                     value={data.email}
-                    className={`mk-auth-input mk-auth-input-access ${styles.input}`}
+                    className={`${authClass('mk-auth-input', 'mk-auth-input-access')} ${styles.input}`}
                     autoComplete="username"
                     autoFocus={autoFocus}
                     required
@@ -62,8 +63,8 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
                 <InputError message={errors.email} className={styles.error} />
             </div>
 
-            <div className="mk-auth-field">
-                <label htmlFor="password" className="mk-auth-label">
+            <div className={authClass('mk-auth-field')}>
+                <label htmlFor="password" className={authClass('mk-auth-label')}>
                     Contraseña
                 </label>
                 <input
@@ -71,7 +72,7 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
                     type="password"
                     name="password"
                     value={data.password}
-                    className={`mk-auth-input mk-auth-input-access ${styles.input}`}
+                    className={`${authClass('mk-auth-input', 'mk-auth-input-access')} ${styles.input}`}
                     autoComplete="current-password"
                     required
                     placeholder=" "
@@ -96,14 +97,18 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
                 {canResetPassword && (
                     <Link
                         href={route('password.request')}
-                        className={`mk-auth-link ${styles.inlineLink}`}
+                        className={`${authClass('mk-auth-link')} ${styles.inlineLink}`}
                     >
                         ¿Has olvidado tu contraseña?
                     </Link>
                 )}
             </div>
 
-            <button type="submit" className={`mk-auth-btn-primary mk-auth-btn-access ${styles.submitButton}`} disabled={processing}>
+            <button
+                type="submit"
+                className={`${authClass('mk-auth-btn-primary', 'mk-auth-btn-access')} ${styles.submitButton}`}
+                disabled={processing}
+            >
                 <span>
                     {processing ? 'Accediendo...' : 'Acceso'}
                 </span>

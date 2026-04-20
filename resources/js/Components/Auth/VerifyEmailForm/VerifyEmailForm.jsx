@@ -1,4 +1,5 @@
 import { Link, useForm } from '@inertiajs/react';
+import { authClass } from '@/Components/Auth/AuthShell/authShellStyles';
 import styles from './VerifyEmailForm.module.css';
 
 export default function VerifyEmailForm({ status }) {
@@ -13,12 +14,12 @@ export default function VerifyEmailForm({ status }) {
     return (
         <form onSubmit={submit} className={styles.root}>
             {status === 'verification-link-sent' && (
-                <div className="mk-auth-status-success">
+                <div className={authClass('mk-auth-status-success')}>
                     Hemos enviado un nuevo enlace de verificación al correo usado en tu registro.
                 </div>
             )}
 
-            <button type="submit" className={`mk-auth-btn-primary ${styles.submitButton}`} disabled={processing}>
+            <button type="submit" className={`${authClass('mk-auth-btn-primary')} ${styles.submitButton}`} disabled={processing}>
                 <span>{processing ? 'Enviando...' : 'Reenviar verificación'}</span>
             </button>
 
@@ -27,7 +28,7 @@ export default function VerifyEmailForm({ status }) {
                     href={route('logout')}
                     method="post"
                     as="button"
-                    className={`mk-auth-link ${styles.inlineLink}`}
+                    className={`${authClass('mk-auth-link')} ${styles.inlineLink}`}
                 >
                     Cerrar sesión
                 </Link>
