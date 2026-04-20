@@ -1,124 +1,14 @@
-import React, { useState, useEffect, Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Environment, ContactShadows, useFBX } from '@react-three/drei';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Head } from '@inertiajs/react';
 import ConfiguradorLayout from '@/Layouts/ConfiguradorLayout';
-import MannequinModel from '@/Components/Configurador/MannequinModel';
 import SegmentedDoll2D from '@/Components/Configurador/SegmentedDoll2D';
 import BodyPartSelector from '@/Components/Configurador/BodyPartSelector';
-import ModelErrorBoundary from '@/Components/Configurador/ModelErrorBoundary';
+import { availableModels } from '@/Components/Configurador/modelsMetadata';
 
-const availableModels = [
-    {
-        id: 'naked_queen',
-        name: 'Queen',
-        path: '/models/naked-queen/source/NakedQueen.fbx',
-        texturePath: '/models/naked-queen/textures/NakedQueen.jpeg',
-        thumbnail: null,
-        rotationY: 0
-    },
+// Lazy load the 3D scene to defer loading of Three.js and heavy dependencies
+const MannequinScene3D = lazy(() => import('@/Components/Configurador/MannequinScene3D'));
 
-    {
-        id: 'naked_woman_standing',
-        name: 'Standing',
-        path: '/models/naked-woman-standing/source/Nake-Sum_Wom_RtStand_875.fbx',
-        texturePath: '/models/naked-woman-standing/textures/Nake-Sum_Wom_RtStand_diffuse_875.png',
-        normalPath: '/models/naked-woman-standing/textures/Nake-Sum_Wom_RtStand_normal_875.png',
-        thumbnail: null,
-        rotationY: Math.PI // Flip 180 degrees
-    },
-    {
-        id: 'naked_woman_walk',
-        name: 'Walking',
-        path: '/models/naked-woman-walk/source/Nake-Sum_Wom_RtWalk_854.fbx',
-        texturePath: '/models/naked-woman-walk/textures/Nake-Sum_Wom_RtWalk_diffuse_854.png',
-        normalPath: '/models/naked-woman-walk/textures/Nake-Sum_Wom_RtWalk_normal_854.png',
-        thumbnail: null,
-        rotationY: 0
-    },
-    {
-        id: 'witch_naked',
-        name: 'Witch',
-        path: '/models/witch-naked/source/Yennefer_Naked_med.fbx',
-        texturePath: '/models/witch-naked/textures/Yennefer_Naked_med.jpeg',
-        thumbnail: null,
-        rotationY: 0
-    },
-];
 
-// Preload FBX models for faster switching
-availableModels.forEach(model => {
-    if (model.path.endsWith('.fbx')) {
-        useFBX.preload(model.path);
-    }
-});
-
-const hairStyles = [
-    { id: 'bald', name: 'Sin Pelo' },
-    { id: 'short', name: 'Corto' },
-    { id: 'medium', name: 'Medio' },
-    { id: 'long', name: 'Largo' },
-    { id: 'updo', name: 'Recogido' },
-];
-
-const hairColors = [
-    { id: '#1a1a1a', name: 'Negro' },
-    { id: '#5d4037', name: 'Castaño' },
-    { id: '#e6c793', name: 'Rubio' },
-    { id: '#b7410e', name: 'Pelirrojo' },
-    { id: '#ea80fc', name: 'Fantasía' },
-];
-
-function Scene({ customTexture, color, bodyParams, hairParams, modelPath, texturePath, normalPath, modelId, rotationY }) {
-    return (
-        <>
-            <PerspectiveCamera makeDefault position={[0, 1.5, 4]} fov={50} />
-            <OrbitControls
-                minDistance={1}
-                maxDistance={10}
-                minPolarAngle={0}
-                maxPolarAngle={Math.PI / 1.7}
-                enableDamping
-                target={[0, 1, 0]}
-            />
-
-            <ambientLight intensity={0.7} />
-            <directionalLight position={[5, 10, 5]} intensity={1.2} castShadow />
-            <directionalLight position={[-5, 5, -5]} intensity={0.5} />
-
-            <Environment preset="studio" />
-
-            {/* Visual Helpers requested by USER */}
-            <gridHelper args={[10, 10, '#888888', '#cccccc']} />
-            <axesHelper args={[5]} />
-
-            <group position={[0, 0, 0]}>
-                <ModelErrorBoundary key={modelPath}>
-                    <MannequinModel
-                        modelPath={modelPath}
-                        texturePath={texturePath}
-                        normalPath={normalPath}
-                        modelId={modelId}
-                        customTexture={customTexture}
-                        color={color}
-                        bodyParams={bodyParams}
-                        hairParams={hairParams}
-                        rotationY={rotationY}
-                    />
-                </ModelErrorBoundary>
-                <ContactShadows
-                    resolution={1024}
-                    scale={10}
-                    blur={2}
-                    opacity={0.4}
-                    far={10}
-                    color="#000000"
-                    position={[0, 0.01, 0]}
-                />
-            </group>
-        </>
-    );
-}
 
 function Loader() {
     return (
@@ -237,19 +127,17 @@ export default function MannequinConfigurator() {
                 <div className="w-full lg:w-3/4 relative h-[50vh] lg:h-full bg-gradient-to-b from-gray-200 to-gray-300">
                     <Suspense fallback={<Loader />}>
                         {activeTab === 'chicas' ? (
-                            <Canvas shadows dpr={[1, 2]}>
-                                <Scene
-                                    modelPath={selectedModel.path}
-                                    texturePath={selectedModel.texturePath}
-                                    normalPath={selectedModel.normalPath}
-                                    modelId={selectedModel.id}
-                                    rotationY={selectedModel.rotationY || 0}
-                                    customTexture={customTexture}
-                                    color={color}
-                                    bodyParams={bodyParams}
-                                    hairParams={hairParams}
-                                />
-                            </Canvas>
+                            <MannequinScene3D
+                                modelPath={selectedModel.path}
+                                texturePath={selectedModel.texturePath}
+                                normalPath={selectedModel.normalPath}
+                                modelId={selectedModel.id}
+                                rotationY={selectedModel.rotationY || 0}
+                                customTexture={customTexture}
+                                color={color}
+                                bodyParams={bodyParams}
+                                hairParams={hairParams}
+                            />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center animate-fade-in" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
                                 <div className="w-full h-full p-4 lg:p-12">
