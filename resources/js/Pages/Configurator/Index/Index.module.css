@@ -1,7 +1,289 @@
-.root {}
+.page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg-main);
+    font-family: 'Montserrat', var(--font-body);
+}
+
+.topBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+    padding: 0 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--color-white-soft);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+}
+
+.brand {
+    color: var(--text-main);
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
+
+.progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.progressDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--border);
+    transition: var(--transition);
+}
+
+.progressDotActive {
+    background: var(--color-primary);
+    box-shadow: 0 0 15px rgb(153 184 73 / 30%);
+    transform: scale(1.25);
+}
+
+.progressLine {
+    width: 30px;
+    height: 2px;
+    background: var(--border);
+    transition: var(--transition);
+}
+
+.progressLineActive {
+    background: var(--color-primary);
+}
+
+.closeLink {
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    transition: var(--transition);
+}
+
+.closeLink:hover {
+    color: var(--text-main);
+    transform: rotate(90deg);
+}
+
+.content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+.previewPane {
+    position: relative;
+    display: flex;
+    flex: 1.4;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 50% 40%, #ffffff, #f0f4e8);
+    perspective: 1000px;
+}
+
+.previewOverlay {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    mix-blend-mode: multiply;
+    transition: var(--transition);
+}
+
+.previewHighlight {
+    position: absolute;
+    top: 5%;
+    left: 15%;
+    width: 8px;
+    height: 90%;
+    border-radius: 10px;
+    background: var(--color-white-soft);
+    opacity: 0.5;
+    filter: blur(3px);
+}
+
+.previewLabel {
+    position: absolute;
+    bottom: 40px;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    opacity: 0.6;
+}
+
+.controls {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 50px;
+    border-left: 1px solid var(--border);
+    background: var(--bg-surface);
+}
 
 .stepPanel {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     animation: fadeInSlide 0.6s var(--transition-slow);
+}
+
+.stepHeader {
+    margin-bottom: 40px;
+}
+
+.stepTag {
+    margin-bottom: 8px;
+    color: var(--color-primary);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.stepTitle {
+    color: var(--text-main);
+    font-size: 2.2rem;
+    font-weight: 600;
+    letter-spacing: -1px;
+}
+
+.optionSection {
+    margin-bottom: 35px;
+}
+
+.sectionLabel {
+    margin-bottom: 15px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.optionGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.optionCard {
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg-surface);
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.optionCard:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+}
+
+.optionCardActive {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+    box-shadow: 0 0 20px rgb(153 184 73 / 10%);
+}
+
+.optionName {
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.optionDescription {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    line-height: 1.4;
+}
+
+.colorRow {
+    display: flex;
+    gap: 15px;
+}
+
+.colorSwatch {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--color-white);
+    border-radius: 999px;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.colorSwatchActive {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.colorName {
+    margin-top: 10px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.summaryList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.summaryItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+}
+
+.summaryItemLast {
+    border-bottom: 0;
+}
+
+.summaryValue {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 30px;
+    border-top: 1px solid var(--border);
+}
+
+.totalBlock {
+    display: flex;
+    flex-direction: column;
+}
+
+.totalLabel {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.totalValue {
+    background: transparent;
+    font-size: 1.6rem;
+    font-weight: 300;
+}
+
+.footerActions {
+    display: flex;
+    gap: 15px;
 }
 
 .actionButton {
@@ -10,7 +292,7 @@
     gap: 8px;
     border: none;
     border-radius: 50px;
-    padding: 12px 24px;
+    padding: 14px 28px;
     font-size: 0.9rem;
     font-weight: 600;
     letter-spacing: 1px;
@@ -51,5 +333,45 @@
     to {
         opacity: 1;
         transform: translateX(0);
+    }
+}
+
+@media (min-width: 1024px) {
+    .content {
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 1023px) {
+    .controls {
+        border-top: 1px solid var(--border);
+        border-left: 0;
+    }
+}
+
+@media (max-width: 767px) {
+    .topBar {
+        padding: 0 16px;
+    }
+
+    .stepTitle {
+        font-size: 1.8rem;
+    }
+
+    .controls {
+        padding: 32px 20px;
+    }
+
+    .optionGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .footerActions {
+        flex-direction: column;
     }
 }

@@ -146,24 +146,20 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
             <Head title="Doll Configurator" />
 
             {/* Static Header with Tabs */}
-            <div className={`${styles.root} z-50 bg-white border-b border-gray-100`}>
-                <div className="flex justify-center border-t border-[var(--border)] bg-[var(--bg-surface)] py-4">
-                    <div className="inline-flex p-1.5 bg-[var(--bg-main)] rounded-2xl shadow-inner border border-[var(--border)]/50">
+            <div className={`${styles.root} ${styles.header}`}>
+                <div className={styles.tabsBar}>
+                    <div className={styles.tabsInner}>
                         <button
+                            type="button"
                             onClick={() => setActiveTab('customize')}
-                            className={`px-8 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all duration-300 ${activeTab === 'customize'
-                                ? 'bg-[var(--premium-gradient)] text-white shadow-[0_4px_15px_rgba(153,184,73,0.4)] scale-105'
-                                : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-white/50'
-                                }`}
+                            className={`${styles.tabButton} ${activeTab === 'customize' ? styles.tabButtonActive : ''}`}
                         >
                             PERSONALIZAR
                         </button>
                         <button
+                            type="button"
                             onClick={() => setActiveTab('ready')}
-                            className={`px-8 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all duration-300 ${activeTab === 'ready'
-                                ? 'bg-[var(--premium-gradient)] text-white shadow-[0_4px_15px_rgba(153,184,73,0.4)] scale-105'
-                                : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-white/50'
-                                }`}
+                            className={`${styles.tabButton} ${activeTab === 'ready' ? styles.tabButtonActive : ''}`}
                         >
                             MUÑECAS LISTAS
                         </button>
@@ -172,41 +168,36 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
             </div>
 
             {/* Main Layout */}
-            <div className="flex-none flex flex-col min-[724px]:flex-row min-[724px]:flex-wrap min-[724px]:content-start lg:flex-nowrap bg-gray-50 cursor-default select-none touch-none relative h-[calc(100vh-150px)] min-h-[650px]">
+            <div className={styles.mainLayout}>
 
                 {activeTab === 'customize' ? (
                     <>
                         {/* Left Content Area (Images ONLY) */}
-                        <div
-                            className="flex flex-col w-full h-full min-[724px]:w-full lg:w-auto lg:h-full lg:flex-1 border-r border-gray-200 bg-white shadow-xl lg:shadow-none z-20"
-                        >
+                        <div className={styles.leftColumn}>
 
                             {/* Images Row */}
-                            <div className="flex-1 flex relative overflow-hidden">
+                            <div className={styles.imagesRow}>
 
                                 {/* Preview Area */}
                                 <div
-                                    className="absolute left-4 z-50 w-24 h-auto aspect-[2/3] pointer-events-none shadow-xl border-2 border-white rounded-lg bg-white overflow-hidden transition-all duration-75 ease-linear
-                                               min-[724px]:relative min-[724px]:bottom-auto min-[724px]:left-auto min-[724px]:w-1/2 min-[724px]:h-full min-[724px]:pointer-events-auto min-[724px]:border-r min-[724px]:border-gray-200 min-[724px]:shadow-none min-[724px]:rounded-none min-[724px]:aspect-auto
-                                               lg:w-1/4"
+                                    className={styles.previewPanel}
                                     style={{
                                         bottom: window.innerWidth < 724 ? `calc(${100 - topSectionHeight}% + 1rem)` : undefined
                                     }}
                                 >
-                                    <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className={styles.previewContent}>
                                         <PreviewArea
                                             selectedParts={selectedParts}
                                             viewportInfo={viewportInfo}
                                             onViewportChange={setViewportInfo}
-                                            className="bg-white"
+                                            className={styles.previewArea}
                                             partPositions={partPositions}
                                         />
                                     </div>
                                 </div>
 
                                 {/* CloseUp Area */}
-                                <div className="w-full h-full relative bg-gray-100 overflow-hidden shadow-inner
-                                                min-[724px]:w-1/2 lg:flex-1">
+                                <div className={styles.closeUpPanel}>
                                     <CloseUp
                                         selectedParts={selectedParts}
                                         onViewportChange={setViewportInfo}
@@ -223,21 +214,19 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                             <div
                                 onMouseDown={handleDragStart}
                                 onTouchStart={handleDragStart}
-                                className="absolute w-full h-8 z-50 flex items-center justify-center cursor-row-resize touch-none"
+                                className={styles.dragHandle}
                                 style={{ bottom: `${100 - topSectionHeight}%`, transform: 'translateY(50%)' }}
                             >
-                                <div className="w-12 h-1.5 bg-gray-300 rounded-full shadow-sm mx-auto" />
+                                <div className={styles.dragHandleKnob} />
                             </div>
                         )}
 
                         {/* Right Column: Options Bar + Controls */}
                         <div
-                            className="absolute bottom-0 left-0 w-full flex flex-col bg-gradient-to-b from-[var(--bg-surface)] to-[var(--bg-main)] backdrop-blur-2xl z-40 border-t border-[var(--border)]
-                                       min-[724px]:w-full
-                                       lg:relative lg:w-[420px] lg:h-full lg:border-t-0 lg:border-l lg:border-[var(--border)] lg:flex-none transition-all duration-500 ease-premium shadow-[-20px_0_50px_rgba(0,0,0,0.05)]"
+                            className={styles.rightColumn}
                             style={{ height: window.innerWidth < 1024 ? `${100 - topSectionHeight}%` : '100%' }}
                         >
-                            <div className="flex-none z-[60] relative">
+                            <div className={styles.optionsBarShell}>
                                 <OptionsBar
                                     currentView={currentView}
                                     onViewChange={setCurrentView}
@@ -247,7 +236,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                                 />
                             </div>
 
-                            <div className="flex-1 overflow-hidden">
+                            <div className={styles.selectorShell}>
                                 <PartSelector
                                     parts={availableParts}
                                     selectedParts={selectedParts}
@@ -262,11 +251,11 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                         </div>
                     </>
                 ) : (
-                    <div className="flex-1 w-full h-full flex flex-col items-center justify-center bg-white z-30 relative">
+                    <div className={styles.readyView}>
                         <Suspense fallback={
-                            <div className="flex flex-col items-center justify-center w-full h-full bg-white">
-                                <div className="w-12 h-12 border-4 border-black/10 border-t-black rounded-full animate-spin mb-4"></div>
-                                <p className="text-gray-500 font-medium font-outfit">Cargando visor 3D...</p>
+                            <div className={styles.viewerLoading}>
+                                <div className={styles.viewerSpinner}></div>
+                                <p className={styles.viewerText}>Cargando visor 3D...</p>
                             </div>
                         }>
                             <Mannequin3DViewer />

@@ -1,1 +1,288 @@
-.root {}
+.header {
+    position: relative;
+    z-index: 50;
+    border-bottom: 1px solid var(--color-border-soft);
+    background: var(--bg-surface);
+}
+
+.tabsBar {
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid var(--border);
+    background: var(--bg-surface);
+    padding: 1rem 1.5rem;
+}
+
+.tabsInner {
+    display: inline-flex;
+    padding: 0.375rem;
+    border: 1px solid var(--color-black-faint);
+    border-radius: 1rem;
+    background: var(--bg-main);
+    box-shadow: inset 0 2px 4px rgb(34 43 36 / 8%);
+}
+
+.tabButton {
+    padding: 0.625rem 2rem;
+    border-radius: 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    transition: var(--transition);
+}
+
+.tabButton:hover {
+    color: var(--text-main);
+    background: var(--color-white-faint);
+}
+
+.tabButtonActive {
+    background: var(--premium-gradient);
+    color: var(--color-white);
+    box-shadow: 0 4px 15px rgb(153 184 73 / 40%);
+    transform: scale(1.05);
+}
+
+.mainLayout {
+    position: relative;
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    height: calc(100vh - 150px);
+    min-height: 650px;
+    background: var(--color-surface-subtle);
+    cursor: default;
+    user-select: none;
+    touch-action: none;
+}
+
+.leftColumn {
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-lg);
+}
+
+.imagesRow {
+    position: relative;
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.previewPanel {
+    position: absolute;
+    left: 1rem;
+    z-index: 50;
+    width: 6rem;
+    height: auto;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    border: 2px solid var(--color-white);
+    border-radius: 0.5rem;
+    background: var(--color-white);
+    box-shadow: var(--shadow-lg);
+    pointer-events: none;
+    transition: bottom 75ms linear;
+}
+
+.previewContent {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.previewArea {
+    background: var(--color-white);
+}
+
+.closeUpPanel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--color-surface-disabled);
+    box-shadow: inset 0 2px 8px rgb(34 43 36 / 12%);
+}
+
+.dragHandle {
+    position: absolute;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 2rem;
+    cursor: row-resize;
+    touch-action: none;
+}
+
+.dragHandleKnob {
+    width: 3rem;
+    height: 0.375rem;
+    margin: 0 auto;
+    border-radius: 999px;
+    background: var(--color-border-strong);
+    box-shadow: var(--shadow-sm);
+}
+
+.rightColumn {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: linear-gradient(to bottom, var(--bg-surface), var(--bg-main));
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(24px);
+    box-shadow: -20px 0 50px rgb(0 0 0 / 5%);
+    transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.optionsBarShell {
+    position: relative;
+    z-index: 60;
+    flex: none;
+}
+
+.selectorShell {
+    flex: 1;
+    overflow: hidden;
+}
+
+.readyView {
+    position: relative;
+    z-index: 30;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-surface);
+}
+
+.viewerLoading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-surface);
+}
+
+.viewerSpinner {
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+    border: 4px solid var(--color-black-faint);
+    border-top-color: var(--color-text-strongest);
+    border-radius: 999px;
+    animation: spin 1s linear infinite;
+}
+
+.viewerText {
+    color: var(--color-text-soft);
+    font-family: var(--font-body);
+    font-weight: 500;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (min-width: 724px) {
+    .mainLayout {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-content: flex-start;
+    }
+
+    .previewPanel {
+        position: relative;
+        bottom: auto !important;
+        left: auto;
+        width: 50%;
+        height: 100%;
+        aspect-ratio: auto;
+        border-top: 0;
+        border-right: 1px solid var(--color-border-soft);
+        border-bottom: 0;
+        border-left: 0;
+        border-radius: 0;
+        box-shadow: none;
+        pointer-events: auto;
+    }
+
+    .closeUpPanel {
+        width: 50%;
+    }
+
+    .rightColumn {
+        width: 100%;
+    }
+}
+
+@media (min-width: 1024px) {
+    .mainLayout {
+        flex-wrap: nowrap;
+    }
+
+    .leftColumn {
+        flex: 1;
+        width: auto;
+        box-shadow: none;
+    }
+
+    .previewPanel {
+        width: 25%;
+    }
+
+    .closeUpPanel {
+        flex: 1;
+        width: auto;
+    }
+
+    .rightColumn {
+        position: relative;
+        left: auto;
+        width: 420px;
+        height: 100% !important;
+        border-top: 0;
+        border-left: 1px solid var(--border);
+        box-shadow: -20px 0 50px rgb(0 0 0 / 5%);
+    }
+}
+
+@media (max-width: 767px) {
+    .tabsBar {
+        padding: 0.75rem 1rem;
+    }
+
+    .tabsInner {
+        width: 100%;
+    }
+
+    .tabButton {
+        flex: 1;
+        padding: 0.625rem 1rem;
+        font-size: 0.75rem;
+        text-align: center;
+    }
+}

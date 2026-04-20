@@ -1,6 +1,4 @@
-.root {}
-
-:global(.configurator-container) {
+.container {
     display: flex;
     width: 100vw;
     height: 100vh;
@@ -9,24 +7,24 @@
     position: relative;
 }
 
-:global(.canvas-container) {
+.canvasContainer {
     flex: 1;
     position: relative;
     overflow: hidden;
 }
 
-:global(.canvas-container canvas) {
+.canvasContainer canvas {
     display: block;
     width: 100% !important;
     height: 100% !important;
     cursor: grab;
 }
 
-:global(.canvas-container canvas:active) {
+.canvasContainer canvas:active {
     cursor: grabbing;
 }
 
-:global(.brand-overlay) {
+.brandOverlay {
     position: absolute;
     top: 40px;
     left: 40px;
@@ -34,7 +32,7 @@
     pointer-events: none;
 }
 
-:global(.brand-title) {
+.brandTitle {
     font-family: 'Sugo Pro Display', serif;
     font-size: 2.5rem;
     font-weight: 700;
@@ -43,7 +41,7 @@
     letter-spacing: -0.5px;
 }
 
-:global(.brand-subtitle) {
+.brandSubtitle {
     font-family: 'Mulish', sans-serif;
     font-size: 1rem;
     font-weight: 300;
@@ -53,7 +51,7 @@
     text-transform: uppercase;
 }
 
-:global(.loading-screen) {
+.loadingScreen {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -63,7 +61,7 @@
     background: var(--bg-main);
 }
 
-:global(.loading-spinner) {
+.loadingSpinner {
     width: 60px;
     height: 60px;
     border: 4px solid var(--border);
@@ -78,7 +76,7 @@
     }
 }
 
-:global(.loading-screen p) {
+.loadingText {
     margin-top: 20px;
     font-family: 'Mulish', sans-serif;
     color: var(--text-main);
@@ -88,45 +86,45 @@
 }
 
 @media (max-width: 1024px) {
-    :global(.brand-title) {
+    .brandTitle {
         font-size: 2rem;
     }
 }
 
 @media (max-width: 768px) {
-    :global(.configurator-container) {
+    .container {
         flex-direction: column;
     }
 
-    :global(.canvas-container) {
+    .canvasContainer {
         height: 50vh;
     }
 
-    :global(.brand-overlay) {
+    .brandOverlay {
         top: 20px;
         left: 20px;
     }
 
-    :global(.brand-title) {
+    .brandTitle {
         font-size: 1.5rem;
     }
 
-    :global(.brand-subtitle) {
+    .brandSubtitle {
         font-size: 0.8rem;
     }
 }
 
 @media (max-width: 480px) {
-    :global(.brand-overlay) {
+    .brandOverlay {
         top: 15px;
         left: 15px;
     }
 
-    :global(.brand-title) {
+    .brandTitle {
         font-size: 1.2rem;
     }
 
-    :global(.brand-subtitle) {
+    .brandSubtitle {
         font-size: 0.7rem;
     }
 }

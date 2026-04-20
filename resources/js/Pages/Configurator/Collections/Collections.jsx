@@ -31,11 +31,21 @@ export default function Collections() {
         }
     ];
 
+    const getPreviewSurface = (productId) => (
+        productId === 'shadow'
+            ? 'radial-gradient(circle, #fff 0%, #ddd 100%)'
+            : 'radial-gradient(circle, #fff 0%, #f0f4e8 100%)'
+    );
+
+    const getPreviewShapeStyle = (productId) => ({
+        '--collections-shape-bg': productId === 'shadow' ? '#111' : '#eee',
+    });
+
     return (
         <ConfiguratorLayout>
             <Head title="Colecciones" />
 
-            <section className={`${styles.root} px-[5%] py-[150px]`}>
+            <section className={`${styles.root} ${styles.section}`}>
                 <div className={styles.header}>
                     <h1 className={styles.title}>Colecciones</h1>
                     <p className={styles.description}>
@@ -48,11 +58,11 @@ export default function Collections() {
                         <article key={product.id} className={styles.card}>
                             <div
                                 className={styles.preview}
-                                style={{ background: `radial-gradient(circle, #fff 0%, ${product.id === 'shadow' ? '#ddd' : '#f0f4e8'} 100%)` }}
+                                style={{ background: getPreviewSurface(product.id) }}
                             >
                                 <div
                                     className={styles.previewShape}
-                                    style={{ background: product.id === 'shadow' ? '#111' : '#eee', border: '1px solid rgba(0,0,0,0.05)' }}
+                                    style={getPreviewShapeStyle(product.id)}
                                 />
                                 <span className={styles.tag}>
                                     {product.tag}
