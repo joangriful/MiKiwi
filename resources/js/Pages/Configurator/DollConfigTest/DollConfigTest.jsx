@@ -43,7 +43,8 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
             const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
             const headerHeight = 60;
             const relativeY = clientY - headerHeight;
-            const contentHeight = window.innerHeight - headerHeight;
+            const windowHeight = window.innerHeight;
+            const contentHeight = windowHeight - headerHeight;
             const newPercentage = (relativeY / contentHeight) * 100;
             if (newPercentage >= 20 && newPercentage <= 95) setTopSectionHeight(newPercentage);
         };
@@ -89,13 +90,12 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
             <Head title="Doll Configurator | Test" />
             <ConfiguratorTabs activeTab={activeTab} setActiveTab={setActiveTab} />
             
-            {/* Shared Layout Container with Persistent Rendering */}
             <div className="flex-none flex flex-col min-[724px]:flex-row min-[724px]:flex-wrap min-[724px]:content-start lg:flex-nowrap bg-gray-50 relative h-[calc(100vh-150px)] min-h-[650px] overflow-hidden">
                 
                 {/* 2D View (Customize) */}
                 <div 
                     className="w-full h-full flex flex-col lg:flex-row flex-1"
-                    style={{ display: activeTab === 'customize' ? 'flex' : 'none' }}
+                    style={{ opacity: activeTab === 'customize' ? 1 : 0, pointerEvents: activeTab === 'customize' ? 'auto' : 'none', position: activeTab === 'customize' ? 'relative' : 'absolute', inset: 0 }}
                 >
                     <MainEditorLayout
                         topSectionHeight={topSectionHeight}
@@ -120,7 +120,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                 {/* 3D View (Ready Dolls) - Persistent Mounting */}
                 <div 
                     className="flex-1 w-full h-full flex flex-col items-center justify-center bg-white z-30 relative overflow-hidden"
-                    style={{ display: activeTab === 'ready' ? 'flex' : 'none' }}
+                    style={{ opacity: activeTab === 'ready' ? 1 : 0, pointerEvents: activeTab === 'ready' ? 'auto' : 'none', position: activeTab === 'ready' ? 'relative' : 'absolute', inset: 0 }}
                 >
                     <Suspense fallback={
                         <div className="flex flex-col items-center justify-center w-full h-full bg-white">

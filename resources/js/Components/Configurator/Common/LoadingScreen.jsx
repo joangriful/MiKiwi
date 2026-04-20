@@ -1,15 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ConfiguratorLayout from '@/Layouts/ConfiguratorLayout';
 
-console.log('%c[File] %cLoadingScreen.jsx CARGADO', "color: #795548; font-weight: bold", "color: #666");
-
 export default function LoadingScreen() {
-    console.log('%c[Execution] %cEntrando en LoadingScreen', "color: #4CAF50; font-weight: bold");
-
-    useEffect(() => {
-        console.log('%c[Component] %cLoadingScreen Montado', "color: #ff9800; font-weight: bold", "color: #666");
-    }, []);
-
     return (
         <ConfiguratorLayout>
             <div className="flex flex-col items-center justify-center min-h-[60vh] bg-white">

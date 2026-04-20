@@ -1,10 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PreviewArea from '@/Components/Configurator/PreviewArea/PreviewArea';
 import CloseUp from '@/Components/Configurator/CloseUp/CloseUp';
 import OptionsBar from '@/Components/Configurator/OptionsBar/OptionsBar';
 import PartSelector from '@/Components/Configurator/PartSelector/PartSelector';
-
-console.log('%c[File] %cMainEditorLayout.jsx CARGADO', "color: #ff00ff; font-weight: bold", "color: #666");
 
 export default function MainEditorLayout({
     topSectionHeight,
@@ -24,12 +22,6 @@ export default function MainEditorLayout({
     sectionOrder,
     handleSavePosition
 }) {
-    console.log('%c[Execution] %cEntrando en MainEditorLayout', "color: #4CAF50; font-weight: bold");
-
-    useEffect(() => {
-        console.log('%c[Component] %cMainEditorLayout Montado', "color: #ff5722; font-weight: bold", "color: #666");
-    }, []);
-
     return (
         <>
             {/* Left Content Area (Images ONLY) */}

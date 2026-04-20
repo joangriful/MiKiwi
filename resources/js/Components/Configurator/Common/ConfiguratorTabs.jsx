@@ -1,15 +1,7 @@
 import React, { useEffect } from 'react';
 import styles from './ConfiguratorCommon.module.css';
 
-console.log('%c[File] %cConfiguratorTabs.jsx CARGADO', "color: #795548; font-weight: bold", "color: #666");
-
 export default function ConfiguratorTabs({ activeTab, setActiveTab }) {
-    console.log('%c[Execution] %cEntrando en ConfiguratorTabs', "color: #4CAF50; font-weight: bold");
-
-    useEffect(() => {
-        console.log('%c[Component] %cConfiguratorTabs Montado', "color: #9c27b0; font-weight: bold", "color: #666");
-    }, []);
-    
     return (
         <div className={`${styles.tabsRoot} z-50 bg-white border-b border-gray-100`}>
             <div className="flex justify-center border-t border-[var(--border)] bg-[var(--bg-surface)] py-4">

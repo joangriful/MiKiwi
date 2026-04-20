@@ -17,7 +17,7 @@ A continuación se detallan las mejoras técnicas y de experiencia de usuario im
 - **Custom Hooks**: Extracción de la lógica de precarga a `use3DPreload.js` para mantener los componentes limpios y mantenibles.
 - **Regla de 200 líneas**: Refactorización de archivos masivos en sub-módulos legibles.
 
-### 4. Experiencia de Usuario (UX)
-- **Navegación Móvil**: Añadido un menú burger funcional para acceder a los enlaces del header en pantallas verticales/móviles.
-- **Layout Unificado**: Corrección de problemas de redimensionamiento entre el visor 2D y el 3D para una transición visual fluida.
-- **Cambio Instantáneo (En progreso)**: Implementación de renderizado persistente para eliminar la pantalla de "Cargando" al cambiar de pestaña.
+### 4. Experiencia de Usuario (UX) Premium
+- **Cambio Instantáneo (Instant Switch)**: Implementación de **renderizado persistente**. El visor 3D se inicializa y prepara en segundo plano mientras el usuario está en el 2D. Al cambiar de pestaña, el cambio es de **0ms**, eliminando por completo la pantalla de "Cargando".
+- **Navegación Móvil**: Añadido un menú burger funcional para acceder a los enlaces del header en dispositivos verticales.
+- **Consola Limpia**: Reducción del ruido en la consola a solo dos mensajes críticos (Inicio de descarga y Modelo listo), proporcionando una trazabilidad clara sin saturar al desarrollador.
