@@ -1,0 +1,26 @@
+.root {
+    display: block;
+    width: auto;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
+.sizeSm {
+    height: 2.25rem;
+}
+
+.sizeMd {
+    height: 3rem;
+}
+
+.sizeLg {
+    height: 5rem;
+}
+
+.toneStrong {
+    color: var(--color-text-strong);
+}
+
+.toneMuted {
+    color: var(--color-text-muted-ui);
+}

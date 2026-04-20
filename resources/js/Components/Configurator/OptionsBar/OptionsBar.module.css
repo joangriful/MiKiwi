@@ -1,0 +1,125 @@
+.root {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 30;
+    box-shadow: var(--shadow-sm);
+}
+
+.surfaceDefault {
+    background: var(--bg-surface);
+}
+
+.surfaceTransparent {
+    background: transparent;
+}
+
+.surfaceElevated {
+    background: var(--bg-surface);
+    border: 1px solid var(--color-border-default);
+    border-radius: 0.75rem;
+}
+
+.dropdownRoot {
+    position: relative;
+}
+
+.trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--bg-main);
+    border: none;
+    border-radius: 0.5rem;
+    color: var(--text-main);
+    font-size: 0.875rem;
+    font-weight: 700;
+    transition: background-color 150ms ease;
+}
+
+.triggerUppercase {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.trigger:hover {
+    background: var(--border);
+}
+
+.chevron {
+    width: 1rem;
+    height: 1rem;
+    transition: transform 150ms ease;
+}
+
+.chevronOpen {
+    transform: rotate(180deg);
+}
+
+.menu {
+    position: absolute;
+    bottom: 100%;
+    margin-bottom: 0.5rem;
+    min-width: 7.5rem;
+    width: 100%;
+    padding: 0.25rem;
+    background: var(--bg-surface);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    box-shadow:
+        var(--shadow-lg),
+        0 0 0 1px rgb(0 0 0 / 5%);
+}
+
+.alignLeft {
+    left: 0;
+}
+
+.alignRight {
+    right: 0;
+}
+
+.menuItem {
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.375rem;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    transition: background-color 150ms ease;
+}
+
+.menuItemUppercase {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.menuItem:hover {
+    background: var(--bg-main);
+}
+
+.menuItemActive {
+    background: rgb(153 184 73 / 10%);
+    color: var(--color-primary-dark);
+}
+
+@media (min-width: 1024px) {
+    .menu {
+        top: 100%;
+        bottom: auto;
+        margin-top: 0.5rem;
+        margin-bottom: 0;
+    }
+}

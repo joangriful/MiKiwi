@@ -11,8 +11,10 @@ class ChatMessage extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
+        'session_id',
         'message_body',
         'sender_type',
+        'is_read',
     ];
 
     protected $casts = [
@@ -27,8 +29,8 @@ class ChatMessage extends Model
     /**
      * Scope a query to only include messages for a specific session.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $sessionId
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $sessionId
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeBySession($query, $sessionId)

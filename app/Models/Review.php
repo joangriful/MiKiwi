@@ -11,9 +11,11 @@ class Review extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
+        'user_id',
         'product_id',
         'rating',
         'comment',
+        'is_approved',
     ];
 
     protected $casts = [

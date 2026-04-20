@@ -1,0 +1,473 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.header {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+.title {
+    margin: 0;
+    color: var(--color-text-strongest);
+    font-size: 2.25rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+}
+
+.stepMeta {
+    margin-top: 0.5rem;
+    color: var(--color-text-subtle);
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+}
+
+.methodGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+.methodCard {
+    position: relative;
+    padding: 2rem;
+    border: 2px solid transparent;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    transition: border-color 0.5s ease, background-color 0.5s ease, box-shadow 0.5s ease, transform 0.3s ease;
+}
+
+.methodCardSelected {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+    box-shadow: 0 0 0 8px var(--color-primary-soft);
+}
+
+.methodCardIdle {
+    border-color: var(--color-border-soft);
+    background: var(--color-white);
+    box-shadow: var(--shadow-sm);
+}
+
+.methodCardIdle:hover {
+    border-color: var(--color-border-strong);
+}
+
+.methodRow {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.methodInfo {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.methodIndicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 4px solid transparent;
+    border-radius: 0.75rem;
+    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.methodIndicatorSelected {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    box-shadow: 0 12px 24px rgb(153 184 73 / 20%);
+    color: var(--color-white);
+}
+
+.methodIndicatorIdle {
+    border-color: var(--color-border-default);
+    background: var(--color-surface-disabled);
+}
+
+.methodTitle {
+    margin: 0;
+    color: var(--color-text-strongest);
+    font-size: 1.25rem;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.methodDescription {
+    margin-top: 0.5rem;
+    color: var(--color-text-subtle);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+.methodPriceWrapper {
+    text-align: right;
+}
+
+.methodPrice {
+    color: var(--color-text-strongest);
+    font-size: 1.5rem;
+    font-weight: 900;
+}
+
+.methodPriceSelected {
+    color: var(--color-primary);
+}
+
+.currency {
+    margin-left: 0.125rem;
+    font-size: 0.875rem;
+}
+
+.pickupSection {
+    margin-top: 2.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid rgb(153 184 73 / 10%);
+}
+
+.searchBar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    padding: 0.5rem;
+    border: 1px solid rgb(153 184 73 / 10%);
+    border-radius: 1rem;
+    background: var(--color-white);
+    box-shadow: var(--shadow-sm);
+    transition: border-color 0.3s ease;
+}
+
+.searchBar:focus-within {
+    border-color: rgb(153 184 73 / 30%);
+}
+
+.searchInput {
+    flex: 1;
+    height: 3rem;
+    padding: 0 1rem;
+    border: none;
+    border-radius: 0.75rem;
+    color: var(--color-text-strong);
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.searchInput::placeholder {
+    color: #d1d5db;
+}
+
+.searchInput:focus {
+    outline: none;
+}
+
+.searchButton {
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 0.75rem;
+    background: var(--color-text-strongest);
+    color: var(--color-white);
+    font-size: 0.625rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    box-shadow: var(--shadow-lg);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.searchButton:hover {
+    background: var(--color-primary);
+}
+
+.searchButton:active {
+    transform: scale(0.95);
+}
+
+.loadingState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2.5rem 0;
+    color: var(--color-primary);
+}
+
+.spinner {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid currentColor;
+    border-radius: 999px;
+    animation: spin 1s linear infinite;
+}
+
+.loadingLabel {
+    font-size: 0.625rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    opacity: 0.4;
+}
+
+.pickupList {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    max-height: 20rem;
+    padding: 0.5rem;
+    overflow-y: auto;
+}
+
+.pickupPointCard {
+    padding: 1.5rem;
+    border: 2px solid transparent;
+    border-radius: 1rem;
+    transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.pickupPointCardSelected {
+    border-color: var(--color-primary);
+    background: var(--color-white);
+    box-shadow: 0 18px 30px rgb(153 184 73 / 10%);
+    transform: translateY(-0.25rem);
+}
+
+.pickupPointCardIdle {
+    background: var(--color-surface-subtle-transparent);
+}
+
+.pickupPointCardIdle:hover {
+    border-color: var(--color-border-default);
+    background: var(--color-white);
+}
+
+.pickupPointContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    text-align: left;
+}
+
+.pickupPointText {
+    flex: 1;
+}
+
+.pickupPointName {
+    color: var(--color-text-strongest);
+    font-size: 0.875rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+}
+
+.pickupPointCardIdle:hover .pickupPointName {
+    color: var(--color-primary);
+}
+
+.pickupPointNameSelected {
+    color: var(--color-primary);
+}
+
+.pickupPointMeta {
+    margin-top: 0.5rem;
+    color: var(--color-text-subtle);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    line-height: 1.6;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+}
+
+.pickupPointCheck {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.pickupPointCheckSelected {
+    background: var(--color-primary);
+    color: var(--color-white);
+    transform: scale(1.1);
+}
+
+.pickupPointCheckIdle {
+    background: #e5e7eb;
+    color: transparent;
+}
+
+.pickupPointCardIdle:hover .pickupPointCheckIdle {
+    background: var(--color-primary-ring);
+    color: var(--color-primary);
+}
+
+.emptyPickupState {
+    padding: 3rem 1rem;
+    border: 2px dashed var(--color-border-default);
+    border-radius: 1.5rem;
+    background: var(--color-surface-subtle);
+    text-align: center;
+}
+
+.emptyPickupIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1rem;
+    border: 1px solid var(--color-border-default);
+    border-radius: 1rem;
+    background: var(--color-white);
+    box-shadow: var(--shadow-sm);
+    color: #d1d5db;
+}
+
+.emptyPickupText {
+    padding: 0 2.5rem;
+    color: var(--color-text-subtle);
+    font-size: 0.625rem;
+    font-weight: 900;
+    line-height: 1.6;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-top: 3rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--color-border-default);
+}
+
+.secondaryButton,
+.primaryButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    border: none;
+    font-weight: 900;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.secondaryButton {
+    order: 2;
+    min-width: 12.5rem;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    background: var(--color-surface-disabled);
+    color: var(--color-text-subtle);
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+.secondaryButton:hover {
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+}
+
+.secondaryButton:hover .backArrow {
+    transform: translateX(-0.25rem);
+}
+
+.primaryButton {
+    order: 1;
+    width: 100%;
+    min-width: 20rem;
+    padding: 1.25rem 3rem;
+    border-radius: 1rem;
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-size: 1.25rem;
+    box-shadow: 0 20px 40px rgb(153 184 73 / 20%);
+}
+
+.primaryButton:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+    transform: translateY(-0.25rem);
+}
+
+.primaryButtonDisabled {
+    background: var(--color-border-default);
+    color: #d1d5db;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.primaryButton:hover:not(:disabled) .iconMdForward {
+    transform: translateX(0.25rem);
+}
+
+.backArrow,
+.iconMdForward {
+    transition: transform 0.3s ease;
+}
+
+.iconSm {
+    width: 1rem;
+    height: 1rem;
+}
+
+.iconLg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.iconMdForward {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (min-width: 768px) {
+    .methodRow {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .searchBar {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .actions {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .secondaryButton {
+        order: 1;
+    }
+
+    .primaryButton {
+        order: 2;
+        width: auto;
+    }
+}

@@ -1,0 +1,12 @@
+.root {
+    width: 100%;
+    margin: 2rem 0;
+}
+
+.title {
+    margin: 0 0 1.5rem;
+    padding: 0 1rem;
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--color-text-strong);
+}

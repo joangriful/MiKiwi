@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ChatSessionStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,7 @@ class ChatSession extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
+        'user_id',
         'status',
         'subject',
     ];

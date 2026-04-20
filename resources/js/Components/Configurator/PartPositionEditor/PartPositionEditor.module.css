@@ -1,0 +1,175 @@
+.backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(0 0 0 / 80%);
+    backdrop-filter: blur(8px);
+}
+
+.dialog {
+    width: 90vw;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-lg);
+}
+
+.header {
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: var(--color-surface-subtle);
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+.title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-text-strongest);
+}
+
+.subtitle {
+    margin: 0.25rem 0 0;
+    font-size: 0.875rem;
+    color: var(--color-text-muted-ui);
+}
+
+.headerActions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    transition: background-color 150ms ease;
+}
+
+.secondaryButton {
+    color: var(--color-text-soft);
+    background: transparent;
+}
+
+.secondaryButton:hover {
+    background: var(--color-surface-disabled);
+}
+
+.primaryButton {
+    color: var(--color-white);
+    background: var(--color-info);
+    font-weight: 500;
+    box-shadow: var(--shadow-md);
+}
+
+.primaryButton:hover {
+    background: var(--color-info-strong);
+}
+
+.canvas {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    cursor: move;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e5e5f7;
+    background-image:
+        radial-gradient(#444cf7 0.5px, transparent 0.5px),
+        radial-gradient(#444cf7 0.5px, #e5e5f7 0.5px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+}
+
+.guideOverlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0.1;
+}
+
+.guideFrame {
+    width: 500px;
+    height: 500px;
+    border: 2px dashed var(--color-black);
+    border-radius: 1rem;
+}
+
+.image {
+    max-width: none;
+    transform-origin: center;
+    pointer-events: none;
+    user-select: none;
+    transition: transform 75ms ease;
+}
+
+.footer {
+    padding: 1rem 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+    background: var(--color-surface-subtle);
+    border-top: 1px solid var(--color-border-default);
+}
+
+.sliderGroup {
+    flex: 1;
+}
+
+.label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-muted-ui);
+}
+
+.slider {
+    width: 100%;
+    height: 0.5rem;
+    margin-top: 0.25rem;
+    border-radius: 999px;
+    background: var(--color-surface-disabled);
+    appearance: none;
+    cursor: pointer;
+}
+
+.metrics {
+    display: flex;
+    gap: 1rem;
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--color-border-default);
+}
+
+.metric {
+    display: flex;
+    flex-direction: column;
+}
+
+.metricValue {
+    font-family: monospace;
+}
+
+.resetButton {
+    align-self: center;
+    border: none;
+    background: transparent;
+    color: var(--color-info);
+    font-size: 0.75rem;
+}
+
+.resetButton:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,492 @@
+@import url('https://fonts.googleapis.com/css2?family=Prata&display=swap');
+
+.root {}
+
+/* Home.css - Redesign inspired by Strategic Creative Layout */
+
+:root {
+    --bg-pink: #fec0d5;
+    /* The soft pink from the hero */
+    --bg-white: #ffffff;
+    --bg-black: #000000;
+    --text-black: #000000;
+    --text-white: #ffffff;
+    --accent-pink: #ff9bbd;
+    --font-heading: 'Outfit', 'Inter', sans-serif;
+    /* Bold heading font */
+    --font-body: 'Inter', sans-serif;
+    --font-serif: 'Prata', serif;
+}
+
+:global(.home-container) {
+    background: var(--bg-white);
+    color: var(--text-black);
+    width: 100%;
+    position: relative;
+    font-family: var(--font-body);
+    overflow-x: hidden;
+}
+
+/* --- Hero Section V4 --- */
+:global(.hero-minimal.hero-v2) {
+    min-height: 95vh;
+    background-color: var(--bg-pink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 5%;
+    position: relative;
+    overflow: hidden;
+}
+
+:global(.hero-main-content) {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 1400px;
+}
+
+:global(.hero-split-container) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    width: 100%;
+}
+
+:global(.hero-brand-logo) {
+    width: clamp(280px, 80vw, 550px);
+    display: flex;
+    justify-content: center;
+}
+
+:global(.hero-brand-logo img) {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+:global(.hero-text-side) {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+:global(.hero-slogan) {
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 5vw, 3.8rem);
+    font-weight: 900;
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    color: var(--text-black);
+    max-width: 800px;
+}
+
+:global(.hero-cta-box) {
+    margin-top: 3rem;
+}
+
+/* --- Desktop Layout Specifics --- */
+@media (min-width: 1025px) {
+    :global(.hero-split-container) {
+        flex-direction: row-reverse;
+        /* Logo Right, Text Left */
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+    }
+
+    :global(.hero-text-side) {
+        align-items: flex-start;
+        text-align: left;
+        flex: 1;
+    }
+
+    :global(.hero-brand-logo) {
+        flex: 1;
+        justify-content: flex-end;
+        max-width: 650px;
+    }
+
+    :global(.hero-slogan) {
+        font-size: 5.5rem;
+        max-width: 700px;
+    }
+}
+
+:global(.btn-pill) {
+    padding: 22px 65px;
+    border: 2px solid #000000;
+    border-radius: 100px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    background: #fdfdfd;
+    color: var(--text-black);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-head);
+    font-size: 1.3rem;
+    position: relative;
+    box-shadow: 0 10px 0 #cecece;
+}
+
+:global(.btn-pill:hover) {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 0 #cecece;
+    background: #ffffff;
+}
+
+:global(.btn-pill:active) {
+    transform: translateY(6px);
+    box-shadow: 0 4px 0 #cecece;
+}
+
+/* --- Benefits Section (Por qué elegirnos) --- */
+:global(.benefits-section) {
+    padding: 100px 8%;
+    background: var(--bg-white);
+    text-align: center;
+}
+
+:global(.benefits-section h2) {
+    font-family: var(--font-heading);
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 60px;
+}
+
+:global(.benefits-grid) {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+:global(.benefit-card) {
+    text-align: left;
+    background: #fff;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+:global(.benefit-card:hover) {
+    border-color: var(--bg-pink);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.04);
+    transform: translateY(-3px);
+}
+
+:global(.benefit-img) {
+    aspect-ratio: 1/1;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background: #f0f0f0;
+}
+
+:global(.benefit-img img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+:global(.benefit-card h3) {
+    font-family: var(--font-head);
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+:global(.benefit-card p) {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* --- Interstitial Section --- */
+:global(.work-section) {
+    padding: 120px 8%;
+    text-align: center;
+    background: #fafafa;
+}
+
+:global(.work-keywords) {
+    font-family: var(--font-head);
+    font-size: 4rem;
+    font-weight: 900;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.9;
+    color: #111;
+}
+
+:global(.work-header) {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    text-align: left;
+    margin-bottom: 60px;
+}
+
+:global(.work-header h2) {
+    font-family: var(--font-heading);
+    font-size: 8rem;
+    line-height: 0.85;
+    font-weight: 900;
+}
+
+:global(.work-header p) {
+    font-size: 1.4rem;
+    max-width: 350px;
+    margin-bottom: 10px;
+}
+
+/* --- Collection Grid --- */
+:global(.collection-grid-new) {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+:global(.collection-item-new) {
+    text-align: left;
+}
+
+:global(.collection-img-box) {
+    aspect-ratio: 1/1;
+    background: #f0f0f0;
+    margin-bottom: 25px;
+    overflow: hidden;
+    border-radius: 8px;
+    transition: transform 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+    position: relative;
+}
+
+:global(.collection-img-box img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+:global(.collection-item-new:hover .collection-img-box) {
+    transform: scale(0.95);
+}
+
+:global(.collection-item-new h3) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+:global(.collection-link-new) {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    color: var(--text-black);
+}
+
+/* --- Method Section (Dark + Static Collections) --- */
+:global(.method-section) {
+    background-color: var(--bg-black);
+    color: var(--text-white);
+    padding: 120px 8%;
+}
+
+:global(.method-header) {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 80px;
+}
+
+:global(.method-header h2) {
+    font-family: var(--font-heading);
+    font-size: 8rem;
+    line-height: 0.85;
+    font-weight: 900;
+}
+
+:global(.method-header p) {
+    font-size: 1.4rem;
+    max-width: 350px;
+    margin-bottom: 10px;
+    opacity: 0.7;
+}
+
+:global(.method-section .collection-grid-new h3) {
+    color: var(--bg-pink);
+}
+
+:global(.method-section .collection-link-new) {
+    color: var(--bg-pink);
+}
+
+/* Responsiveness */
+@media (max-width: 1200px) {
+
+    :global(.work-header h2),
+    :global(.method-header h2) {
+        font-size: 6rem;
+    }
+}
+
+@media (max-width: 1024px) {
+
+    :global(.work-header),
+    :global(.method-header) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 30px;
+    }
+
+    :global(.work-header h2),
+    :global(.method-header h2) {
+        font-size: 5rem;
+    }
+
+    :global(.collection-grid-new),
+    :global(.benefits-grid) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    :global(.hero-minimal.hero-v2) {
+        padding: 40px 6%;
+        min-height: 85vh;
+    }
+
+    :global(.hero-brand-logo) {
+        width: 85vw;
+        margin-bottom: 1.5rem;
+    }
+
+    :global(.hero-slogan) {
+        font-size: 1.4rem;
+        line-height: 1.2;
+    }
+
+    :global(.btn-pill) {
+        padding: 18px 45px;
+        font-size: 1.1rem;
+        letter-spacing: 0.15em;
+    }
+
+    :global(.work-section) {
+        padding: 80px 6%;
+    }
+
+    :global(.work-keywords) {
+        font-size: 2.8rem;
+    }
+
+    :global(.benefits-section) {
+        padding: 80px 6%;
+    }
+
+    :global(.benefits-grid) {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    :global(.collection-grid-new) {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    :global(.method-section) {
+        padding: 80px 6%;
+    }
+
+    :global(.method-header h2),
+    :global(.work-header h2) {
+        font-size: 3.5rem;
+    }
+
+    :global(.method-header p),
+    :global(.work-header p) {
+        font-size: 1.2rem;
+    }
+
+    :global(.doll-teaser-section) {
+        padding: 100px 6%;
+    }
+}
+
+@media (max-width: 480px) {
+    :global(.btn-pill) {
+        width: 100%;
+        padding: 20px 30px;
+        font-size: 1rem;
+    }
+
+    :global(.hero-subtitle) {
+        font-size: 1.5rem;
+    }
+
+    :global(.work-keywords) {
+        font-size: 2.2rem;
+    }
+
+    :global(.method-header h2),
+    :global(.work-header h2) {
+        font-size: 2.8rem;
+    }
+
+    :global(.benefit-card h3) {
+        font-size: 1.2rem;
+    }
+
+    :global(.benefit-card p) {
+        font-size: 1.05rem;
+    }
+}
+
+/* --- Logo Wrapper --- */
+:global(.logo-wrapper) {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- Doll Teaser Section --- */
+:global(.doll-teaser-section) {
+    position: relative;
+    padding: 180px 8%;
+    overflow: hidden;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+}
+
+:global(.doll-teaser-section .teaser-content) {
+    position: relative;
+    z-index: 10;
+    max-width: 600px;
+}
+
+:global(.doll-teaser-section .teaser-content h2),
+:global(.doll-teaser-section .teaser-content p) {
+    color: var(--text-black);
+}

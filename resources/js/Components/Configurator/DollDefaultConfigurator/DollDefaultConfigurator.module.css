@@ -1,0 +1,55 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--color-surface-subtle);
+}
+
+.layout {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+.workspace {
+    width: 66.666667%;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-surface);
+    border-right: 1px solid var(--color-border-default);
+}
+
+.previewRow {
+    flex: 1;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+}
+
+.previewPane {
+    width: 50%;
+    position: relative;
+    background: var(--color-surface-disabled);
+    border-right: 1px solid var(--color-border-default);
+}
+
+.closeUpPane {
+    width: 50%;
+    position: relative;
+    overflow: hidden;
+    background: var(--color-surface-subtle);
+}
+
+.optionsBarSlot {
+    flex: none;
+    position: relative;
+    z-index: 40;
+}
+
+.selectorPane {
+    width: 33.333333%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg-surface);
+}

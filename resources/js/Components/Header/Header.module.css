@@ -1,0 +1,242 @@
+.root {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 4.375rem;
+    padding-inline: 1rem;
+    background: var(--color-black);
+    box-shadow: var(--shadow-md);
+    transition: all 300ms ease;
+}
+
+.logoLink {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-block: 0.5rem;
+    padding-left: 0.3125rem;
+    flex-shrink: 0;
+}
+
+.logo {
+    width: auto;
+    height: 70%;
+    margin-block: auto;
+    color: var(--color-white);
+    transition: opacity 150ms ease;
+}
+
+.logo:hover {
+    opacity: 0.8;
+}
+
+.navigation {
+    display: none;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.navLink,
+.dollsLink,
+.dropdownTrigger,
+.dropdownLink {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: color 150ms ease;
+}
+
+.navLink,
+.dropdownTrigger {
+    color: var(--color-white);
+}
+
+.navLink:hover,
+.navLink:focus-visible,
+.dropdown:hover .dropdownTrigger,
+.dropdown:focus-within .dropdownTrigger,
+.dropdownLink:hover,
+.dropdownLink:focus-visible {
+    color: var(--color-primary);
+    outline: none;
+}
+
+.dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    cursor: default;
+}
+
+.dropdownTrigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.dropdownIcon {
+    font-size: 0.75rem;
+    transform: translateY(1px);
+}
+
+.dropdownPopover {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    z-index: 120;
+    padding-top: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%);
+    transition:
+        opacity 300ms ease,
+        visibility 300ms ease;
+}
+
+.dropdown:hover .dropdownPopover,
+.dropdown:focus-within .dropdownPopover {
+    opacity: 1;
+    visibility: visible;
+}
+
+.dropdownPanel {
+    min-width: 15rem;
+    border: 1px solid var(--color-white-faint);
+    border-radius: 1rem;
+    background: rgb(0 0 0 / 95%);
+    backdrop-filter: blur(10px);
+    padding: 1.25rem;
+    box-shadow: 0 24px 48px rgb(0 0 0 / 45%);
+}
+
+.dropdownList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.dropdownLink {
+    display: block;
+    padding-block: 0.25rem;
+    color: var(--color-white-dim);
+    font-size: 0.6875rem;
+}
+
+.dollsLink {
+    color: var(--color-secondary);
+}
+
+.dollsLink:hover,
+.dollsLink:focus-visible {
+    color: var(--color-white);
+    outline: none;
+}
+
+.burgerButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-white);
+    cursor: pointer;
+    padding: 0; /* Remove extra padding for precise spacing */
+    transition: color 150ms ease;
+}
+
+.burgerButton:hover {
+    color: var(--color-primary);
+}
+
+.burgerButton span {
+    font-size: 2rem;
+}
+
+@media (min-width: 1280px) {
+    .burgerButton {
+        display: none;
+    }
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem; /* Consistent distance between ALL items */
+}
+
+.iconLink,
+.cartLink {
+    display: flex;
+    align-items: center;
+    position: relative;
+    transition: opacity 150ms ease;
+}
+
+.iconLink:hover,
+.iconLink:focus-visible,
+.cartLink:hover,
+.cartLink:focus-visible {
+    opacity: 0.8;
+    outline: none;
+}
+
+.icon {
+    color: var(--color-white);
+    font-size: 1.875rem;
+}
+
+.assetIcon {
+    width: 1.75rem;
+    height: 1.75rem;
+    filter: brightness(0) invert(1);
+}
+
+.badge {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    background: var(--color-secondary);
+    color: var(--color-white);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+@media (min-width: 768px) {
+    .root {
+        padding-inline: 2rem;
+    }
+
+    .actions {
+        gap: 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .root {
+        min-height: 5.625rem;
+    }
+
+    .icon {
+        font-size: 2.25rem;
+    }
+
+    .assetIcon {
+        width: 2.25rem;
+        height: 2.25rem;
+    }
+}
+
+@media (min-width: 1280px) {
+    .navigation {
+        display: flex;
+    }
+}

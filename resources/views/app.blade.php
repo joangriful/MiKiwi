@@ -11,10 +11,13 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
+        <!-- Favicon -->
+        <link rel="icon" type="image/svg+xml" href="{{ asset('assets/icons/mikiwi_kiwi.svg') }}" />
+
         <!-- Scripts -->
         @routes
         @viteReactRefresh
-        @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
+        @vite('resources/js/app.jsx')
         @inertiaHead
     </head>
     <body class="font-sans antialiased">

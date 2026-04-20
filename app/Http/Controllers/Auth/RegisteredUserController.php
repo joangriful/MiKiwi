@@ -20,7 +20,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        return Inertia::render('Auth/Auth', ['view' => 'register']);
     }
 
     /**
@@ -46,6 +46,13 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Check if user has quiz data in the request (from frontend localStorage)
+        if ($request->has('quiz_result_category')) {
+            $user->update([
+                'quiz_result_category' => $request->input('quiz_result_category')
+            ]);
+        }
+
+        return redirect(route('perfil.view', absolute: false));
     }
 }

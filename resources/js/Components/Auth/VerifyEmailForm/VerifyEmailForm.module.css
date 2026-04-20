@@ -1,0 +1,23 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.submitButton {
+    width: 100%;
+    padding: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.footerText {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--color-text-soft);
+}
+
+.inlineLink {
+    font-weight: 500;
+}

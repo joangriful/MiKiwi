@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CartService;
+use App\Domain\Carts\Services\CartService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -17,28 +17,46 @@ class CartController extends Controller
 
     /**
      * Mostrar el carrito de compras
-     * 
+     *
      * @return \Inertia\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $cart = $this->cartService->getCart();
         $popularProducts = \App\Models\Product::where('is_active', true)
-            ->where('product_type', 'configurable') // Or any criteria for popular
-            ->limit(4)
+            ->whereIn('product_type', ['configurable', 'simple'])
+            ->limit(8)
             ->get();
 
-        return Inertia::render('Cart', [
-            'cart' => $cart,
+        $couponData = session('coupon');
+        \Log::info("CartController::index - Coupon in session: " . json_encode($couponData));
+        
+        if ($couponData) {
+            $coupon = \App\Models\Coupon::where('code', $couponData['code'])->first();
+            if ($coupon && $coupon->isValid()) {
+                $couponData['discount'] = $coupon->calculateDiscount($cart['total']);
+                session(['coupon' => $couponData]); // Update session with new discount
+            } else {
+                session()->forget('coupon'); // Remove invalid coupon
+                $couponData = null;
+            }
+        }
+
+        return Inertia::render('Checkout/Cart', [
+            'cart' => $request->has('buy_now') && session()->has('buy_now_item') 
+                ? $this->cartService->getBuyNowItem() 
+                : $cart,
+            'isBuyNow' => $request->has('buy_now') && session()->has('buy_now_item'),
             'popularProducts' => $popularProducts,
-            'pageTitle' => 'Carrito de Compras - MiKiwi'
+            'pageTitle' => 'Carrito de Compras - MiKiwi',
+            'stripeKey' => config('services.stripe.key'),
+            'coupon' => $couponData,
         ]);
     }
 
     /**
      * Agregar producto al carrito
-     * 
-     * @param Request $request
+     *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
@@ -47,7 +65,7 @@ class CartController extends Controller
             $validated = $request->validate([
                 'product_slug' => 'required|string',
                 'quantity' => 'required|integer|min:1',
-                'accessories' => 'nullable|array'
+                'accessories' => 'nullable|array',
             ]);
 
             $cart = $this->cartService->addToCart(
@@ -60,7 +78,7 @@ class CartController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Producto agregado al carrito',
-                    'cart' => $cart
+                    'cart' => $cart,
                 ]);
             }
 
@@ -69,85 +87,135 @@ class CartController extends Controller
             if ($request->wantsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => $e->getMessage()
+                    'message' => $e->getMessage(),
                 ], 400);
             }
+
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 
     /**
      * Actualizar cantidad de un producto en el carrito
-     * 
-     * @param Request $request
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, string $id)
     {
         try {
             $validated = $request->validate([
-                'quantity' => 'required|integer|min:1'
+                'quantity' => 'required|integer|min:1',
             ]);
 
-            $cart = $this->cartService->updateQuantity($id, $validated['quantity']);
+            $this->cartService->updateQuantity($id, $validated['quantity']);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Cantidad actualizada',
-                'cart' => $cart
-            ]);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Cantidad actualizada',
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Cantidad actualizada');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 400);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 400);
+            }
+
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 
     /**
      * Eliminar producto del carrito
-     * 
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         try {
-            $cart = $this->cartService->removeFromCart($id);
+            $this->cartService->removeFromCart($id);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Producto eliminado del carrito',
-                'cart' => $cart
-            ]);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Producto eliminado del carrito',
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Producto eliminado del carrito');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 400);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 400);
+            }
+
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 
     /**
      * Vaciar el carrito
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function clear()
+    public function clear(Request $request)
     {
         try {
             $this->cartService->clearCart();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Carrito vaciado'
+                'message' => 'Carrito vaciado',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 400);
+        }
+    }
+
+    /**
+     * Comprar un producto directamente (aislado del carrito)
+     */
+    public function buyNow(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'product_slug' => 'required|string',
+                'quantity' => 'required|integer|min:1',
+                'accessories' => 'nullable|array',
+            ]);
+
+            $this->cartService->setBuyNowItem(
+                $validated['product_slug'],
+                $validated['quantity'],
+                $validated['accessories'] ?? []
+            );
+
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'redirect' => route('cart.index', ['buy_now' => 1]),
+                ]);
+            }
+
+            return redirect()->route('cart.index', ['buy_now' => 1]);
+        } catch (\Exception $e) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 400);
+            }
+
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 }

@@ -1,0 +1,305 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 1rem;
+    background: var(--color-surface-subtle);
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+.searchWrapper {
+    position: relative;
+    width: min(100%, 18rem);
+}
+
+.searchIcon {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    color: var(--color-text-subtle);
+    font-size: 0.875rem;
+    transform: translateY(-50%);
+}
+
+.searchInput {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.25rem;
+    font-size: 0.875rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--color-border-strong);
+    border-radius: 0.5rem;
+    outline: none;
+}
+
+.searchInput:focus {
+    box-shadow: 0 0 0 3px var(--color-info-ring);
+    border-color: var(--color-info);
+}
+
+.summary {
+    color: var(--color-text-muted-ui);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.tableWrapper {
+    flex: 1;
+    overflow: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.tableHead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--color-surface-subtle);
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+.tableHeading {
+    padding: 0.75rem 1.5rem;
+    color: var(--color-text-muted-ui);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.orderHeading {
+    width: 3rem;
+    padding: 0.75rem 0.5rem;
+}
+
+.actionsHeading {
+    text-align: right;
+}
+
+.tableRow {
+    transition: background-color 0.2s ease;
+}
+
+.tableRow:hover {
+    background: var(--color-surface-subtle);
+}
+
+.tableRow:hover .actionButtons {
+    opacity: 1;
+}
+
+.tableCell {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+.orderCell {
+    width: 3rem;
+    padding: 1rem 0.5rem;
+    color: var(--color-text-subtle);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+.productInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.productImageFrame {
+    display: flex;
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    overflow: hidden;
+    background: var(--color-surface-disabled);
+    border: 1px solid var(--color-border-default);
+    border-radius: 0.5rem;
+}
+
+.productImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.productImagePlaceholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: var(--color-text-subtle);
+}
+
+.productName {
+    margin: 0;
+    color: var(--color-text-strongest);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.productSku {
+    margin: 0.25rem 0 0;
+    color: var(--color-text-muted-ui);
+    font-family: ui-monospace, SFMono-Regular, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: 0.75rem;
+}
+
+.categoryBadge,
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.125rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid var(--color-border-default);
+    border-radius: 999px;
+}
+
+.categoryBadge {
+    color: var(--color-text-strong);
+    background: var(--color-surface-disabled);
+}
+
+.price {
+    color: var(--color-text-strongest);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.stockInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stockDot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+}
+
+.stockDotAvailable {
+    background: var(--color-success);
+}
+
+.stockDotEmpty {
+    background: var(--color-danger-soft);
+}
+
+.stockValue {
+    color: var(--color-text-soft);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.statusBadgeActive {
+    color: var(--color-success-strong);
+    background: var(--color-success-soft);
+    border-color: var(--color-success-border);
+}
+
+.statusBadgeInactive {
+    color: var(--color-text-soft);
+    background: var(--color-surface-subtle);
+    border-color: var(--color-border-default);
+}
+
+.actionsCell {
+    text-align: right;
+}
+
+.actionButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.iconButton {
+    padding: 0.5rem;
+    color: var(--color-text-subtle);
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.iconButton:disabled {
+    cursor: wait;
+}
+
+.iconButtonIcon {
+    font-size: 1.125rem;
+}
+
+.editButton:hover {
+    color: var(--color-info);
+    background: var(--color-info-soft);
+}
+
+.deleteButton:hover {
+    color: var(--color-danger);
+    background: var(--color-danger-bg);
+}
+
+.spinningIcon {
+    animation: spin 1s linear infinite;
+}
+
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 1rem;
+    text-align: center;
+    color: var(--color-text-subtle);
+    background: var(--color-surface-subtle-transparent);
+}
+
+.emptyStateIcon {
+    margin-bottom: 1rem;
+    font-size: 3rem;
+}
+
+.emptyStateTitle {
+    margin: 0;
+    color: var(--color-text-soft);
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+.emptyStateDescription {
+    margin: 0.25rem 0 0;
+    color: var(--color-text-muted-ui);
+    font-size: 0.875rem;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

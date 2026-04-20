@@ -1,0 +1,36 @@
+.root {
+    display: flex;
+    gap: 1rem;
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease,
+        transform 150ms ease;
+}
+
+.link:hover,
+.link:focus-visible {
+    border-color: rgb(255 255 255 / 50%);
+    background: var(--color-white);
+    outline: none;
+}
+
+.icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    filter: brightness(0) invert(1);
+    transition: filter 150ms ease;
+}
+
+.link:hover .icon,
+.link:focus-visible .icon {
+    filter: none;
+}

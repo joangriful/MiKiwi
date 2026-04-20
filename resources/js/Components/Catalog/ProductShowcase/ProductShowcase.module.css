@@ -1,0 +1,114 @@
+.root {
+    max-width: 100rem;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.mediaColumn {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.mainImagePanel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    padding: 1rem;
+    border: 1px solid var(--color-border-soft);
+    border-radius: 1rem;
+    background: var(--color-surface-subtle);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s ease;
+}
+
+.mainImagePanel:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.keyboardTip {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-border-default);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 80%);
+    backdrop-filter: blur(8px);
+    box-shadow: var(--shadow-sm);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%);
+    transition: opacity 0.2s ease;
+}
+
+.mainImagePanel:hover .keyboardTip {
+    opacity: 1;
+}
+
+.keyboardTipText {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+}
+
+.keyboardTipIcons {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.keyboardTipIcon {
+    font-size: 0.75rem;
+    color: var(--color-primary);
+}
+
+.infoColumn {
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .root {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .layout {
+        flex-direction: row;
+        gap: 4rem;
+    }
+
+    .mediaColumn {
+        width: 60%;
+        gap: 2rem;
+    }
+
+    .mainImagePanel {
+        aspect-ratio: 4 / 3;
+        padding: 2rem;
+        border-radius: 2.5rem;
+    }
+
+    .infoColumn {
+        position: sticky;
+        top: 8rem;
+        width: 40%;
+    }
+}

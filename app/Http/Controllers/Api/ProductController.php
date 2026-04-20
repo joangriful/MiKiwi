@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\ProductService;
+use App\Domain\Products\Services\ProductService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -21,6 +20,7 @@ class ProductController extends Controller
     public function index(): JsonResponse
     {
         $products = $this->productService->getCatalogItems();
+
         return response()->json($products);
     }
 
@@ -29,10 +29,10 @@ class ProductController extends Controller
     {
         try {
             $data = $this->productService->getProductDetails($slug);
-            
+
             return response()->json([
                 'success' => true,
-                'data' => $data
+                'data' => $data,
             ]);
 
         } catch (\Exception $e) {

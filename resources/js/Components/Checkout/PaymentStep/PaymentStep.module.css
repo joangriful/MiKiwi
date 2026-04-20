@@ -1,0 +1,856 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+.title {
+    margin: 0;
+    color: var(--color-text-strongest);
+    font-size: 2.25rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+}
+
+.stepMeta {
+    margin-top: 0.5rem;
+    color: var(--color-text-subtle);
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+}
+
+.securityBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    align-self: flex-start;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-success-border);
+    border-radius: 1rem;
+    background: var(--color-success-soft);
+}
+
+.securityText {
+    color: var(--color-success-strong);
+    font-size: 0.625rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+.infoBanner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    border: 1px solid var(--color-border-default);
+    border-radius: 1.5rem;
+    background: var(--color-surface-subtle-transparent);
+}
+
+.infoBannerIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    flex-shrink: 0;
+    border-radius: 1rem;
+    background: var(--color-white);
+    color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.infoBannerText {
+    flex: 1;
+    margin: 0;
+    color: var(--color-text-muted-ui);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+.paymentSection {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.optionGroup {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.groupLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 0 0.5rem;
+    color: var(--color-text-subtle);
+    font-size: 0.625rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+.groupLabelLine {
+    width: 1rem;
+    height: 1px;
+    background: var(--color-border-default);
+}
+
+.optionCard {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    border: 2px solid transparent;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    transition: border-color 0.5s ease, background-color 0.5s ease, box-shadow 0.5s ease, transform 0.5s ease;
+}
+
+.optionCardSelected {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+    box-shadow: 0 0 0 8px var(--color-primary-soft);
+    transform: translateY(-0.25rem);
+}
+
+.optionCardIdle {
+    border-color: var(--color-border-soft);
+    background: var(--color-white);
+    box-shadow: var(--shadow-sm);
+}
+
+.optionCardIdle:hover {
+    border-color: var(--color-border-default);
+}
+
+.optionCardDashed {
+    border-style: dashed;
+    border-color: var(--color-border-default);
+    background: var(--color-surface-subtle-transparent);
+    box-shadow: var(--shadow-sm);
+}
+
+.optionCardDashed:hover {
+    border-color: rgb(153 184 73 / 30%);
+}
+
+.savedCardBrand,
+.testCardBrand,
+.newCardIcon {
+    flex-shrink: 0;
+}
+
+.savedCardBrand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 2.25rem;
+    padding: 0.25rem;
+    overflow: hidden;
+    border: 1px solid var(--color-border-default);
+    border-radius: 0.75rem;
+    background: var(--color-white);
+    box-shadow: var(--shadow-sm);
+}
+
+.savedCardBrandSelected {
+    border-color: rgb(153 184 73 / 20%);
+    background: var(--color-primary-soft);
+}
+
+.savedCardBrandText {
+    font-size: 0.625rem;
+    font-weight: 900;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+}
+
+.brandVisa {
+    color: #2563eb;
+}
+
+.brandMastercard {
+    color: #ef4444;
+}
+
+.brandAmex {
+    color: #0891b2;
+}
+
+.brandDefault {
+    color: var(--color-text-muted-ui);
+}
+
+.testCardBrand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 2.25rem;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 0.75rem;
+    background: var(--color-white);
+    box-shadow: var(--shadow-sm);
+}
+
+.testCardBrandText {
+    color: var(--color-primary);
+    font-size: 0.5rem;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.testBadge {
+    margin-top: 0.25rem;
+    padding: 0.125rem 0.375rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-size: 0.375rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    box-shadow: 0 8px 16px rgb(153 184 73 / 20%);
+}
+
+.newCardIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 1rem;
+    background: var(--color-surface-disabled);
+    color: var(--color-text-subtle);
+    transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease, transform 0.5s ease;
+}
+
+.newCardIconSelected {
+    background: var(--color-primary);
+    color: var(--color-white);
+    box-shadow: 0 18px 28px rgb(153 184 73 / 20%);
+    transform: scale(1.08);
+}
+
+.optionContent {
+    flex: 1;
+}
+
+.optionTitle,
+.optionHeading {
+    margin: 0;
+    color: var(--color-text-strongest);
+    font-size: 0.875rem;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+}
+
+.optionHeading {
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+}
+
+.optionSubtitle,
+.optionHighlight,
+.optionToken {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+.optionSubtitle {
+    color: var(--color-text-subtle);
+}
+
+.optionHighlight {
+    color: var(--color-primary);
+}
+
+.optionToken {
+    color: rgb(153 184 73 / 60%);
+}
+
+.selectionCheck {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 4px solid transparent;
+    border-radius: 0.75rem;
+    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, transform 0.5s ease;
+}
+
+.selectionCheckSelected {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    box-shadow: 0 12px 24px rgb(153 184 73 / 20%);
+    color: var(--color-white);
+}
+
+.selectionCheckIdle {
+    border-color: var(--color-border-default);
+    background: var(--color-surface-subtle);
+}
+
+.cardEditorWrapper {
+    padding: 1rem 0;
+}
+
+.cardEditorFrame {
+    position: relative;
+    padding: 2.5rem;
+    border: 4px solid rgb(153 184 73 / 10%);
+    border-radius: 2.5rem;
+    background: var(--color-white);
+    box-shadow: var(--shadow-lg);
+}
+
+.cardEditorPanel {
+    position: relative;
+    padding: 2rem;
+    border: 2px solid transparent;
+    border-radius: 1.5rem;
+    box-shadow: inset 0 1px 3px rgb(34 43 36 / 5%);
+    transition: border-color 0.5s ease, background-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.cardEditorPanelIdle {
+    border-color: var(--color-border-soft);
+    background: var(--color-surface-subtle-transparent);
+}
+
+.cardEditorPanelIdle:focus-within {
+    border-color: var(--color-primary);
+    background: var(--color-white);
+    box-shadow: 0 0 0 8px var(--color-primary-soft), inset 0 1px 3px rgb(34 43 36 / 5%);
+}
+
+.cardEditorPanelSuccess {
+    border-color: var(--color-success-border);
+    background: rgb(236 253 245 / 20%);
+}
+
+.cardEditorPanelError {
+    border-color: var(--color-danger-border);
+    background: rgb(254 242 242 / 20%);
+}
+
+.cardEditorHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.cardEditorTitle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    color: var(--color-text-subtle);
+    font-size: 0.625rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+}
+
+.cardEditorLine {
+    width: 3rem;
+    height: 2px;
+    background: rgb(153 184 73 / 20%);
+}
+
+.cardBrandSkeletons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.cardBrandSkeleton {
+    width: 2rem;
+    height: 1.25rem;
+    border: 1px solid var(--color-border-default);
+    border-radius: 0.375rem;
+    background: var(--color-white);
+    box-shadow: var(--shadow-sm);
+    transform: scale(0.9);
+}
+
+.cardBrandSkeletonMuted {
+    opacity: 0.5;
+    filter: grayscale(1);
+}
+
+.cardElementWrapper {
+    padding: 1rem 0.5rem;
+}
+
+.cardCompleteBadge {
+    position: absolute;
+    top: -0.75rem;
+    right: -0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: #22c55e;
+    color: var(--color-white);
+    box-shadow: var(--shadow-lg);
+}
+
+.adminTools {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border-default);
+}
+
+.adminToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 2px dashed rgb(153 184 73 / 30%);
+    border-radius: 0.75rem;
+    background: transparent;
+    color: var(--color-primary);
+    font-size: 0.625rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    transition: background-color 0.3s ease;
+}
+
+.adminToggle:hover {
+    background: var(--color-primary-soft);
+}
+
+.adminCardList {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.adminCardRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border-default);
+    border-radius: 0.75rem;
+    background: var(--color-surface-subtle);
+}
+
+.adminCardText {
+    display: flex;
+    flex-direction: column;
+}
+
+.adminCardBrand {
+    color: var(--color-text-subtle);
+    font-size: 0.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.adminCardDisplay {
+    color: var(--color-text-muted-ui);
+    font-family: monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    transition: color 0.3s ease;
+}
+
+.adminCardRow:hover .adminCardDisplay {
+    color: var(--color-primary);
+}
+
+.adminCardActions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.iconButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem;
+    border: 1px solid var(--color-border-default);
+    border-radius: 0.5rem;
+    background: var(--color-white);
+    color: var(--color-text-subtle);
+    box-shadow: var(--shadow-sm);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.iconButton:hover {
+    color: var(--color-text-strongest);
+}
+
+.iconButtonSuccess {
+    border-color: var(--color-success-border);
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.adminHint {
+    margin: 0.25rem 0 0;
+    color: var(--color-text-subtle);
+    font-size: 0.5rem;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.errorBanner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 1px solid #fecaca;
+    border-radius: 0.75rem;
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.errorBannerText {
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.billingToggle {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border: 2px solid transparent;
+    border-radius: 2rem;
+    transition: border-color 0.5s ease, background-color 0.5s ease;
+}
+
+.billingToggleChecked {
+    border-color: var(--color-border-soft);
+    background: rgb(249 250 251 / 30%);
+}
+
+.billingToggleOpen {
+    border-color: rgb(153 184 73 / 20%);
+    background: var(--color-primary-soft);
+    box-shadow: inset 0 1px 3px rgb(34 43 36 / 5%);
+}
+
+.billingToggleHeader {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 2rem;
+    cursor: pointer;
+}
+
+.billingToggleCheckWrapper {
+    display: flex;
+    align-items: center;
+    min-height: 2rem;
+}
+
+.billingToggleText {
+    display: flex;
+    flex-direction: column;
+}
+
+.billingToggleLabel {
+    color: var(--color-text-strongest);
+    font-size: 0.875rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.billingToggleDescription {
+    margin-top: 0.5rem;
+    color: var(--color-text-subtle);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    opacity: 0.6;
+}
+
+.billingPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin: 0.5rem;
+    padding: 2.5rem;
+    border: 1px solid var(--color-border-default);
+    border-radius: 2rem;
+    background: var(--color-white);
+    box-shadow: 0 18px 30px rgb(153 184 73 / 5%);
+}
+
+.billingPanelHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.billingPanelTitle {
+    color: var(--color-text-subtle);
+    font-size: 0.625rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+}
+
+.billingPanelDivider {
+    flex: 1;
+    height: 1px;
+    background: var(--color-border-soft);
+}
+
+.billingGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+.billingField {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.billingLabel {
+    margin-left: 0.25rem;
+    color: var(--color-text-subtle);
+    font-size: 0.625rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+.billingInput {
+    width: 100%;
+    height: 3.5rem;
+    padding: 0 1.5rem;
+    border: 1px solid var(--color-border-default);
+    border-radius: 1rem;
+    background: var(--color-surface-subtle-transparent);
+    color: var(--color-text-strong);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.billingInput:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    background: var(--color-white);
+    box-shadow: 0 0 0 4px var(--color-primary-ring);
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-top: 3rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--color-border-default);
+}
+
+.secondaryButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    order: 2;
+    min-width: 12.5rem;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 1rem;
+    background: var(--color-surface-disabled);
+    color: var(--color-text-subtle);
+    font-size: 0.625rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.secondaryButton:hover {
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+}
+
+.secondaryButton:hover .backArrow {
+    transform: translateX(-0.25rem);
+}
+
+.primaryButton {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    order: 1;
+    width: 100%;
+    min-width: 21.875rem;
+    padding: 1.5rem 4rem;
+    overflow: hidden;
+    border: none;
+    border-radius: 1.5rem;
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-size: 1.25rem;
+    font-weight: 900;
+    transition: background-color 0.5s ease, transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+.primaryButton:not(:disabled) {
+    box-shadow: 0 20px 50px rgb(153 184 73 / 30%);
+}
+
+.primaryButton:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+    transform: translateY(-0.5rem);
+}
+
+.primaryButtonDisabled {
+    background: #e5e7eb;
+    color: var(--color-text-subtle);
+    cursor: not-allowed;
+}
+
+.primaryButtonContent {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+}
+
+.buttonSpinner {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 1rem;
+    border-bottom: 2px solid var(--color-white);
+    border-radius: 999px;
+    animation: spin 1s linear infinite;
+}
+
+.buttonLoadingText {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+}
+
+.buttonIcon {
+    margin-right: 1rem;
+    transition: transform 0.5s ease;
+}
+
+.primaryButton:hover .buttonIcon {
+    transform: scale(1.15);
+}
+
+.buttonText {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+.primaryButtonShine {
+    position: absolute;
+    inset: 0;
+    background: rgb(255 255 255 / 20%);
+    transform: translateX(-100%);
+    transition: transform 1s ease-in-out;
+}
+
+.primaryButton:hover .primaryButtonShine {
+    transform: translateX(100%);
+}
+
+.backArrow {
+    transition: transform 0.3s ease;
+}
+
+.iconXs {
+    width: 0.75rem;
+    height: 0.75rem;
+}
+
+.iconSm {
+    width: 1rem;
+    height: 1rem;
+}
+
+.materialIconLg {
+    font-size: 1.5rem;
+}
+
+.materialIconSm {
+    font-size: 0.875rem;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (min-width: 768px) {
+    .header {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+
+    .billingGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .actions {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .secondaryButton {
+        order: 1;
+    }
+
+    .primaryButton {
+        order: 2;
+        width: auto;
+    }
+}

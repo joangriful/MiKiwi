@@ -12,6 +12,7 @@ class Order extends Model
     use HasFactory, HasUuids, SoftDeletes;
 
     protected $fillable = [
+        'user_id',
         'order_number',
         'status',
         'total_amount',
@@ -32,8 +33,8 @@ class Order extends Model
     /**
      * Scope a query to only include orders with a specific status.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $status
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $status
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeStatus($query, $status)
@@ -44,7 +45,7 @@ class Order extends Model
     /**
      * Scope a query to only include paid orders.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopePaid($query)

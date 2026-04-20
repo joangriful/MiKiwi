@@ -1,0 +1,524 @@
+.container {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.form {
+    display: grid;
+    gap: 2rem;
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.formHeader {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+.title {
+    margin: 0;
+    color: var(--color-text-strong);
+    font-family: var(--font-body);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.subtitle {
+    margin: 0.25rem 0 0;
+    color: var(--color-text-muted-ui);
+    font-size: 0.875rem;
+}
+
+.section {
+    display: grid;
+    gap: 1rem;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+.sectionTitle {
+    margin: 0;
+    color: var(--color-text-strong);
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.methodToggle {
+    display: flex;
+    padding: 0.25rem;
+    background: var(--color-surface-disabled);
+    border-radius: 0.5rem;
+}
+
+.methodButton {
+    padding: 0.375rem 1rem;
+    color: var(--color-text-muted-ui);
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: transparent;
+    border: 0;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.methodButton:hover {
+    color: var(--color-text-soft);
+}
+
+.methodButtonActive {
+    color: var(--color-info);
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.uploadingStatus {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-info);
+    font-size: 0.875rem;
+}
+
+.spinningIcon {
+    font-size: 0.875rem;
+    animation: spin 1s linear infinite;
+}
+
+.dropzone {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 8rem;
+    overflow: hidden;
+    background: var(--color-surface-subtle);
+    border: 2px dashed var(--color-border-strong);
+    border-radius: 0.75rem;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.dropzoneDragging {
+    background: var(--color-info-soft);
+    border-color: var(--color-info);
+}
+
+.dropzoneInput {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.dropzoneContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-muted-ui);
+    pointer-events: none;
+}
+
+.dropzoneIcon {
+    font-size: 1.875rem;
+}
+
+.dropzoneText {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.linkPanel {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--color-info-soft);
+    border: 1px solid var(--color-info-border);
+    border-radius: 0.75rem;
+}
+
+.linkDescription {
+    margin: 0;
+    color: var(--color-info-strong);
+    font-size: 0.875rem;
+}
+
+.linkControls {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.linkInput,
+.textInput,
+.selectInput {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--color-border-strong);
+    border-radius: 0.5rem;
+    outline: none;
+}
+
+.linkInput {
+    flex: 1;
+}
+
+.linkInput:focus,
+.textInput:focus,
+.selectInput:focus {
+    border-color: var(--color-info);
+    box-shadow: 0 0 0 3px var(--color-info-ring);
+}
+
+.linkButton,
+.primaryButton {
+    padding: 0.5rem 1.5rem;
+    color: var(--color-white);
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: var(--color-info);
+    border: 0;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.linkButton:hover,
+.primaryButton:hover {
+    background: var(--color-info-strong);
+}
+
+.linkButton:disabled,
+.primaryButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.manualLinks {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-border-default);
+    border-radius: 0.75rem;
+}
+
+.manualLinksHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.manualLinksIcon {
+    color: var(--color-info);
+}
+
+.manualLinksTitle {
+    margin: 0;
+    color: var(--color-text-soft);
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.manualLinksGrid,
+.formGrid {
+    display: grid;
+    gap: 1rem;
+}
+
+.fieldGroup {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.compactLabel,
+.label {
+    color: var(--color-text-soft);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.compactLabel {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.textInputPurpleFocus:focus {
+    border-color: var(--color-purple);
+    box-shadow: 0 0 0 3px var(--color-purple-ring);
+}
+
+.textArea {
+    resize: none;
+}
+
+.uploadNotice {
+    padding: 0.5rem;
+    color: var(--color-info);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+    background: var(--color-info-soft);
+    border-radius: 0.375rem;
+}
+
+.galleryGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.galleryItem {
+    position: relative;
+    overflow: hidden;
+    border: 2px solid var(--color-border-default);
+    border-radius: 0.5rem;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.galleryItem:hover {
+    border-color: var(--color-border-strong);
+}
+
+.galleryItem:hover .removeImageButton {
+    opacity: 1;
+}
+
+.galleryItem:hover .galleryActionsHidden {
+    transform: translateY(0);
+}
+
+.galleryItemMain {
+    border-color: var(--color-info);
+    box-shadow: var(--shadow-md);
+    transform: scale(1.02);
+}
+
+.galleryImageWrapper {
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    background: var(--color-surface-disabled);
+}
+
+.galleryImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.galleryBadges {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.mainBadge,
+.hoverBadge {
+    padding: 0.125rem 0.5rem;
+    color: var(--color-white);
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 0.25rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.mainBadge {
+    background: var(--color-info);
+}
+
+.hoverBadge {
+    background: var(--color-purple);
+}
+
+.removeImageButton {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.25rem;
+    color: var(--color-white);
+    background: var(--color-danger);
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.removeImageIcon {
+    font-size: 0.75rem;
+}
+
+.galleryActions {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem;
+    background: var(--color-white-soft);
+    backdrop-filter: blur(8px);
+    transition: transform 0.2s ease;
+}
+
+.galleryActionsHidden {
+    transform: translateY(100%);
+}
+
+.hoverToggleButton {
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    border: 0;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.hoverToggleButtonActive {
+    color: var(--color-purple-strong);
+    background: var(--color-purple-soft);
+}
+
+.hoverToggleButtonInactive {
+    color: var(--color-text-soft);
+    background: var(--color-surface-disabled);
+}
+
+.galleryHint {
+    margin: 0.5rem 0 0;
+    color: var(--color-text-muted-ui);
+    font-size: 0.75rem;
+}
+
+.hintPrimary {
+    color: var(--color-info);
+}
+
+.hintPurple {
+    color: var(--color-purple);
+}
+
+.fullWidthField {
+    grid-column: 1 / -1;
+}
+
+.inlineField {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.autoButton,
+.secondaryButton {
+    padding: 0.5rem 0.75rem;
+    color: var(--color-text-soft);
+    font-size: 0.875rem;
+    background: var(--color-surface-disabled);
+    border: 1px solid var(--color-border-strong);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.autoButton:hover,
+.secondaryButton:hover {
+    background: var(--color-surface-subtle);
+}
+
+.selectGroup {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.selectInputPrimary {
+    border-color: var(--color-primary);
+}
+
+.checkboxRow {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.checkbox {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--color-primary);
+}
+
+.checkboxText {
+    color: var(--color-text-soft);
+    font-size: 0.875rem;
+}
+
+.footerActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border-default);
+}
+
+@media (min-width: 768px) {
+    .manualLinksGrid,
+    .formGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .galleryGrid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .galleryGrid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

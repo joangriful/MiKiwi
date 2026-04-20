@@ -1,0 +1,41 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 0.875rem;
+}
+
+.error {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+}
+
+.submitButton {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.legalText {
+    font-size: 0.625rem;
+    line-height: 1.7;
+    color: var(--color-text-subtle);
+}
+
+.inlineLink {
+    font-weight: 500;
+}
+
+@media (min-width: 768px) {
+    .desktopAlign {
+        text-align: right;
+    }
+}

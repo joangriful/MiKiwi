@@ -1,0 +1,145 @@
+.root {}
+
+.header {
+    margin-bottom: 80px;
+    text-align: center;
+}
+
+.title {
+    margin-bottom: 20px;
+    color: var(--text-main);
+    font-family: 'Cinzel', var(--font-head);
+    font-size: 4rem;
+}
+
+.description {
+    max-width: 700px;
+    margin: 0 auto;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+}
+
+.card {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-soft);
+    transition: var(--transition);
+}
+
+.card:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-4px);
+}
+
+.preview {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 350px;
+    overflow: hidden;
+}
+
+.previewShape {
+    width: 100px;
+    height: 300px;
+    border-radius: 50px;
+    box-shadow: var(--shadow-lg);
+    transition: transform 700ms ease;
+}
+
+.card:hover .previewShape {
+    transform: scale(1.1) rotate(6deg);
+}
+
+.tag {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 80%);
+    padding: 6px 12px;
+    color: var(--color-primary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.body {
+    padding: 30px;
+}
+
+.productTitle {
+    margin-bottom: 10px;
+    color: var(--text-main);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.productDescription {
+    margin-bottom: 25px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.price {
+    color: var(--text-main);
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.primaryButton {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.primaryButton:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgb(153 184 73 / 30%);
+}
+
+@media (min-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}

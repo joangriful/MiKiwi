@@ -1,0 +1,85 @@
+.root {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: min(22rem, calc(100vw - 2rem));
+    max-width: 28rem;
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    color: var(--color-white);
+    box-shadow: var(--shadow-lg);
+    animation: toast-enter 300ms ease-out;
+}
+
+.success {
+    background: var(--color-success);
+}
+
+.error {
+    background: var(--color-danger);
+}
+
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 20%);
+    padding: 0.25rem;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.body {
+    min-width: 0;
+    flex: 1;
+}
+
+.message {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.closeButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0.25rem;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    opacity: 0.7;
+    transition: opacity 150ms ease;
+}
+
+.closeButton:hover,
+.closeButton:focus-visible {
+    opacity: 1;
+    outline: none;
+}
+
+@keyframes toast-enter {
+    from {
+        opacity: 0;
+        transform: translateY(1rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 640px) {
+    .root {
+        right: 1rem;
+        bottom: 1rem;
+        left: 1rem;
+        min-width: auto;
+    }
+}

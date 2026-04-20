@@ -1,0 +1,35 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.copy,
+.link {
+    color: var(--color-text-subtle);
+    font-size: 0.75rem;
+}
+
+.links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.link {
+    transition: color 150ms ease;
+}
+
+.link:hover,
+.link:focus-visible {
+    color: var(--color-white);
+    outline: none;
+}
+
+@media (min-width: 768px) {
+    .root {
+        flex-direction: row;
+    }
+}

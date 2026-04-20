@@ -2,23 +2,26 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasUuids;
+    use HasFactory, HasUuids, Notifiable;
 
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'dni',
         'birth_date',
         'role',
-        'is_active'
+        'is_active',
+        'stripe_customer_id',
+        'quiz_result_category',
     ];
 
     protected $casts = [
@@ -27,7 +30,6 @@ class User extends Authenticatable
         'birth_date' => 'date',
         'is_active' => 'boolean',
     ];
-
 
     protected $hidden = [
         'password',
@@ -49,7 +51,8 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function orders() {
+    public function orders()
+    {
         return $this->hasMany(Order::class);
     }
 

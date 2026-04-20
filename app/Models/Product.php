@@ -16,11 +16,14 @@ class Product extends Model
         'slug',
         'sku',
         'is_active',
+        'is_featured',
         'description',
         'base_price',
         'stock_quantity',
         'product_type',
         'is_adult_only',
+        'image_url',
+        'hover_image_url',
         'images',
     ];
 
@@ -29,6 +32,7 @@ class Product extends Model
         'base_price' => 'decimal:2',
         'is_adult_only' => 'boolean',
         'is_active' => 'boolean',
+        'is_featured' => 'boolean',
         'stock_quantity' => 'integer',
     ];
 
@@ -92,5 +96,15 @@ class Product extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 }

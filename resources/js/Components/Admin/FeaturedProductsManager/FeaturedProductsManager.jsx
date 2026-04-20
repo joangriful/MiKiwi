@@ -1,0 +1,152 @@
+import React, { useState } from 'react';
+import { router } from '@inertiajs/react';
+import { toast } from 'react-toastify';
+import { filterProductsBySearchTerm } from '@/Utils/productSearch';
+import styles from './FeaturedProductsManager.module.css';
+
+function ProductRow({ product, isLoading, onToggleFeatured }) {
+    const rowClassName = `${styles.productRow} ${product.is_featured ? styles.productRowFeatured : ''}`;
+    const starIconClassName = `${styles.statusIcon} ${product.is_featured ? styles.statusIconFeatured : styles.statusIconInactive}`;
+
+    return (
+        <tr
+            className={rowClassName}
+            onClick={() => onToggleFeatured(product)}
+        >
+            <td className={styles.productCell}>
+                <div className={styles.productInfo}>
+                    <div className={styles.productImageFrame}>
+                        {product.image_url ? (
+                            <img src={product.image_url} alt={product.name} className={styles.productImage} />
+                        ) : (
+                            <span className={`material-symbols-outlined ${styles.imagePlaceholderIcon}`}>image</span>
+                        )}
+                    </div>
+                    <div className={styles.productText}>
+                        <p className={styles.productName}>{product.name}</p>
+                        <p className={styles.productSku}>{product.sku || 'Sin SKU'}</p>
+                    </div>
+                </div>
+            </td>
+            <td className={`${styles.productCell} ${styles.statusCell}`}>
+                {isLoading ? (
+                    <span className={`material-symbols-outlined ${styles.loadingIcon}`}>refresh</span>
+                ) : (
+                    <span className={`material-symbols-outlined ${starIconClassName}`}>
+                        {product.is_featured ? 'star' : 'star_border'}
+                    </span>
+                )}
+            </td>
+        </tr>
+    );
+}
+
+function EmptyState({ icon, title, description }) {
+    return (
+        <div className={styles.emptyState}>
+            {icon && <span className={`material-symbols-outlined ${styles.emptyStateIcon}`}>{icon}</span>}
+            <p className={styles.emptyStateTitle}>{title}</p>
+            {description && <p className={styles.emptyStateDescription}>{description}</p>}
+        </div>
+    );
+}
+
+export default function FeaturedProductsManager({ products = [] }) {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [loadingId, setLoadingId] = useState(null);
+
+    const allProducts = filterProductsBySearchTerm(products, searchTerm);
+    const featuredProducts = products.filter((product) => product.is_featured);
+
+    const toggleFeatured = (product) => {
+        setLoadingId(product.id);
+        router.post(route('products.update', product.id), {
+            _method: 'put',
+            is_featured: !product.is_featured,
+        }, {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                toast.success(product.is_featured ? 'Producto eliminado de destacados' : 'Producto añadido a destacados');
+                setLoadingId(null);
+            },
+            onError: () => {
+                toast.error('Error al actualizar el estado destacado');
+                setLoadingId(null);
+            },
+        });
+    };
+
+    return (
+        <div className={styles.layout}>
+            <div className={styles.header}>
+                <div>
+                    <h2 className={styles.title}>Productos Destacados</h2>
+                    <p className={styles.description}>Selecciona los productos que aparecerán en la sección de inicio.</p>
+                </div>
+                <div className={styles.searchWrapper}>
+                    <span className={`material-symbols-outlined ${styles.searchIcon}`}>search</span>
+                    <input
+                        type="text"
+                        placeholder="Buscar producto..."
+                        className={styles.searchInput}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+            </div>
+
+            <div className={styles.columns}>
+                <div className={`${styles.column} ${styles.columnWithDivider}`}>
+                    <div className={styles.columnHeader}>
+                        Todos los Productos ({allProducts.length})
+                    </div>
+                    <div className={styles.tableWrapper}>
+                        <table className={styles.table}>
+                            <tbody>
+                                {allProducts.map((product) => (
+                                    <ProductRow
+                                        key={product.id}
+                                        product={product}
+                                        isLoading={loadingId === product.id}
+                                        onToggleFeatured={toggleFeatured}
+                                    />
+                                ))}
+                            </tbody>
+                        </table>
+                        {allProducts.length === 0 && (
+                            <EmptyState title="No hay productos." />
+                        )}
+                    </div>
+                </div>
+
+                <div className={`${styles.column} ${styles.featuredColumn}`}>
+                    <div className={`${styles.columnHeader} ${styles.featuredColumnHeader}`}>
+                        Productos Destacados ({featuredProducts.length})
+                    </div>
+                    <div className={styles.tableWrapper}>
+                        <table className={styles.table}>
+                            <tbody>
+                                {featuredProducts.map((product) => (
+                                    <ProductRow
+                                        key={product.id}
+                                        product={product}
+                                        isLoading={loadingId === product.id}
+                                        onToggleFeatured={toggleFeatured}
+                                    />
+                                ))}
+                            </tbody>
+                        </table>
+                        {featuredProducts.length === 0 && (
+                            <EmptyState
+                                icon="star"
+                                title="No hay productos destacados."
+                                description="Haz clic en un producto de la izquierda para destacarlo."
+                            />
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

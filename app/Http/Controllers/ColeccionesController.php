@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\ProductService;
-use App\Services\CategoryService;
+use App\Domain\Categories\Services\CategoryService;
+use App\Domain\Products\Services\ProductService;
 use Inertia\Inertia;
 
 class ColeccionesController extends Controller
 {
     protected $productService;
+
     protected $categoryService;
 
     public function __construct(ProductService $productService, CategoryService $categoryService)
@@ -19,7 +20,7 @@ class ColeccionesController extends Controller
 
     /**
      * Mostrar el catálogo principal de productos
-     * 
+     *
      * @return \Inertia\Response
      */
     public function index()
@@ -30,10 +31,10 @@ class ColeccionesController extends Controller
         // Obtener categorías para navegación
         $categories = $this->categoryService->getNavigationCategories();
 
-        return Inertia::render('Colecciones/Index', [
+        return Inertia::render('Marketing/Collections', [
             'products' => $products,
             'categories' => $categories,
-            'pageTitle' => 'Catálogo de Productos - MiKiwi'
+            'pageTitle' => 'Catálogo de Productos - MiKiwi',
         ]);
     }
 }

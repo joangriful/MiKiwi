@@ -1,0 +1,77 @@
+.container {
+    flex-shrink: 0;
+    padding: 1rem;
+    background: var(--color-surface-subtle-transparent);
+    border-top: 1px solid var(--color-border-soft);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.title {
+    color: var(--color-text-subtle);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.clearButton {
+    padding: 0;
+    color: var(--color-text-subtle);
+    font-size: 0.625rem;
+    text-decoration: underline;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.clearButton:hover {
+    color: var(--color-text-soft);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid var(--color-border-default);
+    border-radius: 0.5rem;
+}
+
+.colorButton {
+    position: relative;
+    z-index: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border: 0;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.colorButton:hover {
+    z-index: 10;
+    box-shadow: var(--shadow-sm);
+    transform: scale(1.05);
+}
+
+.colorButtonSelected {
+    z-index: 10;
+    box-shadow: inset 0 0 0 2px var(--color-white);
+}
+
+.checkIcon {
+    width: 0.75rem;
+    height: 0.75rem;
+    color: var(--color-white-soft);
+    filter: drop-shadow(0 4px 4px rgb(0 0 0 / 15%));
+}

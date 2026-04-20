@@ -24,7 +24,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             // Asignamos datos por defecto para evitar errores si no los mandan
-            'dni' => $request->dni ?? 'N/A', 
+            'dni' => $request->dni ?? 'N/A',
             'birth_date' => $request->birth_date ?? now(),
         ]);
 
@@ -34,7 +34,7 @@ class AuthController extends Controller
             'message' => 'Usuario registrado exitosamente',
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user
+            'user' => $user,
         ], 201);
     }
 
@@ -60,7 +60,7 @@ class AuthController extends Controller
             'message' => 'Login correcto',
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -68,6 +68,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
+
         return response()->json(['message' => 'Sesión cerrada correctamente']);
     }
 }

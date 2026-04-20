@@ -1,0 +1,20 @@
+{
+    "id": "019c7a4b-cd71-72e2-9ff3-82023826682b",
+    "category_id": null,
+    "name": "Mobi",
+    "slug": "mobi",
+    "sku": "PRD-281809-BCNC",
+    "description": "Mobi es un juguete vers\u00e1til que estimula el cl\u00edtoris y la zona G de forma independiente o simultanea para una experiencia m\u00e1s personalizada. Su control remoto a\u00f1ade emoci\u00f3n y variedad a tu intimidad.\n\nAdem\u00e1s, como no hay nada que nos guste m\u00e1s que jugar, con la compra de Mobi recibir\u00e1s un juego descargable en tu e-mail para que explor\u00e9is las distintas maneras en las que se puede disfrutar de Mobi en pareja.",
+    "base_price": "49.99",
+    "is_active": true,
+    "stock_quantity": 30,
+    "product_type": "simple",
+    "is_adult_only": true,
+    "image_url": "https:\/\/res.cloudinary.com\/dquwonjie\/image\/upload\/v1771246601\/1_h7zucr.webp",
+    "hover_image_url": "https:\/\/res.cloudinary.com\/dquwonjie\/image\/upload\/v1771245881\/1.1_rd03ji.webp",
+    "images": null,
+    "created_at": "2026-02-20T09:05:14.000000Z",
+    "updated_at": "2026-02-22T23:03:32.000000Z",
+    "deleted_at": null,
+    "is_featured": true
+}

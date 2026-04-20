@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@100..900&family=Montserrat:wght@300;400;500;600;700&family=Mulish:wght@200..900&display=swap');
+
+:root {
+    /* Brand Colors */
+    --color-primary: #99b849;
+    --color-primary-dark: #7a943a;
+    --color-secondary: #f8b7ea;
+    --color-secondary-dark: #d697c8;
+    --color-white: #ffffff;
+    --color-black: #000000;
+
+    /* Light Mode (Base) */
+    --bg-main: #f8f5f0;
+    --bg-surface: #ffffff;
+    --text-main: #222b24;
+    --text-muted: #66672a;
+    --border: #e2e0db;
+    --color-accent: #FF2D20;
+
+    /* Neutral UI Tokens */
+    --color-text-strong: #1f2937;
+    --color-text-soft: #4b5563;
+    --color-text-muted-ui: #6b7280;
+    --color-text-subtle: #9ca3af;
+    --color-text-strongest: #111827;
+
+    --color-surface-subtle: #f9fafb;
+    --color-surface-subtle-transparent: rgb(249 250 251 / 50%);
+    --color-surface-disabled: #f3f4f6;
+    --color-surface-overlay: rgb(0 0 0 / 50%);
+    --color-black-faint: rgb(0 0 0 / 10%);
+    --color-white-faint: rgb(255 255 255 / 10%);
+    --color-white-muted: rgb(255 255 255 / 60%);
+    --color-white-dim: rgb(255 255 255 / 70%);
+    --color-white-soft: rgb(255 255 255 / 90%);
+    --color-primary-soft: rgb(153 184 73 / 10%);
+    --color-primary-ring: rgb(153 184 73 / 20%);
+    --color-info: #3b82f6;
+    --color-info-soft: #eff6ff;
+    --color-info-soft-hover: #dbeafe;
+    --color-info-strong: #1d4ed8;
+    --color-info-border: var(--color-info-soft-hover);
+    --color-info-ring: rgb(59 130 246 / 20%);
+    --color-purple: #8b5cf6;
+    --color-purple-soft: #f3e8ff;
+    --color-purple-strong: #7c3aed;
+    --color-purple-border: #e9d5ff;
+    --color-purple-ring: rgb(139 92 246 / 20%);
+    --color-success: #22c55e;
+    --color-success-soft: #ecfdf5;
+    --color-success-strong: #047857;
+    --color-success-border: #d1fae5;
+    --color-warning: #eab308;
+    --color-warning-soft: #fef3c7;
+    --color-warning-strong: #92400e;
+
+    --color-border-soft: var(--color-surface-disabled);
+    --color-border-default: #e5e7eb;
+    --color-border-strong: #d1d5db;
+
+    /* Danger UI Tokens */
+    --color-danger: #dc2626;
+    --color-danger-soft: #ef4444;
+    --color-danger-strong: #b91c1c;
+    --color-danger-bg: #fef2f2;
+    --color-danger-border: #fecaca;
+    --color-danger-ring: rgb(239 68 68 / 20%);
+
+    /* Shadows */
+    --shadow-sm: 0 2px 4px rgba(34, 43, 36, 0.05);
+    --shadow-md: 0 4px 12px rgba(34, 43, 36, 0.08);
+    --shadow-lg: 0 10px 25px -5px rgba(34, 43, 36, 0.1), 0 8px 10px -6px rgba(34, 43, 36, 0.1);
+
+    /* Premium Effects */
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --premium-gradient: linear-gradient(135deg, var(--color-primary) 0%, #b8d46a 100%);
+    --premium-gradient-hover: linear-gradient(135deg, var(--color-primary-dark) 0%, #99b849 100%);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    --transition-premium: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    --shadow-soft: 0 4px 20px rgb(0 0 0 / 4%);
+    --shadow-medium: 0 8px 30px rgb(0 0 0 / 8%);
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+}
+
+/* Dark Mode - Usamos la clase .dark para que coincida con tu React */
+.dark {
+    --bg-main: #222b24;
+    --bg-surface: #2d3830;
+    --text-main: #f8f5f0;
+    --text-muted: #99b849;
+    --border: #424d44;
+
+    --color-text-strong: #f8f5f0;
+    --color-text-soft: #d1d5db;
+    --color-text-muted-ui: #9ca3af;
+    --color-text-subtle: #6b7280;
+    --color-text-strongest: #ffffff;
+
+    --color-surface-subtle: #374151;
+    --color-surface-subtle-transparent: rgb(55 65 81 / 50%);
+    --color-surface-disabled: #4b5563;
+
+    --color-border-soft: var(--color-surface-disabled);
+    --color-border-default: #6b7280;
+    --color-border-strong: #9ca3af;
+
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/**
+ * Typography Configuration
+ * Sugo Pro Display for titles & brand
+ * Agrandir (via Mulish/Inter/Montserrat fallback or Agrandir if possible) for body
+ */
+
+/* Search for Agrandir similar fonts or import if provided.
+   Since 'Agrandir' is often a premium font, I will use a high-end geometric sans-serif (Inter/Mulish)
+   and prioritize Agrandir if the user provides it later.
+*/
+/* Sugo Pro Display - Comprehensive Local Fonts */
+@font-face {
+    font-family: 'Sugo Pro Display';
+    src: url('../fonts/Sugo-Pro-Display-Thin-trial.ttf') format('truetype');
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: 'Sugo Pro Display';
+    src: url('../fonts/Sugo-Pro-Display-Light-trial.ttf') format('truetype');
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'Sugo Pro Display';
+    src: url('../fonts/Sugo-Pro-Display-Regular-trial.ttf') format('truetype');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Sugo Pro Display';
+    src: url('../fonts/Sugo-Pro-Display-Bold-trial.ttf') format('truetype');
+    font-weight: 700;
+}
+
+/* Typography Utilities */
+:root {
+    --font-head: 'Sugo Pro Display', sans-serif;
+    --font-body: 'Mulish', 'Inter', sans-serif;
+    /* Agrandir style alternative */
+}
+
+.font-sugo {
+    font-family: var(--font-head);
+    letter-spacing: 0.1em;
+}
+
+.font-agrandir {
+    font-family: var(--font-body);
+    letter-spacing: -0.01em;
+}
+
+/* Base Styles */
+body {
+    font-family: var(--font-body);
+    font-weight: 400;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.brand-name {
+    font-family: var(--font-head);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    /* Widest tracking for brand consistency */
+}

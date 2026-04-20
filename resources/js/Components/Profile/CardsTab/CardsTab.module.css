@@ -1,0 +1,578 @@
+.root {}
+
+.panel {
+    min-height: 500px;
+    padding: 2.5rem;
+    border: 1px solid var(--color-border-soft);
+    border-radius: 1.5rem;
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.heading h2 {
+    margin: 0;
+    color: var(--color-text-strongest);
+    font-size: 1.875rem;
+    font-weight: 800;
+}
+
+.heading p {
+    margin: 0.5rem 0 0;
+    color: var(--color-text-muted-ui);
+    font-weight: 600;
+}
+
+.addButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.25rem;
+    border-radius: 1rem;
+    background: var(--color-primary);
+    color: var(--color-white);
+    box-shadow: 0 12px 30px rgb(153 184 73 / 10%);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    transition: var(--transition);
+}
+
+.addButton:hover {
+    background: var(--color-primary-dark);
+}
+
+.cardsList {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.cardRow {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    border: 2px solid rgb(249 250 251 / 100%);
+    border-radius: 1.5rem;
+    background: rgb(249 250 251 / 30%);
+    transition: var(--transition);
+}
+
+.cardRow:hover {
+    border-color: rgb(153 184 73 / 30%);
+    background: var(--color-white);
+    box-shadow: 0 12px 28px rgb(229 231 235 / 50%);
+}
+
+.brandBlock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 5rem;
+    height: 3.5rem;
+    margin-right: 1.5rem;
+    overflow: hidden;
+    border: 1px solid var(--color-border-soft);
+    border-radius: 0.75rem;
+    background: var(--color-white);
+    box-shadow: var(--shadow-sm);
+}
+
+.brandName {
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.brandVisa {
+    color: #2563eb;
+}
+
+.brandMastercard {
+    color: #ef4444;
+}
+
+.brandAmex {
+    color: #0891b2;
+}
+
+.brandDefault {
+    color: var(--color-text-soft);
+}
+
+.brandDivider {
+    width: 100%;
+    height: 2px;
+    margin: 0.25rem 0;
+    background: var(--color-surface-subtle);
+}
+
+.brandType {
+    color: var(--color-text-subtle);
+    font-size: 0.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.cardContent {
+    flex: 1;
+}
+
+.cardNumber {
+    margin: 0;
+    color: var(--color-text-strongest);
+    font-family: monospace;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+}
+
+.cardMeta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.cardMetaItem {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-text-subtle);
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.cardMetaIcon {
+    margin-right: 0.25rem;
+    font-family: 'Material Symbols Outlined';
+    font-size: 1rem;
+    opacity: 0.6;
+}
+
+.cardMetaDot {
+    width: 0.25rem;
+    height: 0.25rem;
+    border-radius: 999px;
+    background: var(--color-border-default);
+}
+
+.deleteButton {
+    padding: 0.75rem;
+    border-radius: 999px;
+    color: var(--color-text-subtle);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.cardRow:hover .deleteButton {
+    opacity: 1;
+}
+
+.deleteButton:hover {
+    background: var(--color-danger-bg);
+    color: var(--color-danger-soft);
+}
+
+.centerState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 1rem;
+    text-align: center;
+}
+
+.loader {
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+    border: 4px solid var(--color-border-default);
+    border-top-color: var(--color-text-subtle);
+    border-radius: 999px;
+    animation: spin 1s linear infinite;
+}
+
+.stateText {
+    color: var(--color-text-subtle);
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.emptyState {
+    padding: 6rem 1.5rem;
+    border: 2px dashed var(--color-border-soft);
+    border-radius: 2.5rem;
+    background: rgb(249 250 251 / 50%);
+}
+
+.emptyIconWrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 5rem;
+    height: 5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgb(249 250 251 / 100%);
+    border-radius: 1.5rem;
+    background: var(--color-white);
+    box-shadow: var(--shadow-sm);
+}
+
+.emptyIcon {
+    font-family: 'Material Symbols Outlined';
+    color: #e5e7eb;
+    font-size: 2.5rem;
+}
+
+.emptyTitle {
+    margin: 0;
+    color: var(--color-text-strongest);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.emptyDescription {
+    max-width: 16rem;
+    margin: 0.75rem auto 0;
+    color: var(--color-text-subtle);
+    font-size: 0.875rem;
+}
+
+.adminSection {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--color-border-soft);
+}
+
+.adminHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.adminIconWrap {
+    display: inline-flex;
+    padding: 0.5rem;
+    border-radius: 0.75rem;
+    background: #eef2ff;
+    color: #4f46e5;
+}
+
+.adminTitle {
+    margin: 0;
+    color: var(--color-text-strongest);
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.adminSubtitle {
+    margin: 0.4rem 0 0;
+    color: var(--color-text-subtle);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.testGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+.testCard {
+    padding: 1.5rem;
+    border: 1px solid var(--color-border-soft);
+    border-radius: 1.5rem;
+    background: rgb(249 250 251 / 50%);
+    transition: var(--transition);
+}
+
+.testCard:hover {
+    border-color: #c7d2fe;
+    background: var(--color-white);
+}
+
+.testBrand {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #818cf8;
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.testRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.testNumber {
+    color: var(--color-text-soft);
+    font-family: monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+}
+
+.copyButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: 0.6rem;
+    transition: var(--transition);
+}
+
+.copyButtonIdle {
+    border: 1px solid var(--color-border-soft);
+    background: var(--color-white);
+    color: var(--color-text-subtle);
+    box-shadow: var(--shadow-sm);
+}
+
+.copyButtonIdle:hover {
+    color: var(--color-text-strongest);
+}
+
+.copyButtonSuccess {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.copyIcon {
+    font-family: 'Material Symbols Outlined';
+    font-size: 1rem;
+}
+
+.testFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border-soft);
+}
+
+.testDetails {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.testDetailLabel {
+    display: block;
+    color: #d1d5db;
+    font-size: 0.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.testDetailValue {
+    color: var(--color-text-soft);
+    font-family: monospace;
+    font-size: 0.625rem;
+    font-weight: 700;
+}
+
+.testPostal {
+    color: #d1d5db;
+    font-size: 0.625rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgb(0 0 0 / 50%);
+    backdrop-filter: blur(6px);
+}
+
+.modalCard {
+    position: relative;
+    width: 100%;
+    max-width: 32rem;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    background: var(--color-white);
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 25%);
+}
+
+.closeButton {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    color: var(--color-text-subtle);
+}
+
+.closeButton:hover {
+    color: var(--color-text-soft);
+}
+
+.modalTitle {
+    margin: 0 0 0.25rem;
+    color: var(--color-text-strongest);
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.modalDescription {
+    margin: 0 0 2rem;
+    color: var(--color-text-subtle);
+    font-size: 0.875rem;
+}
+
+.modalForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.fieldLabel {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-subtle);
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.fieldInput,
+.cardElementWrap {
+    padding: 1rem;
+    border: 2px solid var(--color-border-soft);
+    border-radius: 1rem;
+    background: var(--color-surface-subtle);
+    transition: var(--transition);
+}
+
+.fieldInput {
+    width: 100%;
+    color: var(--color-text-strong);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.fieldInput:focus,
+.cardElementWrap:focus-within {
+    outline: none;
+    border-color: var(--color-primary);
+    background: var(--color-white);
+}
+
+.errorBox {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid #fee2e2;
+    border-radius: 1rem;
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.errorText {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.submitButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    box-shadow: 0 12px 30px rgb(153 184 73 / 20%);
+    transition: var(--transition);
+}
+
+.submitButton:hover {
+    background: var(--color-primary-dark);
+}
+
+.submitButton:disabled {
+    background: var(--color-border-default);
+    box-shadow: none;
+}
+
+.spinnerSmall {
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid rgb(255 255 255 / 30%);
+    border-top-color: var(--color-white);
+    border-radius: 999px;
+    animation: spin 1s linear infinite;
+}
+
+.materialIcon {
+    font-family: 'Material Symbols Outlined';
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 1024px) {
+    .testGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 767px) {
+    .panel {
+        padding: 1.5rem;
+    }
+
+    .header,
+    .cardRow,
+    .testRow,
+    .testFooter {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .deleteButton {
+        opacity: 1;
+    }
+}
