@@ -1,0 +1,14 @@
+.tabsRoot {
+    position: sticky;
+    top: 0;
+    width: 100%;
+}
+
+.root {
+    width: 100%;
+}
+
+/* Premium Gradient used in common components */
+:root {
+    --premium-gradient: linear-gradient(135deg, #99b849 0%, #7c9b3a 100%);
+}

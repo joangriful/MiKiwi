@@ -402,3 +402,49 @@
         transition-duration: 0.01ms !important;
     }
 }
+
+/* Tabs & Integrated Content Styles */
+.panelTabs {
+    display: flex;
+    gap: 10px;
+    padding: 20px 30px;
+    background: var(--bg-main);
+    border-bottom: 1px solid var(--border);
+}
+
+.tabButton {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    font-family: 'Mulish', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.tabButtonActive {
+    background: var(--premium-gradient);
+    color: white;
+    border-color: transparent;
+    box-shadow: var(--shadow-sm);
+}
+
+.editarContent, .personalizarContent {
+    padding: 30px;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.loadingPlaceholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: var(--text-muted);
+    font-style: italic;
+    opacity: 0.7;
+}

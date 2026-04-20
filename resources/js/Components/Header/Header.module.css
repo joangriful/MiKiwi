@@ -134,10 +134,36 @@
     outline: none;
 }
 
+.burgerButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-white);
+    cursor: pointer;
+    padding: 0; /* Remove extra padding for precise spacing */
+    transition: color 150ms ease;
+}
+
+.burgerButton:hover {
+    color: var(--color-primary);
+}
+
+.burgerButton span {
+    font-size: 2rem;
+}
+
+@media (min-width: 1280px) {
+    .burgerButton {
+        display: none;
+    }
+}
+
 .actions {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
+    gap: 1.25rem; /* Consistent distance between ALL items */
 }
 
 .iconLink,

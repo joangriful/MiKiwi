@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './CustomizationPanel.module.css';
+import BodyPartSelector from './BodyPartSelector';
 
 function getOptionButtonClassName(isActive) {
     return [styles.optionButton, isActive ? styles.optionButtonActive : '']
@@ -29,8 +30,12 @@ export default function CustomizationPanel({
     skinTone,
     setSkinTone,
     bodyProportions,
-    setBodyProportions
+    setBodyProportions,
+    selectedParts,
+    onPartSelect,
+    partLibrary
 }) {
+    const [activeTab, setActiveTab] = useState('personalizar');
 
     const hairStyles = [
         { id: 'long', name: 'Largo' },
@@ -75,199 +80,168 @@ export default function CustomizationPanel({
                 <p className={styles.panelSubtitle}>Diseña tu muñeca ideal</p>
             </div>
 
+            {/* Tab Switcher */}
+            <div className={styles.panelTabs}>
+                <button
+                    className={`${styles.tabButton} ${activeTab === 'editar' ? styles.tabButtonActive : ''}`}
+                    onClick={() => setActiveTab('editar')}
+                >
+                    EDITAR
+                </button>
+                <button
+                    className={`${styles.tabButton} ${activeTab === 'personalizar' ? styles.tabButtonActive : ''}`}
+                    onClick={() => setActiveTab('personalizar')}
+                >
+                    PERSONALIZAR
+                </button>
+            </div>
+
             <div className={styles.panelContent}>
-                {/* Hair Style */}
-                <section className={styles.customizationSection}>
-                    <h3 className={styles.sectionTitle}>Estilo de Cabello</h3>
-                    <div className={styles.optionsGrid}>
-                        {hairStyles.map((style) => (
-                            <button
-                                key={style.id}
-                                className={getOptionButtonClassName(
-                                    hairStyle === style.id
-                                )}
-                                onClick={() => setHairStyle(style.id)}
-                            >
-                                <span className={styles.optionLabel}>{style.name}</span>
-                            </button>
-                        ))}
+                {activeTab === 'editar' ? (
+                    <div className={styles.editarContent}>
+                        {/* Hair Style */}
+                        <section className={styles.customizationSection}>
+                            <h3 className={styles.sectionTitle}>Estilo de Cabello</h3>
+                            <div className={styles.optionsGrid}>
+                                {hairStyles.map((style) => (
+                                    <button
+                                        key={style.id}
+                                        className={getOptionButtonClassName(hairStyle === style.id)}
+                                        onClick={() => setHairStyle(style.id)}
+                                    >
+                                        <span className={styles.optionLabel}>{style.name}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* Hair Color */}
+                        <section className={styles.customizationSection}>
+                            <h3 className={styles.sectionTitle}>Color de Cabello</h3>
+                            <div className={styles.colorGrid}>
+                                {hairColors.map((color) => (
+                                    <button
+                                        key={color.id}
+                                        className={getColorSwatchClassName({ isActive: hairColor === color.color })}
+                                        style={{ backgroundColor: color.color }}
+                                        onClick={() => setHairColor(color.color)}
+                                        title={color.name}
+                                    >
+                                        {hairColor === color.color && <span className={styles.checkmark}>✓</span>}
+                                    </button>
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* Eye Color */}
+                        <section className={styles.customizationSection}>
+                            <h3 className={styles.sectionTitle}>Color de Ojos</h3>
+                            <div className={styles.colorGrid}>
+                                {eyeColors.map((color) => (
+                                    <button
+                                        key={color.id}
+                                        className={getColorSwatchClassName({ isActive: eyeColor === color.color })}
+                                        style={{ backgroundColor: color.color }}
+                                        onClick={() => setEyeColor(color.color)}
+                                        title={color.name}
+                                    >
+                                        {eyeColor === color.color && <span className={styles.checkmark}>✓</span>}
+                                    </button>
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* Eye Size */}
+                        <section className={styles.customizationSection}>
+                            <h3 className={styles.sectionTitle}>Tamaño de Ojos</h3>
+                            <div className={styles.sliderContainer}>
+                                <input
+                                    type="range"
+                                    min="0.7"
+                                    max="1.5"
+                                    step="0.1"
+                                    value={eyeSize}
+                                    onChange={(e) => setEyeSize(parseFloat(e.target.value))}
+                                    className={styles.customSlider}
+                                />
+                                <div className={styles.sliderLabels}>
+                                    <span>Pequeños</span>
+                                    <span>Grandes</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Skin Tone */}
+                        <section className={styles.customizationSection}>
+                            <h3 className={styles.sectionTitle}>Tono de Piel</h3>
+                            <div className={styles.colorGrid}>
+                                {skinTones.map((tone) => (
+                                    <button
+                                        key={tone.id}
+                                        className={getColorSwatchClassName({ isActive: skinTone === tone.color, isSkinTone: true })}
+                                        style={{ backgroundColor: tone.color }}
+                                        onClick={() => setSkinTone(tone.color)}
+                                        title={tone.name}
+                                    >
+                                        {skinTone === tone.color && <span className={styles.checkmark}>✓</span>}
+                                    </button>
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* Body Proportions */}
+                        <section className={styles.customizationSection}>
+                            <h3 className={styles.sectionTitle}>Proporciones Corporales</h3>
+                            <div className={styles.proportionControls}>
+                                <div className={styles.proportionItem}>
+                                    <label className={styles.proportionHeader}>
+                                        <span className={styles.proportionLabel}>Altura</span>
+                                        <span className={styles.proportionValue}>{bodyProportions.height.toFixed(2)}</span>
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min="0.8"
+                                        max="1.2"
+                                        step="0.01"
+                                        value={bodyProportions.height}
+                                        onChange={(e) => setBodyProportions({ ...bodyProportions, height: parseFloat(e.target.value) })}
+                                        className={styles.customSlider}
+                                    />
+                                </div>
+                                <div className={styles.proportionItem}>
+                                    <label className={styles.proportionHeader}>
+                                        <span className={styles.proportionLabel}>Busto</span>
+                                        <span className={styles.proportionValue}>{bodyProportions.bust.toFixed(2)}</span>
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min="0.6"
+                                        max="1.8"
+                                        step="0.01"
+                                        value={bodyProportions.bust}
+                                        onChange={(e) => setBodyProportions({ ...bodyProportions, bust: parseFloat(e.target.value) })}
+                                        className={styles.customSlider}
+                                    />
+                                </div>
+                            </div>
+                        </section>
                     </div>
-                </section>
-
-                {/* Hair Color */}
-                <section className={styles.customizationSection}>
-                    <h3 className={styles.sectionTitle}>Color de Cabello</h3>
-                    <div className={styles.colorGrid}>
-                        {hairColors.map((color) => (
-                            <button
-                                key={color.id}
-                                className={getColorSwatchClassName({
-                                    isActive: hairColor === color.color,
-                                })}
-                                style={{ backgroundColor: color.color }}
-                                onClick={() => setHairColor(color.color)}
-                                title={color.name}
-                            >
-                                {hairColor === color.color && (
-                                    <span className={styles.checkmark}>✓</span>
-                                )}
-                            </button>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Eye Color */}
-                <section className={styles.customizationSection}>
-                    <h3 className={styles.sectionTitle}>Color de Ojos</h3>
-                    <div className={styles.colorGrid}>
-                        {eyeColors.map((color) => (
-                            <button
-                                key={color.id}
-                                className={getColorSwatchClassName({
-                                    isActive: eyeColor === color.color,
-                                })}
-                                style={{ backgroundColor: color.color }}
-                                onClick={() => setEyeColor(color.color)}
-                                title={color.name}
-                            >
-                                {eyeColor === color.color && (
-                                    <span className={styles.checkmark}>✓</span>
-                                )}
-                            </button>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Eye Size */}
-                <section className={styles.customizationSection}>
-                    <h3 className={styles.sectionTitle}>Tamaño de Ojos</h3>
-                    <div className={styles.sliderContainer}>
-                        <input
-                            type="range"
-                            min="0.7"
-                            max="1.5"
-                            step="0.1"
-                            value={eyeSize}
-                            onChange={(e) => setEyeSize(parseFloat(e.target.value))}
-                            className={styles.customSlider}
-                        />
-                        <div className={styles.sliderLabels}>
-                            <span>Pequeños</span>
-                            <span>Grandes</span>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Skin Tone */}
-                <section className={styles.customizationSection}>
-                    <h3 className={styles.sectionTitle}>Tono de Piel</h3>
-                    <div className={styles.colorGrid}>
-                        {skinTones.map((tone) => (
-                            <button
-                                key={tone.id}
-                                className={getColorSwatchClassName({
-                                    isActive: skinTone === tone.color,
-                                    isSkinTone: true,
-                                })}
-                                style={{ backgroundColor: tone.color }}
-                                onClick={() => setSkinTone(tone.color)}
-                                title={tone.name}
-                            >
-                                {skinTone === tone.color && (
-                                    <span className={styles.checkmark}>✓</span>
-                                )}
-                            </button>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Body Proportions */}
-                <section className={styles.customizationSection}>
-                    <h3 className={styles.sectionTitle}>Proporciones Corporales</h3>
-
-                    <div className={styles.proportionControls}>
-                        <div className={styles.proportionItem}>
-                            <label className={styles.proportionHeader}>
-                                <span className={styles.proportionLabel}>Altura</span>
-                                <span className={styles.proportionValue}>{bodyProportions.height.toFixed(2)}</span>
-                            </label>
-                            <input
-                                type="range"
-                                min="0.8"
-                                max="1.2"
-                                step="0.01"
-                                value={bodyProportions.height}
-                                onChange={(e) => setBodyProportions({ ...bodyProportions, height: parseFloat(e.target.value) })}
-                                className={styles.customSlider}
+                ) : (
+                    <div className={styles.personalizarContent}>
+                        {partLibrary && (
+                            <BodyPartSelector
+                                selectedParts={selectedParts}
+                                onPartSelect={onPartSelect}
+                                partLibrary={partLibrary}
                             />
-                        </div>
-
-                        <div className={styles.proportionItem}>
-                            <label className={styles.proportionHeader}>
-                                <span className={styles.proportionLabel}>Busto</span>
-                                <span className={styles.proportionValue}>{bodyProportions.bust.toFixed(2)}</span>
-                            </label>
-                            <input
-                                type="range"
-                                min="0.6"
-                                max="1.8"
-                                step="0.01"
-                                value={bodyProportions.bust}
-                                onChange={(e) => setBodyProportions({ ...bodyProportions, bust: parseFloat(e.target.value) })}
-                                className={styles.customSlider}
-                            />
-                        </div>
-
-                        <div className={styles.proportionItem}>
-                            <label className={styles.proportionHeader}>
-                                <span className={styles.proportionLabel}>Cintura</span>
-                                <span className={styles.proportionValue}>{bodyProportions.waist.toFixed(2)}</span>
-                            </label>
-                            <input
-                                type="range"
-                                min="0.6"
-                                max="1.4"
-                                step="0.01"
-                                value={bodyProportions.waist}
-                                onChange={(e) => setBodyProportions({ ...bodyProportions, waist: parseFloat(e.target.value) })}
-                                className={styles.customSlider}
-                            />
-                        </div>
-
-                        <div className={styles.proportionItem}>
-                            <label className={styles.proportionHeader}>
-                                <span className={styles.proportionLabel}>Caderas</span>
-                                <span className={styles.proportionValue}>{bodyProportions.hips.toFixed(2)}</span>
-                            </label>
-                            <input
-                                type="range"
-                                min="0.7"
-                                max="1.8"
-                                step="0.01"
-                                value={bodyProportions.hips}
-                                onChange={(e) => setBodyProportions({ ...bodyProportions, hips: parseFloat(e.target.value) })}
-                                className={styles.customSlider}
-                            />
-                        </div>
+                        )}
+                        {!partLibrary && (
+                            <div className={styles.loadingPlaceholder}>
+                                <p>Cargando biblioteca de partes...</p>
+                            </div>
+                        )}
                     </div>
-                </section>
-
-                {/* Instructions */}
-                <section className={styles.instructions}>
-                    <div className={styles.instructionHeader}>Instrucciones de Uso</div>
-                    <div className={styles.instructionItem}>
-                        <span className={styles.instructionLabel}>Rotar:</span>
-                        <span>Clic izquierdo + arrastrar</span>
-                    </div>
-                    <div className={styles.instructionItem}>
-                        <span className={styles.instructionLabel}>Zoom:</span>
-                        <span>Rueda del ratón</span>
-                    </div>
-                    <div className={styles.instructionItem}>
-                        <span className={styles.instructionLabel}>Mover:</span>
-                        <span>Clic derecho + arrastrar</span>
-                    </div>
-                </section>
+                )}
             </div>
         </div>
     );

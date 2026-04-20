@@ -4,6 +4,7 @@ namespace App\Domain\Dolls\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class DollSettingsService
 {
@@ -78,11 +79,29 @@ class DollSettingsService
                 ]
             );
 
+            // Invalidate consolidated cache on change
+            Cache::forget('doll_config_consolidated');
+
             return true;
         } catch (\Exception $e) {
             Log::error('Failed to save part position: '.$e->getMessage());
 
             return false;
         }
+    }
+
+    /**
+     * Get everything needed for the configurator in a single cached call.
+     * Targets < 400ms TTFB.
+     */
+    public function getConsolidatedConfiguration(): array
+    {
+        return Cache::remember('doll_config_consolidated', 3600, function () {
+            return [
+                'views' => Cache::get('doll_parts_cloudinary', ['front' => [], 'back' => []]),
+                'defaultSettings' => $this->getSettings(),
+                'partPositions' => $this->getAllPartPositions(),
+            ];
+        });
     }
 }

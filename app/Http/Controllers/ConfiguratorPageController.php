@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Dolls\Services\DollSettingsService;
 use App\Domain\Media\Services\CloudinaryService;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
@@ -12,6 +13,7 @@ class ConfiguratorPageController extends Controller
     public function __construct(
         private readonly CloudinaryService $cloudinaryService,
         private readonly DollSettingsController $dollSettingsController,
+        private readonly DollSettingsService $dollSettingsService,
     ) {
     }
 
@@ -42,19 +44,18 @@ class ConfiguratorPageController extends Controller
 
     public function dollConfigTest(): Response
     {
+        $config = $this->dollSettingsService->getConsolidatedConfiguration();
+
         return Inertia::render('Configurator/DollConfigTest', [
-            'views' => $this->getCachedViews(),
-            'defaultSettings' => $this->dollSettingsController->getSettings(),
-            'partPositions' => $this->dollSettingsController->getAllPartPositions(),
+            'views' => $config['views'],
+            'defaultSettings' => $config['defaultSettings'],
+            'partPositions' => $config['partPositions'],
         ]);
     }
 
     private function getCachedViews()
     {
-        $cacheDuration = app()->environment('local') ? 5 : 3600;
-
-        return Cache::remember('doll_parts_cloudinary', $cacheDuration, function () {
-            return $this->cloudinaryService->listDollParts();
-        });
+        // Read directly from cache (Pre-warmed by RefreshCloudinaryAssets command)
+        return Cache::get('doll_parts_cloudinary', ['front' => [], 'back' => []]);
     }
 }
