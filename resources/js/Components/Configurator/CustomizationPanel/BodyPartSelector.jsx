@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import '../../../../css/body-part-selector.css';
+import styles from './BodyPartSelector.module.css';
 
 /**
  * BodyPartSelector
@@ -8,11 +8,11 @@ import '../../../../css/body-part-selector.css';
  * Compact grid-based component for selecting individual body parts.
  * Displays thumbnails in a grid layout similar to the reference design.
  */
-const BodyPartSelector = ({
+export default function BodyPartSelector({
     selectedParts,
     onPartSelect,
     partLibrary
-}) => { // Changed from function declaration to arrow function to match original
+}) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -23,8 +23,8 @@ const BodyPartSelector = ({
 
     if (loading || !partLibrary) {
         return (
-            <div className="body-part-selector loading">
-                <div className="loading-spinner"></div>
+            <div className={`${styles.bodyPartSelectorCompact} ${styles.loading}`}>
+                <div className={styles.loadingSpinner}></div>
                 <p>Cargando biblioteca de partes...</p>
             </div>
         );
@@ -75,21 +75,21 @@ const BodyPartSelector = ({
         return (
             <div
                 key={`${part.dollId}-${part.partType}`}
-                className={`part-thumbnail-compact ${selected ? 'selected' : ''}`}
+                className={`${styles.partThumbnailCompact} ${selected ? styles.selected : ''}`}
                 onClick={() => handlePartClick(part)}
                 title={part.dollName}
             >
-                <div className="thumbnail-image-wrapper">
+                <div className={styles.thumbnailImageWrapper}>
                     <img
                         src={part.thumbnail || part.path}
                         alt={`${part.partType} ${part.variantNumber}`}
-                        className="thumbnail-image-compact"
+                        className={styles.thumbnailImageCompact}
                         onError={(e) => {
                             e.target.style.opacity = '0.3';
                         }}
                     />
                     {selected && (
-                        <div className="selected-checkmark">
+                        <div className={styles.selectedCheckmark}>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                                 <circle cx="12" cy="12" r="10" fill="#4CAF50" />
                                 <path
@@ -103,7 +103,7 @@ const BodyPartSelector = ({
                         </div>
                     )}
                 </div>
-                <div className="thumbnail-number">{part.variantNumber}</div>
+                <div className={styles.thumbnailNumber}>{part.variantNumber}</div>
             </div>
         );
     };
@@ -115,12 +115,12 @@ const BodyPartSelector = ({
         if (parts.length === 0) return null;
 
         return (
-            <div key={partType} className="part-section-compact">
-                <div className="part-section-header-compact">
+            <div key={partType} className={styles.partSectionCompact}>
+                <div className={styles.partSectionHeaderCompact}>
                     <h3>{getPartTypeName(partType)}</h3>
                 </div>
 
-                <div className="part-grid-compact">
+                <div className={styles.partGridCompact}>
                     {parts.map(part => renderPartThumbnail(part))}
                 </div>
             </div>
@@ -131,17 +131,17 @@ const BodyPartSelector = ({
     const partTypeOrder = ['head', 'torso', 'armLeft', 'armRight', 'legLeft', 'legRight'];
 
     return (
-        <div className="body-part-selector-compact">
-            <div className="selector-header-compact">
+        <div className={styles.bodyPartSelectorCompact}>
+            <div className={styles.selectorHeaderCompact}>
                 <h2>ENSAMBLAR COLLAGE</h2>
             </div>
 
-            <div className="part-sections-compact">
+            <div className={styles.partSectionsCompact}>
                 {partTypeOrder.map(partType => renderPartSection(partType))}
             </div>
         </div>
     );
-};
+}
 
 BodyPartSelector.propTypes = {
     selectedParts: PropTypes.object.isRequired,
@@ -151,5 +151,3 @@ BodyPartSelector.propTypes = {
         partTypes: PropTypes.array.isRequired
     }).isRequired
 };
-
-export default BodyPartSelector;

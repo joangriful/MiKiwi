@@ -3,9 +3,12 @@ import { Head } from '@inertiajs/react';
 import axios from 'axios';
 import ConfiguratorLayout from '@/Layouts/ConfiguratorLayout';
 import { use3DPreload } from '@/Components/Configurator/hooks/use3DPreload';
-import ConfiguratorTabs from '@/Components/Configurator/Common/ConfiguratorTabs';
-import MainEditorLayout from '@/Components/Configurator/Common/MainEditorLayout';
 import LoadingScreen from '@/Components/Configurator/Common/LoadingScreen';
+import PreviewArea from '@/Components/Configurator/PreviewArea/PreviewArea';
+import PartSelector from '@/Components/Configurator/PartSelector/PartSelector';
+import CloseUp from '@/Components/Configurator/CloseUp/CloseUp';
+import OptionsBar from '@/Components/Configurator/OptionsBar/OptionsBar';
+import styles from './DollConfigTest.module.css';
 
 // Pre-load the 3D viewer chunk
 const load3DEngine = () => import('@/Components/Configurator/Mannequin3DViewer/Mannequin3DViewer');
@@ -30,6 +33,10 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
     const is3DMountedRef = useRef(false); // Track if 3D is already "warm"
     const idleTimerRef = useRef(null);
     const isDraggingRef = useRef(false);
+
+    const handleDragStart = () => {
+        isDraggingRef.current = true;
+    };
 
     // Reset idle timer whenever user interacts with the 2D UI
     const resetIdleTimer = () => {
@@ -135,7 +142,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
 
     return (
         <ConfiguratorLayout>
-            <Head title="Doll Configurator" />
+            <Head title="Configurador de muñecas" />
 
             {/* Static Header with Tabs */}
             <div className={`${styles.root} ${styles.header}`}>
@@ -264,8 +271,8 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                                 }} 
                             />
                         </Suspense>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </ConfiguratorLayout>
     );

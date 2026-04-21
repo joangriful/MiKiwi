@@ -41,7 +41,7 @@ export default function ComponentsManager({ views, defaultSettings, partPosition
     };
 
     return (
-        <div className={`${styles.root} h-screen flex flex-col bg-white font-sans overflow-hidden select-none cursor-default`}>
+        <div className={styles.root}>
             <Head title="Components Manager" />
 
             {/* Unified Manager Header */}
@@ -53,8 +53,8 @@ export default function ComponentsManager({ views, defaultSettings, partPosition
             />
 
             {/* Navigation Tabs */}
-            <div className="bg-white border-b border-gray-200 px-6">
-                <nav className="flex gap-1">
+            <div className={styles.tabsBar}>
+                <nav className={styles.tabsNav}>
                     {[
                         { id: 'components', label: 'Components', icon: 'widgets' },
                         { id: 'doll', label: 'Doll', icon: 'person' },
@@ -65,22 +65,20 @@ export default function ComponentsManager({ views, defaultSettings, partPosition
                     ].map(tab => (
                         <button
                             key={tab.id}
+                            type="button"
                             onClick={() => setActiveManager(tab.id)}
-                            className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-colors ${activeManager === tab.id
-                                ? 'border-blue-600 text-blue-600 font-medium'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                                }`}
+                            className={`${styles.tabButton} ${activeManager === tab.id ? styles.tabButtonActive : ''}`}
                         >
-                            <span className="material-symbols-outlined text-lg">{tab.icon}</span>
-                            <span className="text-sm">{tab.label}</span>
+                            <span className={`material-symbols-outlined ${styles.tabIcon}`}>{tab.icon}</span>
+                            <span className={styles.tabLabel}>{tab.label}</span>
                         </button>
                     ))}
                 </nav>
             </div>
 
-            <div className="flex-1 overflow-hidden relative">
+            <div className={styles.contentArea}>
                 {activeManager === 'components' && (
-                    <div className="flex h-full">
+                    <div className={styles.componentsLayout}>
                         <ManagerSidebar
                             sourceType={sourceType}
                             setSourceType={setSourceType}
@@ -96,7 +94,7 @@ export default function ComponentsManager({ views, defaultSettings, partPosition
                             handleItemSelect={handleItemSelect}
                         />
 
-                        <main className={`flex-1 overflow-y-auto ${sourceType === 'pages' ? 'bg-gray-200' : 'bg-gray-50'}`}>
+                        <main className={`${styles.previewPane} ${sourceType === 'pages' ? styles.previewPanePages : styles.previewPaneComponents}`}>
                             {sourceType === 'components' ? (
                                 <SingleComponentView
                                     selectedComponentPath={selectedComponentPath}
@@ -131,7 +129,7 @@ export default function ComponentsManager({ views, defaultSettings, partPosition
                 {activeManager === 'products' && (
                     <ProductsManager categories={categories} products={products} debugCount={debugCount} />
                 )}
-                
+
                 {activeManager === 'payments' && (
                     <StripeTestCards />
                 )}

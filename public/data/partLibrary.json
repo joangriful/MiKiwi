@@ -6,8 +6,8 @@
             "description": "Muñeca realista recortada por piezas",
             "parts": {
                 "head": {
-                    "path": "/images/Cabeza.png",
-                    "thumbnail": "/images/Cabeza.png",
+                    "path": "/images/doll-head.png",
+                    "thumbnail": "/images/doll-head.png",
                     "anchorPoint": {
                         "x": 0.5,
                         "y": 0.15
@@ -18,8 +18,8 @@
                     "zIndex": 60
                 },
                 "armLeft": {
-                    "path": "/images/BrazoYPechoIzq.png",
-                    "thumbnail": "/images/BrazoYPechoIzq.png",
+                    "path": "/images/doll-left-arm-chest.png",
+                    "thumbnail": "/images/doll-left-arm-chest.png",
                     "anchorPoint": {
                         "x": 0.4,
                         "y": 0.35
@@ -30,8 +30,8 @@
                     "zIndex": 40
                 },
                 "armRight": {
-                    "path": "/images/BrazoYPechoDerecho.png",
-                    "thumbnail": "/images/BrazoYPechoDerecho.png",
+                    "path": "/images/doll-right-arm-chest.png",
+                    "thumbnail": "/images/doll-right-arm-chest.png",
                     "anchorPoint": {
                         "x": 0.6,
                         "y": 0.35
@@ -42,8 +42,8 @@
                     "zIndex": 40
                 },
                 "legLeft": {
-                    "path": "/images/PiernaIzq.png",
-                    "thumbnail": "/images/PiernaIzq.png",
+                    "path": "/images/doll-left-leg.png",
+                    "thumbnail": "/images/doll-left-leg.png",
                     "anchorPoint": {
                         "x": 0.45,
                         "y": 0.7
@@ -54,8 +54,8 @@
                     "zIndex": 20
                 },
                 "legRight": {
-                    "path": "/images/PiernaDerecha.png",
-                    "thumbnail": "/images/PiernaDerecha.png",
+                    "path": "/images/doll-right-leg.png",
+                    "thumbnail": "/images/doll-right-leg.png",
                     "anchorPoint": {
                         "x": 0.55,
                         "y": 0.7

@@ -6,7 +6,7 @@ import styles from './ModelErrorBoundary.module.css';
 
 function FallbackImagePlane({ imagePath }) {
     // Load the texture safely. If this fails, it might default to a placeholder or error out silently in console.
-    // We assume imagePath is valid (e.g. /images/mannequin_ref.png)
+    // We assume imagePath is valid (e.g. /images/mannequin-reference.png)
     const texture = useTexture(imagePath);
 
     return (
@@ -17,7 +17,7 @@ function FallbackImagePlane({ imagePath }) {
     );
 }
 
-class ModelErrorBoundary extends React.Component {
+export default class ModelErrorBoundary extends React.Component {
     constructor(props) {
         super(props);
         this.state = { hasError: false };
@@ -37,7 +37,7 @@ class ModelErrorBoundary extends React.Component {
                 <group>
                     {/* Fallback: 2D Image "Cutout" of the Mannequin */}
                     <React.Suspense fallback={null}>
-                        <FallbackImagePlane imagePath={this.props.fallbackImage || '/images/mannequin_ref.png'} />
+                        <FallbackImagePlane imagePath={this.props.fallbackImage || '/images/mannequin-reference.png'} />
                     </React.Suspense>
 
                     <Html position={[0, 3.5, 0]} center>
@@ -52,5 +52,3 @@ class ModelErrorBoundary extends React.Component {
         return this.props.children;
     }
 }
-
-export default ModelErrorBoundary;

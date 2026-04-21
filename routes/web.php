@@ -88,15 +88,15 @@ Route::middleware('auth')->group(function () {
     Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])
         ->name('orders.cancel');
 
-    // 📦 API de Puntos de Recogida
+    // API de Puntos de Recogida
     Route::get('/api/pickup-points', [App\Http\Controllers\PickupPointController::class, 'index'])
         ->name('pickup-points.index');
 
-    // 💳 Stripe Payment Intent
+    // Stripe Payment Intent
     Route::post('/api/payment-intent', [OrderController::class, 'createPaymentIntent'])
         ->name('payment-intent.create');
 
-    // 💳 Gestión de Tarjetas Guardadas
+    // Gestión de Tarjetas Guardadas
     Route::prefix('api/payment-methods')->name('payment-methods.')->group(function () {
         Route::get('/', [App\Http\Controllers\PaymentMethodController::class, 'index'])->name('index');
         Route::post('/setup-intent', [App\Http\Controllers\PaymentMethodController::class, 'createSetupIntent'])->name('setup-intent');
@@ -121,7 +121,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/perfil', [ProfileController::class, 'show'])->name('perfil.view');
 
-    // 📍 Gestión de Direcciones del Usuario
+    // Gestión de Direcciones del Usuario
 });
 
 /*
@@ -186,4 +186,4 @@ Route::controller(ConfiguratorPageController::class)->prefix('configurador')->gr
 
 Route::get('/doll_config_test', [ConfiguratorPageController::class, 'dollConfigTest'])->name('doll.config.test');
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

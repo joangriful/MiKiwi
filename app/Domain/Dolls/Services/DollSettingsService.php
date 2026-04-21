@@ -2,12 +2,17 @@
 
 namespace App\Domain\Dolls\Services;
 
+use App\Domain\Media\Services\CloudinaryAssetCacheService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 
 class DollSettingsService
 {
+    public function __construct(
+        private readonly LocalDollPartLibraryService $localDollPartLibraryService,
+    ) {}
+
     public function getSettings(): array
     {
         try {
@@ -96,12 +101,54 @@ class DollSettingsService
      */
     public function getConsolidatedConfiguration(): array
     {
-        return Cache::remember('doll_config_consolidated', 3600, function () {
-            return [
-                'views' => Cache::get('doll_parts_cloudinary', ['front' => [], 'back' => []]),
-                'defaultSettings' => $this->getSettings(),
-                'partPositions' => $this->getAllPartPositions(),
-            ];
-        });
+        $cachedConfig = Cache::get(CloudinaryAssetCacheService::DOLL_CONFIG_CACHE_KEY);
+
+        if (
+            is_array($cachedConfig)
+            && $this->hasConfiguredViews($cachedConfig['views'] ?? [])
+        ) {
+            return $cachedConfig;
+        }
+
+        $config = [
+            'views' => $this->getConfiguredViews(),
+            'defaultSettings' => $this->getSettings(),
+            'partPositions' => $this->getAllPartPositions(),
+        ];
+
+        Cache::put(CloudinaryAssetCacheService::DOLL_CONFIG_CACHE_KEY, $config, 3600);
+
+        return $config;
+    }
+
+    private function hasConfiguredViews(array $views): bool
+    {
+        $categories = array_merge(
+            array_keys($views['front'] ?? []),
+            array_keys($views['back'] ?? [])
+        );
+
+        return count(array_intersect($categories, [
+            'boca',
+            'cejas',
+            'cuerpo',
+            'manos',
+            'ojos',
+            'orejas',
+            'pechos',
+            'pelo',
+            'pies',
+            'ropa',
+            'vientre',
+        ])) > 0;
+    }
+
+    private function getConfiguredViews(): array
+    {
+        $views = Cache::get(CloudinaryAssetCacheService::DOLL_PARTS_CACHE_KEY, ['front' => [], 'back' => []]);
+
+        return $this->hasConfiguredViews($views)
+            ? $views
+            : $this->localDollPartLibraryService->listDollParts();
     }
 }

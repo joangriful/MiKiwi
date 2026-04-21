@@ -7,6 +7,11 @@ const SURFACE_CLASS_MAP = {
     elevated: styles.surfaceElevated,
 };
 
+const VIEW_LABELS = {
+    front: 'Frente',
+    back: 'Espalda',
+};
+
 function getClassName(...classNames) {
     return classNames.filter(Boolean).join(' ');
 }
@@ -59,7 +64,7 @@ export default function OptionsBar({
                         styles.triggerUppercase
                     )}
                 >
-                    {currentView}
+                    {VIEW_LABELS[currentView] ?? currentView}
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 20 20"
@@ -95,7 +100,7 @@ export default function OptionsBar({
                                         : ''
                                 )}
                             >
-                                {view}
+                                {VIEW_LABELS[view] ?? view}
                             </button>
                         ))}
                     </div>

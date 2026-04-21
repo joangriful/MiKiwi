@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Domain\Media\Services\CloudinaryService;
+use App\Domain\Media\Services\CloudinaryAssetCacheService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class RefreshCloudinaryAssets extends Command
 {
@@ -14,48 +14,42 @@ class RefreshCloudinaryAssets extends Command
      *
      * @var string
      */
-    protected $signature = 'app:refresh-cloudinary-assets {--force : Forzar el refresco de la caché incluso si el TTL no ha expirado}';
+    protected $signature = 'app:refresh-cloudinary-assets';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Actualiza la caché de piezas del configurador desde Cloudinary (Pre-warming)';
+    protected $description = 'Refreshes the configurator doll parts cache from Cloudinary.';
 
     /**
      * Execute the console command.
      */
-    public function handle(CloudinaryService $cloudinaryService): int
+    public function handle(CloudinaryAssetCacheService $assetCacheService): int
     {
-        $this->info('🚀 Iniciando refresco de caché de Cloudinary...');
-        
+        $this->info('Refreshing Cloudinary doll parts cache...');
+
         $startTime = microtime(true);
 
         try {
-            // Fetch fresh data from Cloudinary
-            $this->comment('Consultando API de Cloudinary...');
-            $views = $cloudinaryService->listDollParts();
+            $this->comment('Fetching doll parts from Cloudinary...');
+            $assetCacheService->refreshDollParts();
 
-            if (empty($views['front']) && empty($views['back'])) {
-                $this->error('⚠️ La respuesta de Cloudinary está vacía. Abortando actualización para no sobreescribir con datos nulos.');
-                return Command::FAILURE;
-            }
-
-            // Save to cache forever (it will be updated by this command again)
-            Cache::forever('doll_parts_cloudinary', $views);
-            
             $duration = round(microtime(true) - $startTime, 2);
-            
-            $this->info("✅ Caché actualizada correctamente en {$duration} segundos.");
-            Log::info("Cloudinary Cache Pre-warmed successfully ({$duration}s).");
+
+            $this->info("Cloudinary doll parts cache refreshed in {$duration} seconds.");
+            Log::info('Cloudinary doll parts cache refreshed.', [
+                'duration_seconds' => $duration,
+            ]);
 
             return Command::SUCCESS;
+        } catch (Throwable $exception) {
+            $this->error('Cloudinary cache refresh failed: '.$exception->getMessage());
+            Log::error('Cloudinary doll parts cache refresh failed.', [
+                'exception' => $exception,
+            ]);
 
-        } catch (\Exception $e) {
-            $this->error('❌ Error al actualizar la caché: ' . $e->getMessage());
-            Log::error('Cloudinary Pre-warm failed: ' . $e->getMessage());
-            
             return Command::FAILURE;
         }
     }

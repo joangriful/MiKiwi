@@ -1,0 +1,77 @@
+.root {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    overflow: hidden;
+    cursor: default;
+    user-select: none;
+    background: var(--color-white);
+    font-family: var(--font-body);
+}
+
+.tabsBar {
+    border-bottom: 1px solid var(--color-border-default);
+    background: var(--color-white);
+    padding: 0 1.5rem;
+}
+
+.tabsNav {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.tabButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--color-text-muted-ui);
+    padding: 0.75rem 1rem;
+    font: inherit;
+    transition: var(--transition);
+}
+
+.tabButton:hover {
+    border-bottom-color: var(--color-border-strong);
+    color: var(--color-text-soft);
+}
+
+.tabButtonActive {
+    border-bottom-color: var(--color-info-strong);
+    color: var(--color-info-strong);
+    font-weight: 500;
+}
+
+.tabIcon {
+    font-size: 1.125rem;
+}
+
+.tabLabel {
+    font-size: 0.875rem;
+}
+
+.contentArea {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+}
+
+.componentsLayout {
+    display: flex;
+    height: 100%;
+}
+
+.previewPane {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.previewPanePages {
+    background: var(--color-border-default);
+}
+
+.previewPaneComponents {
+    background: var(--color-surface-subtle);
+}

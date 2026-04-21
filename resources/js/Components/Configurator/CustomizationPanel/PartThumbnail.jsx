@@ -1,10 +1,11 @@
 import React from 'react';
+import styles from './PartThumbnail.module.css';
 
 /**
  * PartThumbnail - Renders a specific body part from a doll source.
  * Uses SVG views to focus on Head, Bust, Arms, etc.
  */
-const PartThumbnail = ({ source, partType, isSelected, onClick }) => {
+export default function PartThumbnail({ source, partType, isSelected, onClick }) {
     // Shared geometry with Mannequin2D for consistency
     const masks = {
         head: { cx: 200, cy: 110, rx: 80, ry: 100, viewBox: "120 10 160 200" },
@@ -20,14 +21,11 @@ const PartThumbnail = ({ source, partType, isSelected, onClick }) => {
     return (
         <button
             onClick={onClick}
-            className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all p-1 bg-white shadow-sm ${isSelected
-                    ? 'border-blue-600 ring-2 ring-blue-100 scale-95'
-                    : 'border-gray-100 hover:border-blue-200 hover:shadow-md'
-                }`}
+            className={`${styles.thumbnailButton} ${isSelected ? styles.selected : ''}`}
         >
             <svg
                 viewBox={geometry.viewBox}
-                className="w-full h-full object-contain"
+                className={styles.preview}
             >
                 <defs>
                     <clipPath id={`clip-${partType}-${source}`}>
@@ -52,14 +50,12 @@ const PartThumbnail = ({ source, partType, isSelected, onClick }) => {
 
             {/* Selection indicator */}
             {isSelected && (
-                <div className="absolute top-1 right-1 bg-blue-600 rounded-full p-0.5 shadow-sm">
-                    <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className={styles.selectionIndicator}>
+                    <svg className={styles.selectionIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
             )}
         </button>
     );
-};
-
-export default PartThumbnail;
+}

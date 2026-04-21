@@ -7,13 +7,13 @@ import PropTypes from 'prop-types';
  * Renders a 2D composition of doll body parts using SVG.
  * Displays a body silhouette background with parts layered on top.
  */
-const SegmentedDoll2D = ({
+export default function SegmentedDoll2D({
     selectedParts,
     bodyProportions = { height: 1, bust: 1, waist: 1, hips: 1 },
     canvasWidth = 800,
     canvasHeight = 1000,
     showGuides = false
-}) => {
+}) {
     // Base dimensions for the doll composition
     const baseDimensions = {
         totalHeight: 900,
@@ -73,7 +73,7 @@ const SegmentedDoll2D = ({
 
         // Custom images from user are already cropped and 800x1000
         // We render them full size centered on the canvas if they are the new parts
-        const isCustomPart = path.includes('/images/') && !path.includes('maniqui.png');
+        const isCustomPart = path.includes('/images/') && !path.includes('mannequin-base.png');
 
         if (isCustomPart) {
             return (
@@ -180,7 +180,7 @@ const SegmentedDoll2D = ({
 
                 {/* Technical Mannequin Base (Official) - Fades out when parts are selected */}
                 <image
-                    href="/images/maniqui.png"
+                    href="/images/mannequin-base.png"
                     x={(canvasWidth / 2) - 400}
                     y="0"
                     width="800"
@@ -246,7 +246,7 @@ const SegmentedDoll2D = ({
             </svg>
         </div>
     );
-};
+}
 
 SegmentedDoll2D.propTypes = {
     selectedParts: PropTypes.shape({
@@ -267,5 +267,3 @@ SegmentedDoll2D.propTypes = {
     canvasHeight: PropTypes.number,
     showGuides: PropTypes.bool
 };
-
-export default SegmentedDoll2D;

@@ -1,13 +1,11 @@
-/* Body Part Selector Styles - Compact Grid Design */
-
-.body-part-selector-compact {
+.bodyPartSelectorCompact {
     height: 100%;
     overflow-y: auto;
     padding: 1rem;
     background: #f8f9fa;
 }
 
-.body-part-selector-compact.loading {
+.bodyPartSelectorCompact.loading {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -15,15 +13,14 @@
     min-height: 400px;
 }
 
-/* Header */
-.selector-header-compact {
+.selectorHeaderCompact {
     margin-bottom: 1.5rem;
     padding-bottom: 0.75rem;
     border-bottom: 2px solid #667eea;
     text-align: center;
 }
 
-.selector-header-compact h2 {
+.selectorHeaderCompact h2 {
     font-size: 1.1rem;
     font-weight: 700;
     color: #2c3e50;
@@ -32,25 +29,24 @@
     letter-spacing: 1px;
 }
 
-/* Compact Part Sections */
-.part-sections-compact {
+.partSectionsCompact {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.part-section-compact {
+.partSectionCompact {
     background: white;
     border-radius: 8px;
     padding: 1rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
-.part-section-header-compact {
+.partSectionHeaderCompact {
     margin-bottom: 1rem;
 }
 
-.part-section-header-compact h3 {
+.partSectionHeaderCompact h3 {
     margin: 0;
     font-size: 0.9rem;
     font-weight: 600;
@@ -59,15 +55,13 @@
     letter-spacing: 0.5px;
 }
 
-/* Compact Grid Layout (like CALZADO reference) */
-.part-grid-compact {
+.partGridCompact {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.75rem;
 }
 
-/* Compact Square Thumbnails */
-.part-thumbnail-compact {
+.partThumbnailCompact {
     position: relative;
     aspect-ratio: 1;
     background: #f8f9fa;
@@ -78,19 +72,19 @@
     overflow: hidden;
 }
 
-.part-thumbnail-compact:hover {
+.partThumbnailCompact:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);
     border-color: #667eea;
 }
 
-.part-thumbnail-compact.selected {
+.partThumbnailCompact.selected {
     border-color: #4CAF50;
     border-width: 3px;
     background: rgba(76, 175, 80, 0.05);
 }
 
-.thumbnail-image-wrapper {
+.thumbnailImageWrapper {
     position: relative;
     width: 100%;
     height: 100%;
@@ -100,22 +94,21 @@
     padding: 0.5rem;
 }
 
-.thumbnail-image-compact {
+.thumbnailImageCompact {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
 }
 
-/* Selected Checkmark (top-right corner like reference) */
-.selected-checkmark {
+.selectedCheckmark {
     position: absolute;
     top: 4px;
     right: 4px;
     z-index: 10;
-    animation: checkmark-bounce 0.3s ease;
+    animation: checkmarkBounce 0.3s ease;
 }
 
-@keyframes checkmark-bounce {
+@keyframes checkmarkBounce {
     0% {
         transform: scale(0);
     }
@@ -129,8 +122,7 @@
     }
 }
 
-/* Variant Number (bottom-center like reference) */
-.thumbnail-number {
+.thumbnailNumber {
     position: absolute;
     bottom: 4px;
     left: 50%;
@@ -145,42 +137,28 @@
     text-align: center;
 }
 
-.part-thumbnail-compact.selected .thumbnail-number {
+.partThumbnailCompact.selected .thumbnailNumber {
     background: #4CAF50;
 }
 
-/* Scrollbar */
-.body-part-selector-compact::-webkit-scrollbar {
+.bodyPartSelectorCompact::-webkit-scrollbar {
     width: 6px;
 }
 
-.body-part-selector-compact::-webkit-scrollbar-track {
+.bodyPartSelectorCompact::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
 
-.body-part-selector-compact::-webkit-scrollbar-thumb {
+.bodyPartSelectorCompact::-webkit-scrollbar-thumb {
     background: #667eea;
     border-radius: 3px;
 }
 
-.body-part-selector-compact::-webkit-scrollbar-thumb:hover {
+.bodyPartSelectorCompact::-webkit-scrollbar-thumb:hover {
     background: #5568d3;
 }
 
-/* Responsive: 2 columns on smaller screens */
-@media (max-width: 400px) {
-    .part-grid-compact {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-    }
-
-    .selector-header-compact h2 {
-        font-size: 1rem;
-    }
-}
-
-/* Loading Spinner */
-.loading-spinner {
+.loadingSpinner {
     width: 40px;
     height: 40px;
     border: 4px solid rgba(102, 126, 234, 0.2);
@@ -192,5 +170,16 @@
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 400px) {
+    .partGridCompact {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+
+    .selectorHeaderCompact h2 {
+        font-size: 1rem;
     }
 }

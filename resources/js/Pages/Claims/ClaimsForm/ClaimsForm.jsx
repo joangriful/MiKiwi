@@ -7,22 +7,22 @@ import styles from './ClaimsForm.module.css';
 
 export default function ClaimsForm() {
     return (
-        <div className={`${styles.root} min-h-screen flex flex-col bg-white font-sans`}>
+        <div className={styles.root}>
             <Head title="Formulario de Reclamaciones - MiKiwi" />
             <Header />
 
-            <main className="flex-grow container mx-auto px-6 py-16 max-w-4xl">
+            <main className={styles.main}>
                 {/* Breadcrumb */}
-                <nav className="text-xs text-gray-400 mb-8 flex items-center gap-2">
-                    <Link href={route('home')} className="hover:text-secondary-dark transition-colors">Inicio</Link>
+                <nav className={styles.breadcrumb}>
+                    <Link href={route('home')} className={styles.breadcrumbLink}>Inicio</Link>
                     <span>/</span>
-                    <span className="text-gray-700">Formulario de Reclamaciones</span>
+                    <span className={styles.breadcrumbCurrent}>Formulario de Reclamaciones</span>
                 </nav>
 
-                <h1 className="text-3xl font-bold mb-2 font-head uppercase tracking-tight text-secondary-dark">
+                <h1 className={styles.title}>
                     Formulario de Reclamaciones
                 </h1>
-                <p className="text-xs text-gray-400 mb-10">
+                <p className={styles.intro}>
                     En MiKiwi nos preocupamos por tu satisfacción. Si tienes alguna incidencia, estamos aquí para ayudarte.
                 </p>
 

@@ -9,8 +9,9 @@
 export const getCloudinaryUrl = (path, options = {}) => {
     if (!path) return '';
 
-    // If it's already a full URL, return it as is (unless we want to force optimizations on external URLs too, which is complex)
+    // If it's already a full URL or a local public asset, return it as is.
     if (path.startsWith('http')) return path;
+    if (path.startsWith('/')) return path;
 
     const baseUrl = import.meta.env.VITE_CLOUDINARY_URL || '';
 

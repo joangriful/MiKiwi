@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
  * Mannequin2D - Granular Sprite Collage Engine.
  * Slices Head, Bust, Arms, Torso, Pelvis, and Legs from source images.
  */
-const Mannequin2D = ({ bodyParams, selectedParts }) => {
+export default function Mannequin2D({ bodyParams, selectedParts }) {
     const bp = bodyParams || {};
     const sp = selectedParts || {};
 
@@ -84,6 +84,4 @@ const Mannequin2D = ({ bodyParams, selectedParts }) => {
             </svg>
         </div>
     );
-};
-
-export default Mannequin2D;
+}

@@ -242,7 +242,7 @@ export default function PartOption({
                                 setIsEditing(true);
                             }}
                             className={styles.editTrigger}
-                            title="Edit Position"
+                            title="Editar posición"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -282,7 +282,7 @@ export default function PartOption({
                                     styles.controlButton,
                                     styles.saveButton
                                 )}
-                                title="Save & Close"
+                                title="Guardar y cerrar"
                             >
                                 <svg
                                     className={styles.controlIcon}
@@ -305,7 +305,7 @@ export default function PartOption({
                                     styles.controlButton,
                                     styles.cancelButton
                                 )}
-                                title="Cancel"
+                                title="Cancelar"
                             >
                                 <svg
                                     className={styles.controlIcon}

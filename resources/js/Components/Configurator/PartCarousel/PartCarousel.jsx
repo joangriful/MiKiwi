@@ -136,6 +136,15 @@ const CATEGORY_ICONS = {
     ),
 };
 
+const CATEGORY_LABELS = {
+    armLeft: 'Brazo izquierdo',
+    armRight: 'Brazo derecho',
+    head: 'Cabeza',
+    legLeft: 'Pierna izquierda',
+    legRight: 'Pierna derecha',
+    torso: 'Torso',
+};
+
 function getClassName(...classNames) {
     return classNames.filter(Boolean).join(' ');
 }
@@ -155,6 +164,8 @@ export default function PartCarousel({
     onToggle,
     ...props
 }) {
+    const categoryLabel = CATEGORY_LABELS[category] ?? category;
+
     const handleKeyDown = (event, item) => {
         if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
             event.preventDefault();
@@ -243,7 +254,7 @@ export default function PartCarousel({
                             isOpen ? styles.titleOpen : ''
                         )}
                     >
-                        {category}
+                        {categoryLabel}
                     </span>
                 </div>
 
@@ -275,10 +286,10 @@ export default function PartCarousel({
                                 styles.clearButton,
                                 !selectedItem ? styles.clearButtonSelected : ''
                             )}
-                            title={`Remove ${category}`}
+                            title={`Quitar ${categoryLabel}`}
                         >
                             <span className={styles.clearIcon}>✕</span>
-                            <span className={styles.clearLabel}>None</span>
+                            <span className={styles.clearLabel}>Ninguno</span>
                         </button>
 
                         {items.map((item) => (

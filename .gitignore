@@ -24,7 +24,6 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 /laravel
-*.psd
 *.ps
 /doll_parts_ps/
 mikiwi.bat
