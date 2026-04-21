@@ -1,23 +1,7 @@
 import React from "react";
 import { Link, useForm, router } from "@inertiajs/react";
+import { getProductImage } from "@/Components/Checkout/utils/productImages";
 import styles from "./CartStep.module.css";
-
-function getProductImage(product) {
-    try {
-        const images =
-            typeof product.images === "string"
-                ? JSON.parse(product.images)
-                : product.images;
-
-        if (Array.isArray(images) && images.length > 0) {
-            return images[0];
-        }
-    } catch (error) {
-        // Fallback handled below.
-    }
-
-    return product.image_url || "https://via.placeholder.com/150";
-}
 
 function PopularProducts({ popularProducts, addToCart }) {
     return (

@@ -1,1 +1,40 @@
-.root {}
+.root {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    background: var(--color-white);
+    color: var(--color-text-strongest);
+    font-family: var(--font-body);
+}
+
+.main {
+    display: flex;
+    width: 100%;
+    max-width: 1536px;
+    flex: 1;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.checkoutColumn {
+    width: 100%;
+    padding: 1.5rem;
+    background: var(--color-white);
+}
+
+@media (min-width: 768px) {
+    .main {
+        flex-direction: row;
+    }
+
+    .checkoutColumn {
+        width: 60%;
+        padding: 3rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .checkoutColumn {
+        padding: 4rem;
+    }
+}

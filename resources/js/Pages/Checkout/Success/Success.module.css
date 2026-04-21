@@ -1,1 +1,16 @@
-.root {}
+.root {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    background: var(--color-surface-subtle);
+    color: var(--color-text-strongest);
+    font-family: var(--font-body);
+}
+
+.main {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 1rem;
+}

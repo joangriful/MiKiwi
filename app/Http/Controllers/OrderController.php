@@ -45,9 +45,8 @@ class OrderController extends Controller
             return redirect()->route('colecciones');
         }
 
-        return Inertia::render('Checkout/Create', [
-            'cart' => $cartData['items'],
-            'total' => $cartData['total'],
+        return Inertia::render('Checkout/Cart', [
+            'cart' => $cartData,
             'user' => Auth::user(),
         ]);
     }
