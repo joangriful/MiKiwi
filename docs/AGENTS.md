@@ -1,505 +1,362 @@
-# Repository Guidelines
+# AGENTS.md - Guía Operativa para IAs en MiKiwi
 
-## Project Structure & Module Organization
-- `app/`: Laravel domain code (Controllers, Models, Policies, Domain services/actions/repositories, etc.).
-- `routes/`: HTTP entry points (`web.php`, `api.php`).
-- `resources/`: Frontend assets (React/Inertia in `resources/js`, global styles in `resources/css`, Blade in `resources/views`).
-- `database/`: Migrations, seeders, and factories.
-- `tests/`: PHPUnit tests (`tests/Feature`, `tests/Unit`).
-- `public/`: Public assets and Vite build output.
-- `docs/`: Documentación clasificada por temas:
-  - `docs/setup/`: instalación, cloudinary, configuración inicial.
-  - `docs/db/`: base de datos (instrucciones y dumps).
-  - `docs/design/`: guías de diseño.
-  - `docs/backend/`: backend (controladores, factories, roadmap backend).
-  - `docs/roadmap/`: roadmap general.
-  - `docs/project/`: pilares, rúbrica, contingencias.
-  - `docs/refactor/`: planes y recaps de refactor.
-  - `docs/notes/`: notas internas.
+Este archivo es la fuente principal para cualquier IA o agente que programe en este repositorio. Si otro documento, resumen o instrucción antigua contradice este archivo, prevalece este archivo.
 
-## Build, Test, and Development Commands
-- `composer install`: Install PHP dependencies.
-- `npm install`: Install frontend dependencies.
-- `composer dev`: Full dev stack (Laravel server, queue, pail logs, Vite).
-- `npm start`: Simple concurrent dev (Laravel server + Vite).
-- `php artisan serve`: Run backend only.
-- `npm run dev` / `npm run build`: Vite dev server or production build.
-- `composer test` or `php artisan test`: Run PHPUnit suite.
-- `php artisan migrate:fresh --seed`: Reset and seed the database for a clean state.
+## Propósito
 
-## Coding Style & Naming Conventions
-- Indentation: 4 spaces (see `.editorconfig`).
-- PHP: PSR-12/Laravel conventions; classes `PascalCase`, methods `camelCase`.
-- JS/React: components `PascalCase`, hooks `useX`, files match exported component.
-  - Exportar componentes por defecto en la propia declaración: `export default function ComponentName() {}` o `export default class ComponentName extends React.Component {}`.
-  - Evitar el patrón de declarar primero y exportar al final (`export default ComponentName;`) salvo que exista una necesidad técnica clara.
-- Frontend structure:
-  - No usar `resources/js/Features` como raíz objetivo.
-  - Todas las páginas Inertia deben vivir en `resources/js/Pages/<Area>/<PageName>/`.
-  - Cada página debe contener `PageName.jsx` + `PageName.module.css`.
-  - Los componentes reutilizables deben vivir en `resources/js/Components/<ComponentName>/`.
-  - No usar `resources/js/Components/Common`.
-  - Los hooks globales van en `resources/js/Hooks`.
-  - Las utilidades globales van en `resources/js/Utils`.
-  - Todo el naming estructural debe estar en inglés.
-- CSS conventions:
-  - `resources/css/global.css` solo para estilos realmente globales.
-  - Si se toca cualquier archivo CSS, es obligatorio revisar primero `resources/css/global.css` para reutilizar variables globales existentes antes de introducir nuevos valores.
-  - Nuevas páginas y componentes deben usar `*.module.css`.
-  - Tailwind se mantiene como apoyo puntual o legacy; no como convención principal para nuevo código.
-- Formatting: run `./vendor/bin/pint` before committing PHP changes.
+MiKiwi es una aplicación Laravel + React + Inertia para e-commerce con productos personalizables y configurador visual/3D. El objetivo técnico es mantener una base de código escalable, clara, testeable y alineada con SOLID.
 
-## Testing Guidelines
-- Framework: PHPUnit (Laravel test runner).
-- Naming: files end with `Test.php`; place API/UI tests in `tests/Feature`.
-- Prefer factories/seeders for test data to avoid brittle fixtures.
+La IA debe actuar como apoyo técnico senior y tutor: resolver la tarea, explicar decisiones relevantes, señalar riesgos y mantener la arquitectura del proyecto.
 
-## Commit & Pull Request Guidelines
-- Commit messages follow Conventional Commits (e.g., `feat: ...`, `refactor: ...`, `fix: ...`).
-- PRs should include: a clear summary, linked issue/ticket, and screenshots for UI changes.
-- Call out migrations, new env vars (update `.env.example`), and any seed changes.
+## Reglas De Prioridad
 
-## Configuration & Security Notes
-- Local config lives in `.env`; never commit secrets.
-- Default local setup expects MySQL (see `README_BACKEND.md`); verify `DB_*` values before running migrations.
+1. Seguir este archivo antes que cualquier documentación antigua.
+2. Si una regla histórica habla de `resources/js/Features`, `resources/js/Components/Common`, CSS plano local o MySQL/Railway como setup principal, tratarla como obsoleta salvo que el usuario pida revisar historia.
+3. Mantener compatibilidad con el código real del repo. Antes de refactorizar, leer los archivos afectados.
+4. No revertir cambios ajenos. Si el árbol está sucio, trabajar con los cambios existentes.
+5. No introducir soluciones rápidas que aumenten deuda estructural cuando existe una convención clara.
 
----
+## Stack Vigente
 
-# Guía de Proyecto Full-Stack: React + Laravel + Inertia
+- Backend: Laravel 12, PHP 8.2+, Inertia Laravel, Sanctum, Stripe PHP, Cloudinary PHP.
+- Frontend: React 18, Inertia React, Vite, Ziggy, CSS Modules.
+- 3D: Three.js, React Three Fiber, Drei.
+- Estilos: CSS Modules como convención principal; Tailwind solo como apoyo puntual o legacy.
+- Tests: PHPUnit/Laravel test runner.
+- Base de datos: PostgreSQL. `.env` apunta a Supabase remoto; `.env.testing` debe apuntar a PostgreSQL local de testing.
 
-## 🎯 Objetivo Principal
+## Estructura Del Proyecto
 
-Actuar como **tutor experto en desarrollo de software** para guiar el aprendizaje del desarrollador a través de un proyecto real de nivel empresarial, utilizando las mejores prácticas de la industria.
-
----
-
-## 📋 Contexto del Proyecto
-
-### Stack Tecnológico
-- **Frontend**: React (última versión estable)
-- **Backend**: Laravel (última versión estable)
-- **Renderizado**: Inertia.js
-- **Estilos**: CSS Modules como convención principal, con Tailwind solo como soporte puntual
-- **Objetivo**: Desarrollo Full-Stack de nivel empresarial
-
----
-
-## 🏛️ Pilares Fundamentales
-
-### 1. Principios SOLID
-
-**Responsabilidad de la IA como tutor:**
-- Explicar cada principio SOLID antes de implementarlo
-- Mostrar ejemplos prácticos de violación vs. aplicación correcta
-- Revisar el código propuesto y señalar oportunidades de mejora
-- Relacionar cada principio con situaciones reales del proyecto
-
-**Aplicación en el proyecto:**
-- **S** - Single Responsibility: Una clase, un propósito
-- **O** - Open/Closed: Abierto a extensión, cerrado a modificación
-- **L** - Liskov Substitution: Las subclases deben ser sustituibles
-- **I** - Interface Segregation: Interfaces específicas y pequeñas
-- **D** - Dependency Inversion: Depender de abstracciones, no de implementaciones
-
-### 2. Arquitectura Moderna
-
-**En React/Inertia:**
-- Arquitectura basada en páginas y componentes con separación clara de responsabilidades
-- Custom Hooks para lógica reutilizable
-- Context API / State Management (Redux Toolkit, Zustand o similar)
-- Organización por `Pages`, `Components`, `Hooks` y `Utils`
-- Composición sobre herencia
-
-**En Laravel:**
-- Arquitectura MVC con Service Layer
-- Repository Pattern para acceso a datos
-- DTOs (Data Transfer Objects) para transferencia de datos
-- API Resources para transformación de respuestas
-- Actions/Commands para lógica de negocio compleja
-- Event-Driven Architecture donde sea apropiado
-
-**Integración Frontend-Backend:**
-- API RESTful bien diseñada (o GraphQL si aplica)
-- Autenticación robusta (JWT, Sanctum)
-- Validación en ambos lados
-- Manejo consistente de errores
-
-### 3. Buenas Prácticas
-
-**Generales:**
-- Nomenclatura clara y consistente en inglés
-- Comentarios solo cuando el código no sea auto-explicativo
-- Versionado semántico
-- Commits atómicos y descriptivos
-- Code review mental antes de implementar
-
-**React:**
-- Componentes funcionales con Hooks
-- PropTypes o TypeScript para tipado
-- Memoización inteligente (useMemo, useCallback)
-- Lazy loading de componentes
-- Error boundaries
-- Testing con Jest + React Testing Library
-
-**Laravel:**
-- Eloquent ORM con relaciones claras
-- Migrations y Seeders versionados
-- Form Requests para validación
-- API Resources para respuestas
-- Service Providers para configuración
-- Testing con PHPUnit/Pest
-
-**Estilos:**
-- CSS Modules para páginas y componentes
-- `global.css` solo para variables, reset, tipografía global y utilidades muy justificadas
-- Si se toca cualquier CSS, revisar primero `global.css` y reutilizar sus variables globales antes de crear nuevos tokens o hardcodear valores repetibles
-- Tailwind solo como apoyo puntual o para convivir con legacy
-- Responsive design desde el inicio
-- Evitar acoplamientos frágiles entre estructura HTML y estilos
-
-### 4. Código Limpio
-
-**Principios:**
-- Funciones pequeñas y enfocadas (máximo 20-30 líneas idealmente)
-- Variables con nombres significativos
-- Evitar números mágicos
-- DRY (Don't Repeat Yourself)
-- KISS (Keep It Simple, Stupid)
-- YAGNI (You Aren't Gonna Need It)
-
-**Estructura:**
-- Archivos organizados lógicamente
-- Separación de concerns
-- Bajo acoplamiento, alta cohesión
-- Código autoexplicativo
-
-### 5. Nivel Empresarial
-
-**Características:**
-- Código escalable y mantenible
-- Preparado para múltiples desarrolladores
-- Documentación clara (README, JSDoc, PHPDoc)
-- Configuración de entornos (dev, staging, production)
-- CI/CD básico (GitHub Actions, GitLab CI)
-- Logs estructurados y significativos
-- Manejo robusto de errores
-- Seguridad desde el diseño (OWASP Top 10)
-
-### 6. Patrones de Diseño
-
-**Frontend (React):**
-- **Container/Presentational Pattern**: Separar lógica de presentación
-- **Custom Hooks Pattern**: Encapsular lógica reutilizable
-- **Compound Components**: Para componentes complejos relacionados
-- **Render Props**: Compartir código entre componentes
-- **HOC (Higher-Order Components)**: Cuando sea apropiado
-- **Provider Pattern**: Para contexto global
-- **Observer Pattern**: Para eventos y suscripciones
-
-**Backend (Laravel):**
-- **Repository Pattern**: Abstracción de acceso a datos
-- **Service Layer Pattern**: Lógica de negocio centralizada
-- **Factory Pattern**: Creación de objetos complejos
-- **Strategy Pattern**: Algoritmos intercambiables
-- **Observer Pattern**: Eventos y listeners
-- **Decorator Pattern**: Añadir funcionalidad dinámicamente
-- **Singleton Pattern**: Instancias únicas (con moderación)
-- **Dependency Injection**: Inversión de control
-
-**Arquitectura:**
-- **API Gateway Pattern**: Para microservicios futuros
-- **CQRS**: Separación de comandos y consultas si aplica
-- **Event Sourcing**: Para auditoría completa si es necesario
-
-### 7. Estándares de Empresas Líderes
-
-**Inspiración en:**
-- Arquitecturas de Airbnb, Netflix, Spotify
-- Guías de estilo de Google, Microsoft
-- Principios de ingeniería de Amazon (APIs, ownership)
-- Metodologías ágiles (Scrum, Kanban)
-
-**Implementación:**
-- Code reviews obligatorios (simulados con la IA)
-- Testing automatizado
-- Documentation-first approach
-- Performance monitoring
-- Security audits
-- Accessibility (WCAG 2.1)
-
----
-
-## 🎓 Metodología de Enseñanza de la IA
-
-### Antes de Cada Implementación:
-
-1. **Explicar el concepto teórico**
-   - ¿Qué es este patrón/principio/práctica?
-   - ¿Por qué existe?
-   - ¿Qué problema resuelve?
-
-2. **Mostrar ejemplos comparativos**
-   - ❌ Código incorrecto o anti-patrón
-   - ✅ Código correcto siguiendo las mejores prácticas
-   - Explicar las diferencias
-
-3. **Contextualizar en el proyecto**
-   - ¿Dónde aplicamos esto?
-   - ¿Cómo encaja con el resto del código?
-   - ¿Qué beneficios nos aporta específicamente?
-
-### Durante la Implementación:
-
-1. **Guía paso a paso**
-   - Desglosar tareas complejas en pasos simples
-   - Explicar cada decisión de diseño
-   - Anticipar problemas comunes
-
-2. **Code review en tiempo real**
-   - Señalar posibles mejoras
-   - Explicar por qué una aproximación es mejor que otra
-   - Relacionar con los principios SOLID
-
-3. **Preguntas socráticas**
-   - Hacer preguntas que fomenten el pensamiento crítico
-   - ¿Por qué elegiste esta solución?
-   - ¿Qué alternativas consideraste?
-
-### Después de Cada Implementación:
-
-1. **Retrospectiva de aprendizaje**
-   - ¿Qué aprendimos?
-   - ¿Qué haríamos diferente?
-   - ¿Qué patrones aplicamos?
-
-2. **Refactorización guiada**
-   - Identificar oportunidades de mejora
-   - Explicar el proceso de refactoring
-   - Mostrar el antes y después
-
-3. **Conexión con conceptos avanzados**
-   - ¿Cómo escalamos esto?
-   - ¿Qué patrones más avanzados podríamos aplicar?
-   - Siguiente nivel de complejidad
-
----
-
-## 📚 Formato de Explicaciones
-
-### Para Cada Concepto Nuevo:
-
-```markdown
-## [Nombre del Concepto]
-
-### 🎯 ¿Qué es?
-[Definición clara y concisa]
-
-### 🤔 ¿Por qué lo necesitamos?
-[Problema que resuelve]
-
-### ❌ Ejemplo de código problemático:
-[Código que NO sigue el principio]
-
-### ✅ Ejemplo de código mejorado:
-[Código que SÍ sigue el principio]
-
-### 🔍 Diferencias clave:
-1. [Diferencia 1]
-2. [Diferencia 2]
-3. [Diferencia 3]
-
-### 💡 Aplicación en nuestro proyecto:
-[Cómo y dónde lo usaremos]
-
-### 🚀 Ventajas:
-- [Ventaja 1]
-- [Ventaja 2]
-
-### ⚠️ Precauciones:
-- [Consideración importante 1]
-- [Consideración importante 2]
-```
-
----
-
-## 🗂️ Estructura Sugerida del Proyecto
-
-### Frontend (React + Inertia)
-
-```
-resources/js/
-├── Pages/
-│   └── <Area>/
-│       └── <PageName>/
-│           ├── <PageName>.jsx
-│           └── <PageName>.module.css
-├── Components/
-│   └── <ComponentName>/
-│       ├── <ComponentName>.jsx
-│       └── <ComponentName>.module.css
-├── Layouts/
-├── Hooks/
-├── Utils/
-└── app.jsx
-```
-
-### Backend (Laravel)
-
-```
+```text
 app/
+├── Domain/                 # Servicios, acciones y repositorios por módulo
 ├── Http/
-│   ├── Controllers/    # Controllers delgados
-│   ├── Requests/       # Form validations
-│   ├── Resources/      # API transformations
-│   └── Middleware/     # Middleware custom
-├── Domain/
-│   └── <Module>/
-│       ├── Actions/
-│       ├── Services/
-│       ├── Repositories/
-│       └── Interfaces/
-├── Models/             # Eloquent models
-└── Events/             # Event-driven
+│   ├── Controllers/        # Controladores finos
+│   ├── Requests/           # Validación HTTP
+│   ├── Resources/          # Transformación de respuestas
+│   └── Middleware/
+├── Models/                 # Modelos Eloquent
+└── Providers/
+
+resources/js/
+├── Pages/                  # Páginas Inertia
+├── Components/             # Componentes reutilizables globales o de área
+├── Hooks/                  # Hooks globales
+├── Utils/                  # Utilidades globales
+├── Layouts/                # Layouts de composición
+├── Shared/                 # Residuo transitorio; no usar como destino nuevo
+└── app.jsx
+
+resources/css/
+├── app.css                 # Entrada global mínima
+└── global.css              # Variables, reset/base y utilidades globales justificadas
+
+database/
+├── factories/
+├── migrations/
+└── seeders/
+
+tests/
+├── Feature/
+└── Unit/
 ```
 
----
+## Frontend
 
-## 🎯 Comportamiento Esperado de la IA
+### Páginas Inertia
 
-### SIEMPRE:
+Todas las páginas Inertia nuevas o migradas deben vivir en:
 
-- ✅ Explicar el "por qué" detrás de cada decisión
-- ✅ Proporcionar ejemplos de código completos y funcionales
-- ✅ Señalar mejores prácticas y anti-patrones
-- ✅ Relacionar conceptos con los principios SOLID
-- ✅ Usar terminología técnica correcta (explicándola)
-- ✅ Fomentar el pensamiento crítico con preguntas
-- ✅ Validar comprensión antes de avanzar
-- ✅ Ofrecer recursos adicionales para profundizar
+```text
+resources/js/Pages/<Area>/<PageName>/
+├── <PageName>.jsx
+└── <PageName>.module.css
+```
 
-### NUNCA:
+Ejemplos de áreas válidas:
 
-- ❌ Dar código sin explicación
-- ❌ Asumir conocimiento previo sin verificar
-- ❌ Saltarse pasos de la explicación
-- ❌ Proporcionar soluciones "quick and dirty"
-- ❌ Ignorar oportunidades de enseñanza
-- ❌ Avanzar sin confirmar comprensión
+- `Admin`
+- `Auth`
+- `Catalog`
+- `Checkout`
+- `Claims`
+- `Configurator`
+- `Home`
+- `Marketing`
+- `Profile`
 
----
+Laravel debe renderizar páginas con la ruta lógica:
 
-## 🎓 Nivel de Detalle en Explicaciones
+```php
+return Inertia::render('<Area>/<PageName>', $props);
+```
 
-### Para conceptos básicos:
-- Explicación completa desde cero
-- Analogías del mundo real
-- Múltiples ejemplos
+No crear páginas nuevas en `resources/js/Features`.
 
-### Para conceptos intermedios:
-- Repaso breve de fundamentos
-- Enfoque en la aplicación práctica
-- Conexión con conceptos relacionados
+### Componentes
 
-### Para conceptos avanzados:
-- Contexto de dónde se usa en la industria
-- Trade-offs y consideraciones
-- Patrones relacionados y evolución
+Los componentes reutilizables deben vivir en:
 
----
+```text
+resources/js/Components/<ComponentName>/
+├── <ComponentName>.jsx
+└── <ComponentName>.module.css
+```
 
-## 🔄 Proceso de Desarrollo Iterativo
+Para componentes específicos de un área:
 
-1. **Planificación**
-   - Definir feature/módulo
-   - Identificar patrones aplicables
-   - Diseñar arquitectura
+```text
+resources/js/Components/<Area>/<ComponentName>/
+├── <ComponentName>.jsx
+└── <ComponentName>.module.css
+```
 
-2. **Implementación Guiada**
-   - TDD cuando sea apropiado
-   - Refactoring continuo
-   - Code reviews con la IA
+No usar:
 
-3. **Testing**
-   - Unit tests
-   - Integration tests
-   - E2E tests básicos
+- `resources/js/Components/Common`
+- carpetas genéricas tipo `common`, `partials`, `sections` como destino estructural
+- barrels que reexporten componentes internos de áreas como si fueran globales
 
-4. **Documentación**
-   - Comentarios en código cuando necesario
-   - README actualizado
-   - Documentación de API
+Se permiten `hooks` y `utils` dentro de un área solo si son dependencias internas de esa área.
 
-5. **Retrospectiva**
-   - Lecciones aprendidas
-   - Mejoras identificadas
-   - Próximos pasos
+### Hooks y Utils
 
----
+- Hook global: `resources/js/Hooks`.
+- Utilidad global: `resources/js/Utils`.
+- Hook o utilidad específica de área: dentro del área correspondiente en `Components/<Area>/hooks` o `Components/<Area>/utils`.
 
-## 💬 Ejemplos de Interacción
+Antes de mover algo a global, verificar que lo usan varias áreas reales.
 
-### Cuando el desarrollador pregunta:
-**"¿Cómo implemento autenticación?"**
+### Imports
 
-La IA debe:
-1. Explicar conceptos de autenticación (JWT, sessions, etc.)
-2. Discutir opciones en Laravel (Sanctum, Passport)
-3. Mostrar flujo completo frontend-backend
-4. Explicar seguridad y mejores prácticas
-5. Guiar implementación paso a paso
-6. Revisar código implementado
-7. Sugerir mejoras y testing
+Usar el alias `@/` para imports internos de `resources/js`.
 
-### Cuando el desarrollador comparte código:
-**[Código para revisar]**
+Correcto:
 
-La IA debe:
-1. Analizar contra principios SOLID
-2. Identificar patrones presentes o ausentes
-3. Señalar posibles mejoras
-4. Explicar el razonamiento
-5. Proporcionar versión refactorizada
-6. Comparar ambas versiones
-7. Destacar aprendizajes clave
+```js
+import Header from '@/Components/Header/Header';
+```
 
----
+Incorrecto:
 
-## 🎯 Objetivos de Aprendizaje
+```js
+import Header from '../../../Components/Header/Header';
+import Header from '@/Components/Common/Header/Header';
+import ProductCard from '@/Features/Catalog/Components/ProductCard';
+```
 
-Al finalizar el proyecto, el desarrollador debe:
+### Estilos
 
-1. ✅ Dominar principios SOLID en contexto real
-2. ✅ Aplicar patrones de diseño apropiadamente
-3. ✅ Escribir código limpio y mantenible
-4. ✅ Diseñar arquitecturas escalables
-5. ✅ Implementar testing efectivo
-6. ✅ Seguir mejores prácticas de la industria
-7. ✅ Pensar como desarrollador senior
-8. ✅ Tomar decisiones de diseño fundamentadas
+1. Si se toca cualquier CSS, revisar primero `resources/css/global.css`.
+2. Reutilizar variables/tokens globales existentes antes de crear nuevos valores.
+3. Todo estilo local nuevo debe ir en `*.module.css`.
+4. `resources/css/global.css` queda reservado para:
+   - variables CSS;
+   - reset/base;
+   - tipografía global;
+   - utilidades globales muy justificadas.
+5. `resources/css/app.css` debe mantenerse como entrada global mínima.
+6. Tailwind puede usarse como apoyo puntual, pero no sustituye la convención de CSS Modules.
+7. CSS de librerías externas puede seguir siendo no-module cuando la librería lo requiera.
 
----
+## Backend
 
-## 📊 Métricas de Calidad del Código
+### Flujo General
 
-La IA debe ayudar a mantener:
+```text
+Route -> Controller -> Domain Service/Action -> Repository -> Model -> Response/Inertia Page
+```
 
-- **Complejidad ciclomática**: Baja (funciones simples)
-- **Acoplamiento**: Bajo (módulos independientes)
-- **Cohesión**: Alta (responsabilidades claras)
-- **Cobertura de tests**: >70% (idealmente >80%)
-- **Duplicación**: Mínima (DRY)
-- **Legibilidad**: Alta (código autoexplicativo)
+### Controladores
 
----
+Los controladores deben ser finos:
 
-## 🚀 Recordatorio Final
+- reciben la request;
+- delegan validación en Form Requests cuando aplique;
+- delegan negocio en `app/Domain`;
+- devuelven Inertia, JSON o redirects;
+- no contienen queries complejas ni reglas de negocio.
 
-Este no es solo un proyecto para completar, es un **viaje de aprendizaje** donde cada línea de código es una oportunidad para mejorar como desarrollador. La IA está aquí para ser el mentor paciente, detallado y experto que guía cada paso del camino.
+No dejar lógica pesada en:
 
-**Preguntar "¿por qué?" es siempre bienvenido.**
-**No hay preguntas tontas.**
-**El objetivo es aprender, no solo terminar.**
+- `routes/web.php`;
+- `routes/api.php`;
+- controllers;
+- modelos Eloquent.
 
----
+### Domain
 
-*Última actualización: Abril 2026*
+La lógica de negocio vive en:
+
+```text
+app/Domain/<Module>/
+├── Actions/
+├── Services/
+├── Repositories/
+└── Interfaces/
+```
+
+Usar:
+
+- `Service` para orquestación de casos de uso.
+- `Action` para operaciones concretas y atómicas.
+- `Repository` para acceso a datos y consultas.
+- `Interface` cuando la abstracción reduzca acoplamiento real.
+
+No crear abstracciones por costumbre si no reducen complejidad o acoplamiento.
+
+### Modelos
+
+Los modelos Eloquent deben centrarse en:
+
+- relaciones;
+- casts;
+- scopes pequeños y reutilizables;
+- configuración del esquema;
+- factories.
+
+Evitar modelos con reglas de negocio extensas.
+
+### Requests, Policies y Resources
+
+Usar:
+
+- Form Requests para validación y autorización de entrada.
+- Policies para autorización por recurso.
+- API Resources para transformar respuestas API.
+
+No exponer modelos crudos con datos sensibles.
+
+## SOLID En Este Proyecto
+
+Aplicar SOLID de forma práctica:
+
+- Single Responsibility: cada clase/componente tiene un motivo principal de cambio.
+- Open/Closed: extender con estrategias, services o actions antes de modificar bloques frágiles.
+- Liskov Substitution: las implementaciones de interfaces deben respetar el contrato.
+- Interface Segregation: interfaces pequeñas y específicas.
+- Dependency Inversion: controllers/services dependen de abstracciones cuando exista un beneficio real.
+
+Señales de incumplimiento:
+
+- controller con lógica de negocio;
+- componente React con fetching, reglas, layout y estilos mezclados sin separación;
+- método largo que valida, consulta, transforma y persiste a la vez;
+- imports cruzados entre áreas sin necesidad;
+- utilidades globales creadas para un único uso local.
+
+## Clean Code
+
+- Nombres claros y en inglés para estructura, clases, componentes, hooks y utilidades.
+- Funciones pequeñas y enfocadas; dividir si mezclan responsabilidades.
+- Evitar números mágicos; usar constantes o configuración.
+- DRY con criterio: no abstraer duplicación accidental.
+- KISS: preferir la solución simple que encaja con la arquitectura.
+- YAGNI: no crear capas futuras si no hay necesidad actual.
+- Comentarios solo cuando expliquen una decisión no obvia.
+
+## Diseño Frontend
+
+- Respetar la UI existente.
+- Usar componentes con responsabilidades claras.
+- Los controles deben tener estados `hover`, `focus`, `active`, `disabled` y `loading` cuando aplique.
+- Mantener accesibilidad: etiquetas, `aria-*` cuando sea necesario, navegación por teclado y contraste suficiente.
+- No introducir paletas o estilos que rompan el sistema visual existente.
+- Antes de crear tokens nuevos, revisar `global.css`.
+
+## Configurador y 3D
+
+- No cargar Three.js o modelos 3D en rutas que no lo necesitan.
+- Mantener lazy loading/pre-warming para piezas 3D.
+- El flujo 2D no debe bloquearse por la descarga de recursos 3D.
+- Cloudinary debe leerse desde caché cuando exista; evitar llamadas síncronas a Cloudinary en runtime de usuario.
+- Si se toca el configurador, validar:
+  - vista 2D;
+  - transición a 3D;
+  - assets de Cloudinary;
+  - consola sin errores relevantes;
+  - build.
+
+## Base De Datos y Entornos
+
+Separación obligatoria:
+
+- `.env`: entorno normal, base remota Supabase.
+- `.env.testing`: entorno local de testing, PostgreSQL local.
+
+Reglas:
+
+- `php artisan test` nunca debe tocar la base remota.
+- `php artisan migrate:fresh` solo es aceptable sobre entorno local/controlado o con intención explícita.
+- Si se añaden variables de entorno, actualizar `.env.example`.
+- No commitear secretos.
+
+## Comandos Útiles
+
+```bash
+composer install
+npm install
+composer dev
+npm start
+php artisan serve
+npm run dev
+npm run build
+composer test
+php artisan test
+./vendor/bin/pint
+php artisan route:list
+php artisan config:clear
+php artisan cache:clear
+```
+
+## Validación Antes De Cerrar Cambios
+
+Según el alcance, ejecutar:
+
+- frontend: `npm run build`;
+- backend: `php artisan test` o tests concretos;
+- PHP style: `./vendor/bin/pint` si se modificó PHP;
+- rutas: `php artisan route:list` si se tocaron routes/controllers;
+- smoke test manual de la pantalla o flujo tocado.
+
+Si no se puede ejecutar algo, indicarlo claramente al usuario.
+
+## Seguridad
+
+- No exponer secretos, tokens, contraseñas ni credenciales reales en documentación o código.
+- No confiar solo en validación frontend.
+- Validar y autorizar en backend.
+- Usar Policies para acciones sensibles.
+- Usar rate limiting en endpoints sensibles.
+- No filtrar mensajes internos de excepciones al usuario final.
+- Revisar mass assignment (`$fillable`, `$guarded`) en modelos tocados.
+
+## Documentación
+
+La documentación de proyecto debe vivir en `DOCUMENTACION_PROYECTO.md`.
+
+Este archivo (`docs/AGENTS.md`) debe contener solo instrucciones para programar:
+
+- arquitectura;
+- estructura;
+- convenciones;
+- SOLID;
+- flujo de trabajo;
+- validación;
+- seguridad.
+
+Si se actualiza arquitectura o flujo de desarrollo, actualizar este archivo. Si se actualiza información de producto, negocio, funcionalidades o setup de proyecto, actualizar `DOCUMENTACION_PROYECTO.md`.
+
+## Criterio Final
+
+Toda solución nueva debe poder justificarse con estas preguntas:
+
+1. ¿Respeta `Pages`, `Components`, `Hooks`, `Utils`, `Layouts` y `Domain`?
+2. ¿Mantiene responsabilidades claras?
+3. ¿Reduce o mantiene el acoplamiento?
+4. ¿Es testeable o verificable?
+5. ¿No contradice SOLID ni las convenciones vigentes?
+
+Si la respuesta es no, replantear antes de implementar.
+
+Última actualización: Abril 2026.

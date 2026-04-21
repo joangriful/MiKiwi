@@ -1,65 +1,113 @@
-# MiKiwi Project
-
-> **Credenciales de Acceso (Equipo):**
-> - **Gmail:** `mikiwi.toys@gmail.com`
-> - **Contraseña:** `ilernaesunamierda`
-
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<h1 align="center">MiKiwi</h1>
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <strong>Una experiencia e-commerce para productos personalizables, diseñada como producto real y construida con arquitectura full-stack moderna.</strong>
 </p>
 
-## About Laravel
+<p align="center">
+  Laravel · React · Inertia · PostgreSQL · Stripe · Cloudinary · Three.js
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## El Proyecto
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+MiKiwi no es un catálogo más. Es una tienda online pensada alrededor de una idea clara: que el usuario pueda personalizar visualmente un producto antes de comprarlo.
 
-## Learning Laravel
+La aplicación combina una experiencia de compra completa con un configurador interactivo, panel de administración, checkout, gestión de usuario y una arquitectura preparada para crecer.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Es un proyecto de portfolio, pero tratado como un producto real: con decisiones técnicas defendibles, estructura mantenible y foco en rendimiento.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## La Experiencia
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+**Explorar.**  
+El usuario navega por un catálogo organizado, descubre productos, revisa detalles y accede a colecciones.
 
-### Premium Partners
+**Configurar.**  
+El configurador permite seleccionar piezas, variantes y previsualizar el resultado. La parte 3D se carga solo cuando hace falta para no ralentizar la navegación.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+**Comprar.**  
+Carrito, checkout por pasos, direcciones y pago con Stripe forman el flujo de compra.
 
-## Contributing
+**Gestionar.**  
+El panel de administración permite mantener productos, contenido, imágenes destacadas y opciones del configurador.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## Lo Que Destaca
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Área | Qué demuestra |
+| --- | --- |
+| Producto | Una idea con propuesta de valor, no una demo aislada |
+| Frontend | React modular, Inertia, CSS Modules y experiencia responsive |
+| Backend | Laravel con controllers finos y lógica separada en dominio |
+| Rendimiento | Carga bajo demanda para Three.js y assets pesados |
+| Integraciones | Stripe para pagos y Cloudinary para media |
+| Arquitectura | Separación clara entre UI, rutas, dominio y persistencia |
+| Portfolio | Un proyecto explicable, enseñable y ampliable |
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Captura Conceptual Del Sistema
 
-## License
+```text
+Cliente
+  ↓
+Interfaz React + Inertia
+  ↓
+Laravel Controllers
+  ↓
+Servicios y acciones de dominio
+  ↓
+Modelos, base de datos e integraciones externas
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+El objetivo de esta estructura es que cada pieza tenga una responsabilidad clara: la interfaz presenta, los controladores coordinan, el dominio decide y la persistencia guarda.
+
+---
+
+## Stack Principal
+
+```text
+Frontend     React 18, Inertia, Vite, CSS Modules
+Backend      Laravel 12, PHP 8.2+, Sanctum
+Database     PostgreSQL / Supabase
+Payments     Stripe
+Media        Cloudinary
+3D           Three.js, React Three Fiber, Drei
+Quality      PHPUnit, Laravel Pint
+```
+
+---
+
+## Por Qué Me Representa Como Desarrollador
+
+MiKiwi refleja varias capacidades importantes en un proyecto profesional:
+
+- convertir una idea de producto en una aplicación funcional;
+- organizar un frontend grande sin perder estructura;
+- diseñar backend con separación de responsabilidades;
+- integrar servicios externos reales;
+- cuidar rendimiento cuando hay assets pesados;
+- documentar decisiones técnicas;
+- pensar en mantenibilidad antes de que el proyecto crezca.
+
+---
+
+## Documentación Técnica
+
+Este README es una carta de presentación. La documentación completa vive en:
+
+- `DOCUMENTACION_PROYECTO.md`
+- `docs/AGENTS.md`
+- `docs/PROJECT_STRUCTURE.md`
+
+---
+
+## Estado
+
+Proyecto en desarrollo activo.
+
+MiKiwi está pensado para mostrar una base full-stack sólida, con identidad de producto y suficiente complejidad técnica como para defender decisiones reales en una entrevista, portfolio o revisión de código.
