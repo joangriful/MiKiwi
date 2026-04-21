@@ -1,1 +1,10 @@
-.root {}
+.root {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    cursor: default;
+    user-select: none;
+    background: var(--bg-surface);
+    color: var(--color-text-strongest);
+    font-family: var(--font-body);
+}

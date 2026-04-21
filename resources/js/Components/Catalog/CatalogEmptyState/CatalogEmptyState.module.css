@@ -1,0 +1,41 @@
+.root {
+    padding: 10rem 1.5rem;
+    border: 1px dashed var(--color-border-default);
+    border-radius: 2.5rem;
+    background: var(--color-surface-subtle);
+    text-align: center;
+}
+
+.icon {
+    display: block;
+    margin-bottom: 1.5rem;
+    font-size: 4rem;
+    color: var(--color-border-default);
+}
+
+.message {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 300;
+    color: var(--color-text-subtle);
+}
+
+.resetLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 2px solid var(--color-black);
+    color: var(--color-black);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.resetLink:hover {
+    border-color: var(--color-text-subtle);
+    color: var(--color-text-soft);
+}

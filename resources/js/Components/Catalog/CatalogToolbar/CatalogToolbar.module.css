@@ -1,0 +1,147 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.searchWrap {
+    position: relative;
+    width: 100%;
+    animation: catalogToolbarIn 0.7s ease 0.15s both;
+}
+
+.searchWrap:focus-within .searchIcon {
+    color: var(--color-primary);
+}
+
+.searchIcon {
+    position: absolute;
+    top: 50%;
+    left: 1.25rem;
+    font-size: 1.25rem;
+    color: var(--color-text-subtle);
+    transform: translateY(-50%);
+    transition: color 0.2s ease;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 1rem 2.5rem 1rem 3.5rem;
+    border: 2px solid rgb(153 184 73 / 30%);
+    border-radius: 999px;
+    outline: none;
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.searchInput::placeholder {
+    color: var(--color-border-strong);
+}
+
+.searchInput:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.25rem var(--color-primary-soft);
+}
+
+.clearSearchButton {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    color: var(--color-border-strong);
+    transform: translateY(-50%);
+    transition: color 0.2s ease;
+}
+
+.clearSearchButton:hover {
+    color: var(--color-text-muted-ui);
+}
+
+.clearSearchIcon {
+    font-size: 1rem;
+}
+
+.filterButton {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    border: 2px solid rgb(153 184 73 / 30%);
+    border-radius: 999px;
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.filterButton:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
+}
+
+.filterButton:active {
+    transform: scale(0.98);
+}
+
+.filterButton:hover .filterIcon {
+    transform: rotate(12deg);
+}
+
+.filterIcon {
+    font-size: 1.25rem;
+    color: var(--color-text-strongest);
+    transition: transform 0.2s ease;
+}
+
+.filterButtonLabel {
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--color-text-strongest);
+    text-transform: uppercase;
+}
+
+.filterCount {
+    display: inline-flex;
+    width: 1.25rem;
+    height: 1.25rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-size: 0.625rem;
+    font-weight: 700;
+}
+
+@media (min-width: 768px) {
+    .root {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .searchWrap {
+        width: 24rem;
+    }
+}
+
+@keyframes catalogToolbarIn {
+    from {
+        opacity: 0;
+        transform: translateX(1rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

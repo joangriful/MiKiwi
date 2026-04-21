@@ -1,0 +1,39 @@
+.root {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem 2rem;
+}
+
+.item {
+    animation: catalogGridItemIn 1s ease both;
+}
+
+@media (min-width: 640px) {
+    .root {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .root {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1280px) {
+    .root {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@keyframes catalogGridItemIn {
+    from {
+        opacity: 0;
+        transform: translateY(1rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
