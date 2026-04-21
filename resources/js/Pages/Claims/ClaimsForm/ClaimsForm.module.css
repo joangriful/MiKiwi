@@ -3,6 +3,7 @@
     min-height: 100vh;
     flex-direction: column;
     background: var(--color-white);
+    color: var(--color-text-strongest);
     font-family: var(--font-body);
 }
 
@@ -12,6 +13,10 @@
     flex-grow: 1;
     margin: 0 auto;
     padding: 4rem 1.5rem;
+}
+
+.header {
+    margin-bottom: 2.5rem;
 }
 
 .breadcrumb {
@@ -41,7 +46,7 @@
     margin: 0 0 0.5rem;
     color: var(--color-secondary-dark);
     font-family: var(--font-head);
-    font-size: 1.875rem;
+    font-size: clamp(1.875rem, 4vw, 2.75rem);
     font-weight: 700;
     letter-spacing: 0;
     line-height: 1.2;
@@ -51,5 +56,6 @@
 .intro {
     margin: 0 0 2.5rem;
     color: var(--color-text-subtle);
-    font-size: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.7;
 }

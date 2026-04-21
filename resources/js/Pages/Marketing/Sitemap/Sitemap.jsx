@@ -36,7 +36,7 @@ export default function Sitemap() {
                 { name: "Política de Privacidad", url: route('politica.privacidad') },
                 { name: "Política de Cookies", url: route('politica.cookies') },
                 { name: "Aviso Legal", url: route('legal.notice') },
-                { name: "Formulario de Reclamaciones", url: route('formulario.reclamaciones') },
+                { name: "Formulario de Reclamaciones", url: route('claims.form') },
             ]
         }
     ];
