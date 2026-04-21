@@ -1,11 +1,11 @@
-import React, { useState, Suspense, lazy } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import { Head } from '@inertiajs/react';
 import ConfiguratorLayout from '@/Layouts/ConfiguratorLayout';
 import CustomizationPanel from '@/Components/Configurator/CustomizationPanel/CustomizationPanel';
 import styles from './DollConfigurator.module.css';
 
 // Lazy load the 3D scene to defer Three.js bundle download
-const DollScene3D = lazy(() => import('./components/DollScene3D'));
+const DollScene3D = lazy(() => import('@/Components/Configurator/DollScene3D/DollScene3D'));
 
 
 function Loading() {
@@ -39,7 +39,6 @@ export default function DollConfigurator() {
                 {/* 3D Canvas */}
                 <div className={styles.canvasContainer}>
                     <Suspense fallback={<Loading />}>
-                    <Suspense fallback={<Loading />}>
                         <DollScene3D
                             hairStyle={hairStyle}
                             hairColor={hairColor}
@@ -48,7 +47,6 @@ export default function DollConfigurator() {
                             skinTone={skinTone}
                             bodyProportions={bodyProportions}
                         />
-                    </Suspense>
                     </Suspense>
 
                     {/* Branding overlay */}
