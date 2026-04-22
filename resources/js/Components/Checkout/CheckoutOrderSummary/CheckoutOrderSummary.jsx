@@ -103,6 +103,7 @@ function CouponBox({ coupon, couponCode, onCouponCodeChange, onApplyCoupon, onRe
                     placeholder="Tengo un codigo..."
                     className={styles.couponInput}
                     value={couponCode}
+                    aria-label="Código de cupón"
                     onChange={(event) => onCouponCodeChange(event.target.value)}
                 />
                 <button type="button" onClick={onApplyCoupon} className={styles.couponButton}>

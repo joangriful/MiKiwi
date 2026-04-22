@@ -41,6 +41,16 @@
     transition: border-color 0.5s ease, background-color 0.5s ease, box-shadow 0.5s ease, transform 0.3s ease;
 }
 
+.methodSelectButton {
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
 .methodCardSelected {
     border-color: var(--color-primary);
     background: var(--color-primary-soft);
@@ -227,9 +237,11 @@
 }
 
 .pickupPointCard {
+    width: 100%;
     padding: 1.5rem;
     border: 2px solid transparent;
     border-radius: 1rem;
+    cursor: pointer;
     transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 

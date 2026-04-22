@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import styles from "./ShippingStep.module.css";
 
@@ -28,14 +28,7 @@ export default function ShippingStep({ data, setData, onNext, onBack }) {
     const [loading, setLoading] = useState(false);
     const [searchCity, setSearchCity] = useState("");
 
-    useEffect(() => {
-        if (data.shipping_method === "pickup") {
-            const initialSearch = searchCity || data.city || data.postal_code || "";
-            fetchPickupPoints(initialSearch);
-        }
-    }, [data.shipping_method]);
-
-    const fetchPickupPoints = async (query = "") => {
+    const fetchPickupPoints = useCallback(async (query = "") => {
         setLoading(true);
 
         try {
@@ -52,7 +45,14 @@ export default function ShippingStep({ data, setData, onNext, onBack }) {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        if (data.shipping_method === "pickup") {
+            const initialSearch = searchCity || data.city || data.postal_code || "";
+            fetchPickupPoints(initialSearch);
+        }
+    }, [data.shipping_method, data.city, data.postal_code, searchCity, fetchPickupPoints]);
 
     const handleSearch = (event) => {
         event.preventDefault();
@@ -75,46 +75,48 @@ export default function ShippingStep({ data, setData, onNext, onBack }) {
                     const isSelected = data.shipping_method === method.id;
 
                     return (
-                        <div
-                            key={method.id}
-                            className={getMethodClassName(isSelected)}
-                            onClick={() => setData("shipping_method", method.id)}
-                        >
-                            <div className={styles.methodRow}>
-                                <div className={styles.methodInfo}>
-                                    <div className={getMethodIndicatorClassName(isSelected)}>
-                                        {isSelected ? (
-                                            <svg className={styles.iconSm} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        ) : null}
+                        <div key={method.id} className={getMethodClassName(isSelected)}>
+                            <button
+                                type="button"
+                                className={styles.methodSelectButton}
+                                onClick={() => setData("shipping_method", method.id)}
+                                aria-pressed={isSelected}
+                                aria-label={`${method.name}. ${method.desc}. ${method.price.toFixed(2)} euros`}
+                            >
+                                <div className={styles.methodRow}>
+                                    <div className={styles.methodInfo}>
+                                        <div className={getMethodIndicatorClassName(isSelected)}>
+                                            {isSelected ? (
+                                                <svg className={styles.iconSm} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            ) : null}
+                                        </div>
+
+                                        <div>
+                                            <h3 className={styles.methodTitle}>{method.name}</h3>
+                                            <p className={styles.methodDescription}>{method.desc}</p>
+                                        </div>
                                     </div>
 
-                                    <div>
-                                        <h3 className={styles.methodTitle}>{method.name}</h3>
-                                        <p className={styles.methodDescription}>{method.desc}</p>
+                                    <div className={styles.methodPriceWrapper}>
+                                        <span className={`${styles.methodPrice} ${isSelected ? styles.methodPriceSelected : ""}`}>
+                                            {method.price.toFixed(2)}
+                                            <span className={styles.currency}>€</span>
+                                        </span>
                                     </div>
                                 </div>
-
-                                <div className={styles.methodPriceWrapper}>
-                                    <span className={`${styles.methodPrice} ${isSelected ? styles.methodPriceSelected : ""}`}>
-                                        {method.price.toFixed(2)}
-                                        <span className={styles.currency}>€</span>
-                                    </span>
-                                </div>
-                            </div>
+                            </button>
 
                             {method.id === "pickup" && isSelected ? (
-                                <div
-                                    className={styles.pickupSection}
-                                    onClick={(event) => event.stopPropagation()}
-                                >
+                                <div className={styles.pickupSection}>
                                     <form className={styles.searchBar} onSubmit={handleSearch}>
                                         <input
                                             type="text"
                                             placeholder="Busca por ciudad o CP..."
                                             className={styles.searchInput}
                                             value={searchCity}
+                                            aria-label="Buscar punto de recogida por ciudad o código postal"
                                             onChange={(event) => setSearchCity(event.target.value)}
                                         />
                                         <button type="submit" className={styles.searchButton}>
@@ -124,7 +126,7 @@ export default function ShippingStep({ data, setData, onNext, onBack }) {
 
                                     {loading ? (
                                         <div className={styles.loadingState}>
-                                            <div className={styles.spinner}></div>
+                                            <div className={styles.spinner} />
                                             <span className={styles.loadingLabel}>Localizando puntos...</span>
                                         </div>
                                     ) : (
@@ -134,10 +136,13 @@ export default function ShippingStep({ data, setData, onNext, onBack }) {
                                                     const isPointSelected = data.pickup_point_id === point.id;
 
                                                     return (
-                                                        <div
+                                                        <button
+                                                            type="button"
                                                             key={point.id}
                                                             className={getPickupPointClassName(isPointSelected)}
                                                             onClick={() => setData("pickup_point_id", point.id)}
+                                                            aria-pressed={isPointSelected}
+                                                            aria-label={`${point.name}, ${point.address}, ${point.postal_code} ${point.city}`}
                                                         >
                                                             <div className={styles.pickupPointContent}>
                                                                 <div className={styles.pickupPointText}>
@@ -155,7 +160,7 @@ export default function ShippingStep({ data, setData, onNext, onBack }) {
                                                                     </svg>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </button>
                                                     );
                                                 })
                                             ) : (

@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, useForm, router } from "@inertiajs/react";
 import { getProductImage } from "@/Components/Checkout/utils/productImages";
 import styles from "./CartStep.module.css";
@@ -9,7 +8,7 @@ function PopularProducts({ popularProducts, addToCart }) {
             <div className={styles.popularHeader}>
                 <div>
                     <h3 className={styles.popularTitle}>Te va a encantar...</h3>
-                    <div className={styles.popularAccent}></div>
+                    <div className={styles.popularAccent} />
                 </div>
                 <Link href={route("products.index")} className={styles.popularLink}>
                     Ver todo
@@ -28,7 +27,7 @@ function PopularProducts({ popularProducts, addToCart }) {
                                 alt={product.name}
                                 className={styles.popularImage}
                             />
-                            <div className={styles.popularImageOverlay}></div>
+                            <div className={styles.popularImageOverlay} />
                         </Link>
 
                         <Link
@@ -47,6 +46,7 @@ function PopularProducts({ popularProducts, addToCart }) {
                                 type="button"
                                 onClick={() => addToCart(product)}
                                 className={styles.popularAddButton}
+                                aria-label={`Añadir ${product.name} al carrito`}
                             >
                                 <svg className={styles.iconSm} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 4v16m8-8H4" />
@@ -93,7 +93,7 @@ function EmptyCart({ popularProducts, addToCart }) {
     );
 }
 
-export default function CartStep({ cart, onNext, popularProducts = [] }) {
+export default function CartStep({ cart, popularProducts = [] }) {
     const { delete: destroy, processing } = useForm();
 
     const addToCart = (product) => {
@@ -184,6 +184,7 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                                         onClick={() => removeItem(item.product_id)}
                                         className={styles.removeButton}
                                         disabled={processing}
+                                        aria-label={`Eliminar ${item.product.name} del carrito`}
                                     >
                                         <svg className={styles.iconXs} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" />
@@ -200,6 +201,7 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                                         onClick={() => updateQuantity(item.product_id, item.quantity - 1)}
                                         className={styles.quantityButton}
                                         disabled={processing}
+                                        aria-label={`Reducir cantidad de ${item.product.name}`}
                                     >
                                         <svg className={styles.iconSm} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M20 12H4" />
@@ -213,6 +215,7 @@ export default function CartStep({ cart, onNext, popularProducts = [] }) {
                                         onClick={() => updateQuantity(item.product_id, item.quantity + 1)}
                                         className={styles.quantityButton}
                                         disabled={processing}
+                                        aria-label={`Aumentar cantidad de ${item.product.name}`}
                                     >
                                         <svg className={styles.iconSm} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 4v16m8-8H4" />

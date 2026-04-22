@@ -10,7 +10,7 @@ export function getProductImage(product = {}) {
         if (Array.isArray(images) && images.length > 0) {
             return images[0];
         }
-    } catch (error) {
+    } catch {
         // Invalid image payloads fall back to the primary image URL below.
     }
 

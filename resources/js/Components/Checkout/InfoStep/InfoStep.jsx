@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import TextInput from "@/Components/TextInput/TextInput";
 import InputLabel from "@/Components/InputLabel/InputLabel";
 import PhoneInput from "react-phone-input-2";
@@ -28,7 +28,7 @@ function StepSection({ badge, badgeVariant = "secondary", title, children }) {
             <div className={styles.sectionHeader}>
                 <div className={`${styles.sectionBadge} ${badgeClassName}`}>{badge}</div>
                 <h3 className={styles.sectionTitle}>{title}</h3>
-                <div className={styles.sectionDivider}></div>
+                <div className={styles.sectionDivider} />
             </div>
             <div className={styles.sectionContent}>{children}</div>
         </section>
@@ -54,7 +54,7 @@ export default function InfoStep({ data, setData, onNext, onBack, user, errors }
             if (!data.email) setData("email", user.email || "");
             if (!data.dni) setData("dni", user.dni || "");
         }
-    }, [user]);
+    }, [user, data.first_name, data.email, data.dni, setData]);
 
     const validateDNI = (value) => {
         const letters = "TRWAGMYFPDXBNJZSQVHLCKE";

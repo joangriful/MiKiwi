@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { useCallback, useEffect, useState } from "react";
+import { CardElement, useStripe } from "@stripe/react-stripe-js";
 import axios from "axios";
 import InputLabel from "@/Components/InputLabel/InputLabel";
 import styles from "./PaymentStep.module.css";
@@ -41,6 +41,7 @@ function BillingField({ label, htmlFor, value, onChange, placeholder }) {
                 onChange={onChange}
                 className={styles.billingInput}
                 placeholder={placeholder}
+                aria-label={label}
                 required
             />
         </div>
@@ -50,7 +51,6 @@ function BillingField({ label, htmlFor, value, onChange, placeholder }) {
 export default function PaymentStep({ data, setData, auth, onSubmit, onBack, processing }) {
     const isAdmin = auth?.user?.role === "admin";
     const stripe = useStripe();
-    const elements = useElements();
     const [cardError, setCardError] = useState(null);
     const [isConfirming, setIsConfirming] = useState(false);
     const [savedCards, setSavedCards] = useState([]);
@@ -66,13 +66,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
         }
     }, [processing]);
 
-    useEffect(() => {
-        if (auth?.user) {
-            fetchSavedCards();
-        }
-    }, [auth?.user]);
-
-    const fetchSavedCards = async () => {
+    const fetchSavedCards = useCallback(async () => {
         setIsLoadingCards(true);
 
         try {
@@ -91,7 +85,13 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
         } finally {
             setIsLoadingCards(false);
         }
-    };
+    }, [setData]);
+
+    useEffect(() => {
+        if (auth?.user) {
+            fetchSavedCards();
+        }
+    }, [auth?.user, fetchSavedCards]);
 
     const handleOptionChange = (optionId) => {
         setPaymentOption(optionId);
@@ -178,19 +178,22 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
             <div className={styles.paymentSection}>
                 {showSavedCards ? (
                     <div className={styles.optionGroup}>
-                        <label className={styles.groupLabel}>
-                            <span className={styles.groupLabelLine}></span>
+                        <div className={styles.groupLabel}>
+                            <span className={styles.groupLabelLine} />
                             {isAdmin ? "Tarjetas Guardadas y Modo Prueba" : "Tus Tarjetas Guardadas"}
-                        </label>
+                        </div>
 
-                        {savedCards.map((card) => {
-                            const isSelected = paymentOption === card.id;
+                         {savedCards.map((card) => {
+                             const isSelected = paymentOption === card.id;
 
-                            return (
-                                <div
+                             return (
+                                <button
+                                    type="button"
                                     key={card.id}
                                     onClick={() => handleOptionChange(card.id)}
                                     className={getOptionCardClassName(isSelected)}
+                                    aria-pressed={isSelected}
+                                    aria-label={`Tarjeta terminada en ${card.card.last4}`}
                                 >
                                     <div className={`${styles.savedCardBrand} ${isSelected ? styles.savedCardBrandSelected : ""}`}>
                                         <span className={`${styles.savedCardBrandText} ${getBrandClassName(card.card.brand)}`}>
@@ -212,20 +215,23 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                                             </svg>
                                         ) : null}
                                     </div>
-                                </div>
-                            );
-                        })}
+                                </button>
+                             );
+                         })}
 
                         {isAdmin
                             ? TEST_CARDS.map((card) => {
                                   const isSelected = paymentOption === card.id;
 
                                   return (
-                                      <div
+                                      <button
+                                          type="button"
                                           key={card.id}
-                                          onClick={() => handleOptionChange(card.id)}
-                                          className={getOptionCardClassName(isSelected, true)}
-                                      >
+                                           onClick={() => handleOptionChange(card.id)}
+                                           className={getOptionCardClassName(isSelected, true)}
+                                           aria-pressed={isSelected}
+                                           aria-label={`Tarjeta de prueba ${card.brand} ${card.number.slice(-4)}`}
+                                       >
                                           <div className={styles.testCardBrand}>
                                               <span className={styles.testCardBrandText}>{card.brand}</span>
                                               <span className={styles.testBadge}>TEST</span>
@@ -243,16 +249,19 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                                                   </svg>
                                               ) : null}
                                           </div>
-                                      </div>
+                                      </button>
                                   );
                               })
                             : null}
                     </div>
                 ) : null}
 
-                <div
+                <button
+                    type="button"
                     onClick={() => handleOptionChange("new")}
                     className={getOptionCardClassName(paymentOption === "new")}
+                    aria-pressed={paymentOption === "new"}
+                    aria-label="Usar una nueva tarjeta"
                 >
                     <div className={`${styles.newCardIcon} ${paymentOption === "new" ? styles.newCardIconSelected : ""}`}>
                         <span className={`material-symbols-outlined ${styles.materialIconLg}`}>add_card</span>
@@ -272,7 +281,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                             </svg>
                         ) : null}
                     </div>
-                </div>
+                </button>
 
                 {paymentOption === "new" ? (
                     <div className={styles.cardEditorWrapper}>
@@ -288,14 +297,14 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                             >
                                 <div className={styles.cardEditorHeader}>
                                     <h4 className={styles.cardEditorTitle}>
-                                        <span className={styles.cardEditorLine}></span>
+                                        <span className={styles.cardEditorLine} />
                                         Introduce tus datos
                                     </h4>
 
                                     <div className={styles.cardBrandSkeletons}>
-                                        <div className={`${styles.cardBrandSkeleton} ${styles.cardBrandSkeletonMuted}`}></div>
-                                        <div className={styles.cardBrandSkeleton}></div>
-                                        <div className={`${styles.cardBrandSkeleton} ${styles.cardBrandSkeletonMuted}`}></div>
+                                        <div className={`${styles.cardBrandSkeleton} ${styles.cardBrandSkeletonMuted}`} />
+                                        <div className={styles.cardBrandSkeleton} />
+                                        <div className={`${styles.cardBrandSkeleton} ${styles.cardBrandSkeletonMuted}`} />
                                     </div>
                                 </div>
 
@@ -387,9 +396,12 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
             </div>
 
             <div className={`${styles.billingToggle} ${data.billing_same_as_shipping ? styles.billingToggleChecked : styles.billingToggleOpen}`}>
-                <div
+                <button
+                    type="button"
                     className={styles.billingToggleHeader}
                     onClick={() => setData("billing_same_as_shipping", !data.billing_same_as_shipping)}
+                    aria-expanded={!data.billing_same_as_shipping}
+                    aria-label="Alternar dirección de facturación"
                 >
                     <div className={styles.billingToggleCheckWrapper}>
                         <div className={getSelectionCheckClassName(data.billing_same_as_shipping)}>
@@ -402,20 +414,20 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                     </div>
 
                     <div className={styles.billingToggleText}>
-                        <label className={styles.billingToggleLabel}>
+                        <span className={styles.billingToggleLabel}>
                             Usar misma dirección de facturación
-                        </label>
+                        </span>
                         <p className={styles.billingToggleDescription}>
                             Haremos llegar la factura a tus datos de envío habituales.
                         </p>
                     </div>
-                </div>
+                </button>
 
                 {!data.billing_same_as_shipping ? (
                     <div className={styles.billingPanel}>
                         <div className={styles.billingPanelHeader}>
                             <span className={styles.billingPanelTitle}>Datos Factura</span>
-                            <div className={styles.billingPanelDivider}></div>
+                            <div className={styles.billingPanelDivider} />
                         </div>
 
                         <BillingField
@@ -476,7 +488,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                     <div className={styles.primaryButtonContent}>
                         {processing || isConfirming ? (
                             <>
-                                <div className={styles.buttonSpinner}></div>
+                                <div className={styles.buttonSpinner} />
                                 <span className={styles.buttonLoadingText}>Confirmando...</span>
                             </>
                         ) : (
@@ -487,7 +499,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                         )}
                     </div>
 
-                    {!isSubmitDisabled ? <div className={styles.primaryButtonShine}></div> : null}
+                    {!isSubmitDisabled ? <div className={styles.primaryButtonShine} /> : null}
                 </button>
             </div>
         </div>
