@@ -100,7 +100,7 @@ MiKiwi refleja varias capacidades importantes en un proyecto profesional:
 
 Este README es una carta de presentación. La documentación completa vive en:
 
-- `DOCUMENTACION_PROYECTO.md`
+- `docs/DOCUMENTACION_PROYECTO.md`
 - `docs/AGENTS.md`
 - `docs/PROJECT_STRUCTURE.md`
 

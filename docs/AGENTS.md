@@ -333,7 +333,7 @@ Si no se puede ejecutar algo, indicarlo claramente al usuario.
 
 ## Documentación
 
-La documentación de proyecto debe vivir en `DOCUMENTACION_PROYECTO.md`.
+La documentación de proyecto debe vivir en `docs/DOCUMENTACION_PROYECTO.md`.
 
 Este archivo (`docs/AGENTS.md`) debe contener solo instrucciones para programar:
 
@@ -345,7 +345,7 @@ Este archivo (`docs/AGENTS.md`) debe contener solo instrucciones para programar:
 - validación;
 - seguridad.
 
-Si se actualiza arquitectura o flujo de desarrollo, actualizar este archivo. Si se actualiza información de producto, negocio, funcionalidades o setup de proyecto, actualizar `DOCUMENTACION_PROYECTO.md`.
+Si se actualiza arquitectura o flujo de desarrollo, actualizar este archivo. Si se actualiza información de producto, negocio, funcionalidades o setup de proyecto, actualizar `docs/DOCUMENTACION_PROYECTO.md`.
 
 ## Criterio Final
 

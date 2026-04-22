@@ -1,8 +1,13 @@
-﻿# DocumentaciÃ³n Completa del Proyecto MiKiwi
+# Documentación Completa del Proyecto MiKiwi
 
-Este documento consolida todos los archivos Markdown del proyecto para facilitar su lectura y navegaciÃ³n.
+Este documento fusiona `docs/DOCUMENTACION_PROYECTO.md` con el consolidado histórico de `Documentacion.md` para facilitar su lectura y navegación.
 
-## Ãndice de Contenidos
+La sección "Documentación Vigente del Proyecto" resume el estado actual del proyecto. Las secciones posteriores conservan documentación amplia e histórica del repositorio.
+
+Si hay conflicto sobre estructura de código, convenciones o criterios de refactor, prevalece siempre `docs/AGENTS.md`.
+
+## Índice de Contenidos
+1. [Documentación Vigente del Proyecto](#documentacion-vigente-del-proyecto)
 1. [README](#readme)
 1. [PROJECT_SUMMARY](#projectsummary)
 1. [docs\PilaresProyecto](#docspilaresproyecto)
@@ -24,6 +29,436 @@ Este documento consolida todos los archivos Markdown del proyecto para facilitar
 1. [resources\css\Descripcion](#resourcescssdescripcion)
 1. [database\README](#databasereadme)
 1. [Proyecto IPE Empresa _ Econmerce](#proyecto-ipe-empresa--econmerce)
+
+---
+
+
+## Documentación Vigente del Proyecto
+
+Esta sección procede de `docs/DOCUMENTACION_PROYECTO.md` y centraliza la documentación funcional y técnica vigente del proyecto MiKiwi. La guía para IAs y convenciones de programación vive en `docs/AGENTS.md`.
+
+Si hay conflicto entre esta sección y `docs/AGENTS.md` sobre estructura de código, prevalece `docs/AGENTS.md`.
+
+### 1. Resumen Del Proyecto
+
+MiKiwi es una plataforma e-commerce desarrollada con Laravel, React e Inertia. Su propuesta principal es vender productos personalizables mediante una experiencia visual interactiva, incluyendo configurador 2D/3D, catálogo, carrito, checkout, perfiles de usuario y panel de administración.
+
+Objetivos principales:
+
+- catálogo de productos y categorías;
+- configurador visual de productos personalizables;
+- carrito y checkout;
+- integración con Stripe;
+- gestión de contenidos y productos desde administración;
+- integración con Cloudinary para assets;
+- base preparada para crecimiento, testing y mantenimiento.
+
+### 2. Stack Vigente
+
+#### Backend
+
+- Laravel 12
+- PHP 8.2+
+- Inertia Laravel
+- Laravel Sanctum
+- Stripe PHP
+- Cloudinary PHP SDK
+- Ziggy para exponer rutas Laravel en JavaScript
+
+#### Frontend
+
+- React 18
+- Inertia React
+- Vite
+- CSS Modules
+- Tailwind como apoyo puntual o legacy
+- React Toastify
+- Framer Motion / Lenis donde ya existan interacciones
+
+#### 3D y Multimedia
+
+- Three.js
+- React Three Fiber
+- Drei
+- React Easy Crop
+- Cloudinary para media y assets remotos
+
+#### Base De Datos
+
+- PostgreSQL como base vigente.
+- Supabase remoto para desarrollo normal.
+- PostgreSQL local separado para tests automatizados.
+
+### 3. Arquitectura Actual
+
+El proyecto sigue esta separación:
+
+```text
+Ruta HTTP -> Controller -> Domain Service/Action -> Repository -> Model -> Inertia Page
+```
+
+Frontend:
+
+```text
+resources/js/
+├── Pages/
+├── Components/
+├── Hooks/
+├── Utils/
+├── Layouts/
+└── app.jsx
+```
+
+Backend:
+
+```text
+app/
+├── Domain/
+├── Http/
+├── Models/
+└── Providers/
+```
+
+La estructura vigente está alineada con `docs/AGENTS.md` y `docs/PROJECT_STRUCTURE.md`. Documentos antiguos que hablen de `Features` como destino principal son históricos.
+
+### 4. Módulos Principales
+
+#### Home
+
+Pantalla principal de la aplicación. Presenta hero, productos destacados, colecciones y bloques de contenido dinámico.
+
+#### Catálogo
+
+Incluye:
+
+- listados de productos;
+- detalle de producto;
+- categorías;
+- filtros;
+- productos relacionados;
+- imágenes optimizadas.
+
+#### Configurador
+
+Área más compleja del frontend. Permite configurar productos visualmente con:
+
+- vista 2D;
+- previsualización de partes;
+- selección de piezas;
+- flujo de quiz/colecciones si aplica;
+- componentes 3D cargados bajo demanda;
+- assets remotos desde Cloudinary.
+
+#### Carrito y Checkout
+
+Incluye:
+
+- carrito persistente;
+- pasos de información, envío y pago;
+- cálculo de totales;
+- integración con Stripe;
+- pantalla de éxito;
+- validación backend.
+
+#### Perfil
+
+Incluye:
+
+- dashboard de usuario;
+- datos personales;
+- direcciones;
+- pedidos;
+- preferencias;
+- posibles recomendaciones según quiz o comportamiento.
+
+#### Administración
+
+Incluye herramientas para:
+
+- gestión de contenidos;
+- imágenes hero;
+- productos destacados;
+- usuarios;
+- productos y categorías;
+- configuraciones del configurador.
+
+#### Marketing y Legales
+
+Páginas informativas:
+
+- About/Company;
+- contacto;
+- FAQ;
+- políticas legales;
+- privacidad;
+- cookies;
+- términos;
+- sitemap;
+- sostenibilidad;
+- ofertas y suscripciones.
+
+### 5. Base De Datos y Entornos
+
+#### Entorno Normal
+
+El `.env` normal debe apuntar a la base remota de Supabase.
+
+Uso:
+
+```bash
+php artisan serve
+npm run dev
+php artisan migrate:status
+```
+
+#### Entorno De Testing
+
+`.env.testing` debe apuntar a PostgreSQL local, por ejemplo a una base `mikiwi_testing`.
+
+Uso:
+
+```bash
+php artisan migrate:status --env=testing
+php artisan test
+```
+
+Regla importante:
+
+- los tests automatizados no deben tocar Supabase remoto;
+- `php artisan migrate:fresh` no debe ejecutarse contra una base compartida salvo intención explícita y controlada.
+
+Más detalle: `docs/db/DATABASE_CONNECTIONS_GUIDE.md`.
+
+### 6. Cloudinary
+
+Cloudinary se usa para servir y organizar assets del configurador y medios del proyecto.
+
+Variables esperadas en `.env`:
+
+```env
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+NEXT_PUBLIC_CLOUDINARY_URL=
+```
+
+Estructura esperada para piezas del configurador:
+
+```text
+doll_parts_ps/
+├── front/
+│   └── <category>/
+└── back/
+    └── <category>/
+```
+
+La aplicación debe usar caché para evitar llamadas síncronas a Cloudinary en tiempo de usuario. Si se suben nuevas piezas y no aparecen, limpiar caché o ejecutar el comando de refresco si está disponible.
+
+Referencias:
+
+- `docs/setup/CLOUDINARY_SETUP.md`
+- `docs/3d/resumen_arquitectura_cache.md`
+
+### 7. Configurador 3D y Rendimiento
+
+El configurador debe proteger la experiencia 2D:
+
+- Three.js no debe cargarse en Home, catálogo ni rutas que no necesitan 3D.
+- Los chunks 3D deben cargarse bajo demanda.
+- El sistema puede precalentar assets en segundo plano para cambio instantáneo.
+- Los modelos pesados no deben bloquear la primera interacción del usuario.
+
+Optimizaciones documentadas:
+
+- lazy loading de escenas 3D;
+- pre-warming de Three.js y modelos;
+- caché activa de Cloudinary;
+- aislamiento del bundle 3D;
+- reducción de TTFB en configurador mediante caché.
+
+Referencias:
+
+- `docs/3d/analisis_carga_3d.md`
+- `docs/3d/auditoria_optimizacion_3d_abril.md`
+- `docs/3d/resumen_mejoras_implementadas.md`
+
+### 8. Herramienta De Segmentación De Muñecas
+
+Existe una herramienta para segmentar imágenes de muñecas en partes:
+
+```bash
+node tools/segmentDoll.js --input <archivo_entrada> --output <directorio_salida> --name "Nombre"
+```
+
+Genera partes como:
+
+- `head.png`
+- `torso.png`
+- `arm_left.png`
+- `arm_right.png`
+- `leg_left.png`
+- `leg_right.png`
+
+También puede actualizar `public/data/partLibrary.json`.
+
+Referencia: `tools/README_SEGMENTATION.md`.
+
+### 9. Comandos Del Proyecto
+
+Instalación:
+
+```bash
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+```
+
+Desarrollo:
+
+```bash
+composer dev
+npm start
+php artisan serve
+npm run dev
+```
+
+Build:
+
+```bash
+npm run build
+```
+
+Testing:
+
+```bash
+composer test
+php artisan test
+```
+
+Calidad PHP:
+
+```bash
+./vendor/bin/pint
+```
+
+Caché y rutas:
+
+```bash
+php artisan config:clear
+php artisan cache:clear
+php artisan route:list
+```
+
+### 10. Diseño y UI
+
+El sistema visual debe mantener:
+
+- interfaz elegante y discreta;
+- buena legibilidad;
+- contraste suficiente;
+- responsive design;
+- estados interactivos claros;
+- accesibilidad por teclado;
+- uso de iconografía consistente cuando aplique.
+
+Convención vigente:
+
+- CSS Modules para estilos locales;
+- `resources/css/global.css` para tokens y estilos globales reales;
+- Tailwind solo como apoyo puntual o legacy.
+
+Referencias:
+
+- `docs/design/DESIGN_GUIDELINES.md`
+- `resources/css/Descripcion.md`
+- `docs/AGENTS.md`
+
+### 11. Seguridad y Riesgos
+
+Riesgos principales documentados:
+
+- escalada de privilegios en acciones de administración si no hay Policy;
+- endpoints sensibles sin rate limiting;
+- exposición de datos sin auth;
+- mass assignment;
+- filtrado de excepciones internas;
+- operaciones destructivas sobre base compartida.
+
+Buenas prácticas:
+
+- validar en backend con Form Requests;
+- autorizar con Policies;
+- no exponer modelos crudos con datos sensibles;
+- no commitear secretos;
+- separar `.env` de `.env.testing`;
+- usar rate limiting en endpoints sensibles;
+- usar mensajes de error seguros para usuario final.
+
+Referencia: `docs/project/PLAN_CONTINGENCIA.md` y `docs/roadmap/ROADMAP.md`.
+
+### 12. Testing
+
+El proyecto usa PHPUnit mediante Laravel.
+
+Recomendaciones:
+
+- tests Feature para rutas, controllers y flujos de usuario;
+- tests Unit para services/actions de dominio;
+- factories y states para datos repetibles;
+- entorno PostgreSQL local para tests.
+
+Factory states documentados:
+
+- usuarios: admin, customer, verified, inactive;
+- productos: simple, configurable, component, outOfStock, inStock, onSale;
+- categorías: root, child, inactive;
+- reviews, orders, order items y chat.
+
+Referencia: `docs/backend/FACTORY_STATES_GUIDE.md`.
+
+### 13. Estado De Documentación Histórica
+
+Estos documentos contienen contexto útil, pero no deben mandar sobre `docs/AGENTS.md`:
+
+- `docs/refactor/INVENTORY_AUDIT.md`: foto antigua antes del refactor.
+- `docs/refactor/MIGRATION_PLAN.md`: plan antiguo orientado a `Features/Shared`; histórico.
+- `docs/refactor/PHASE_RECAP.md`: recap histórico.
+- `docs/refactor/STRUCTURE_REFACTOR.md`: referencia histórica que confirma la arquitectura final.
+- `docs/backend/README_BACKEND.md`: estado antiguo con MySQL/XAMPP.
+- `docs/setup/GUIA_INSTALACION.md`: contiene setup antiguo Railway/MySQL; no usar como setup vigente sin actualizar.
+- Las secciones históricas de este archivo: consolidan documentación antigua y pueden contener referencias superadas.
+- `docs/project/PilaresProyecto.md`: contenido docente ya absorbido por `docs/AGENTS.md`.
+
+### 14. Documentos Complementarios Vigentes
+
+- `docs/AGENTS.md`: reglas para IAs y programación.
+- `docs/PROJECT_STRUCTURE.md`: estructura vigente detallada.
+- `docs/db/DATABASE_CONNECTIONS_GUIDE.md`: separación Supabase/testing local.
+- `docs/db/INSTRUCCIONES_BD.md`: guía de Supabase/PostgreSQL.
+- `docs/setup/CLOUDINARY_SETUP.md`: Cloudinary.
+- `docs/backend/FACTORY_STATES_GUIDE.md`: factories y tests.
+- `docs/refactor/COMMIT_PLAN.md`: cierre del refactor estructural.
+- `docs/3d/*.md`: optimización del configurador y carga 3D.
+
+### 15. Pendientes Documentados
+
+Puntos que aparecen en la documentación previa y pueden convertirse en tareas:
+
+- ampliar cobertura de tests sobre servicios/controladores extraídos;
+- terminar limpieza o destino definitivo de `resources/js/Shared`;
+- revisar accesibilidad profunda de teclado;
+- completar generación de PDF/facturas si sigue en alcance;
+- documentar presupuesto o valoración económica si se requiere para rúbrica;
+- mantener actualizada la separación entre documentación histórica y vigente.
+
+### 16. Regla De Mantenimiento
+
+Cuando cambie una convención de programación o estructura, actualizar `docs/AGENTS.md`.
+
+Cuando cambie el producto, el stack real, el setup, los módulos, riesgos o decisiones de proyecto, actualizar esta sección.
+
+Última actualización: Abril 2026.
 
 ---
 
@@ -104,34 +539,34 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 # MiKiwi - E-Commerce Platform
 
-## ðŸ“‹ Resumen Ejecutivo
+## 📋 Resumen Ejecutivo
 
-**MiKiwi** es una plataforma de e-commerce desarrollada con tecnologÃ­as modernas, enfocada en la venta de productos personalizables (muÃ±ecas) con un sistema de configuraciÃ³n visual interactivo. El proyecto sigue arquitecturas empresariales y patrones de diseÃ±o de nivel profesional.
+**MiKiwi** es una plataforma de e-commerce desarrollada con tecnologías modernas, enfocada en la venta de productos personalizables (muñecas) con un sistema de configuración visual interactivo. El proyecto sigue arquitecturas empresariales y patrones de diseño de nivel profesional.
 
 **Estado Actual:** En desarrollo activo  
-**VersiÃ³n:** 1.0.0  
-**Ãšltima ActualizaciÃ³n:** Febrero 2026
+**Versión:** 1.0.0  
+**Última Actualización:** Febrero 2026
 
 ---
 
-## ðŸŽ¯ Objetivo del Proyecto
+## 🎯 Objetivo del Proyecto
 
 Desarrollar una plataforma e-commerce completa que permite:
-- ConfiguraciÃ³n visual de productos personalizables
-- GestiÃ³n de inventario y pedidos
+- Configuración visual de productos personalizables
+- Gestión de inventario y pedidos
 - Sistema de pagos integrado (Stripe)
-- Panel de administraciÃ³n robusto
+- Panel de administración robusto
 - Experiencia de usuario moderna y fluida
 
 ---
 
-## ðŸ› ï¸ Stack TecnolÃ³gico
+## 🛠️ Stack Tecnológico
 
 ### Backend
 - **Framework:** Laravel 12
 - **Lenguaje:** PHP 8.2+
 - **Base de Datos:** MySQL
-- **AutenticaciÃ³n:** Laravel Sanctum
+- **Autenticación:** Laravel Sanctum
 - **API:** RESTful con Inertia.js
 - **Queue System:** Laravel Queues
 - **Pasarela de Pago:** Stripe
@@ -142,37 +577,37 @@ Desarrollar una plataforma e-commerce completa que permite:
 - **Estilos:** Tailwind CSS 3.2+
 - **Build Tool:** Vite 7.0
 - **3D Rendering:** React Three Fiber (@react-three/fiber, @react-three/drei)
-- **GestiÃ³n de Estado:** React Context API + Hooks personalizados
+- **Gestión de Estado:** React Context API + Hooks personalizados
 - **Formularios:** React Easy Crop, React Phone Input 2
 
 ### Infraestructura
-- **CDN de ImÃ¡genes:** Cloudinary
-- **GestiÃ³n de Rutas:** Ziggy (route helpers Laravel â†’ JS)
+- **CDN de Imágenes:** Cloudinary
+- **Gestión de Rutas:** Ziggy (route helpers Laravel → JS)
 - **Dev Environment:** Concurrent (Laravel server + Vite + Queue + Logs)
 
 ---
 
-## ðŸ”— Inertia.js - El Puente Frontend-Backend
+## 🔗 Inertia.js - El Puente Frontend-Backend
 
-### Â¿QuÃ© es Inertia.js?
+### ¿Qué es Inertia.js?
 
-**Inertia.js** es un framework moderno que permite construir **Single Page Applications (SPAs)** clÃ¡sicas usando el enfoque tradicional de **server-side routing** pero con toda la experiencia de usuario de una aplicaciÃ³n de una sola pÃ¡gina.
+**Inertia.js** es un framework moderno que permite construir **Single Page Applications (SPAs)** clásicas usando el enfoque tradicional de **server-side routing** pero con toda la experiencia de usuario de una aplicación de una sola página.
 
-**En tÃ©rminos simples:** Inertia.js es el pegamento que conecta Laravel (backend) con React (frontend), eliminando la necesidad de construir una API REST completa.
+**En términos simples:** Inertia.js es el pegamento que conecta Laravel (backend) con React (frontend), eliminando la necesidad de construir una API REST completa.
 
-### FilosofÃ­a
+### Filosofía
 
 En lugar de:
-1. âŒ Crear endpoints API en Laravel (`/api/products`)
-2. âŒ Hacer fetch desde React
-3. âŒ Manejar estados de carga, errores, autenticaciÃ³n en ambos lados
+1. ❌ Crear endpoints API en Laravel (`/api/products`)
+2. ❌ Hacer fetch desde React
+3. ❌ Manejar estados de carga, errores, autenticación en ambos lados
 
 Inertia permite:
-1. âœ… Definir rutas web normales en Laravel (`/products`)
-2. âœ… Retornar componentes React directamente desde controllers
-3. âœ… Compartir datos del servidor a React sin serializaciÃ³n manual
+1. ✅ Definir rutas web normales en Laravel (`/products`)
+2. ✅ Retornar componentes React directamente desde controllers
+3. ✅ Compartir datos del servidor a React sin serialización manual
 
-### CÃ³mo lo Usamos en MiKiwi
+### Cómo lo Usamos en MiKiwi
 
 #### 1. **Rutas Web (no API)**
 ```php
@@ -210,14 +645,14 @@ export default function Index({ products, categories }) {
 
 ### Ventajas en Nuestro Proyecto
 
-1. **No DuplicaciÃ³n de ValidaciÃ³n** - Una sola fuente de verdad en Laravel
-2. **AutenticaciÃ³n Simplificada** - Sanctum + middleware, sin tokens manuales
+1. **No Duplicación de Validación** - Una sola fuente de verdad en Laravel
+2. **Autenticación Simplificada** - Sanctum + middleware, sin tokens manuales
 3. **SEO Friendly** - Server-side rendering inicial
-4. **NavegaciÃ³n InstantÃ¡nea** - Sin recargas de pÃ¡gina
-5. **CÃ³digo MÃ¡s Limpio** - Sin boilerplate de API REST
-6. **Shared Data** - Variables globales (user, flash messages) disponibles en todas las pÃ¡ginas
+4. **Navegación Instantánea** - Sin recargas de página
+5. **Código Más Limpio** - Sin boilerplate de API REST
+6. **Shared Data** - Variables globales (user, flash messages) disponibles en todas las páginas
 
-### CaracterÃ­sticas Clave Usadas
+### Características Clave Usadas
 
 #### **Shared Data (Datos Compartidos)**
 ```php
@@ -235,22 +670,22 @@ public function share(Request $request)
 }
 ```
 
-Estos datos estÃ¡n disponibles en **todos** los componentes React automÃ¡ticamente.
+Estos datos están disponibles en **todos** los componentes React automáticamente.
 
 #### **Form Helper (Ziggy Routes)**
 ```jsx
 import { router } from '@inertiajs/react';
 
-// NavegaciÃ³n programÃ¡tica
+// Navegación programática
 router.visit(route('products.show', product.id));
 
-// Formularios con manejo de errores automÃ¡tico
+// Formularios con manejo de errores automático
 router.post(route('cart.add'), { product_id: 5 });
 ```
 
 #### **Lazy Loading / Partial Reloads**
 ```jsx
-// Solo recargar ciertos datos sin refrescar toda la pÃ¡gina
+// Solo recargar ciertos datos sin refrescar toda la página
 router.reload({ only: ['products'] });
 ```
 
@@ -267,7 +702,7 @@ export default function AppLayout({ children }) {
     );
 }
 
-// En las pÃ¡ginas
+// En las páginas
 Index.layout = page => <AppLayout>{page}</AppLayout>;
 ```
 
@@ -290,21 +725,21 @@ El layout se mantiene entre navegaciones, solo cambia el contenido.
    ```
 5. **React renderiza** el componente `Products/Index.jsx` con esas props
 6. **URL actualizada** en el navegador sin recarga
-7. **Historial preserved** (botÃ³n atrÃ¡s funciona)
+7. **Historial preserved** (botón atrás funciona)
 
 ### Archivos Clave en el Proyecto
 
 - `resources/js/app.jsx` - Setup de Inertia
 - `app/Http/Middleware/HandleInertiaRequests.php` - Shared data
-- `resources/js/Pages/` - Todas las pÃ¡ginas Inertia
+- `resources/js/Pages/` - Todas las páginas Inertia
 - `routes/web.php` - Rutas que retornan componentes Inertia
 
 ### En Resumen
 
-**Inertia.js** nos permite escribir cÃ³digo como si fuera una aplicaciÃ³n tradicional de Laravel con Blade, pero obtenemos toda la interactividad y experiencia de usuario de React. Es lo mejor de ambos mundos:
-- ðŸš€ **SPA moderna** sin complejidad de configurar API REST
-- ðŸ”§ **Laravel tradicional** sin sacrificar experiencia de usuario
-- ðŸ’¡ **Un solo lenguaje** de routing (Laravel), sin duplicaciÃ³n
+**Inertia.js** nos permite escribir código como si fuera una aplicación tradicional de Laravel con Blade, pero obtenemos toda la interactividad y experiencia de usuario de React. Es lo mejor de ambos mundos:
+- 🚀 **SPA moderna** sin complejidad de configurar API REST
+- 🔧 **Laravel tradicional** sin sacrificar experiencia de usuario
+- 💡 **Un solo lenguaje** de routing (Laravel), sin duplicación
 
 ### Herramientas de Desarrollo
 - **Linting PHP:** Laravel Pint
@@ -314,40 +749,40 @@ El layout se mantiene entre navegaciones, solo cambia el contenido.
 
 ---
 
-## ðŸ—ï¸ Arquitectura del Proyecto
+## 🏗️ Arquitectura del Proyecto
 
-### Patrones de DiseÃ±o Implementados
+### Patrones de Diseño Implementados
 
 #### Backend (Laravel)
-1. **Repository Pattern** - AbstracciÃ³n de acceso a datos
+1. **Repository Pattern** - Abstracción de acceso a datos
    - `ProductRepository`, `CategoryRepository`, `OrderRepository`
    - Interfaces + Implementaciones Eloquent
    
-2. **Service Layer Pattern** - LÃ³gica de negocio centralizada
+2. **Service Layer Pattern** - Lógica de negocio centralizada
    - `ProductService`, `OrderService`, `CartService`, `CategoryService`, `CloudinaryService`
    - Controllers delgados que delegan a servicios
 
-3. **Policy Pattern** - AutorizaciÃ³n granular
+3. **Policy Pattern** - Autorización granular
    - `UserPolicy`, `OrderPolicy`, `ProductPolicy`, etc.
 
 4. **Event-Driven Architecture** - Desacoplamiento de acciones
    - Eventos: `OrderCreated`, `OrderStatusUpdated`, `ProductLowStock`
    - Listeners: `SendOrderConfirmation`, `UpdateInventory`, `NotifyAdmin`
 
-5. **Factory Pattern** - GeneraciÃ³n de datos de prueba
+5. **Factory Pattern** - Generación de datos de prueba
    - Seeders y Factories para testing
 
 #### Frontend (React)
-1. **Container/Presentational Pattern** - SeparaciÃ³n de lÃ³gica y UI
-   - Componentes de presentaciÃ³n puros
-   - Containers con lÃ³gica de estado
+1. **Container/Presentational Pattern** - Separación de lógica y UI
+   - Componentes de presentación puros
+   - Containers con lógica de estado
 
-2. **Custom Hooks Pattern** - LÃ³gica reutilizable
-   - `usePartOptimization` (optimizaciÃ³n de imÃ¡genes)
-   - Hooks personalizados para gestiÃ³n de estado
+2. **Custom Hooks Pattern** - Lógica reutilizable
+   - `usePartOptimization` (optimización de imágenes)
+   - Hooks personalizados para gestión de estado
 
 3. **Compound Components** - Componentes complejos modulares
-   - `DollManager` con mÃºltiples configuradores
+   - `DollManager` con múltiples configuradores
    - Sistema de componentes del doll configurator
 
 4. **Service Integration Pattern** - Llamadas API centralizadas
@@ -357,89 +792,89 @@ El layout se mantiene entre navegaciones, solo cambia el contenido.
 
 ```
 mikiwi/
-â”œâ”€â”€ app/                          # Backend Laravel
-â”‚   â”œâ”€â”€ Actions/                  # Single-responsibility actions
-â”‚   â”œâ”€â”€ Console/Commands/         # Artisan commands
-â”‚   â”œâ”€â”€ Enums/                    # Enumeraciones tipadas
-â”‚   â”œâ”€â”€ Events/                   # Eventos del sistema
-â”‚   â”œâ”€â”€ Exceptions/               # Excepciones personalizadas
-â”‚   â”œâ”€â”€ Http/
-â”‚   â”‚   â”œâ”€â”€ Controllers/          # Controllers MVC
-â”‚   â”‚   â”œâ”€â”€ Middleware/           # Middleware custom
-â”‚   â”‚   â”œâ”€â”€ Requests/             # Form Request validation
-â”‚   â”‚   â””â”€â”€ Resources/            # API Resources (transformers)
-â”‚   â”œâ”€â”€ Jobs/                     # Queue jobs
-â”‚   â”œâ”€â”€ Listeners/                # Event listeners
-â”‚   â”œâ”€â”€ Models/                   # Eloquent models
-â”‚   â”œâ”€â”€ Policies/                 # Authorization policies
-â”‚   â”œâ”€â”€ Repositories/             # Data access layer
-â”‚   â”‚   â”œâ”€â”€ Eloquent/             # Implementaciones
-â”‚   â”‚   â””â”€â”€ Interfaces/           # Contratos
-â”‚   â””â”€â”€ Services/                 # Business logic layer
-â”‚
-â”œâ”€â”€ resources/                    # Frontend
-â”‚   â”œâ”€â”€ js/
-â”‚   â”‚   â”œâ”€â”€ Components/           # Componentes React
-â”‚   â”‚   â”‚   â”œâ”€â”€ DollConfigurator/ # Configurador de muÃ±ecas
-â”‚   â”‚   â”‚   â”œâ”€â”€ DollManager/      # GestiÃ³n de configuraciÃ³n
-â”‚   â”‚   â”‚   â”œâ”€â”€ Footer/           # Componentes del footer
-â”‚   â”‚   â”‚   â”œâ”€â”€ Header/           # Componentes del header
-â”‚   â”‚   â”‚   â””â”€â”€ Home/             # Componentes de la home
-â”‚   â”‚   â”œâ”€â”€ Contexts/             # React contexts
-â”‚   â”‚   â”œâ”€â”€ Hooks/                # Custom hooks
-â”‚   â”‚   â”œâ”€â”€ Pages/                # PÃ¡ginas Inertia
-â”‚   â”‚   â””â”€â”€ Utils/                # Utilidades
-â”‚   â””â”€â”€ css/                      # Estilos Tailwind
-â”‚
-â”œâ”€â”€ database/                     # Base de datos
-â”‚   â”œâ”€â”€ factories/                # Model factories
-â”‚   â”œâ”€â”€ migrations/               # Migraciones
-â”‚   â””â”€â”€ seeders/                  # Seeders
-â”‚
-â”œâ”€â”€ routes/                       # Rutas de la aplicaciÃ³n
-â”‚   â”œâ”€â”€ web.php                   # Rutas web (Inertia)
-â”‚   â”œâ”€â”€ api.php                   # Rutas API
-â”‚   â””â”€â”€ console.php               # Comandos Artisan
-â”‚
-â”œâ”€â”€ tests/                        # Tests automatizados
-â”‚   â”œâ”€â”€ Feature/                  # Feature tests
-â”‚   â””â”€â”€ Unit/                     # Unit tests
-â”‚
-â””â”€â”€ public/                       # Assets pÃºblicos
-    â””â”€â”€ images/                   # ImÃ¡genes estÃ¡ticas
+├── app/                          # Backend Laravel
+│   ├── Actions/                  # Single-responsibility actions
+│   ├── Console/Commands/         # Artisan commands
+│   ├── Enums/                    # Enumeraciones tipadas
+│   ├── Events/                   # Eventos del sistema
+│   ├── Exceptions/               # Excepciones personalizadas
+│   ├── Http/
+│   │   ├── Controllers/          # Controllers MVC
+│   │   ├── Middleware/           # Middleware custom
+│   │   ├── Requests/             # Form Request validation
+│   │   └── Resources/            # API Resources (transformers)
+│   ├── Jobs/                     # Queue jobs
+│   ├── Listeners/                # Event listeners
+│   ├── Models/                   # Eloquent models
+│   ├── Policies/                 # Authorization policies
+│   ├── Repositories/             # Data access layer
+│   │   ├── Eloquent/             # Implementaciones
+│   │   └── Interfaces/           # Contratos
+│   └── Services/                 # Business logic layer
+│
+├── resources/                    # Frontend
+│   ├── js/
+│   │   ├── Components/           # Componentes React
+│   │   │   ├── DollConfigurator/ # Configurador de muñecas
+│   │   │   ├── DollManager/      # Gestión de configuración
+│   │   │   ├── Footer/           # Componentes del footer
+│   │   │   ├── Header/           # Componentes del header
+│   │   │   └── Home/             # Componentes de la home
+│   │   ├── Contexts/             # React contexts
+│   │   ├── Hooks/                # Custom hooks
+│   │   ├── Pages/                # Páginas Inertia
+│   │   └── Utils/                # Utilidades
+│   └── css/                      # Estilos Tailwind
+│
+├── database/                     # Base de datos
+│   ├── factories/                # Model factories
+│   ├── migrations/               # Migraciones
+│   └── seeders/                  # Seeders
+│
+├── routes/                       # Rutas de la aplicación
+│   ├── web.php                   # Rutas web (Inertia)
+│   ├── api.php                   # Rutas API
+│   └── console.php               # Comandos Artisan
+│
+├── tests/                        # Tests automatizados
+│   ├── Feature/                  # Feature tests
+│   └── Unit/                     # Unit tests
+│
+└── public/                       # Assets públicos
+    └── images/                   # Imágenes estáticas
 ```
 
 ---
 
-## ðŸ”‘ Funcionalidades Principales
+## 🔑 Funcionalidades Principales
 
-### 1. **Configurador de MuÃ±ecas (Doll Configurator)**
-Sistema complejo de configuraciÃ³n visual de productos personalizables:
+### 1. **Configurador de Muñecas (Doll Configurator)**
+Sistema complejo de configuración visual de productos personalizables:
 
 #### Componentes Principales:
-- **DollManager** - Gestor central de configuraciÃ³n
-  - Default Doll: ConfiguraciÃ³n de partes por defecto
-  - Preview Doll Parts: PrevisualizaciÃ³n y ediciÃ³n de posiciones
-  - Default Zoom: ConfiguraciÃ³n de zoom inicial
+- **DollManager** - Gestor central de configuración
+  - Default Doll: Configuración de partes por defecto
+  - Preview Doll Parts: Previsualización y edición de posiciones
+  - Default Zoom: Configuración de zoom inicial
   - Section Order: Orden de secciones en la interfaz
 
-- **DollConfigurator** - VisualizaciÃ³n y selecciÃ³n de partes
+- **DollConfigurator** - Visualización y selección de partes
   - Sistema multi-vista (front/back)
   - PreviewArea: Vista previa compuesta
-  - PartSelector: Selector de partes con imÃ¡genes
+  - PartSelector: Selector de partes con imágenes
   - PartCarousel: Carrusel de opciones
 
 - **PartPositionEditor** - Editor de posiciones avanzado
   - Drag & drop para reposicionar
-  - Zoom con rueda del ratÃ³n
+  - Zoom con rueda del ratón
   - Transformaciones en tiempo real
-  - Guardado de configuraciÃ³n
+  - Guardado de configuración
 
 #### Optimizaciones:
-- **Smart Image Cropping** - OptimizaciÃ³n de ancho de banda
+- **Smart Image Cropping** - Optimización de ancho de banda
 - **Cloudinary Integration** - Transformaciones de imagen en CDN
-- **Optimistic UI Updates** - ActualizaciÃ³n instantÃ¡nea de UI
-- **Lazy Loading** - Carga diferida de imÃ¡genes
+- **Optimistic UI Updates** - Actualización instantánea de UI
+- **Lazy Loading** - Carga diferida de imágenes
 
 #### Persistencia:
 - Base de datos para configuraciones de usuario
@@ -447,53 +882,53 @@ Sistema complejo de configuraciÃ³n visual de productos personalizables:
 - API endpoints para guardar/cargar configuraciones
 
 ### 2. **Sistema de Productos**
-- CatÃ¡logo de productos con categorÃ­as
-- GestiÃ³n de inventario
-- ImÃ¡genes optimizadas vÃ­a Cloudinary
+- Catálogo de productos con categorías
+- Gestión de inventario
+- Imágenes optimizadas vía Cloudinary
 - Reviews y calificaciones
 - Slugs SEO-friendly
 
 ### 3. **Carrito y Checkout**
 - Carrito de compras persistente
-- CÃ¡lculo automÃ¡tico de totales
-- IntegraciÃ³n con Stripe
-- GestiÃ³n de direcciones de envÃ­o
+- Cálculo automático de totales
+- Integración con Stripe
+- Gestión de direcciones de envío
 
-### 4. **Panel de AdministraciÃ³n**
-- **Components Manager** - GestiÃ³n de contenido dinÃ¡mico
+### 4. **Panel de Administración**
+- **Components Manager** - Gestión de contenido dinámico
   - Hero images
   - Secciones de la home
   - Media uploads
   
 - **Product Management** - CRUD completo de productos
-- **Order Management** - GestiÃ³n de pedidos
-- **Category Management** - OrganizaciÃ³n de catÃ¡logo
+- **Order Management** - Gestión de pedidos
+- **Category Management** - Organización de catálogo
 
-### 5. **AutenticaciÃ³n y Perfiles**
+### 5. **Autenticación y Perfiles**
 - Registro y login de usuarios
 - Perfiles de usuario editables
-- GestiÃ³n de direcciones mÃºltiples
+- Gestión de direcciones múltiples
 - Sistema de roles (admin/user)
-- ProtecciÃ³n de rutas por middleware
+- Protección de rutas por middleware
 
 ---
 
-## ðŸ—„ï¸ Modelos de Base de Datos
+## 🗄️ Modelos de Base de Datos
 
 ### Principales Modelos
 - **User** - Usuarios del sistema
-- **Product** - Productos del catÃ¡logo
-- **Category** - CategorÃ­as de productos
+- **Product** - Productos del catálogo
+- **Category** - Categorías de productos
 - **Order** - Pedidos
 - **OrderItem** - Items de pedidos
-- **UserAddress** - Direcciones de envÃ­o
+- **UserAddress** - Direcciones de envío
 - **Review** - Reviews de productos
-- **HeroImage** - ImÃ¡genes del hero
+- **HeroImage** - Imágenes del hero
 - **ChatSession** / **ChatMessage** - Sistema de chat (futuro)
 
 ---
 
-## âš™ï¸ GestiÃ³n y Comandos
+## ⚙️ Gestión y Comandos
 
 ### Comandos de Desarrollo
 
@@ -512,11 +947,11 @@ php artisan serve       # Solo backend
 npm run dev             # Solo Vite
 
 # Build
-npm run build           # Build de producciÃ³n
+npm run build           # Build de producción
 
 # Testing
 php artisan test        # Ejecutar tests
-./vendor/bin/pint       # Formatear cÃ³digo PHP
+./vendor/bin/pint       # Formatear código PHP
 
 # Base de datos
 php artisan migrate:fresh --seed  # Reset completo
@@ -530,61 +965,61 @@ php artisan db:seed     # Solo seeders
 
 ---
 
-## ðŸ” Seguridad
+## 🔐 Seguridad
 
 ### Medidas Implementadas
 - **Laravel Sanctum** - API token authentication
-- **CSRF Protection** - ProtecciÃ³n contra CSRF
-- **Rate Limiting** - LimitaciÃ³n de peticiones
+- **CSRF Protection** - Protección contra CSRF
+- **Rate Limiting** - Limitación de peticiones
 - **Input Validation** - Form Requests para todas las entradas
 - **SQL Injection Prevention** - Eloquent ORM
-- **XSS Protection** - Blade/React escaping automÃ¡tico
+- **XSS Protection** - Blade/React escaping automático
 - **Mass Assignment Protection** - `$fillable` en models
 
-### Mejores PrÃ¡cticas
+### Mejores Prácticas
 - Passwords hasheados con bcrypt
 - Roles y permisos con Policies
-- Middleware para protecciÃ³n de rutas
-- ValidaciÃ³n server-side obligatoria
-- SanitizaciÃ³n de inputs
+- Middleware para protección de rutas
+- Validación server-side obligatoria
+- Sanitización de inputs
 
 ---
 
-## ðŸ“ˆ Escalabilidad
+## 📈 Escalabilidad
 
 ### Arquitectura Preparada Para
-- **Queue System** - Jobs asÃ­ncronos para tareas pesadas
+- **Queue System** - Jobs asíncronos para tareas pesadas
 - **Event-Driven** - Desacoplamiento de funcionalidades
-- **Service Layer** - LÃ³gica de negocio reutilizable
-- **Repository Pattern** - Cambio fÃ¡cil de ORM/DB
+- **Service Layer** - Lógica de negocio reutilizable
+- **Repository Pattern** - Cambio fácil de ORM/DB
 - **CDN Integration** - Cloudinary para assets
 
 ### Optimizaciones
 - Lazy loading de componentes React
 - Code splitting con Vite
-- Image optimization automÃ¡tica (Cloudinary)
+- Image optimization automática (Cloudinary)
 - Database indexing en campos clave
 - Caching de rutas y configs
 
 ---
 
-## ðŸ“ Principios de CÃ³digo
+## 📝 Principios de Código
 
 ### SOLID
-- **S**ingle Responsibility - Una clase, un propÃ³sito
-- **O**pen/Closed - Abierto a extensiÃ³n, cerrado a modificaciÃ³n
-- **L**iskov Substitution - SustituciÃ³n de interfaces
-- **I**nterface Segregation - Interfaces especÃ­ficas
+- **S**ingle Responsibility - Una clase, un propósito
+- **O**pen/Closed - Abierto a extensión, cerrado a modificación
+- **L**iskov Substitution - Sustitución de interfaces
+- **I**nterface Segregation - Interfaces específicas
 - **D**ependency Inversion - Depender de abstracciones
 
 ### Clean Code
-- Funciones pequeÃ±as (max 20-30 lÃ­neas)
+- Funciones pequeñas (max 20-30 líneas)
 - Nombres descriptivos
 - DRY (Don't Repeat Yourself)
 - KISS (Keep It Simple)
 - YAGNI (You Aren't Gonna Need It)
 
-### EstÃ¡ndares
+### Estándares
 - PSR-12 para PHP
 - Prettier/ESLint para JavaScript
 - Commits con Conventional Commits
@@ -592,14 +1027,14 @@ php artisan db:seed     # Solo seeders
 
 ---
 
-## ðŸš€ Deployment
+## 🚀 Deployment
 
 ### Entornos
 - **Development** - Local con `composer dev`
-- **Staging** - Pre-producciÃ³n (configurar)
-- **Production** - ProducciÃ³n (configurar)
+- **Staging** - Pre-producción (configurar)
+- **Production** - Producción (configurar)
 
-### Variables de Entorno CrÃ­ticas
+### Variables de Entorno Críticas
 ```env
 APP_NAME=MiKiwi
 APP_ENV=production
@@ -634,12 +1069,12 @@ STRIPE_SECRET=sk_live_...
 
 ---
 
-## ðŸ‘¥ Equipo y ContribuciÃ³n
+## 👥 Equipo y Contribución
 
 ### Roles
 - **Backend Developer** - Laravel, APIs, base de datos
 - **Frontend Developer** - React, UI/UX, Tailwind
-- **Full Stack** - IntegraciÃ³n completa
+- **Full Stack** - Integración completa
 
 ### Flujo de Trabajo
 1. Crear rama feature desde `dev`
@@ -649,65 +1084,65 @@ STRIPE_SECRET=sk_live_...
 5. Code review del equipo
 6. Merge a `dev`
 7. Testing en staging
-8. Merge a `main` para producciÃ³n
+8. Merge a `main` para producción
 
 ### Convenciones de Commits
 ```
 feat: Nueva funcionalidad
-fix: CorrecciÃ³n de bug
-refactor: RefactorizaciÃ³n de cÃ³digo
-docs: ActualizaciÃ³n de documentaciÃ³n
-test: AÃ±adir o modificar tests
-style: Cambios de formato (no afectan lÃ³gica)
+fix: Corrección de bug
+refactor: Refactorización de código
+docs: Actualización de documentación
+test: Añadir o modificar tests
+style: Cambios de formato (no afectan lógica)
 chore: Tareas de mantenimiento
 ```
 
 ---
 
-## ðŸ“š DocumentaciÃ³n Adicional
+## 📚 Documentación Adicional
 
-### Archivos de DocumentaciÃ³n
-Los siguientes archivos contienen informaciÃ³n detallada sobre aspectos especÃ­ficos del proyecto:
+### Archivos de Documentación
+Los siguientes archivos contienen información detallada sobre aspectos específicos del proyecto:
 
-- `docs/AGENTS.md` - GuÃ­as para desarrollo con IA
+- `docs/AGENTS.md` - Guías para desarrollo con IA
 - `docs/ROADMAP.md` - Roadmap de desarrollo backend
 - `docs/PilaresProyecto.md` - Principios fundamentales del proyecto
-- `docs/README_BACKEND.md` - GuÃ­a detallada del backend
-- `docs/README_CONTROLADORES.md` - DocumentaciÃ³n de controllers
-- `docs/CLOUDINARY_SETUP.md` - ConfiguraciÃ³n de Cloudinary
-- `docs/DESIGN_GUIDELINES.md` - GuÃ­as de diseÃ±o UI/UX
-- `docs/FACTORY_STATES_GUIDE.md` - GuÃ­a de factories y seeders
-- `docs/GUIA_INSTALACION.md` - GuÃ­a de instalaciÃ³n
+- `docs/README_BACKEND.md` - Guía detallada del backend
+- `docs/README_CONTROLADORES.md` - Documentación de controllers
+- `docs/CLOUDINARY_SETUP.md` - Configuración de Cloudinary
+- `docs/DESIGN_GUIDELINES.md` - Guías de diseño UI/UX
+- `docs/FACTORY_STATES_GUIDE.md` - Guía de factories y seeders
+- `docs/GUIA_INSTALACION.md` - Guía de instalación
 - `docs/INSTRUCCIONES_BD.md` - Instrucciones de base de datos
 
 ---
 
-## ðŸ› Issues y Mejoras Futuras
+## 🐛 Issues y Mejoras Futuras
 
 ### Backlog
 - [ ] Implementar sistema de chat en vivo
-- [ ] AÃ±adir notificaciones push
-- [ ] Exportar configuraciones de muÃ±ecas
+- [ ] Añadir notificaciones push
+- [ ] Exportar configuraciones de muñecas
 - [ ] Sistema de cupones y promociones
 - [ ] Multi-idioma (i18n)
 - [ ] Dark mode
 - [ ] PWA (Progressive Web App)
-- [ ] IntegraciÃ³n con mÃ¡s pasarelas de pago
+- [ ] Integración con más pasarelas de pago
 
-### Vulnerabilidades Conocidas (En resoluciÃ³n)
-Ver `ROADMAP.md` secciÃ³n "Problemas CrÃ­ticos" para detalles completos.
+### Vulnerabilidades Conocidas (En resolución)
+Ver `ROADMAP.md` sección "Problemas Críticos" para detalles completos.
 
 ---
 
-## ðŸ“ž Soporte y Contacto
+## 📞 Soporte y Contacto
 
 **Email del equipo:** mikiwi.toys@gmail.com  
 **Repository:** GitHub - joangriful/MiKiwi
 
 ---
 
-*Ãšltima actualizaciÃ³n: Febrero 2026*
-*VersiÃ³n del documento: 1.0.0*
+*Última actualización: Febrero 2026*
+*Versión del documento: 1.0.0*
 
 ---
 
@@ -715,77 +1150,77 @@ Ver `ROADMAP.md` secciÃ³n "Problemas CrÃ­ticos" para detalles completos.
 
 ## docs\PilaresProyecto
 
-# GuÃ­a de Proyecto Full-Stack: React + Laravel + Tailwind
+# Guía de Proyecto Full-Stack: React + Laravel + Tailwind
 
-## ðŸŽ¯ Objetivo Principal
+## 🎯 Objetivo Principal
 
-Actuar como **tutor experto en desarrollo de software** para guiar el aprendizaje del desarrollador a travÃ©s de un proyecto real de nivel empresarial, utilizando las mejores prÃ¡cticas de la industria.
+Actuar como **tutor experto en desarrollo de software** para guiar el aprendizaje del desarrollador a través de un proyecto real de nivel empresarial, utilizando las mejores prácticas de la industria.
 
 ---
 
-## ðŸ“‹ Contexto del Proyecto
+## 📋 Contexto del Proyecto
 
-### Stack TecnolÃ³gico
-- **Frontend**: React (Ãºltima versiÃ³n estable)
-- **Backend**: Laravel (Ãºltima versiÃ³n estable)
+### Stack Tecnológico
+- **Frontend**: React (última versión estable)
+- **Backend**: Laravel (última versión estable)
 - **Estilos**: Tailwind CSS
 - **Objetivo**: Desarrollo Full-Stack de nivel empresarial
 
 ---
 
-## ðŸ›ï¸ Pilares Fundamentales
+## 🏛️ Pilares Fundamentales
 
 ### 1. Principios SOLID
 
 **Responsabilidad de la IA como tutor:**
 - Explicar cada principio SOLID antes de implementarlo
-- Mostrar ejemplos prÃ¡cticos de violaciÃ³n vs. aplicaciÃ³n correcta
-- Revisar el cÃ³digo propuesto y seÃ±alar oportunidades de mejora
+- Mostrar ejemplos prácticos de violación vs. aplicación correcta
+- Revisar el código propuesto y señalar oportunidades de mejora
 - Relacionar cada principio con situaciones reales del proyecto
 
-**AplicaciÃ³n en el proyecto:**
-- **S** - Single Responsibility: Una clase, un propÃ³sito
-- **O** - Open/Closed: Abierto a extensiÃ³n, cerrado a modificaciÃ³n
+**Aplicación en el proyecto:**
+- **S** - Single Responsibility: Una clase, un propósito
+- **O** - Open/Closed: Abierto a extensión, cerrado a modificación
 - **L** - Liskov Substitution: Las subclases deben ser sustituibles
-- **I** - Interface Segregation: Interfaces especÃ­ficas y pequeÃ±as
+- **I** - Interface Segregation: Interfaces específicas y pequeñas
 - **D** - Dependency Inversion: Depender de abstracciones, no de implementaciones
 
 ### 2. Arquitectura Moderna
 
 **En React:**
-- Arquitectura basada en componentes con separaciÃ³n clara de responsabilidades
-- Custom Hooks para lÃ³gica reutilizable
+- Arquitectura basada en componentes con separación clara de responsabilidades
+- Custom Hooks para lógica reutilizable
 - Context API / State Management (Redux Toolkit, Zustand o similar)
-- OrganizaciÃ³n por features o por capas segÃºn escalabilidad
-- ComposiciÃ³n sobre herencia
+- Organización por features o por capas según escalabilidad
+- Composición sobre herencia
 
 **En Laravel:**
 - Arquitectura MVC con Service Layer
 - Repository Pattern para acceso a datos
 - DTOs (Data Transfer Objects) para transferencia de datos
-- API Resources para transformaciÃ³n de respuestas
-- Actions/Commands para lÃ³gica de negocio compleja
+- API Resources para transformación de respuestas
+- Actions/Commands para lógica de negocio compleja
 - Event-Driven Architecture donde sea apropiado
 
-**IntegraciÃ³n Frontend-Backend:**
-- API RESTful bien diseÃ±ada (o GraphQL si aplica)
-- AutenticaciÃ³n robusta (JWT, Sanctum)
-- ValidaciÃ³n en ambos lados
+**Integración Frontend-Backend:**
+- API RESTful bien diseñada (o GraphQL si aplica)
+- Autenticación robusta (JWT, Sanctum)
+- Validación en ambos lados
 - Manejo consistente de errores
 
-### 3. Buenas PrÃ¡cticas
+### 3. Buenas Prácticas
 
 **Generales:**
-- Nomenclatura clara y consistente en inglÃ©s
-- Comentarios solo cuando el cÃ³digo no sea auto-explicativo
-- Versionado semÃ¡ntico
-- Commits atÃ³micos y descriptivos
+- Nomenclatura clara y consistente en inglés
+- Comentarios solo cuando el código no sea auto-explicativo
+- Versionado semántico
+- Commits atómicos y descriptivos
 - Code review mental antes de implementar
 
 **React:**
 - Componentes funcionales con Hooks
 - PropTypes o TypeScript para tipado
-- MemoizaciÃ³n inteligente (useMemo, useCallback)
+- Memoización inteligente (useMemo, useCallback)
 - Lazy loading de componentes
 - Error boundaries
 - Testing con Jest + React Testing Library
@@ -793,81 +1228,81 @@ Actuar como **tutor experto en desarrollo de software** para guiar el aprendizaj
 **Laravel:**
 - Eloquent ORM con relaciones claras
 - Migrations y Seeders versionados
-- Form Requests para validaciÃ³n
+- Form Requests para validación
 - API Resources para respuestas
-- Service Providers para configuraciÃ³n
+- Service Providers para configuración
 - Testing con PHPUnit/Pest
 
 **Tailwind:**
 - Utility-first approach
 - Componentes reutilizables con @apply cuando sea necesario
-- ConfiguraciÃ³n personalizada del theme
+- Configuración personalizada del theme
 - Responsive design desde el inicio
 - Dark mode si aplica
 
-### 4. CÃ³digo Limpio
+### 4. Código Limpio
 
 **Principios:**
-- Funciones pequeÃ±as y enfocadas (mÃ¡ximo 20-30 lÃ­neas idealmente)
+- Funciones pequeñas y enfocadas (máximo 20-30 líneas idealmente)
 - Variables con nombres significativos
-- Evitar nÃºmeros mÃ¡gicos
+- Evitar números mágicos
 - DRY (Don't Repeat Yourself)
 - KISS (Keep It Simple, Stupid)
 - YAGNI (You Aren't Gonna Need It)
 
 **Estructura:**
-- Archivos organizados lÃ³gicamente
-- SeparaciÃ³n de concerns
-- Bajo acoplamiento, alta cohesiÃ³n
-- CÃ³digo autoexplicativo
+- Archivos organizados lógicamente
+- Separación de concerns
+- Bajo acoplamiento, alta cohesión
+- Código autoexplicativo
 
 ### 5. Nivel Empresarial
 
-**CaracterÃ­sticas:**
-- CÃ³digo escalable y mantenible
-- Preparado para mÃºltiples desarrolladores
-- DocumentaciÃ³n clara (README, JSDoc, PHPDoc)
-- ConfiguraciÃ³n de entornos (dev, staging, production)
-- CI/CD bÃ¡sico (GitHub Actions, GitLab CI)
+**Características:**
+- Código escalable y mantenible
+- Preparado para múltiples desarrolladores
+- Documentación clara (README, JSDoc, PHPDoc)
+- Configuración de entornos (dev, staging, production)
+- CI/CD básico (GitHub Actions, GitLab CI)
 - Logs estructurados y significativos
 - Manejo robusto de errores
-- Seguridad desde el diseÃ±o (OWASP Top 10)
+- Seguridad desde el diseño (OWASP Top 10)
 
-### 6. Patrones de DiseÃ±o
+### 6. Patrones de Diseño
 
 **Frontend (React):**
-- **Container/Presentational Pattern**: Separar lÃ³gica de presentaciÃ³n
-- **Custom Hooks Pattern**: Encapsular lÃ³gica reutilizable
+- **Container/Presentational Pattern**: Separar lógica de presentación
+- **Custom Hooks Pattern**: Encapsular lógica reutilizable
 - **Compound Components**: Para componentes complejos relacionados
-- **Render Props**: Compartir cÃ³digo entre componentes
+- **Render Props**: Compartir código entre componentes
 - **HOC (Higher-Order Components)**: Cuando sea apropiado
 - **Provider Pattern**: Para contexto global
 - **Observer Pattern**: Para eventos y suscripciones
 
 **Backend (Laravel):**
-- **Repository Pattern**: AbstracciÃ³n de acceso a datos
-- **Service Layer Pattern**: LÃ³gica de negocio centralizada
-- **Factory Pattern**: CreaciÃ³n de objetos complejos
+- **Repository Pattern**: Abstracción de acceso a datos
+- **Service Layer Pattern**: Lógica de negocio centralizada
+- **Factory Pattern**: Creación de objetos complejos
 - **Strategy Pattern**: Algoritmos intercambiables
 - **Observer Pattern**: Eventos y listeners
-- **Decorator Pattern**: AÃ±adir funcionalidad dinÃ¡micamente
-- **Singleton Pattern**: Instancias Ãºnicas (con moderaciÃ³n)
-- **Dependency Injection**: InversiÃ³n de control
+- **Decorator Pattern**: Añadir funcionalidad dinámicamente
+- **Singleton Pattern**: Instancias únicas (con moderación)
+- **Dependency Injection**: Inversión de control
 
 **Arquitectura:**
 - **API Gateway Pattern**: Para microservicios futuros
-- **CQRS**: SeparaciÃ³n de comandos y consultas si aplica
-- **Event Sourcing**: Para auditorÃ­a completa si es necesario
+- **CQRS**: Separación de comandos y consultas si aplica
+- **Event Sourcing**: Para auditoría completa si es necesario
 
-### 7. EstÃ¡ndares de Empresas LÃ­deres
+### 7. Estándares de Empresas Líderes
 
-**InspiraciÃ³n en:**
+**Inspiración en:**
 - Arquitecturas de Airbnb, Netflix, Spotify
-- GuÃ­as de estilo de Google, Microsoft
-- Principios de ingenierÃ­a de Amazon (APIs, ownership)
-- MetodologÃ­as Ã¡giles (Scrum, Kanban)
+- Guías de estilo de Google, Microsoft
+- Principios de ingeniería de Amazon (APIs, ownership)
+- Metodologías ágiles (Scrum, Kanban)
 
-**ImplementaciÃ³n:**
+**Implementación:**
 - Code reviews obligatorios (simulados con la IA)
 - Testing automatizado
 - Documentation-first approach
@@ -877,191 +1312,191 @@ Actuar como **tutor experto en desarrollo de software** para guiar el aprendizaj
 
 ---
 
-## ðŸŽ“ MetodologÃ­a de EnseÃ±anza de la IA
+## 🎓 Metodología de Enseñanza de la IA
 
-### Antes de Cada ImplementaciÃ³n:
+### Antes de Cada Implementación:
 
-1. **Explicar el concepto teÃ³rico**
-   - Â¿QuÃ© es este patrÃ³n/principio/prÃ¡ctica?
-   - Â¿Por quÃ© existe?
-   - Â¿QuÃ© problema resuelve?
+1. **Explicar el concepto teórico**
+   - ¿Qué es este patrón/principio/práctica?
+   - ¿Por qué existe?
+   - ¿Qué problema resuelve?
 
 2. **Mostrar ejemplos comparativos**
-   - âŒ CÃ³digo incorrecto o anti-patrÃ³n
-   - âœ… CÃ³digo correcto siguiendo las mejores prÃ¡cticas
+   - ❌ Código incorrecto o anti-patrón
+   - ✅ Código correcto siguiendo las mejores prácticas
    - Explicar las diferencias
 
 3. **Contextualizar en el proyecto**
-   - Â¿DÃ³nde aplicamos esto?
-   - Â¿CÃ³mo encaja con el resto del cÃ³digo?
-   - Â¿QuÃ© beneficios nos aporta especÃ­ficamente?
+   - ¿Dónde aplicamos esto?
+   - ¿Cómo encaja con el resto del código?
+   - ¿Qué beneficios nos aporta específicamente?
 
-### Durante la ImplementaciÃ³n:
+### Durante la Implementación:
 
-1. **GuÃ­a paso a paso**
+1. **Guía paso a paso**
    - Desglosar tareas complejas en pasos simples
-   - Explicar cada decisiÃ³n de diseÃ±o
+   - Explicar cada decisión de diseño
    - Anticipar problemas comunes
 
 2. **Code review en tiempo real**
-   - SeÃ±alar posibles mejoras
-   - Explicar por quÃ© una aproximaciÃ³n es mejor que otra
+   - Señalar posibles mejoras
+   - Explicar por qué una aproximación es mejor que otra
    - Relacionar con los principios SOLID
 
-3. **Preguntas socrÃ¡sticas**
-   - Hacer preguntas que fomenten el pensamiento crÃ­tico
-   - Â¿Por quÃ© elegiste esta soluciÃ³n?
-   - Â¿QuÃ© alternativas consideraste?
+3. **Preguntas socrásticas**
+   - Hacer preguntas que fomenten el pensamiento crítico
+   - ¿Por qué elegiste esta solución?
+   - ¿Qué alternativas consideraste?
 
-### DespuÃ©s de Cada ImplementaciÃ³n:
+### Después de Cada Implementación:
 
 1. **Retrospectiva de aprendizaje**
-   - Â¿QuÃ© aprendimos?
-   - Â¿QuÃ© harÃ­amos diferente?
-   - Â¿QuÃ© patrones aplicamos?
+   - ¿Qué aprendimos?
+   - ¿Qué haríamos diferente?
+   - ¿Qué patrones aplicamos?
 
-2. **RefactorizaciÃ³n guiada**
+2. **Refactorización guiada**
    - Identificar oportunidades de mejora
    - Explicar el proceso de refactoring
-   - Mostrar el antes y despuÃ©s
+   - Mostrar el antes y después
 
-3. **ConexiÃ³n con conceptos avanzados**
-   - Â¿CÃ³mo escalamos esto?
-   - Â¿QuÃ© patrones mÃ¡s avanzados podrÃ­amos aplicar?
+3. **Conexión con conceptos avanzados**
+   - ¿Cómo escalamos esto?
+   - ¿Qué patrones más avanzados podríamos aplicar?
    - Siguiente nivel de complejidad
 
 ---
 
-## ðŸ“š Formato de Explicaciones
+## 📚 Formato de Explicaciones
 
 ### Para Cada Concepto Nuevo:
 
 ```markdown
 ## [Nombre del Concepto]
 
-### ðŸŽ¯ Â¿QuÃ© es?
-[DefiniciÃ³n clara y concisa]
+### 🎯 ¿Qué es?
+[Definición clara y concisa]
 
-### ðŸ¤” Â¿Por quÃ© lo necesitamos?
+### 🤔 ¿Por qué lo necesitamos?
 [Problema que resuelve]
 
-### âŒ Ejemplo de cÃ³digo problemÃ¡tico:
-[CÃ³digo que NO sigue el principio]
+### ❌ Ejemplo de código problemático:
+[Código que NO sigue el principio]
 
-### âœ… Ejemplo de cÃ³digo mejorado:
-[CÃ³digo que SÃ sigue el principio]
+### ✅ Ejemplo de código mejorado:
+[Código que SÍ sigue el principio]
 
-### ðŸ” Diferencias clave:
+### 🔍 Diferencias clave:
 1. [Diferencia 1]
 2. [Diferencia 2]
 3. [Diferencia 3]
 
-### ðŸ’¡ AplicaciÃ³n en nuestro proyecto:
-[CÃ³mo y dÃ³nde lo usaremos]
+### 💡 Aplicación en nuestro proyecto:
+[Cómo y dónde lo usaremos]
 
-### ðŸš€ Ventajas:
+### 🚀 Ventajas:
 - [Ventaja 1]
 - [Ventaja 2]
 
-### âš ï¸ Precauciones:
-- [ConsideraciÃ³n importante 1]
-- [ConsideraciÃ³n importante 2]
+### ⚠️ Precauciones:
+- [Consideración importante 1]
+- [Consideración importante 2]
 ```
 
 ---
 
-## ðŸ—‚ï¸ Estructura Sugerida del Proyecto
+## 🗂️ Estructura Sugerida del Proyecto
 
 ### Frontend (React)
 
 ```
 src/
-â”œâ”€â”€ components/          # Componentes reutilizables
-â”‚   â”œâ”€â”€ common/         # Botones, inputs, cards
-â”‚   â””â”€â”€ layout/         # Header, footer, sidebar
-â”œâ”€â”€ features/           # MÃ³dulos por funcionalidad
-â”‚   â”œâ”€â”€ auth/
-â”‚   â”œâ”€â”€ users/
-â”‚   â””â”€â”€ dashboard/
-â”œâ”€â”€ hooks/              # Custom hooks
-â”œâ”€â”€ services/           # API calls
-â”œâ”€â”€ utils/              # Funciones auxiliares
-â”œâ”€â”€ contexts/           # Context providers
-â”œâ”€â”€ routes/             # ConfiguraciÃ³n de rutas
-â”œâ”€â”€ types/              # TypeScript types (si aplica)
-â””â”€â”€ constants/          # Constantes globales
+├── components/          # Componentes reutilizables
+│   ├── common/         # Botones, inputs, cards
+│   └── layout/         # Header, footer, sidebar
+├── features/           # Módulos por funcionalidad
+│   ├── auth/
+│   ├── users/
+│   └── dashboard/
+├── hooks/              # Custom hooks
+├── services/           # API calls
+├── utils/              # Funciones auxiliares
+├── contexts/           # Context providers
+├── routes/             # Configuración de rutas
+├── types/              # TypeScript types (si aplica)
+└── constants/          # Constantes globales
 ```
 
 ### Backend (Laravel)
 
 ```
 app/
-â”œâ”€â”€ Http/
-â”‚   â”œâ”€â”€ Controllers/    # Controllers delgados
-â”‚   â”œâ”€â”€ Requests/       # Form validations
-â”‚   â”œâ”€â”€ Resources/      # API transformations
-â”‚   â””â”€â”€ Middleware/     # Middleware custom
-â”œâ”€â”€ Services/           # LÃ³gica de negocio
-â”œâ”€â”€ Repositories/       # Acceso a datos
-â”œâ”€â”€ Models/             # Eloquent models
-â”œâ”€â”€ DTOs/               # Data Transfer Objects
-â”œâ”€â”€ Actions/            # Acciones especÃ­ficas
-â””â”€â”€ Events/             # Event-driven
+├── Http/
+│   ├── Controllers/    # Controllers delgados
+│   ├── Requests/       # Form validations
+│   ├── Resources/      # API transformations
+│   └── Middleware/     # Middleware custom
+├── Services/           # Lógica de negocio
+├── Repositories/       # Acceso a datos
+├── Models/             # Eloquent models
+├── DTOs/               # Data Transfer Objects
+├── Actions/            # Acciones específicas
+└── Events/             # Event-driven
 ```
 
 ---
 
-## ðŸŽ¯ Comportamiento Esperado de la IA
+## 🎯 Comportamiento Esperado de la IA
 
 ### SIEMPRE:
 
-- âœ… Explicar el "por quÃ©" detrÃ¡s de cada decisiÃ³n
-- âœ… Proporcionar ejemplos de cÃ³digo completos y funcionales
-- âœ… SeÃ±alar mejores prÃ¡cticas y anti-patrones
-- âœ… Relacionar conceptos con los principios SOLID
-- âœ… Usar terminologÃ­a tÃ©cnica correcta (explicÃ¡ndola)
-- âœ… Fomentar el pensamiento crÃ­tico con preguntas
-- âœ… Validar comprensiÃ³n antes de avanzar
-- âœ… Ofrecer recursos adicionales para profundizar
+- ✅ Explicar el "por qué" detrás de cada decisión
+- ✅ Proporcionar ejemplos de código completos y funcionales
+- ✅ Señalar mejores prácticas y anti-patrones
+- ✅ Relacionar conceptos con los principios SOLID
+- ✅ Usar terminología técnica correcta (explicándola)
+- ✅ Fomentar el pensamiento crítico con preguntas
+- ✅ Validar comprensión antes de avanzar
+- ✅ Ofrecer recursos adicionales para profundizar
 
 ### NUNCA:
 
-- âŒ Dar cÃ³digo sin explicaciÃ³n
-- âŒ Asumir conocimiento previo sin verificar
-- âŒ Saltarse pasos de la explicaciÃ³n
-- âŒ Proporcionar soluciones "quick and dirty"
-- âŒ Ignorar oportunidades de enseÃ±anza
-- âŒ Avanzar sin confirmar comprensiÃ³n
+- ❌ Dar código sin explicación
+- ❌ Asumir conocimiento previo sin verificar
+- ❌ Saltarse pasos de la explicación
+- ❌ Proporcionar soluciones "quick and dirty"
+- ❌ Ignorar oportunidades de enseñanza
+- ❌ Avanzar sin confirmar comprensión
 
 ---
 
-## ðŸŽ“ Nivel de Detalle en Explicaciones
+## 🎓 Nivel de Detalle en Explicaciones
 
-### Para conceptos bÃ¡sicos:
-- ExplicaciÃ³n completa desde cero
-- AnalogÃ­as del mundo real
-- MÃºltiples ejemplos
+### Para conceptos básicos:
+- Explicación completa desde cero
+- Analogías del mundo real
+- Múltiples ejemplos
 
 ### Para conceptos intermedios:
 - Repaso breve de fundamentos
-- Enfoque en la aplicaciÃ³n prÃ¡ctica
-- ConexiÃ³n con conceptos relacionados
+- Enfoque en la aplicación práctica
+- Conexión con conceptos relacionados
 
 ### Para conceptos avanzados:
-- Contexto de dÃ³nde se usa en la industria
+- Contexto de dónde se usa en la industria
 - Trade-offs y consideraciones
-- Patrones relacionados y evoluciÃ³n
+- Patrones relacionados y evolución
 
 ---
 
-## ðŸ”„ Proceso de Desarrollo Iterativo
+## 🔄 Proceso de Desarrollo Iterativo
 
-1. **PlanificaciÃ³n**
-   - Definir feature/mÃ³dulo
+1. **Planificación**
+   - Definir feature/módulo
    - Identificar patrones aplicables
-   - DiseÃ±ar arquitectura
+   - Diseñar arquitectura
 
-2. **ImplementaciÃ³n Guiada**
+2. **Implementación Guiada**
    - TDD cuando sea apropiado
    - Refactoring continuo
    - Code reviews con la IA
@@ -1069,87 +1504,87 @@ app/
 3. **Testing**
    - Unit tests
    - Integration tests
-   - E2E tests bÃ¡sicos
+   - E2E tests básicos
 
-4. **DocumentaciÃ³n**
-   - Comentarios en cÃ³digo cuando necesario
+4. **Documentación**
+   - Comentarios en código cuando necesario
    - README actualizado
-   - DocumentaciÃ³n de API
+   - Documentación de API
 
 5. **Retrospectiva**
    - Lecciones aprendidas
    - Mejoras identificadas
-   - PrÃ³ximos pasos
+   - Próximos pasos
 
 ---
 
-## ðŸ’¬ Ejemplos de InteracciÃ³n
+## 💬 Ejemplos de Interacción
 
 ### Cuando el desarrollador pregunta:
-**"Â¿CÃ³mo implemento autenticaciÃ³n?"**
+**"¿Cómo implemento autenticación?"**
 
 La IA debe:
-1. Explicar conceptos de autenticaciÃ³n (JWT, sessions, etc.)
+1. Explicar conceptos de autenticación (JWT, sessions, etc.)
 2. Discutir opciones en Laravel (Sanctum, Passport)
 3. Mostrar flujo completo frontend-backend
-4. Explicar seguridad y mejores prÃ¡cticas
-5. Guiar implementaciÃ³n paso a paso
-6. Revisar cÃ³digo implementado
+4. Explicar seguridad y mejores prácticas
+5. Guiar implementación paso a paso
+6. Revisar código implementado
 7. Sugerir mejoras y testing
 
-### Cuando el desarrollador comparte cÃ³digo:
-**[CÃ³digo para revisar]**
+### Cuando el desarrollador comparte código:
+**[Código para revisar]**
 
 La IA debe:
 1. Analizar contra principios SOLID
 2. Identificar patrones presentes o ausentes
-3. SeÃ±alar posibles mejoras
+3. Señalar posibles mejoras
 4. Explicar el razonamiento
-5. Proporcionar versiÃ³n refactorizada
+5. Proporcionar versión refactorizada
 6. Comparar ambas versiones
 7. Destacar aprendizajes clave
 
 ---
 
-## ðŸŽ¯ Objetivos de Aprendizaje
+## 🎯 Objetivos de Aprendizaje
 
 Al finalizar el proyecto, el desarrollador debe:
 
-1. âœ… Dominar principios SOLID en contexto real
-2. âœ… Aplicar patrones de diseÃ±o apropiadamente
-3. âœ… Escribir cÃ³digo limpio y mantenible
-4. âœ… DiseÃ±ar arquitecturas escalables
-5. âœ… Implementar testing efectivo
-6. âœ… Seguir mejores prÃ¡cticas de la industria
-7. âœ… Pensar como desarrollador senior
-8. âœ… Tomar decisiones de diseÃ±o fundamentadas
+1. ✅ Dominar principios SOLID en contexto real
+2. ✅ Aplicar patrones de diseño apropiadamente
+3. ✅ Escribir código limpio y mantenible
+4. ✅ Diseñar arquitecturas escalables
+5. ✅ Implementar testing efectivo
+6. ✅ Seguir mejores prácticas de la industria
+7. ✅ Pensar como desarrollador senior
+8. ✅ Tomar decisiones de diseño fundamentadas
 
 ---
 
-## ðŸ“Š MÃ©tricas de Calidad del CÃ³digo
+## 📊 Métricas de Calidad del Código
 
 La IA debe ayudar a mantener:
 
-- **Complejidad ciclomÃ¡tica**: Baja (funciones simples)
-- **Acoplamiento**: Bajo (mÃ³dulos independientes)
-- **CohesiÃ³n**: Alta (responsabilidades claras)
+- **Complejidad ciclomática**: Baja (funciones simples)
+- **Acoplamiento**: Bajo (módulos independientes)
+- **Cohesión**: Alta (responsabilidades claras)
 - **Cobertura de tests**: >70% (idealmente >80%)
-- **DuplicaciÃ³n**: MÃ­nima (DRY)
-- **Legibilidad**: Alta (cÃ³digo autoexplicativo)
+- **Duplicación**: Mínima (DRY)
+- **Legibilidad**: Alta (código autoexplicativo)
 
 ---
 
-## ðŸš€ Recordatorio Final
+## 🚀 Recordatorio Final
 
-Este no es solo un proyecto para completar, es un **viaje de aprendizaje** donde cada lÃ­nea de cÃ³digo es una oportunidad para mejorar como desarrollador. La IA estÃ¡ aquÃ­ para ser el mentor paciente, detallado y experto que guÃ­a cada paso del camino.
+Este no es solo un proyecto para completar, es un **viaje de aprendizaje** donde cada línea de código es una oportunidad para mejorar como desarrollador. La IA está aquí para ser el mentor paciente, detallado y experto que guía cada paso del camino.
 
-**Preguntar "Â¿por quÃ©?" es siempre bienvenido.**
+**Preguntar "¿por qué?" es siempre bienvenido.**
 **No hay preguntas tontas.**
 **El objetivo es aprender, no solo terminar.**
 
 ---
 
-*Ãšltima actualizaciÃ³n: Enero 2026*
+*Última actualización: Enero 2026*
 
 ---
 
@@ -1157,15 +1592,15 @@ Este no es solo un proyecto para completar, es un **viaje de aprendizaje** donde
 
 ## docs\GUIA_INSTALACION
 
-# ðŸš€ GuÃ­a de InstalaciÃ³n - MiKiwi
+# 🚀 Guía de Instalación - MiKiwi
 
 Bienvenido al equipo de **MiKiwi**. Sigue estos pasos para configurar tu entorno local y empezar a trabajar.
 
 ---
 
-## ðŸ“‹ Requisitos Previos
+## 📋 Requisitos Previos
 
-AsegÃºrate de tener instalado lo siguiente en tu mÃ¡quina:
+Asegúrate de tener instalado lo siguiente en tu máquina:
 
 - **PHP** (v8.2 o superior)
 - **Composer** (v2.x)
@@ -1174,7 +1609,7 @@ AsegÃºrate de tener instalado lo siguiente en tu mÃ¡quina:
 
 ---
 
-## ðŸ› ï¸ Pasos para el Setup
+## 🛠️ Pasos para el Setup
 
 ### 1. Clonar el repositorio
 Si acabas de clonar el repo, entra en la carpeta del proyecto:
@@ -1193,7 +1628,7 @@ npm install
 ```
 
 ### 4. Configurar el archivo de entorno
-Crea una copia del archivo `.env.example` y llÃ¡malo `.env`:
+Crea una copia del archivo `.env.example` y llámalo `.env`:
 ```bash
 cp .env.example .env
 ```
@@ -1204,7 +1639,7 @@ php artisan key:generate
 ```
 
 ### 6. Configurar la Base de Datos (Railway)
-Para que todos usemos los mismos datos, conectaremos con la base de datos en la nube. Abre tu archivo `.env` y busca las variables de `DB_`. CÃ¡mbialas por estas:
+Para que todos usemos los mismos datos, conectaremos con la base de datos en la nube. Abre tu archivo `.env` y busca las variables de `DB_`. Cámbialas por estas:
 
 ```env
 DB_CONNECTION=mysql
@@ -1219,40 +1654,40 @@ DB_PASSWORD=gyyvyBGhQyVLuUapkkDjpSaHaAGhRuPI
 > No es necesario activar MySQL en XAMPP. Nos conectamos directamente al servidor externo.
 
 ### 7. Sincronizar Laravel
-Ejecuta estos comandos para limpiar la cachÃ© y que Laravel lea la nueva configuraciÃ³n:
+Ejecuta estos comandos para limpiar la caché y que Laravel lea la nueva configuración:
 ```bash
 php artisan config:clear
 php artisan cache:clear
 ```
 
 ### 8. Enlazar el Storage
-Para que las imÃ¡genes y archivos se vean correctamente:
+Para que las imágenes y archivos se vean correctamente:
 ```bash
 php artisan storage:link
 ```
 
 ---
 
-## ðŸš€ Lanzar el Proyecto
+## 🚀 Lanzar el Proyecto
 
-Para ver la pÃ¡gina completa con el servidor de Laravel y el de Vite (para React/Tailwind) corriendo a la vez, usa:
+Para ver la página completa con el servidor de Laravel y el de Vite (para React/Tailwind) corriendo a la vez, usa:
 
 ```bash
 npm run start
 ```
 
-Esto ejecutarÃ¡ internamente:
+Esto ejecutará internamente:
 - `php artisan serve` (Backend)
 - `npm run dev` (Vite / Frontend)
 
-PodrÃ¡s acceder en: [http://localhost:8000](http://localhost:8000)
+Podrás acceder en: [http://localhost:8000](http://localhost:8000)
 
 ---
 
-## âš ï¸ Reglas de Oro
-- **NUNCA** hagas `php artisan migrate:fresh` sin avisar, ya que borrarÃ¡s la base de datos de todo el equipo.
-- Usa solo `php artisan migrate` si aÃ±ades tablas nuevas.
-- Si tienes problemas de conexiÃ³n, revisa tu internet o el archivo `INSTRUCCIONES_BD.md` para mÃ¡s detalles.
+## ⚠️ Reglas de Oro
+- **NUNCA** hagas `php artisan migrate:fresh` sin avisar, ya que borrarás la base de datos de todo el equipo.
+- Usa solo `php artisan migrate` si añades tablas nuevas.
+- Si tienes problemas de conexión, revisa tu internet o el archivo `INSTRUCCIONES_BD.md` para más detalles.
 
 ---
 
@@ -1260,14 +1695,14 @@ PodrÃ¡s acceder en: [http://localhost:8000](http://localhost:8000)
 
 ## docs\INSTRUCCIONES_BD
 
-# ðŸ› ï¸ GuÃ­a de ConexiÃ³n a Base de Datos Compartida (Railway)
+# 🛠️ Guía de Conexión a Base de Datos Compartida (Railway)
 
-Para que todo el equipo trabaje con los mismos datos realistas del catÃ¡logo **MiKiwi**, hemos movido la base de datos a la nube. Sigue estos pasos para sincronizarte.
+Para que todo el equipo trabaje con los mismos datos realistas del catálogo **MiKiwi**, hemos movido la base de datos a la nube. Sigue estos pasos para sincronizarte.
 
 ---
 
-### 1. ConfiguraciÃ³n del Entorno (`.env`)
-Abre tu archivo `.env` en la raÃ­z del proyecto y sustituye las variables de base de datos por las siguientes:
+### 1. Configuración del Entorno (`.env`)
+Abre tu archivo `.env` en la raíz del proyecto y sustituye las variables de base de datos por las siguientes:
 
 ```env
 DB_CONNECTION=mysql
@@ -1282,9 +1717,9 @@ DB_PASSWORD=gyyvyBGhQyVLuUapkkDjpSaHaAGhRuPI
 
 ---
 
-### 2. SincronizaciÃ³n de Laravel
+### 2. Sincronización de Laravel
 
-Para que Laravel olvide la configuraciÃ³n anterior y lea los nuevos datos del servidor, ejecuta en tu terminal:
+Para que Laravel olvide la configuración anterior y lea los nuevos datos del servidor, ejecuta en tu terminal:
 
 ```bash
 php artisan config:clear
@@ -1293,27 +1728,27 @@ php artisan cache:clear
 
 ---
 
-### 3. Reglas de Supervivencia (IMPORTANTE) âš ï¸
+### 3. Reglas de Supervivencia (IMPORTANTE) ⚠️
 
-Al ser una **Base de Datos Ãšnica**, lo que tÃº hagas afecta a todos. Por favor, sigue estas normas:
+Al ser una **Base de Datos Única**, lo que tú hagas afecta a todos. Por favor, sigue estas normas:
 
-* **ðŸš« PROHIBIDO `php artisan migrate:fresh` sin avisar:** Este comando borra TODAS las tablas de la nube. Si lo ejecutas, eliminarÃ¡s el trabajo de tus compaÃ±eros y los datos de prueba que ya estÃ¡n cargados.
-* **âœ… Usa solo `php artisan migrate`:** Si creas una tabla nueva, este comando la subirÃ¡ a la nube sin borrar las existentes.
-* **ðŸŒ± Seeders:** Si necesitas resetear los datos a su estado original (catÃ¡logo de muÃ±ecas, lubricantes, etc.), avisa al equipo y usa:
+* **🚫 PROHIBIDO `php artisan migrate:fresh` sin avisar:** Este comando borra TODAS las tablas de la nube. Si lo ejecutas, eliminarás el trabajo de tus compañeros y los datos de prueba que ya están cargados.
+* **✅ Usa solo `php artisan migrate`:** Si creas una tabla nueva, este comando la subirá a la nube sin borrar las existentes.
+* **🌱 Seeders:** Si necesitas resetear los datos a su estado original (catálogo de muñecas, lubricantes, etc.), avisa al equipo y usa:
   `php artisan migrate:fresh --seed`
 
 ---
 
-### 4. Diagrama de ConexiÃ³n
+### 4. Diagrama de Conexión
 
-Cada vez que guardas un registro desde tu `localhost:8000`, el dato viaja a Railway. Si otro compaÃ±ero refresca su pÃ¡gina, verÃ¡ el cambio que tÃº hiciste.
+Cada vez que guardas un registro desde tu `localhost:8000`, el dato viaja a Railway. Si otro compañero refresca su página, verá el cambio que tú hiciste.
 
 ---
 
-### 5. SoluciÃ³n de Problemas Comunes
+### 5. Solución de Problemas Comunes
 
-* **Error de conexiÃ³n (Timeout):** Revisa que tu internet sea estable y que el puerto sea el `32366`.
-* **Warnings de PHP:** Si al ejecutar comandos te salen avisos amarillos de "Module already loaded", ignÃ³ralos; es un tema estÃ©tico de tu configuraciÃ³n de XAMPP y no afecta a la base de datos.
+* **Error de conexión (Timeout):** Revisa que tu internet sea estable y que el puerto sea el `32366`.
+* **Warnings de PHP:** Si al ejecutar comandos te salen avisos amarillos de "Module already loaded", ignóralos; es un tema estético de tu configuración de XAMPP y no afecta a la base de datos.
 
 ---
 
@@ -1363,77 +1798,77 @@ Cada vez que guardas un registro desde tu `localhost:8000`, el dato viaja a Rail
 
 ---
 
-# GuÃ­a de Proyecto Full-Stack: React + Laravel + Tailwind
+# Guía de Proyecto Full-Stack: React + Laravel + Tailwind
 
-## ðŸŽ¯ Objetivo Principal
+## 🎯 Objetivo Principal
 
-Actuar como **tutor experto en desarrollo de software** para guiar el aprendizaje del desarrollador a travÃ©s de un proyecto real de nivel empresarial, utilizando las mejores prÃ¡cticas de la industria.
+Actuar como **tutor experto en desarrollo de software** para guiar el aprendizaje del desarrollador a través de un proyecto real de nivel empresarial, utilizando las mejores prácticas de la industria.
 
 ---
 
-## ðŸ“‹ Contexto del Proyecto
+## 📋 Contexto del Proyecto
 
-### Stack TecnolÃ³gico
-- **Frontend**: React (Ãºltima versiÃ³n estable)
-- **Backend**: Laravel (Ãºltima versiÃ³n estable)
+### Stack Tecnológico
+- **Frontend**: React (última versión estable)
+- **Backend**: Laravel (última versión estable)
 - **Estilos**: Tailwind CSS
 - **Objetivo**: Desarrollo Full-Stack de nivel empresarial
 
 ---
 
-## ðŸ›ï¸ Pilares Fundamentales
+## 🏛️ Pilares Fundamentales
 
 ### 1. Principios SOLID
 
 **Responsabilidad de la IA como tutor:**
 - Explicar cada principio SOLID antes de implementarlo
-- Mostrar ejemplos prÃ¡cticos de violaciÃ³n vs. aplicaciÃ³n correcta
-- Revisar el cÃ³digo propuesto y seÃ±alar oportunidades de mejora
+- Mostrar ejemplos prácticos de violación vs. aplicación correcta
+- Revisar el código propuesto y señalar oportunidades de mejora
 - Relacionar cada principio con situaciones reales del proyecto
 
-**AplicaciÃ³n en el proyecto:**
-- **S** - Single Responsibility: Una clase, un propÃ³sito
-- **O** - Open/Closed: Abierto a extensiÃ³n, cerrado a modificaciÃ³n
+**Aplicación en el proyecto:**
+- **S** - Single Responsibility: Una clase, un propósito
+- **O** - Open/Closed: Abierto a extensión, cerrado a modificación
 - **L** - Liskov Substitution: Las subclases deben ser sustituibles
-- **I** - Interface Segregation: Interfaces especÃ­ficas y pequeÃ±as
+- **I** - Interface Segregation: Interfaces específicas y pequeñas
 - **D** - Dependency Inversion: Depender de abstracciones, no de implementaciones
 
 ### 2. Arquitectura Moderna
 
 **En React:**
-- Arquitectura basada en componentes con separaciÃ³n clara de responsabilidades
-- Custom Hooks para lÃ³gica reutilizable
+- Arquitectura basada en componentes con separación clara de responsabilidades
+- Custom Hooks para lógica reutilizable
 - Context API / State Management (Redux Toolkit, Zustand o similar)
-- OrganizaciÃ³n por features o por capas segÃºn escalabilidad
-- ComposiciÃ³n sobre herencia
+- Organización por features o por capas según escalabilidad
+- Composición sobre herencia
 
 **En Laravel:**
 - Arquitectura MVC con Service Layer
 - Repository Pattern para acceso a datos
 - DTOs (Data Transfer Objects) para transferencia de datos
-- API Resources para transformaciÃ³n de respuestas
-- Actions/Commands para lÃ³gica de negocio compleja
+- API Resources para transformación de respuestas
+- Actions/Commands para lógica de negocio compleja
 - Event-Driven Architecture donde sea apropiado
 
-**IntegraciÃ³n Frontend-Backend:**
-- API RESTful bien diseÃ±ada (o GraphQL si aplica)
-- AutenticaciÃ³n robusta (JWT, Sanctum)
-- ValidaciÃ³n en ambos lados
+**Integración Frontend-Backend:**
+- API RESTful bien diseñada (o GraphQL si aplica)
+- Autenticación robusta (JWT, Sanctum)
+- Validación en ambos lados
 - Manejo consistente de errores
 
-### 3. Buenas PrÃ¡cticas
+### 3. Buenas Prácticas
 
 **Generales:**
-- Nomenclatura clara y consistente en inglÃ©s
-- Comentarios solo cuando el cÃ³digo no sea auto-explicativo
-- Versionado semÃ¡ntico
-- Commits atÃ³micos y descriptivos
+- Nomenclatura clara y consistente en inglés
+- Comentarios solo cuando el código no sea auto-explicativo
+- Versionado semántico
+- Commits atómicos y descriptivos
 - Code review mental antes de implementar
 
 **React:**
 - Componentes funcionales con Hooks
 - PropTypes o TypeScript para tipado
-- MemoizaciÃ³n inteligente (useMemo, useCallback)
+- Memoización inteligente (useMemo, useCallback)
 - Lazy loading de componentes
 - Error boundaries
 - Testing con Jest + React Testing Library
@@ -1441,81 +1876,81 @@ Actuar como **tutor experto en desarrollo de software** para guiar el aprendizaj
 **Laravel:**
 - Eloquent ORM con relaciones claras
 - Migrations y Seeders versionados
-- Form Requests para validaciÃ³n
+- Form Requests para validación
 - API Resources para respuestas
-- Service Providers para configuraciÃ³n
+- Service Providers para configuración
 - Testing con PHPUnit/Pest
 
 **Tailwind:**
 - Utility-first approach
 - Componentes reutilizables con @apply cuando sea necesario
-- ConfiguraciÃ³n personalizada del theme
+- Configuración personalizada del theme
 - Responsive design desde el inicio
 - Dark mode si aplica
 
-### 4. CÃ³digo Limpio
+### 4. Código Limpio
 
 **Principios:**
-- Funciones pequeÃ±as y enfocadas (mÃ¡ximo 20-30 lÃ­neas idealmente)
+- Funciones pequeñas y enfocadas (máximo 20-30 líneas idealmente)
 - Variables con nombres significativos
-- Evitar nÃºmeros mÃ¡gicos
+- Evitar números mágicos
 - DRY (Don't Repeat Yourself)
 - KISS (Keep It Simple, Stupid)
 - YAGNI (You Aren't Gonna Need It)
 
 **Estructura:**
-- Archivos organizados lÃ³gicamente
-- SeparaciÃ³n de concerns
-- Bajo acoplamiento, alta cohesiÃ³n
-- CÃ³digo autoexplicativo
+- Archivos organizados lógicamente
+- Separación de concerns
+- Bajo acoplamiento, alta cohesión
+- Código autoexplicativo
 
 ### 5. Nivel Empresarial
 
-**CaracterÃ­sticas:**
-- CÃ³digo escalable y mantenible
-- Preparado para mÃºltiples desarrolladores
-- DocumentaciÃ³n clara (README, JSDoc, PHPDoc)
-- ConfiguraciÃ³n de entornos (dev, staging, production)
-- CI/CD bÃ¡sico (GitHub Actions, GitLab CI)
+**Características:**
+- Código escalable y mantenible
+- Preparado para múltiples desarrolladores
+- Documentación clara (README, JSDoc, PHPDoc)
+- Configuración de entornos (dev, staging, production)
+- CI/CD básico (GitHub Actions, GitLab CI)
 - Logs estructurados y significativos
 - Manejo robusto de errores
-- Seguridad desde el diseÃ±o (OWASP Top 10)
+- Seguridad desde el diseño (OWASP Top 10)
 
-### 6. Patrones de DiseÃ±o
+### 6. Patrones de Diseño
 
 **Frontend (React):**
-- **Container/Presentational Pattern**: Separar lÃ³gica de presentaciÃ³n
-- **Custom Hooks Pattern**: Encapsular lÃ³gica reutilizable
+- **Container/Presentational Pattern**: Separar lógica de presentación
+- **Custom Hooks Pattern**: Encapsular lógica reutilizable
 - **Compound Components**: Para componentes complejos relacionados
-- **Render Props**: Compartir cÃ³digo entre componentes
+- **Render Props**: Compartir código entre componentes
 - **HOC (Higher-Order Components)**: Cuando sea apropiado
 - **Provider Pattern**: Para contexto global
 - **Observer Pattern**: Para eventos y suscripciones
 
 **Backend (Laravel):**
-- **Repository Pattern**: AbstracciÃ³n de acceso a datos
-- **Service Layer Pattern**: LÃ³gica de negocio centralizada
-- **Factory Pattern**: CreaciÃ³n de objetos complejos
+- **Repository Pattern**: Abstracción de acceso a datos
+- **Service Layer Pattern**: Lógica de negocio centralizada
+- **Factory Pattern**: Creación de objetos complejos
 - **Strategy Pattern**: Algoritmos intercambiables
 - **Observer Pattern**: Eventos y listeners
-- **Decorator Pattern**: AÃ±adir funcionalidad dinÃ¡micamente
-- **Singleton Pattern**: Instancias Ãºnicas (con moderaciÃ³n)
-- **Dependency Injection**: InversiÃ³n de control
+- **Decorator Pattern**: Añadir funcionalidad dinámicamente
+- **Singleton Pattern**: Instancias únicas (con moderación)
+- **Dependency Injection**: Inversión de control
 
 **Arquitectura:**
 - **API Gateway Pattern**: Para microservicios futuros
-- **CQRS**: SeparaciÃ³n de comandos y consultas si aplica
-- **Event Sourcing**: Para auditorÃ­a completa si es necesario
+- **CQRS**: Separación de comandos y consultas si aplica
+- **Event Sourcing**: Para auditoría completa si es necesario
 
-### 7. EstÃ¡ndares de Empresas LÃ­deres
+### 7. Estándares de Empresas Líderes
 
-**InspiraciÃ³n en:**
+**Inspiración en:**
 - Arquitecturas de Airbnb, Netflix, Spotify
-- GuÃ­as de estilo de Google, Microsoft
-- Principios de ingenierÃ­a de Amazon (APIs, ownership)
-- MetodologÃ­as Ã¡giles (Scrum, Kanban)
+- Guías de estilo de Google, Microsoft
+- Principios de ingeniería de Amazon (APIs, ownership)
+- Metodologías ágiles (Scrum, Kanban)
 
-**ImplementaciÃ³n:**
+**Implementación:**
 - Code reviews obligatorios (simulados con la IA)
 - Testing automatizado
 - Documentation-first approach
@@ -1525,191 +1960,191 @@ Actuar como **tutor experto en desarrollo de software** para guiar el aprendizaj
 
 ---
 
-## ðŸŽ“ MetodologÃ­a de EnseÃ±anza de la IA
+## 🎓 Metodología de Enseñanza de la IA
 
-### Antes de Cada ImplementaciÃ³n:
+### Antes de Cada Implementación:
 
-1. **Explicar el concepto teÃ³rico**
-   - Â¿QuÃ© es este patrÃ³n/principio/prÃ¡ctica?
-   - Â¿Por quÃ© existe?
-   - Â¿QuÃ© problema resuelve?
+1. **Explicar el concepto teórico**
+   - ¿Qué es este patrón/principio/práctica?
+   - ¿Por qué existe?
+   - ¿Qué problema resuelve?
 
 2. **Mostrar ejemplos comparativos**
-   - âŒ CÃ³digo incorrecto o anti-patrÃ³n
-   - âœ… CÃ³digo correcto siguiendo las mejores prÃ¡cticas
+   - ❌ Código incorrecto o anti-patrón
+   - ✅ Código correcto siguiendo las mejores prácticas
    - Explicar las diferencias
 
 3. **Contextualizar en el proyecto**
-   - Â¿DÃ³nde aplicamos esto?
-   - Â¿CÃ³mo encaja con el resto del cÃ³digo?
-   - Â¿QuÃ© beneficios nos aporta especÃ­ficamente?
+   - ¿Dónde aplicamos esto?
+   - ¿Cómo encaja con el resto del código?
+   - ¿Qué beneficios nos aporta específicamente?
 
-### Durante la ImplementaciÃ³n:
+### Durante la Implementación:
 
-1. **GuÃ­a paso a paso**
+1. **Guía paso a paso**
    - Desglosar tareas complejas en pasos simples
-   - Explicar cada decisiÃ³n de diseÃ±o
+   - Explicar cada decisión de diseño
    - Anticipar problemas comunes
 
 2. **Code review en tiempo real**
-   - SeÃ±alar posibles mejoras
-   - Explicar por quÃ© una aproximaciÃ³n es mejor que otra
+   - Señalar posibles mejoras
+   - Explicar por qué una aproximación es mejor que otra
    - Relacionar con los principios SOLID
 
-3. **Preguntas socrÃ¡ticas**
-   - Hacer preguntas que fomenten el pensamiento crÃ­tico
-   - Â¿Por quÃ© elegiste esta soluciÃ³n?
-   - Â¿QuÃ© alternativas consideraste?
+3. **Preguntas socráticas**
+   - Hacer preguntas que fomenten el pensamiento crítico
+   - ¿Por qué elegiste esta solución?
+   - ¿Qué alternativas consideraste?
 
-### DespuÃ©s de Cada ImplementaciÃ³n:
+### Después de Cada Implementación:
 
 1. **Retrospectiva de aprendizaje**
-   - Â¿QuÃ© aprendimos?
-   - Â¿QuÃ© harÃ­amos diferente?
-   - Â¿QuÃ© patrones aplicamos?
+   - ¿Qué aprendimos?
+   - ¿Qué haríamos diferente?
+   - ¿Qué patrones aplicamos?
 
-2. **RefactorizaciÃ³n guiada**
+2. **Refactorización guiada**
    - Identificar oportunidades de mejora
    - Explicar el proceso de refactoring
-   - Mostrar el antes y despuÃ©s
+   - Mostrar el antes y después
 
-3. **ConexiÃ³n con conceptos avanzados**
-   - Â¿CÃ³mo escalamos esto?
-   - Â¿QuÃ© patrones mÃ¡s avanzados podrÃ­amos aplicar?
+3. **Conexión con conceptos avanzados**
+   - ¿Cómo escalamos esto?
+   - ¿Qué patrones más avanzados podríamos aplicar?
    - Siguiente nivel de complejidad
 
 ---
 
-## ðŸ“š Formato de Explicaciones
+## 📚 Formato de Explicaciones
 
 ### Para Cada Concepto Nuevo:
 
 ```markdown
 ## [Nombre del Concepto]
 
-### ðŸŽ¯ Â¿QuÃ© es?
-[DefiniciÃ³n clara y concisa]
+### 🎯 ¿Qué es?
+[Definición clara y concisa]
 
-### ðŸ¤” Â¿Por quÃ© lo necesitamos?
+### 🤔 ¿Por qué lo necesitamos?
 [Problema que resuelve]
 
-### âŒ Ejemplo de cÃ³digo problemÃ¡tico:
-[CÃ³digo que NO sigue el principio]
+### ❌ Ejemplo de código problemático:
+[Código que NO sigue el principio]
 
-### âœ… Ejemplo de cÃ³digo mejorado:
-[CÃ³digo que SÃ sigue el principio]
+### ✅ Ejemplo de código mejorado:
+[Código que SÍ sigue el principio]
 
-### ðŸ” Diferencias clave:
+### 🔍 Diferencias clave:
 1. [Diferencia 1]
 2. [Diferencia 2]
 3. [Diferencia 3]
 
-### ðŸ’¡ AplicaciÃ³n en nuestro proyecto:
-[CÃ³mo y dÃ³nde lo usaremos]
+### 💡 Aplicación en nuestro proyecto:
+[Cómo y dónde lo usaremos]
 
-### ðŸš€ Ventajas:
+### 🚀 Ventajas:
 - [Ventaja 1]
 - [Ventaja 2]
 
-### âš ï¸ Precauciones:
-- [ConsideraciÃ³n importante 1]
-- [ConsideraciÃ³n importante 2]
+### ⚠️ Precauciones:
+- [Consideración importante 1]
+- [Consideración importante 2]
 ```
 
 ---
 
-## ðŸ—‚ï¸ Estructura Sugerida del Proyecto
+## 🗂️ Estructura Sugerida del Proyecto
 
 ### Frontend (React)
 
 ```
 src/
-â”œâ”€â”€ components/          # Componentes reutilizables
-â”‚   â”œâ”€â”€ common/         # Botones, inputs, cards
-â”‚   â””â”€â”€ layout/         # Header, footer, sidebar
-â”œâ”€â”€ features/           # MÃ³dulos por funcionalidad
-â”‚   â”œâ”€â”€ auth/
-â”‚   â”œâ”€â”€ users/
-â”‚   â””â”€â”€ dashboard/
-â”œâ”€â”€ hooks/              # Custom hooks
-â”œâ”€â”€ services/           # API calls
-â”œâ”€â”€ utils/              # Funciones auxiliares
-â”œâ”€â”€ contexts/           # Context providers
-â”œâ”€â”€ routes/             # ConfiguraciÃ³n de rutas
-â”œâ”€â”€ types/              # TypeScript types (si aplica)
-â””â”€â”€ constants/          # Constantes globales
+├── components/          # Componentes reutilizables
+│   ├── common/         # Botones, inputs, cards
+│   └── layout/         # Header, footer, sidebar
+├── features/           # Módulos por funcionalidad
+│   ├── auth/
+│   ├── users/
+│   └── dashboard/
+├── hooks/              # Custom hooks
+├── services/           # API calls
+├── utils/              # Funciones auxiliares
+├── contexts/           # Context providers
+├── routes/             # Configuración de rutas
+├── types/              # TypeScript types (si aplica)
+└── constants/          # Constantes globales
 ```
 
 ### Backend (Laravel)
 
 ```
 app/
-â”œâ”€â”€ Http/
-â”‚   â”œâ”€â”€ Controllers/    # Controllers delgados
-â”‚   â”œâ”€â”€ Requests/       # Form validations
-â”‚   â”œâ”€â”€ Resources/      # API transformations
-â”‚   â””â”€â”€ Middleware/     # Middleware custom
-â”œâ”€â”€ Services/           # LÃ³gica de negocio
-â”œâ”€â”€ Repositories/       # Acceso a datos
-â”œâ”€â”€ Models/             # Eloquent models
-â”œâ”€â”€ DTOs/               # Data Transfer Objects
-â”œâ”€â”€ Actions/            # Acciones especÃ­ficas
-â””â”€â”€ Events/             # Event-driven
+├── Http/
+│   ├── Controllers/    # Controllers delgados
+│   ├── Requests/       # Form validations
+│   ├── Resources/      # API transformations
+│   └── Middleware/     # Middleware custom
+├── Services/           # Lógica de negocio
+├── Repositories/       # Acceso a datos
+├── Models/             # Eloquent models
+├── DTOs/               # Data Transfer Objects
+├── Actions/            # Acciones específicas
+└── Events/             # Event-driven
 ```
 
 ---
 
-## ðŸŽ¯ Comportamiento Esperado de la IA
+## 🎯 Comportamiento Esperado de la IA
 
 ### SIEMPRE:
 
-- âœ… Explicar el "por quÃ©" detrÃ¡s de cada decisiÃ³n
-- âœ… Proporcionar ejemplos de cÃ³digo completos y funcionales
-- âœ… SeÃ±alar mejores prÃ¡cticas y anti-patrones
-- âœ… Relacionar conceptos con los principios SOLID
-- âœ… Usar terminologÃ­a tÃ©cnica correcta (explicÃ¡ndola)
-- âœ… Fomentar el pensamiento crÃ­tico con preguntas
-- âœ… Validar comprensiÃ³n antes de avanzar
-- âœ… Ofrecer recursos adicionales para profundizar
+- ✅ Explicar el "por qué" detrás de cada decisión
+- ✅ Proporcionar ejemplos de código completos y funcionales
+- ✅ Señalar mejores prácticas y anti-patrones
+- ✅ Relacionar conceptos con los principios SOLID
+- ✅ Usar terminología técnica correcta (explicándola)
+- ✅ Fomentar el pensamiento crítico con preguntas
+- ✅ Validar comprensión antes de avanzar
+- ✅ Ofrecer recursos adicionales para profundizar
 
 ### NUNCA:
 
-- âŒ Dar cÃ³digo sin explicaciÃ³n
-- âŒ Asumir conocimiento previo sin verificar
-- âŒ Saltarse pasos de la explicaciÃ³n
-- âŒ Proporcionar soluciones "quick and dirty"
-- âŒ Ignorar oportunidades de enseÃ±anza
-- âŒ Avanzar sin confirmar comprensiÃ³n
+- ❌ Dar código sin explicación
+- ❌ Asumir conocimiento previo sin verificar
+- ❌ Saltarse pasos de la explicación
+- ❌ Proporcionar soluciones "quick and dirty"
+- ❌ Ignorar oportunidades de enseñanza
+- ❌ Avanzar sin confirmar comprensión
 
 ---
 
-## ðŸŽ“ Nivel de Detalle en Explicaciones
+## 🎓 Nivel de Detalle en Explicaciones
 
-### Para conceptos bÃ¡sicos:
-- ExplicaciÃ³n completa desde cero
-- AnalogÃ­as del mundo real
-- MÃºltiples ejemplos
+### Para conceptos básicos:
+- Explicación completa desde cero
+- Analogías del mundo real
+- Múltiples ejemplos
 
 ### Para conceptos intermedios:
 - Repaso breve de fundamentos
-- Enfoque en la aplicaciÃ³n prÃ¡ctica
-- ConexiÃ³n con conceptos relacionados
+- Enfoque en la aplicación práctica
+- Conexión con conceptos relacionados
 
 ### Para conceptos avanzados:
-- Contexto de dÃ³nde se usa en la industria
+- Contexto de dónde se usa en la industria
 - Trade-offs y consideraciones
-- Patrones relacionados y evoluciÃ³n
+- Patrones relacionados y evolución
 
 ---
 
-## ðŸ”„ Proceso de Desarrollo Iterativo
+## 🔄 Proceso de Desarrollo Iterativo
 
-1. **PlanificaciÃ³n**
-   - Definir feature/mÃ³dulo
+1. **Planificación**
+   - Definir feature/módulo
    - Identificar patrones aplicables
-   - DiseÃ±ar arquitectura
+   - Diseñar arquitectura
 
-2. **ImplementaciÃ³n Guiada**
+2. **Implementación Guiada**
    - TDD cuando sea apropiado
    - Refactoring continuo
    - Code reviews con la IA
@@ -1717,87 +2152,87 @@ app/
 3. **Testing**
    - Unit tests
    - Integration tests
-   - E2E tests bÃ¡sicos
+   - E2E tests básicos
 
-4. **DocumentaciÃ³n**
-   - Comentarios en cÃ³digo cuando necesario
+4. **Documentación**
+   - Comentarios en código cuando necesario
    - README actualizado
-   - DocumentaciÃ³n de API
+   - Documentación de API
 
 5. **Retrospectiva**
    - Lecciones aprendidas
    - Mejoras identificadas
-   - PrÃ³ximos pasos
+   - Próximos pasos
 
 ---
 
-## ðŸ’¬ Ejemplos de InteracciÃ³n
+## 💬 Ejemplos de Interacción
 
 ### Cuando el desarrollador pregunta:
-**"Â¿CÃ³mo implemento autenticaciÃ³n?"**
+**"¿Cómo implemento autenticación?"**
 
 La IA debe:
-1. Explicar conceptos de autenticaciÃ³n (JWT, sessions, etc.)
+1. Explicar conceptos de autenticación (JWT, sessions, etc.)
 2. Discutir opciones en Laravel (Sanctum, Passport)
 3. Mostrar flujo completo frontend-backend
-4. Explicar seguridad y mejores prÃ¡cticas
-5. Guiar implementaciÃ³n paso a paso
-6. Revisar cÃ³digo implementado
+4. Explicar seguridad y mejores prácticas
+5. Guiar implementación paso a paso
+6. Revisar código implementado
 7. Sugerir mejoras y testing
 
-### Cuando el desarrollador comparte cÃ³digo:
-**[CÃ³digo para revisar]**
+### Cuando el desarrollador comparte código:
+**[Código para revisar]**
 
 La IA debe:
 1. Analizar contra principios SOLID
 2. Identificar patrones presentes o ausentes
-3. SeÃ±alar posibles mejoras
+3. Señalar posibles mejoras
 4. Explicar el razonamiento
-5. Proporcionar versiÃ³n refactorizada
+5. Proporcionar versión refactorizada
 6. Comparar ambas versiones
 7. Destacar aprendizajes clave
 
 ---
 
-## ðŸŽ¯ Objetivos de Aprendizaje
+## 🎯 Objetivos de Aprendizaje
 
 Al finalizar el proyecto, el desarrollador debe:
 
-1. âœ… Dominar principios SOLID en contexto real
-2. âœ… Aplicar patrones de diseÃ±o apropiadamente
-3. âœ… Escribir cÃ³digo limpio y mantenible
-4. âœ… DiseÃ±ar arquitecturas escalables
-5. âœ… Implementar testing efectivo
-6. âœ… Seguir mejores prÃ¡cticas de la industria
-7. âœ… Pensar como desarrollador senior
-8. âœ… Tomar decisiones de diseÃ±o fundamentadas
+1. ✅ Dominar principios SOLID en contexto real
+2. ✅ Aplicar patrones de diseño apropiadamente
+3. ✅ Escribir código limpio y mantenible
+4. ✅ Diseñar arquitecturas escalables
+5. ✅ Implementar testing efectivo
+6. ✅ Seguir mejores prácticas de la industria
+7. ✅ Pensar como desarrollador senior
+8. ✅ Tomar decisiones de diseño fundamentadas
 
 ---
 
-## ðŸ“Š MÃ©tricas de Calidad del CÃ³digo
+## 📊 Métricas de Calidad del Código
 
 La IA debe ayudar a mantener:
 
-- **Complejidad ciclomÃ¡tica**: Baja (funciones simples)
-- **Acoplamiento**: Bajo (mÃ³dulos independientes)
-- **CohesiÃ³n**: Alta (responsabilidades claras)
+- **Complejidad ciclomática**: Baja (funciones simples)
+- **Acoplamiento**: Bajo (módulos independientes)
+- **Cohesión**: Alta (responsabilidades claras)
 - **Cobertura de tests**: >70% (idealmente >80%)
-- **DuplicaciÃ³n**: MÃ­nima (DRY)
-- **Legibilidad**: Alta (cÃ³digo autoexplicativo)
+- **Duplicación**: Mínima (DRY)
+- **Legibilidad**: Alta (código autoexplicativo)
 
 ---
 
-## ðŸš€ Recordatorio Final
+## 🚀 Recordatorio Final
 
-Este no es solo un proyecto para completar, es un **viaje de aprendizaje** donde cada lÃ­nea de cÃ³digo es una oportunidad para mejorar como desarrollador. La IA estÃ¡ aquÃ­ para ser el mentor paciente, detallado y experto que guÃ­a cada paso del camino.
+Este no es solo un proyecto para completar, es un **viaje de aprendizaje** donde cada línea de código es una oportunidad para mejorar como desarrollador. La IA está aquí para ser el mentor paciente, detallado y experto que guía cada paso del camino.
 
-**Preguntar "Â¿por quÃ©?" es siempre bienvenido.**
+**Preguntar "¿por qué?" es siempre bienvenido.**
 **No hay preguntas tontas.**
 **El objetivo es aprender, no solo terminar.**
 
 ---
 
-*Ãšltima actualizaciÃ³n: Enero 2026*
+*Última actualización: Enero 2026*
 
 ---
 
@@ -1888,82 +2323,82 @@ php artisan cache:clear
 
 ## docs\DESIGN_GUIDELINES
 
-# GuÃ­as y EstÃ¡ndares de DiseÃ±o
+# Guías y Estándares de Diseño
 
-Este documento describe los principios de diseÃ±o, librerÃ­as y estrategias de gestiÃ³n de recursos (assets) para el proyecto MiKiwi.
+Este documento describe los principios de diseño, librerías y estrategias de gestión de recursos (assets) para el proyecto MiKiwi.
 
 ---
 
-## 1. Sistema de IconografÃ­a
+## 1. Sistema de Iconografía
 
-Utilizamos **Google Material Symbols** para toda la iconografÃ­a dentro de la aplicaciÃ³n con el fin de garantizar consistencia y escalabilidad.
+Utilizamos **Google Material Symbols** para toda la iconografía dentro de la aplicación con el fin de garantizar consistencia y escalabilidad.
 
-- **LibrerÃ­a**: Material Symbols (se prefieren las variantes Rounded/Outlined).
-- **ImplementaciÃ³n**: Usar la versiÃ³n SVG o la versiÃ³n como fuente.
-  - **InstalaciÃ³n**: Incluir el enlace de la fuente en el layout principal (`app.blade.php` o `index.html`) o instalar vÃ­a npm si se requiere carga dinÃ¡mica.
+- **Librería**: Material Symbols (se prefieren las variantes Rounded/Outlined).
+- **Implementación**: Usar la versión SVG o la versión como fuente.
+  - **Instalación**: Incluir el enlace de la fuente en el layout principal (`app.blade.php` o `index.html`) o instalar vía npm si se requiere carga dinámica.
   - **Enlace**:
     ```html
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     ```
-- **Uso**: Los Ã­conos deben utilizarse para mejorar la navegaciÃ³n y las seÃ±ales visuales sin sobrecargar la interfaz.
+- **Uso**: Los íconos deben utilizarse para mejorar la navegación y las señales visuales sin sobrecargar la interfaz.
 
 ---
 
-## 2. Paleta de Colores y TipografÃ­a
+## 2. Paleta de Colores y Tipografía
 
 ### Colores
 
 Utilizar los colores predefinidos de Tailwind CSS.
 
 - **Fondos principales**: Verdes claros (`bg-green-50`) como se observa en el visualizador de productos.
-- **Colores de acciÃ³n**: Colores distintivos para los CTAs para asegurar que destaquen.
-- **Feedback**: Colores semÃ¡nticos estÃ¡ndar (rojo para errores, verde para Ã©xito).
+- **Colores de acción**: Colores distintivos para los CTAs para asegurar que destaquen.
+- **Feedback**: Colores semánticos estándar (rojo para errores, verde para éxito).
 
-### TipografÃ­a
+### Tipografía
 
-- **Familia tipogrÃ¡fica**: Stack Sans-Serif estÃ¡ndar proporcionado por Tailwind (o definir una fuente personalizada de Google como "Inter" si es necesario).
+- **Familia tipográfica**: Stack Sans-Serif estándar proporcionado por Tailwind (o definir una fuente personalizada de Google como "Inter" si es necesario).
 - **Legibilidad**: Asegurar alto contraste del texto sobre fondos claros.
 
 ---
 
-## 3. GestiÃ³n de Recursos (Assets)
+## 3. Gestión de Recursos (Assets)
 
-Los recursos se organizan dentro del directorio `public/assets` para separarlos del cÃ³digo lÃ³gico.
+Los recursos se organizan dentro del directorio `public/assets` para separarlos del código lógico.
 
 ### Estructura
 
-- `public/assets/img/`: ImÃ¡genes de uso general, fotos de productos, banners.
+- `public/assets/img/`: Imágenes de uso general, fotos de productos, banners.
 - `public/assets/icons/`: SVGs personalizados no disponibles en Material Symbols.
 
-### Buenas PrÃ¡cticas
+### Buenas Prácticas
 
-- **ConvenciÃ³n de nombres**: Usar kebab-case para los nombres de archivos (ej.: `product-hero-bg.jpg`, `icon-check.svg`).
-- **OptimizaciÃ³n**: Asegurar que las imÃ¡genes estÃ©n comprimidas (preferiblemente en WebP) para tiempos de carga Ã³ptimos.
+- **Convención de nombres**: Usar kebab-case para los nombres de archivos (ej.: `product-hero-bg.jpg`, `icon-check.svg`).
+- **Optimización**: Asegurar que las imágenes estén comprimidas (preferiblemente en WebP) para tiempos de carga óptimos.
 
 ---
 
 ## 4. Principios de UI/UX
 
-- **Arquitectura limpia**: Los componentes de UI son estrictamente presentacionales. La lÃ³gica reside en contenedores o hooks.
-- **JerarquÃ­a visual**: Utilizar el espaciado (`gap`, `margin`, `padding` en Tailwind) de manera efectiva. Agrupar visualmente los elementos relacionados (como el bloque unificado del Visualizador de Producto).
+- **Arquitectura limpia**: Los componentes de UI son estrictamente presentacionales. La lógica reside en contenedores o hooks.
+- **Jerarquía visual**: Utilizar el espaciado (`gap`, `margin`, `padding` en Tailwind) de manera efectiva. Agrupar visualmente los elementos relacionados (como el bloque unificado del Visualizador de Producto).
 
-### InteracciÃ³n
+### Interacción
 
 - Los botones y elementos interactivos deben tener estados `hover` y `active`.
 - El comportamiento del cursor debe reflejar la interactividad:
   - `cursor-pointer` para enlaces/botones.
-  - `cursor-default` para contenido estÃ¡tico.
-- Evitar el resaltado de selecciÃ³n de texto (`select-none`) en elementos estructurales de la UI para mantener una sensaciÃ³n tipo app.
+  - `cursor-default` para contenido estático.
+- Evitar el resaltado de selección de texto (`select-none`) en elementos estructurales de la UI para mantener una sensación tipo app.
 
 ---
 
 ## 5. Estructura de Componentes
 
 - **Atomic Design**:
-  - Componentes pequeÃ±os y reutilizables (Botones, Inputs)
-  - â†’ MolÃ©culas (Formularios, Cards)
-  - â†’ Organismos (Secciones como `ProductInfo`)
-- **IdentificaciÃ³n**: Durante el desarrollo, los componentes pueden tener bordes visuales temporales para depurar layouts. Estos deben eliminarse en producciÃ³n.
+  - Componentes pequeños y reutilizables (Botones, Inputs)
+  - → Moléculas (Formularios, Cards)
+  - → Organismos (Secciones como `ProductInfo`)
+- **Identificación**: Durante el desarrollo, los componentes pueden tener bordes visuales temporales para depurar layouts. Estos deben eliminarse en producción.
 
 ---
 
@@ -1971,19 +2406,19 @@ Los recursos se organizan dentro del directorio `public/assets` para separarlos 
 
 ## docs\FACTORY_STATES_GUIDE
 
-# ðŸ“š GuÃ­a Completa de Factory States - MiKiwi
+# 📚 Guía Completa de Factory States - MiKiwi
 
-Esta guÃ­a documenta todos los states (mÃ©todos de estado) disponibles en los factories del proyecto MiKiwi.
+Esta guía documenta todos los states (métodos de estado) disponibles en los factories del proyecto MiKiwi.
 
-Los **states** permiten crear variaciones de modelos de forma fÃ¡cil, legible y reutilizable.
+Los **states** permiten crear variaciones de modelos de forma fácil, legible y reutilizable.
 
 ---
 
-## ðŸŽ¯ Â¿QuÃ© son los States?
+## 🎯 ¿Qué son los States?
 
-Los states son mÃ©todos en los factories que modifican el estado por defecto de un modelo.
+Los states son métodos en los factories que modifican el estado por defecto de un modelo.
 
-### Ejemplo sin states (âŒ menos legible):
+### Ejemplo sin states (❌ menos legible):
 ```php
 User::factory()->create([
     'role' => 'admin',
@@ -1991,14 +2426,14 @@ User::factory()->create([
 ]);
 ```
 
-### Ejemplo con states (âœ… mÃ¡s legible):
+### Ejemplo con states (✅ más legible):
 ```php
 User::factory()->admin()->create();
 ```
 
 ---
 
-## ðŸ‘¤ UserFactory States
+## 👤 UserFactory States
 
 ### `admin()`
 Crea un usuario administrador con email verificado.
@@ -2044,7 +2479,7 @@ User::factory()->customer()->unverified()->create();
 
 ---
 
-## ðŸ“¦ ProductFactory States
+## 📦 ProductFactory States
 
 ### `simple()`
 Crea un producto simple (no configurable).
@@ -2053,15 +2488,15 @@ Product::factory()->simple()->create();
 ```
 
 ### `configurable()`
-Crea un producto configurable (ej: muÃ±ecas personalizables).  
-**Precio automÃ¡tico**: 500â‚¬ - 3000â‚¬
+Crea un producto configurable (ej: muñecas personalizables).  
+**Precio automático**: 500€ - 3000€
 ```php
 Product::factory()->configurable()->create();
 ```
 
 ### `component()`
 Crea un componente (ej: ojos, pelucas).  
-**Precio automÃ¡tico**: 20â‚¬ - 200â‚¬
+**Precio automático**: 20€ - 200€
 ```php
 Product::factory()->component()->create();
 ```
@@ -2098,7 +2533,7 @@ Product::factory()->adultOnly()->create();
 
 ### Ejemplos Combinados:
 ```php
-// MuÃ±eca configurable sin stock
+// Muñeca configurable sin stock
 Product::factory()->configurable()->outOfStock()->create();
 
 // Componente en oferta
@@ -2110,38 +2545,38 @@ Product::factory()->simple()->inactive()->create();
 
 ---
 
-## ðŸ“‚ CategoryFactory States
+## 📂 CategoryFactory States
 
 ### `root()`
-Crea una categorÃ­a raÃ­z (sin padre).
+Crea una categoría raíz (sin padre).
 ```php
 Category::factory()->root()->create();
 ```
 
 ### `child()`
-Crea una subcategorÃ­a (con padre automÃ¡tico).
+Crea una subcategoría (con padre automático).
 ```php
 Category::factory()->child()->create();
 ```
 
 ### `inactive()`
-Marca la categorÃ­a como inactiva.
+Marca la categoría como inactiva.
 ```php
 Category::factory()->inactive()->create();
 ```
 
 ### Ejemplos Combinados:
 ```php
-// CategorÃ­a raÃ­z activa (default)
+// Categoría raíz activa (default)
 Category::factory()->root()->create();
 
-// SubcategorÃ­a inactiva
+// Subcategoría inactiva
 Category::factory()->child()->inactive()->create();
 ```
 
 ---
 
-## â­ ReviewFactory States
+## ⭐ ReviewFactory States
 
 ### `approved()`
 Marca la review como aprobada.
@@ -2150,25 +2585,25 @@ Review::factory()->approved()->create();
 ```
 
 ### `pending()`
-Marca la review como pendiente de aprobaciÃ³n.
+Marca la review como pendiente de aprobación.
 ```php
 Review::factory()->pending()->create();
 ```
 
 ### `fiveStars()`
-Asigna calificaciÃ³n de 5 estrellas.
+Asigna calificación de 5 estrellas.
 ```php
 Review::factory()->fiveStars()->create();
 ```
 
 ### `oneStar()`
-Asigna calificaciÃ³n de 1 estrella.
+Asigna calificación de 1 estrella.
 ```php
 Review::factory()->oneStar()->create();
 ```
 
 ### `withRating(int $rating)`
-Asigna una calificaciÃ³n especÃ­fica (1-5).
+Asigna una calificación específica (1-5).
 ```php
 Review::factory()->withRating(3)->create();
 ```
@@ -2193,7 +2628,7 @@ Review::factory()->withRating(4)->approved()->create();
 
 ---
 
-## ðŸ“¦ OrderFactory States
+## 📦 OrderFactory States
 
 ### `processing()`
 Marca la orden como "en proceso".
@@ -2251,17 +2686,17 @@ Order::factory()->completed()->create();
 
 ---
 
-## ðŸ“¦ OrderItemFactory States
+## 📦 OrderItemFactory States
 
 ### `forProduct(Product $product)`
-Asocia el item a un producto especÃ­fico.
+Asocia el item a un producto específico.
 ```php
 $product = Product::first();
 OrderItem::factory()->forProduct($product)->create();
 ```
 
 ### `forOrder(Order $order)`
-Asocia el item a una orden especÃ­fica.
+Asocia el item a una orden específica.
 ```php
 $order = Order::first();
 OrderItem::factory()->forOrder($order)->create();
@@ -2281,7 +2716,7 @@ OrderItem::factory()->deletedProduct()->create();
 
 ### Ejemplos Combinados:
 ```php
-// Item de 5 unidades de un producto especÃ­fico
+// Item de 5 unidades de un producto específico
 $product = Product::first();
 OrderItem::factory()->forProduct($product)->withQuantity(5)->create();
 
@@ -2291,28 +2726,28 @@ OrderItem::factory()->deletedProduct()->withQuantity(2)->create();
 
 ---
 
-## ðŸ’¬ ChatSessionFactory States
+## 💬 ChatSessionFactory States
 
 ### `active()`
-SesiÃ³n de chat activa.
+Sesión de chat activa.
 ```php
 ChatSession::factory()->active()->create();
 ```
 
 ### `closed()`
-SesiÃ³n de chat cerrada.
+Sesión de chat cerrada.
 ```php
 ChatSession::factory()->closed()->create();
 ```
 
 ### `guest()`
-SesiÃ³n de invitado (sin user_id).
+Sesión de invitado (sin user_id).
 ```php
 ChatSession::factory()->guest()->create();
 ```
 
 ### `forUser(User $user)`
-Asocia la sesiÃ³n a un usuario especÃ­fico.
+Asocia la sesión a un usuario específico.
 ```php
 $user = User::first();
 ChatSession::factory()->forUser($user)->create();
@@ -2320,17 +2755,17 @@ ChatSession::factory()->forUser($user)->create();
 
 ### Ejemplos Combinados:
 ```php
-// SesiÃ³n activa de un usuario especÃ­fico
+// Sesión activa de un usuario específico
 $user = User::first();
 ChatSession::factory()->active()->forUser($user)->create();
 
-// SesiÃ³n cerrada de invitado
+// Sesión cerrada de invitado
 ChatSession::factory()->closed()->guest()->create();
 ```
 
 ---
 
-## ðŸ’¬ ChatMessageFactory States
+## 💬 ChatMessageFactory States
 
 ### `fromCustomer()`
 Mensaje enviado por el cliente.
@@ -2345,19 +2780,19 @@ ChatMessage::factory()->fromAgent()->create();
 ```
 
 ### `read()`
-Marca el mensaje como leÃ­do.
+Marca el mensaje como leído.
 ```php
 ChatMessage::factory()->read()->create();
 ```
 
 ### `unread()`
-Marca el mensaje como no leÃ­do.
+Marca el mensaje como no leído.
 ```php
 ChatMessage::factory()->unread()->create();
 ```
 
 ### `forSession(ChatSession $session)`
-Asocia el mensaje a una sesiÃ³n especÃ­fica.
+Asocia el mensaje a una sesión específica.
 ```php
 $session = ChatSession::first();
 ChatMessage::factory()->forSession($session)->create();
@@ -2365,18 +2800,18 @@ ChatMessage::factory()->forSession($session)->create();
 
 ### Ejemplos Combinados:
 ```php
-// Mensaje de cliente no leÃ­do
+// Mensaje de cliente no leído
 ChatMessage::factory()->fromCustomer()->unread()->create();
 
-// Mensaje de agente leÃ­do
+// Mensaje de agente leído
 ChatMessage::factory()->fromAgent()->read()->create();
 ```
 
 ---
 
-## ðŸŽ“ Casos de Uso Comunes
+## 🎓 Casos de Uso Comunes
 
-### Crear usuario admin con Ã³rdenes
+### Crear usuario admin con órdenes
 ```php
 $admin = User::factory()->admin()->create();
 Order::factory()->count(5)->create(['user_id' => $admin->id]);
@@ -2396,7 +2831,7 @@ $order = Order::factory()->paid()->create();
 OrderItem::factory()->count(3)->create(['order_id' => $order->id]);
 ```
 
-### Crear sesiÃ³n de chat con mensajes
+### Crear sesión de chat con mensajes
 ```php
 $session = ChatSession::factory()->active()->create();
 ChatMessage::factory()->fromCustomer()->unread()->count(2)->create(['session_id' => $session->id]);
@@ -2412,7 +2847,7 @@ Review::factory()->oneStar()->pending()->count(1)->create(['product_id' => $prod
 
 ---
 
-## ðŸ§ª Testing con States
+## 🧪 Testing con States
 
 ### Ejemplo en PHPUnit/Pest:
 ```php
@@ -2428,7 +2863,7 @@ test('out of stock products cannot be ordered', function () {
     $product = Product::factory()->outOfStock()->create();
     
     expect($product->stock_quantity)->toBe(0);
-    // ... lÃ³gica de test
+    // ... lógica de test
 });
 
 test('approved reviews are visible', function () {
@@ -2441,7 +2876,7 @@ test('approved reviews are visible', function () {
 
 ---
 
-## ðŸ“Š Resumen de States por Factory
+## 📊 Resumen de States por Factory
 
 | Factory | States Disponibles | Total |
 |---------|-------------------|-------|
@@ -2457,19 +2892,19 @@ test('approved reviews are visible', function () {
 
 ---
 
-## ðŸ’¡ Mejores PrÃ¡cticas
+## 💡 Mejores Prácticas
 
 1. **Encadena states para casos complejos**:
    ```php
    User::factory()->admin()->verified()->inactive()->create();
    ```
 
-2. **Usa states en seeders para cÃ³digo mÃ¡s limpio**:
+2. **Usa states en seeders para código más limpio**:
    ```php
-   // âŒ Antes
+   // ❌ Antes
    Product::create(['product_type' => 'configurable', 'stock_quantity' => 0]);
    
-   // âœ… DespuÃ©s
+   // ✅ Después
    Product::factory()->configurable()->outOfStock()->create();
    ```
 
@@ -2478,14 +2913,14 @@ test('approved reviews are visible', function () {
    Product::factory()->simple()->count(10)->create();
    ```
 
-4. **Usa states especÃ­ficos en tests**:
+4. **Usa states específicos en tests**:
    ```php
    Review::factory()->oneStar()->pending()->create();
    ```
 
 ---
 
-## ðŸš€ Comandos Ãštiles
+## 🚀 Comandos Útiles
 
 ### Probar states en Tinker:
 ```bash
@@ -2508,7 +2943,7 @@ User::where('role', 'admin')->get();
 
 ---
 
-**Ãšltima actualizaciÃ³n**: Febrero 2026  
+**Última actualización**: Febrero 2026  
 **Proyecto**: MiKiwi - Sistema de factories y seeders
 
 ---
@@ -2517,82 +2952,82 @@ User::where('role', 'admin')->get();
 
 ## docs\PLAN_CONTINGENCIA
 
-# ðŸ›¡ï¸ Plan de GestiÃ³n de Riesgos y Contingencia - MiKiwi
+# 🛡️ Plan de Gestión de Riesgos y Contingencia - MiKiwi
 
-Este documento establece los protocolos de seguridad, prevenciÃ³n de riesgos tÃ©cnicos y planes de continuidad para la plataforma MiKiwi, cumpliendo con los estÃ¡ndares de calidad y seguridad requeridos.
+Este documento establece los protocolos de seguridad, prevención de riesgos técnicos y planes de continuidad para la plataforma MiKiwi, cumpliendo con los estándares de calidad y seguridad requeridos.
 
 ---
 
-## 1. IdentificaciÃ³n de Riesgos TÃ©cnicos (RA3-e)
+## 1. Identificación de Riesgos Técnicos (RA3-e)
 
-Basado en la auditorÃ­a tÃ©cnica de Febrero 2026, se han identificado las siguientes vulnerabilidades crÃ­ticas y su estrategia de mitigaciÃ³n:
+Basado en la auditoría técnica de Febrero 2026, se han identificado las siguientes vulnerabilidades críticas y su estrategia de mitigación:
 
-### A. Seguridad de Acceso y AutorizaciÃ³n
+### A. Seguridad de Acceso y Autorización
 
 - **Riesgo:** Escalada de privilegios en `UserController::toggleAdmin`.
-- **Impacto:** ðŸ”´ CrÃ­tico. Un usuario malintencionado podrÃ­a auto-asignarse permisos de administrador.
-- **MitigaciÃ³n:** ImplementaciÃ³n inmediata de `UserPolicy` y protecciÃ³n del mÃ©todo mediante el middleware de Laravel.
+- **Impacto:** 🔴 Crítico. Un usuario malintencionado podría auto-asignarse permisos de administrador.
+- **Mitigación:** Implementación inmediata de `UserPolicy` y protección del método mediante el middleware de Laravel.
 
-### B. ExposiciÃ³n de Datos (Data Breach)
+### B. Exposición de Datos (Data Breach)
 
 - **Riesgo:** Acceso no autenticado a la lista de usuarios.
-- **Impacto:** ðŸ”´ CrÃ­tico. Fuga de informaciÃ³n personal.
-- **MitigaciÃ³n:** Aplicar middleware `auth:sanctum` a todos los endpoints de gestiÃ³n de usuarios.
+- **Impacto:** 🔴 Crítico. Fuga de información personal.
+- **Mitigación:** Aplicar middleware `auth:sanctum` a todos los endpoints de gestión de usuarios.
 
 ### C. Ataques de Fuerza Bruta / DoS
 
-- **Riesgo:** Ausencia de Rate Limiting en la API de autenticaciÃ³n.
-- **Impacto:** ðŸ”´ CrÃ­tico. Bloqueo del servidor por exceso de peticiones.
-- **MitigaciÃ³n:** ConfiguraciÃ³n de `ThrottleRequests` en `routes/api.php`.
+- **Riesgo:** Ausencia de Rate Limiting en la API de autenticación.
+- **Impacto:** 🔴 Crítico. Bloqueo del servidor por exceso de peticiones.
+- **Mitigación:** Configuración de `ThrottleRequests` en `routes/api.php`.
 
 ---
 
-## 2. Plan de Backups y RecuperaciÃ³n de Datos
+## 2. Plan de Backups y Recuperación de Datos
 
-Para garantizar la integridad de la informaciÃ³n ante fallos de hardware o errores humanos:
+Para garantizar la integridad de la información ante fallos de hardware o errores humanos:
 
 ### Estrategia de Copias de Seguridad
 
-- **Base de Datos (MySQL):** Backups diarios automÃ¡ticos utilizando `spatie/laravel-backup`. Almacenamiento externo en AWS S3 (fuera del servidor principal).
-- **ImÃ¡genes (Cloudinary):** Cloudinary actÃºa como CDN y almacenamiento persistente. Se mantiene una copia local de los assets originales en el repositorio Git.
-- **CÃ³digo Fuente:** Control de versiones en GitHub con ramas protegidas (`main`, `dev`).
+- **Base de Datos (MySQL):** Backups diarios automáticos utilizando `spatie/laravel-backup`. Almacenamiento externo en AWS S3 (fuera del servidor principal).
+- **Imágenes (Cloudinary):** Cloudinary actúa como CDN y almacenamiento persistente. Se mantiene una copia local de los assets originales en el repositorio Git.
+- **Código Fuente:** Control de versiones en GitHub con ramas protegidas (`main`, `dev`).
 
-### Protocolo de RestauraciÃ³n (RTO/RPO)
+### Protocolo de Restauración (RTO/RPO)
 
-1.  **Tiempo de RecuperaciÃ³n (RTO):** < 4 horas para restaurar el servicio completo.
-2.  **Punto de RecuperaciÃ³n (RPO):** MÃ¡ximo 24 horas de pÃ©rdida de datos (tiempo desde el Ãºltimo backup).
+1.  **Tiempo de Recuperación (RTO):** < 4 horas para restaurar el servicio completo.
+2.  **Punto de Recuperación (RPO):** Máximo 24 horas de pérdida de datos (tiempo desde el último backup).
 3.  **Procedimiento:**
-    - Despliegue de la Ãºltima versiÃ³n estable desde GitHub.
-    - RestauraciÃ³n de la Ãºltima captura de la base de datos desde AWS S3.
-    - Re-generaciÃ³n de cachÃ©s de Laravel (`config:cache`, `route:cache`).
+    - Despliegue de la última versión estable desde GitHub.
+    - Restauración de la última captura de la base de datos desde AWS S3.
+    - Re-generación de cachés de Laravel (`config:cache`, `route:cache`).
 
 ---
 
 ## 3. Plan de Contingencia (Continuidad de Negocio)
 
-Â¿QuÃ© hacer cuando algo falla crÃ­ticamente?
+¿Qué hacer cuando algo falla críticamente?
 
-| Escenario                        | AcciÃ³n de Respuesta                                                                                                            |
+| Escenario                        | Acción de Respuesta                                                                                                            |
 | :------------------------------- | :----------------------------------------------------------------------------------------------------------------------------- |
-| **CaÃ­da del Servidor (Hosting)** | Despliegue automÃ¡tico en servidor espejo (Mirroring) o entorno de emergencia en Vapor/Heroku.                                  |
-| **Fallo en Pasarela (Stripe)**   | NotificaciÃ³n automÃ¡tica al usuario. Deshabilitar pagos temporalmente y permitir "Guardar configuraciÃ³n" para compra posterior. |
-| **Error CrÃ­tico en ProducciÃ³n**  | _Rollback_ inmediato a la versiÃ³n anterior estable usando el historial de GitHub.                                              |
-| **PÃ©rdida de ConfiguraciÃ³n 3D**  | RestauraciÃ³n de los valores por defecto definidos en `DollSettingsController`.                                                 |
+| **Caída del Servidor (Hosting)** | Despliegue automático en servidor espejo (Mirroring) o entorno de emergencia en Vapor/Heroku.                                  |
+| **Fallo en Pasarela (Stripe)**   | Notificación automática al usuario. Deshabilitar pagos temporalmente y permitir "Guardar configuración" para compra posterior. |
+| **Error Crítico en Producción**  | _Rollback_ inmediato a la versión anterior estable usando el historial de GitHub.                                              |
+| **Pérdida de Configuración 3D**  | Restauración de los valores por defecto definidos en `DollSettingsController`.                                                 |
 
 ---
 
-## 4. GestiÃ³n de Incidencias (RA4-c,d)
+## 4. Gestión de Incidencias (RA4-c,d)
 
 El flujo de trabajo para resolver problemas detectados es el siguiente:
 
-1.  **DetecciÃ³n:** Alerta automÃ¡tica vÃ­a logs (Sentry/Logtail).
-2.  **Registro:** CreaciÃ³n de un _Issue_ en GitHub con la etiqueta `bug` o `security`.
-3.  **ResoluciÃ³n:** CreaciÃ³n de una rama `fix/...`, revisiÃ³n por pares (Pull Request) y tests automÃ¡ticos.
-4.  **Cierre:** FusiÃ³n de la rama y despliegue de la correcciÃ³n.
+1.  **Detección:** Alerta automática vía logs (Sentry/Logtail).
+2.  **Registro:** Creación de un _Issue_ en GitHub con la etiqueta `bug` o `security`.
+3.  **Resolución:** Creación de una rama `fix/...`, revisión por pares (Pull Request) y tests automáticos.
+4.  **Cierre:** Fusión de la rama y despliegue de la corrección.
 
 ---
 
-_Ãšltima actualizaciÃ³n: Febrero 2026_
+_Última actualización: Febrero 2026_
 
 ---
 
@@ -2600,268 +3035,268 @@ _Ãšltima actualizaciÃ³n: Febrero 2026_
 
 ## docs\ROADMAP
 
-# ðŸ—ºï¸ MiKiwi Backend Roadmap
+# 🗺️ MiKiwi Backend Roadmap
 
 **Fecha:** Febrero 2026  
 **Proyecto:** MiKiwi E-Commerce Platform  
-**VersiÃ³n:** 1.0.0
+**Versión:** 1.0.0
 
 ---
 
-## ðŸ“‹ RESUMEN EJECUTIVO
+## 📋 RESUMEN EJECUTIVO
 
-**Estado Actual:** AplicaciÃ³n Laravel con arquitectura mixta. Patrones implementados en Product/Category pero inconsistencias crÃ­ticas en Order/UserAddress.
+**Estado Actual:** Aplicación Laravel con arquitectura mixta. Patrones implementados en Product/Category pero inconsistencias críticas en Order/UserAddress.
 
 **Archivos Existentes:** 44  
 **Archivos Faltantes:** ~57  
-**Vulnerabilidades CrÃ­ticas:** 6  
-**Issues de CÃ³digo:** 30+
+**Vulnerabilidades Críticas:** 6  
+**Issues de Código:** 30+
 
-**EstimaciÃ³n Total:** 4-5 semanas (2 desarrolladores)
+**Estimación Total:** 4-5 semanas (2 desarrolladores)
 
 ---
 
-## ðŸš¨ PROBLEMAS CRÃTICOS ENCONTRADOS
+## 🚨 PROBLEMAS CRÍTICOS ENCONTRADOS
 
-### 1. Vulnerabilidades de Seguridad (6 crÃ­ticas)
+### 1. Vulnerabilidades de Seguridad (6 críticas)
 
-| # | Problema | Archivo | LÃ­nea | Riesgo |
+| # | Problema | Archivo | Línea | Riesgo |
 |---|----------|---------|-------|--------|
-| 1 | **Privilege Escalation** - Cualquiera puede toggle admin | UserController.php | 17-24 | ðŸ”´ CRÃTICO |
-| 2 | **Missing Rate Limiting** - API auth sin throttling | routes/api.php | 21-22 | ðŸ”´ CRÃTICO |
-| 3 | **Mass Assignment** - Campo 'role' en $fillable | User.php | 14-23 | ðŸ”´ CRÃTICO |
-| 4 | **No CSRF Protection** - Cart operations | routes/web.php | 56-61 | ðŸ”´ CRÃTICO |
-| 5 | **Exception Leakage** - Mensajes de error expuestos | MÃºltiples | - | ðŸ”´ CRÃTICO |
-| 6 | **Data Breach** - UserController::index sin auth | UserController.php | 11-15 | ðŸ”´ CRÃTICO |
+| 1 | **Privilege Escalation** - Cualquiera puede toggle admin | UserController.php | 17-24 | 🔴 CRÍTICO |
+| 2 | **Missing Rate Limiting** - API auth sin throttling | routes/api.php | 21-22 | 🔴 CRÍTICO |
+| 3 | **Mass Assignment** - Campo 'role' en $fillable | User.php | 14-23 | 🔴 CRÍTICO |
+| 4 | **No CSRF Protection** - Cart operations | routes/web.php | 56-61 | 🔴 CRÍTICO |
+| 5 | **Exception Leakage** - Mensajes de error expuestos | Múltiples | - | 🔴 CRÍTICO |
+| 6 | **Data Breach** - UserController::index sin auth | UserController.php | 11-15 | 🔴 CRÍTICO |
 
-### 2. Problemas de Arquitectura (8 crÃ­ticos)
+### 2. Problemas de Arquitectura (8 críticos)
 
 | # | Problema | Archivo | Impacto |
 |---|----------|---------|---------|
-| 1 | **Business Logic in Controller** - OrderController tiene 69 lÃ­neas de lÃ³gica | OrderController.php | 42-111 | ðŸ”´ CRÃTICO |
-| 2 | **OrderService Not Used** - MÃ©todo existe pero no se usa | OrderController.php | - | ðŸ”´ CRÃTICO |
-| 3 | **No Policies** - AutorizaciÃ³n inline en vez de Policies | MÃºltiples | - | ðŸ”´ CRÃTICO |
-| 4 | **Inline Validation** - ValidaciÃ³n en controllers | MÃºltiples | - | ðŸ”´ CRÃTICO |
-| 5 | **Direct Model Access** - Eloquent directo en controllers | UserAddressController, etc. | - | ðŸ”´ CRÃTICO |
-| 6 | **Mixed Return Types** - JSON + Redirect en CartController | CartController.php | 44-77 | ðŸ”´ CRÃTICO |
-| 7 | **No API Resources** - Retorna modelos crudos | Api/Controllers | - | ðŸ”´ CRÃTICO |
-| 8 | **No Form Requests** - Solo 2 existen, faltan 6+ | Requests/ | - | ðŸ”´ CRÃTICO |
+| 1 | **Business Logic in Controller** - OrderController tiene 69 líneas de lógica | OrderController.php | 42-111 | 🔴 CRÍTICO |
+| 2 | **OrderService Not Used** - Método existe pero no se usa | OrderController.php | - | 🔴 CRÍTICO |
+| 3 | **No Policies** - Autorización inline en vez de Policies | Múltiples | - | 🔴 CRÍTICO |
+| 4 | **Inline Validation** - Validación en controllers | Múltiples | - | 🔴 CRÍTICO |
+| 5 | **Direct Model Access** - Eloquent directo en controllers | UserAddressController, etc. | - | 🔴 CRÍTICO |
+| 6 | **Mixed Return Types** - JSON + Redirect en CartController | CartController.php | 44-77 | 🔴 CRÍTICO |
+| 7 | **No API Resources** - Retorna modelos crudos | Api/Controllers | - | 🔴 CRÍTICO |
+| 8 | **No Form Requests** - Solo 2 existen, faltan 6+ | Requests/ | - | 🔴 CRÍTICO |
 
 ### 3. Inconsistencias
 
 - **Nomenclatura repositorios:** `ProductRepository` vs `EloquentCategoryRepository` vs `EloquentOrderRepository`
-- **AutorizaciÃ³n:** Unos usan middleware, otros mÃ©todo privado, otros ninguno
+- **Autorización:** Unos usan middleware, otros método privado, otros ninguno
 - **Manejo de errores:** Cada controller maneja errores diferente
-- **Type hints:** Algunos mÃ©todos los tienen, otros no
+- **Type hints:** Algunos métodos los tienen, otros no
 
 ---
 
-## ðŸ“ ESTRUCTURA OBJETIVO (Target)
+## 📁 ESTRUCTURA OBJETIVO (Target)
 
 ```
 app/
-â”œâ”€â”€ Actions/                          # NUEVO: Single-responsibility actions
-â”‚   â”œâ”€â”€ Orders/
-â”‚   â”‚   â”œâ”€â”€ CreateOrder.php
-â”‚   â”‚   â””â”€â”€ CancelOrder.php
-â”‚   â””â”€â”€ Addresses/
-â”‚       â””â”€â”€ SetDefaultAddress.php
-â”‚
-â”œâ”€â”€ Console/Commands/                 # NUEVO: Artisan commands
-â”‚   â”œâ”€â”€ CleanupExpiredCarts.php
-â”‚   â”œâ”€â”€ CheckLowStock.php
-â”‚   â””â”€â”€ GenerateSalesReport.php
-â”‚
-â”œâ”€â”€ DTOs/                             # NUEVO: Data Transfer Objects
-â”‚   â”œâ”€â”€ ShippingAddressDto.php
-â”‚   â””â”€â”€ MoneyDto.php
-â”‚
-â”œâ”€â”€ Enums/                            # EXISTE (2 archivos)
-â”‚   â”œâ”€â”€ ChatSenderType.php
-â”‚   â””â”€â”€ ChatSessionStatus.php
-â”‚
-â”œâ”€â”€ Events/                           # NUEVO: Event-driven architecture
-â”‚   â”œâ”€â”€ OrderCreated.php
-â”‚   â”œâ”€â”€ OrderStatusUpdated.php
-â”‚   â”œâ”€â”€ ProductLowStock.php
-â”‚   â””â”€â”€ UserRegistered.php
-â”‚
-â”œâ”€â”€ Exceptions/                       # NUEVO: Custom exceptions
-â”‚   â”œâ”€â”€ InsufficientStockException.php
-â”‚   â”œâ”€â”€ CartEmptyException.php
-â”‚   â”œâ”€â”€ ProductNotFoundException.php
-â”‚   â””â”€â”€ PaymentFailedException.php
-â”‚
-â”œâ”€â”€ Http/
-â”‚   â”œâ”€â”€ Controllers/
-â”‚   â”‚   â”œâ”€â”€ Api/                      # EXISTE
-â”‚   â”‚   â”‚   â”œâ”€â”€ AuthController.php
-â”‚   â”‚   â”‚   â””â”€â”€ ProductController.php
-â”‚   â”‚   â”œâ”€â”€ Auth/                     # EXISTE (Breeze)
-â”‚   â”‚   â”œâ”€â”€ CartController.php        # MODIFICAR
-â”‚   â”‚   â”œâ”€â”€ CategoryController.php    # OK
-â”‚   â”‚   â”œâ”€â”€ ColeccionesController.php # OK
-â”‚   â”‚   â”œâ”€â”€ ContentController.php     # MODIFICAR
-â”‚   â”‚   â”œâ”€â”€ Controller.php            # EXISTE
-â”‚   â”‚   â”œâ”€â”€ DollSettingsController.php # MODIFICAR
-â”‚   â”‚   â”œâ”€â”€ OrderController.php       # REFACTORIZAR
-â”‚   â”‚   â”œâ”€â”€ ProductController.php     # OK
-â”‚   â”‚   â”œâ”€â”€ ProfileController.php     # OK
-â”‚   â”‚   â”œâ”€â”€ UserAddressController.php # REFACTORIZAR
-â”‚   â”‚   â””â”€â”€ UserController.php        # CRÃTICO: Agregar auth
-â”‚   â”‚
-â”‚   â”œâ”€â”€ Middleware/                   # EXISTE (2 archivos)
-â”‚   â”‚   â”œâ”€â”€ EnsureUserIsAdmin.php
-â”‚   â”‚   â””â”€â”€ HandleInertiaRequests.php
-â”‚   â”‚
-â”‚   â”œâ”€â”€ Requests/                     # EXPANDIR (2 â†’ 8+)
-â”‚   â”‚   â”œâ”€â”€ Api/
-â”‚   â”‚   â”‚   â”œâ”€â”€ RegisterRequest.php
-â”‚   â”‚   â”‚   â””â”€â”€ LoginRequest.php
-â”‚   â”‚   â”œâ”€â”€ Auth/
-â”‚   â”‚   â”‚   â””â”€â”€ LoginRequest.php      # EXISTE
-â”‚   â”‚   â”œâ”€â”€ ProfileUpdateRequest.php  # EXISTE
-â”‚   â”‚   â”œâ”€â”€ StoreAddressRequest.php
-â”‚   â”‚   â”œâ”€â”€ StoreCartRequest.php
-â”‚   â”‚   â”œâ”€â”€ StoreOrderRequest.php
-â”‚   â”‚   â””â”€â”€ UpdateCartRequest.php
-â”‚   â”‚
-â”‚   â””â”€â”€ Resources/                    # NUEVO (0 â†’ 8)
-â”‚       â”œâ”€â”€ ProductResource.php
-â”‚       â”œâ”€â”€ ProductCollection.php
-â”‚       â”œâ”€â”€ OrderResource.php
-â”‚       â”œâ”€â”€ OrderItemResource.php
-â”‚       â”œâ”€â”€ CategoryResource.php
-â”‚       â”œâ”€â”€ UserResource.php
-â”‚       â”œâ”€â”€ AddressResource.php
-â”‚       â””â”€â”€ CartResource.php
-â”‚
-â”œâ”€â”€ Jobs/                             # NUEVO: Queue jobs
-â”‚   â”œâ”€â”€ SendOrderConfirmationEmail.php
-â”‚   â”œâ”€â”€ ProcessPayment.php
-â”‚   â””â”€â”€ CleanupOldCarts.php
-â”‚
-â”œâ”€â”€ Listeners/                        # NUEVO: Event listeners
-â”‚   â”œâ”€â”€ SendOrderConfirmation.php
-â”‚   â”œâ”€â”€ UpdateInventory.php
-â”‚   â””â”€â”€ NotifyAdminOfNewOrder.php
-â”‚
-â”œâ”€â”€ Mail/                             # NUEVO: Mailables
-â”‚   â”œâ”€â”€ OrderConfirmationMail.php
-â”‚   â”œâ”€â”€ OrderShippedMail.php
-â”‚   â””â”€â”€ WelcomeMail.php
-â”‚
-â”œâ”€â”€ Models/                           # EXISTE (10 archivos)
-â”‚   â”œâ”€â”€ Category.php
-â”‚   â”œâ”€â”€ ChatMessage.php
-â”‚   â”œâ”€â”€ ChatSession.php
-â”‚   â”œâ”€â”€ HeroImage.php
-â”‚   â”œâ”€â”€ Order.php                     # MODIFICAR: Agregar user_id a fillable
-â”‚   â”œâ”€â”€ OrderItem.php
-â”‚   â”œâ”€â”€ Product.php
-â”‚   â”œâ”€â”€ Review.php
-â”‚   â”œâ”€â”€ User.php                      # MODIFICAR: Quitar role de fillable
-â”‚   â””â”€â”€ UserAddress.php
-â”‚
-â”œâ”€â”€ Notifications/                    # NUEVO
-â”‚   â”œâ”€â”€ OrderCreatedNotification.php
-â”‚   â””â”€â”€ LowStockNotification.php
-â”‚
-â”œâ”€â”€ Policies/                         # NUEVO (0 â†’ 5)
-â”‚   â”œâ”€â”€ UserPolicy.php                # CRÃTICO
-â”‚   â”œâ”€â”€ OrderPolicy.php
-â”‚   â”œâ”€â”€ UserAddressPolicy.php
-â”‚   â”œâ”€â”€ ProductPolicy.php
-â”‚   â””â”€â”€ CategoryPolicy.php
-â”‚
-â”œâ”€â”€ Providers/
-â”‚   â””â”€â”€ AppServiceProvider.php        # MODIFICAR: Agregar bindings
-â”‚
-â”œâ”€â”€ Repositories/
-â”‚   â”œâ”€â”€ Eloquent/
-â”‚   â”‚   â”œâ”€â”€ EloquentCategoryRepository.php
-â”‚   â”‚   â”œâ”€â”€ EloquentOrderRepository.php
-â”‚   â”‚   â”œâ”€â”€ EloquentProductRepository.php    # RENOMBRAR
-â”‚   â”‚   â””â”€â”€ EloquentUserAddressRepository.php # NUEVO
-â”‚   â”‚
-â”‚   â””â”€â”€ Interfaces/
-â”‚       â”œâ”€â”€ CategoryRepositoryInterface.php
-â”‚       â”œâ”€â”€ OrderRepositoryInterface.php
-â”‚       â”œâ”€â”€ ProductRepositoryInterface.php
-â”‚       â””â”€â”€ UserAddressRepositoryInterface.php # NUEVO
-â”‚
-â”œâ”€â”€ Rules/                            # NUEVO: Custom validation
-â”‚   â”œâ”€â”€ ValidProductSlug.php
-â”‚   â”œâ”€â”€ ValidPostalCode.php
-â”‚   â””â”€â”€ ValidStockQuantity.php
-â”‚
-â”œâ”€â”€ Services/                         # EXISTE (5 archivos)
-â”‚   â”œâ”€â”€ CartService.php
-â”‚   â”œâ”€â”€ CategoryService.php
-â”‚   â”œâ”€â”€ CloudinaryService.php
-â”‚   â”œâ”€â”€ OrderService.php              # MODIFICAR: Usar en controller
-â”‚   â””â”€â”€ ProductService.php
-â”‚
-â””â”€â”€ ValueObjects/                     # NUEVO (opcional)
-    â”œâ”€â”€ Money.php
-    â””â”€â”€ Address.php
+├── Actions/                          # NUEVO: Single-responsibility actions
+│   ├── Orders/
+│   │   ├── CreateOrder.php
+│   │   └── CancelOrder.php
+│   └── Addresses/
+│       └── SetDefaultAddress.php
+│
+├── Console/Commands/                 # NUEVO: Artisan commands
+│   ├── CleanupExpiredCarts.php
+│   ├── CheckLowStock.php
+│   └── GenerateSalesReport.php
+│
+├── DTOs/                             # NUEVO: Data Transfer Objects
+│   ├── ShippingAddressDto.php
+│   └── MoneyDto.php
+│
+├── Enums/                            # EXISTE (2 archivos)
+│   ├── ChatSenderType.php
+│   └── ChatSessionStatus.php
+│
+├── Events/                           # NUEVO: Event-driven architecture
+│   ├── OrderCreated.php
+│   ├── OrderStatusUpdated.php
+│   ├── ProductLowStock.php
+│   └── UserRegistered.php
+│
+├── Exceptions/                       # NUEVO: Custom exceptions
+│   ├── InsufficientStockException.php
+│   ├── CartEmptyException.php
+│   ├── ProductNotFoundException.php
+│   └── PaymentFailedException.php
+│
+├── Http/
+│   ├── Controllers/
+│   │   ├── Api/                      # EXISTE
+│   │   │   ├── AuthController.php
+│   │   │   └── ProductController.php
+│   │   ├── Auth/                     # EXISTE (Breeze)
+│   │   ├── CartController.php        # MODIFICAR
+│   │   ├── CategoryController.php    # OK
+│   │   ├── ColeccionesController.php # OK
+│   │   ├── ContentController.php     # MODIFICAR
+│   │   ├── Controller.php            # EXISTE
+│   │   ├── DollSettingsController.php # MODIFICAR
+│   │   ├── OrderController.php       # REFACTORIZAR
+│   │   ├── ProductController.php     # OK
+│   │   ├── ProfileController.php     # OK
+│   │   ├── UserAddressController.php # REFACTORIZAR
+│   │   └── UserController.php        # CRÍTICO: Agregar auth
+│   │
+│   ├── Middleware/                   # EXISTE (2 archivos)
+│   │   ├── EnsureUserIsAdmin.php
+│   │   └── HandleInertiaRequests.php
+│   │
+│   ├── Requests/                     # EXPANDIR (2 → 8+)
+│   │   ├── Api/
+│   │   │   ├── RegisterRequest.php
+│   │   │   └── LoginRequest.php
+│   │   ├── Auth/
+│   │   │   └── LoginRequest.php      # EXISTE
+│   │   ├── ProfileUpdateRequest.php  # EXISTE
+│   │   ├── StoreAddressRequest.php
+│   │   ├── StoreCartRequest.php
+│   │   ├── StoreOrderRequest.php
+│   │   └── UpdateCartRequest.php
+│   │
+│   └── Resources/                    # NUEVO (0 → 8)
+│       ├── ProductResource.php
+│       ├── ProductCollection.php
+│       ├── OrderResource.php
+│       ├── OrderItemResource.php
+│       ├── CategoryResource.php
+│       ├── UserResource.php
+│       ├── AddressResource.php
+│       └── CartResource.php
+│
+├── Jobs/                             # NUEVO: Queue jobs
+│   ├── SendOrderConfirmationEmail.php
+│   ├── ProcessPayment.php
+│   └── CleanupOldCarts.php
+│
+├── Listeners/                        # NUEVO: Event listeners
+│   ├── SendOrderConfirmation.php
+│   ├── UpdateInventory.php
+│   └── NotifyAdminOfNewOrder.php
+│
+├── Mail/                             # NUEVO: Mailables
+│   ├── OrderConfirmationMail.php
+│   ├── OrderShippedMail.php
+│   └── WelcomeMail.php
+│
+├── Models/                           # EXISTE (10 archivos)
+│   ├── Category.php
+│   ├── ChatMessage.php
+│   ├── ChatSession.php
+│   ├── HeroImage.php
+│   ├── Order.php                     # MODIFICAR: Agregar user_id a fillable
+│   ├── OrderItem.php
+│   ├── Product.php
+│   ├── Review.php
+│   ├── User.php                      # MODIFICAR: Quitar role de fillable
+│   └── UserAddress.php
+│
+├── Notifications/                    # NUEVO
+│   ├── OrderCreatedNotification.php
+│   └── LowStockNotification.php
+│
+├── Policies/                         # NUEVO (0 → 5)
+│   ├── UserPolicy.php                # CRÍTICO
+│   ├── OrderPolicy.php
+│   ├── UserAddressPolicy.php
+│   ├── ProductPolicy.php
+│   └── CategoryPolicy.php
+│
+├── Providers/
+│   └── AppServiceProvider.php        # MODIFICAR: Agregar bindings
+│
+├── Repositories/
+│   ├── Eloquent/
+│   │   ├── EloquentCategoryRepository.php
+│   │   ├── EloquentOrderRepository.php
+│   │   ├── EloquentProductRepository.php    # RENOMBRAR
+│   │   └── EloquentUserAddressRepository.php # NUEVO
+│   │
+│   └── Interfaces/
+│       ├── CategoryRepositoryInterface.php
+│       ├── OrderRepositoryInterface.php
+│       ├── ProductRepositoryInterface.php
+│       └── UserAddressRepositoryInterface.php # NUEVO
+│
+├── Rules/                            # NUEVO: Custom validation
+│   ├── ValidProductSlug.php
+│   ├── ValidPostalCode.php
+│   └── ValidStockQuantity.php
+│
+├── Services/                         # EXISTE (5 archivos)
+│   ├── CartService.php
+│   ├── CategoryService.php
+│   ├── CloudinaryService.php
+│   ├── OrderService.php              # MODIFICAR: Usar en controller
+│   └── ProductService.php
+│
+└── ValueObjects/                     # NUEVO (opcional)
+    ├── Money.php
+    └── Address.php
 ```
 
 ---
 
-## ðŸ“Š ESTADÃSTICAS POR CATEGORÃA
+## 📊 ESTADÍSTICAS POR CATEGORÍA
 
-| CategorÃ­a | Existentes | Faltantes | Prioridad |
+| Categoría | Existentes | Faltantes | Prioridad |
 |-----------|-----------|-----------|-----------|
-| **Form Requests** | 2 | **6** | ðŸ”´ CrÃ­tico |
-| **API Resources** | 0 | **8** | ðŸ”´ CrÃ­tico |
-| **Policies** | 0 | **5** | ðŸ”´ CrÃ­tico |
-| **Exceptions** | 0 | **4** | ðŸŸ  Alto |
-| **Events** | 0 | **4** | ðŸŸ  Alto |
-| **Listeners** | 0 | **3** | ðŸŸ  Alto |
-| **Jobs** | 0 | **3** | ðŸŸ  Alto |
-| **Mail** | 0 | **3** | ðŸŸ¡ Medio |
-| **Notifications** | 0 | **2** | ðŸŸ¡ Medio |
-| **Actions** | 0 | **3** | ðŸŸ¡ Medio |
-| **Console Commands** | 0 | **3** | ðŸŸ¢ Bajo |
-| **Custom Rules** | 0 | **3** | ðŸŸ¢ Bajo |
-| **DTOs** | 0 | **2** | ðŸŸ¢ Bajo |
+| **Form Requests** | 2 | **6** | 🔴 Crítico |
+| **API Resources** | 0 | **8** | 🔴 Crítico |
+| **Policies** | 0 | **5** | 🔴 Crítico |
+| **Exceptions** | 0 | **4** | 🟠 Alto |
+| **Events** | 0 | **4** | 🟠 Alto |
+| **Listeners** | 0 | **3** | 🟠 Alto |
+| **Jobs** | 0 | **3** | 🟠 Alto |
+| **Mail** | 0 | **3** | 🟡 Medio |
+| **Notifications** | 0 | **2** | 🟡 Medio |
+| **Actions** | 0 | **3** | 🟡 Medio |
+| **Console Commands** | 0 | **3** | 🟢 Bajo |
+| **Custom Rules** | 0 | **3** | 🟢 Bajo |
+| **DTOs** | 0 | **2** | 🟢 Bajo |
 | **TOTAL** | **44** | **51** | |
 
 ---
 
-## ðŸ‘¥ ASIGNACIÃ“N DE TAREAS
+## 👥 ASIGNACIÓN DE TAREAS
 
 ### **ANGEL (50% - ~26 archivos)**
 
-#### Fase 1: Seguridad CrÃ­tica (Semana 1) - 6 archivos
+#### Fase 1: Seguridad Crítica (Semana 1) - 6 archivos
 **Prioridad: INMEDIATA**
 
-| # | Archivo | Tipo | Esfuerzo | DescripciÃ³n |
+| # | Archivo | Tipo | Esfuerzo | Descripción |
 |---|---------|------|----------|-------------|
-| 1 | `Policies/UserPolicy.php` | Crear | 2h | AutorizaciÃ³n para usuarios |
-| 2 | `Policies/OrderPolicy.php` | Crear | 2h | AutorizaciÃ³n para pedidos |
-| 3 | `Policies/UserAddressPolicy.php` | Crear | 1.5h | AutorizaciÃ³n para direcciones |
-| 4 | `UserController.php` | Modificar | 1h | Agregar autorizaciÃ³n toggleAdmin |
+| 1 | `Policies/UserPolicy.php` | Crear | 2h | Autorización para usuarios |
+| 2 | `Policies/OrderPolicy.php` | Crear | 2h | Autorización para pedidos |
+| 3 | `Policies/UserAddressPolicy.php` | Crear | 1.5h | Autorización para direcciones |
+| 4 | `UserController.php` | Modificar | 1h | Agregar autorización toggleAdmin |
 | 5 | `routes/api.php` | Modificar | 30min | Agregar rate limiting |
 | 6 | `Models/User.php` | Modificar | 30min | Quitar role de fillable |
 
 #### Fase 2: Form Requests (Semana 1-2) - 6 archivos
 
-| # | Archivo | Tipo | Esfuerzo | DescripciÃ³n |
+| # | Archivo | Tipo | Esfuerzo | Descripción |
 |---|---------|------|----------|-------------|
-| 7 | `Requests/StoreOrderRequest.php` | Crear | 1.5h | ValidaciÃ³n checkout |
-| 8 | `Requests/StoreAddressRequest.php` | Crear | 1h | ValidaciÃ³n crear direcciÃ³n |
-| 9 | `Requests/UpdateAddressRequest.php` | Crear | 1h | ValidaciÃ³n actualizar direcciÃ³n |
-| 10 | `Requests/Api/RegisterRequest.php` | Crear | 1h | ValidaciÃ³n API registro |
-| 11 | `Requests/Api/LoginRequest.php` | Crear | 45min | ValidaciÃ³n API login |
+| 7 | `Requests/StoreOrderRequest.php` | Crear | 1.5h | Validación checkout |
+| 8 | `Requests/StoreAddressRequest.php` | Crear | 1h | Validación crear dirección |
+| 9 | `Requests/UpdateAddressRequest.php` | Crear | 1h | Validación actualizar dirección |
+| 10 | `Requests/Api/RegisterRequest.php` | Crear | 1h | Validación API registro |
+| 11 | `Requests/Api/LoginRequest.php` | Crear | 45min | Validación API login |
 | 12 | `OrderController.php` | Modificar | 2h | Usar StoreOrderRequest |
 
-#### Fase 3: RefactorizaciÃ³n CrÃ­tica (Semana 2) - 7 archivos
+#### Fase 3: Refactorización Crítica (Semana 2) - 7 archivos
 
-| # | Archivo | Tipo | Esfuerzo | DescripciÃ³n |
+| # | Archivo | Tipo | Esfuerzo | Descripción |
 |---|---------|------|----------|-------------|
-| 13 | `Actions/Orders/CreateOrder.php` | Crear | 3h | Extraer lÃ³gica de OrderController |
+| 13 | `Actions/Orders/CreateOrder.php` | Crear | 3h | Extraer lógica de OrderController |
 | 14 | `OrderController.php` | Refactorizar | 2h | Usar OrderService/Action |
 | 15 | `UserAddressController.php` | Refactorizar | 2h | Usar Policies + Request |
 | 16 | `Exceptions/InsufficientStockException.php` | Crear | 30min | Exception stock |
@@ -2871,17 +3306,17 @@ app/
 
 #### Fase 4: Eventos (Semana 3) - 5 archivos
 
-| # | Archivo | Tipo | Esfuerzo | DescripciÃ³n |
+| # | Archivo | Tipo | Esfuerzo | Descripción |
 |---|---------|------|----------|-------------|
 | 20 | `Events/OrderCreated.php` | Crear | 1h | Evento pedido creado |
 | 21 | `Events/OrderStatusUpdated.php` | Crear | 1h | Evento cambio estado |
-| 22 | `Listeners/SendOrderConfirmation.php` | Crear | 1.5h | Email confirmaciÃ³n |
+| 22 | `Listeners/SendOrderConfirmation.php` | Crear | 1.5h | Email confirmación |
 | 23 | `Listeners/UpdateInventory.php` | Crear | 1h | Actualizar stock |
 | 24 | `Listeners/NotifyAdminOfNewOrder.php` | Crear | 1h | Notificar admin |
 
 #### Fase 5: Comandos (Semana 4) - 2 archivos
 
-| # | Archivo | Tipo | Esfuerzo | DescripciÃ³n |
+| # | Archivo | Tipo | Esfuerzo | Descripción |
 |---|---------|------|----------|-------------|
 | 25 | `Console/Commands/CleanupExpiredCarts.php` | Crear | 2h | Limpiar carritos |
 | 26 | `Console/Commands/CheckLowStock.php` | Crear | 2h | Revisar stock |
@@ -2894,20 +3329,20 @@ app/
 
 #### Fase 1: Infraestructura API (Semana 1) - 5 archivos
 
-| # | Archivo | Tipo | Esfuerzo | DescripciÃ³n |
+| # | Archivo | Tipo | Esfuerzo | Descripción |
 |---|---------|------|----------|-------------|
 | 1 | `Resources/ProductResource.php` | Crear | 2h | Transformar producto API |
-| 2 | `Resources/ProductCollection.php` | Crear | 1h | ColecciÃ³n productos |
-| 3 | `Resources/CategoryResource.php` | Crear | 1.5h | Transformar categorÃ­a |
+| 2 | `Resources/ProductCollection.php` | Crear | 1h | Colección productos |
+| 3 | `Resources/CategoryResource.php` | Crear | 1.5h | Transformar categoría |
 | 4 | `Resources/OrderResource.php` | Crear | 2h | Transformar pedido |
 | 5 | `Resources/OrderItemResource.php` | Crear | 1h | Transformar item pedido |
 
 #### Fase 2: API Resources (Semana 2) - 6 archivos
 
-| # | Archivo | Tipo | Esfuerzo | DescripciÃ³n |
+| # | Archivo | Tipo | Esfuerzo | Descripción |
 |---|---------|------|----------|-------------|
 | 6 | `Resources/UserResource.php` | Crear | 1.5h | Transformar usuario |
-| 7 | `Resources/AddressResource.php` | Crear | 1h | Transformar direcciÃ³n |
+| 7 | `Resources/AddressResource.php` | Crear | 1h | Transformar dirección |
 | 8 | `Resources/CartResource.php` | Crear | 1h | Transformar carrito |
 | 9 | `Api/ProductController.php` | Modificar | 1h | Usar Resources |
 | 10 | `Api/AuthController.php` | Modificar | 1.5h | Usar Resources + Requests |
@@ -2915,38 +3350,38 @@ app/
 
 #### Fase 3: Repositorios y Servicios (Semana 2-3) - 5 archivos
 
-| # | Archivo | Tipo | Esfuerzo | DescripciÃ³n |
+| # | Archivo | Tipo | Esfuerzo | Descripción |
 |---|---------|------|----------|-------------|
-| 12 | `Repositories/EloquentProductRepository.php` | Renombrar | 30min | ProductRepository â†’ EloquentProductRepository |
+| 12 | `Repositories/EloquentProductRepository.php` | Renombrar | 30min | ProductRepository → EloquentProductRepository |
 | 13 | `Repositories/Interfaces/UserAddressRepositoryInterface.php` | Crear | 45min | Interfaz direcciones |
-| 14 | `Repositories/EloquentUserAddressRepository.php` | Crear | 2h | ImplementaciÃ³n direcciones |
+| 14 | `Repositories/EloquentUserAddressRepository.php` | Crear | 2h | Implementación direcciones |
 | 15 | `Services/UserAddressService.php` | Crear | 2h | Servicio direcciones |
 | 16 | `Providers/AppServiceProvider.php` | Modificar | 30min | Agregar bindings |
 
-#### Fase 4: Policies y ValidaciÃ³n (Semana 3) - 4 archivos
+#### Fase 4: Policies y Validación (Semana 3) - 4 archivos
 
-| # | Archivo | Tipo | Esfuerzo | DescripciÃ³n |
+| # | Archivo | Tipo | Esfuerzo | Descripción |
 |---|---------|------|----------|-------------|
-| 17 | `Policies/ProductPolicy.php` | Crear | 1.5h | AutorizaciÃ³n productos |
-| 18 | `Policies/CategoryPolicy.php` | Crear | 1.5h | AutorizaciÃ³n categorÃ­as |
-| 19 | `Rules/ValidProductSlug.php` | Crear | 1h | Regla validaciÃ³n slug |
-| 20 | `Rules/ValidPostalCode.php` | Crear | 1h | Regla validaciÃ³n CP |
+| 17 | `Policies/ProductPolicy.php` | Crear | 1.5h | Autorización productos |
+| 18 | `Policies/CategoryPolicy.php` | Crear | 1.5h | Autorización categorías |
+| 19 | `Rules/ValidProductSlug.php` | Crear | 1h | Regla validación slug |
+| 20 | `Rules/ValidPostalCode.php` | Crear | 1h | Regla validación CP |
 
 #### Fase 5: Comunicaciones (Semana 4) - 5 archivos
 
-| # | Archivo | Tipo | Esfuerzo | DescripciÃ³n |
+| # | Archivo | Tipo | Esfuerzo | Descripción |
 |---|---------|------|----------|-------------|
-| 21 | `Mail/OrderConfirmationMail.php` | Crear | 2h | Email confirmaciÃ³n pedido |
+| 21 | `Mail/OrderConfirmationMail.php` | Crear | 2h | Email confirmación pedido |
 | 22 | `Mail/OrderShippedMail.php` | Crear | 1.5h | Email pedido enviado |
 | 23 | `Jobs/SendOrderConfirmationEmail.php` | Crear | 1.5h | Job async email |
 | 24 | `Jobs/ProcessPayment.php` | Crear | 2h | Job procesar pago |
-| 25 | `Notifications/OrderCreatedNotification.php` | Crear | 1.5h | NotificaciÃ³n pedido |
+| 25 | `Notifications/OrderCreatedNotification.php` | Crear | 1.5h | Notificación pedido |
 
 **Total Miguel: 25 archivos**
 
 ---
 
-## ðŸ“… CRONOGRAMA DETALLADO
+## 📅 CRONOGRAMA DETALLADO
 
 ### Semana 1: Seguridad y Fundamentos
 
@@ -2958,7 +3393,7 @@ app/
 - Angel: UserAddressPolicy + Modificar UserController
 - Miguel: CategoryResource + OrderResource
 
-**MiÃ©rcoles:**
+**Miércoles:**
 - Angel: Rate limiting + Quitar role de fillable
 - Miguel: OrderItemResource + Api/ProductController
 
@@ -2970,7 +3405,7 @@ app/
 - Angel: UpdateAddressRequest + Api/RegisterRequest
 - Miguel: CartResource + Api/AuthController
 
-### Semana 2: RefactorizaciÃ³n y Arquitectura
+### Semana 2: Refactorización y Arquitectura
 
 **Lunes:**
 - Angel: CreateOrder Action
@@ -2980,7 +3415,7 @@ app/
 - Angel: Refactorizar OrderController
 - Miguel: EloquentUserAddressRepository
 
-**MiÃ©rcoles:**
+**Miércoles:**
 - Angel: Refactorizar UserAddressController
 - Miguel: UserAddressService + AppServiceProvider
 
@@ -2992,7 +3427,7 @@ app/
 - Angel: Conectar OrderService
 - Miguel: ProductPolicy + CategoryPolicy
 
-### Semana 3: Eventos y ValidaciÃ³n
+### Semana 3: Eventos y Validación
 
 **Lunes:**
 - Angel: OrderCreated Event + SendOrderConfirmation Listener
@@ -3002,7 +3437,7 @@ app/
 - Angel: OrderStatusUpdated Event + UpdateInventory Listener
 - Miguel: OrderConfirmationMail
 
-**MiÃ©rcoles:**
+**Miércoles:**
 - Angel: NotifyAdminOfNewOrder Listener
 - Miguel: OrderShippedMail
 
@@ -3018,73 +3453,73 @@ app/
 
 **Lunes-Viernes:**
 - Angel: Console Commands
-- Miguel: Testing, documentaciÃ³n, revisiÃ³n
+- Miguel: Testing, documentación, revisión
 
 ---
 
-## âœ… CRITERIOS DE ACEPTACIÃ“N
+## ✅ CRITERIOS DE ACEPTACIÓN
 
 ### Por Archivo Creado:
-- [ ] CÃ³digo sigue PSR-12
-- [ ] Type hints en todos los mÃ©todos
+- [ ] Código sigue PSR-12
+- [ ] Type hints en todos los métodos
 - [ ] `declare(strict_types=1);` al inicio
-- [ ] DocumentaciÃ³n PHPDoc
+- [ ] Documentación PHPDoc
 - [ ] Tests unitarios (cuando aplica)
 
 ### Por Controller Modificado:
-- [ ] Usa Form Requests para validaciÃ³n
-- [ ] Usa Policies para autorizaciÃ³n
-- [ ] No tiene lÃ³gica de negocio
+- [ ] Usa Form Requests para validación
+- [ ] Usa Policies para autorización
+- [ ] No tiene lógica de negocio
 - [ ] Manejo de errores consistente
 - [ ] Type hints completos
 
 ### Seguridad:
-- [ ] NingÃºn controller expone datos sin autorizaciÃ³n
+- [ ] Ningún controller expone datos sin autorización
 - [ ] Rate limiting en endpoints sensibles
 - [ ] No hay mass assignment vulnerabilities
-- [ ] Mensajes de error no filtran informaciÃ³n
+- [ ] Mensajes de error no filtran información
 
 ### Calidad:
 - [ ] `./vendor/bin/pint` pasa sin errores
 - [ ] `php artisan test` pasa
-- [ ] No hay cÃ³digo duplicado
+- [ ] No hay código duplicado
 - [ ] Nombres descriptivos
 
 ---
 
-## ðŸŽ¯ METAS SEMANALES
+## 🎯 METAS SEMANALES
 
 ### Semana 1 Meta:
-**"La aplicaciÃ³n es segura"**
-- âœ… No hay vulnerabilidades crÃ­ticas
-- âœ… Rate limiting implementado
-- âœ… AutorizaciÃ³n funcionando
+**"La aplicación es segura"**
+- ✅ No hay vulnerabilidades críticas
+- ✅ Rate limiting implementado
+- ✅ Autorización funcionando
 
 ### Semana 2 Meta:
 **"Arquitectura consistente"**
-- âœ… Todos los controllers usan Requests
-- âœ… Repository pattern completo
-- âœ… Servicios conectados
+- ✅ Todos los controllers usan Requests
+- ✅ Repository pattern completo
+- ✅ Servicios conectados
 
 ### Semana 3 Meta:
 **"Event-driven funcionando"**
-- âœ… Eventos disparÃ¡ndose correctamente
-- âœ… Listeners procesando
-- âœ… Emails enviÃ¡ndose
+- ✅ Eventos disparándose correctamente
+- ✅ Listeners procesando
+- ✅ Emails enviándose
 
 ### Semana 4 Meta:
 **"Production ready"**
-- âœ… Tests pasando
-- âœ… DocumentaciÃ³n completa
-- âœ… CÃ³digo limpio y mantenible
+- ✅ Tests pasando
+- ✅ Documentación completa
+- ✅ Código limpio y mantenible
 
 ---
 
-## ðŸ“ NOTAS IMPORTANTES
+## 📝 NOTAS IMPORTANTES
 
 ### Para Angel:
-- Priorizar seguridad CRÃTICA primero
-- UserController::toggleAdmin es la vulnerabilidad mÃ¡s grave
+- Priorizar seguridad CRÍTICA primero
+- UserController::toggleAdmin es la vulnerabilidad más grave
 - Los Form Requests deben incluir `authorize()` method
 - Al crear Actions, mantenerlos simples (Single Responsibility)
 
@@ -3094,11 +3529,11 @@ app/
 - Los Jobs deben implementar `ShouldQueue`
 - Probar que los emails funcionan en local con Mailtrap
 
-### ComunicaciÃ³n:
-- Revisar cÃ³digo mutuamente cada 2 dÃ­as
-- Usar PRs pequeÃ±os (1-2 archivos por PR)
-- Documentar decisiones tÃ©cnicas en Notion
-- Si un archivo toma mÃ¡s del tiempo estimado, comunicar inmediatamente
+### Comunicación:
+- Revisar código mutuamente cada 2 días
+- Usar PRs pequeños (1-2 archivos por PR)
+- Documentar decisiones técnicas en Notion
+- Si un archivo toma más del tiempo estimado, comunicar inmediatamente
 
 ### Dependencias:
 1. Angel necesita que Miguel termine Resources para poder probar Events
@@ -3107,7 +3542,7 @@ app/
 
 ---
 
-## ðŸš€ COMANDOS ÃšTILES
+## 🚀 COMANDOS ÚTILES
 
 ```bash
 # Crear archivos Laravel
@@ -3120,7 +3555,7 @@ php artisan make:job SendOrderConfirmationEmail
 php artisan make:mail OrderConfirmation --markdown=emails.orders.confirmation
 php artisan make:command CleanupExpiredCarts
 
-# Formatear cÃ³digo
+# Formatear código
 ./vendor/bin/pint
 
 # Ejecutar tests
@@ -3129,7 +3564,7 @@ php artisan test
 # Ver rutas
 php artisan route:list
 
-# Limpiar cachÃ©
+# Limpiar caché
 php artisan cache:clear
 php artisan config:clear
 php artisan route:clear
@@ -3137,7 +3572,7 @@ php artisan route:clear
 
 ---
 
-## ðŸ“ž CONTACTO Y SOPORTE
+## 📞 CONTACTO Y SOPORTE
 
 **Dudas sobre arquitectura:** @architect  
 **Dudas sobre backend:** @backend  
@@ -3149,10 +3584,10 @@ php artisan route:clear
 ---
 
 **Fecha de inicio propuesta:** [Fecha]  
-**Fecha de finalizaciÃ³n estimada:** [Fecha + 4 semanas]
+**Fecha de finalización estimada:** [Fecha + 4 semanas]
 
 **Aprobado por:** _________________  
-**Fecha de aprobaciÃ³n:** _________________
+**Fecha de aprobación:** _________________
 
 ---
 
@@ -3160,78 +3595,78 @@ php artisan route:clear
 
 ## docs\ROADMAP_BACKEND
 
-# Roadmap TÃ©cnico Backend
+# Roadmap Técnico Backend
 
-GuÃ­a de implementaciÃ³n para la arquitectura de MiKiwi.
+Guía de implementación para la arquitectura de MiKiwi.
 
 ## Resumen de Fases
 1.  **Infraestructura de Datos** (Factories, Seeders)
 2.  **Capa de Persistencia** (Repositories)
 3.  **Capa de Servicio** (Business Logic)
-4.  **Capa de PresentaciÃ³n** (Controllers)
+4.  **Capa de Presentación** (Controllers)
 
 ---
 
-## Detalle de ImplementaciÃ³n
+## Detalle de Implementación
 
 ### FASE 1: INFRAESTRUCTURA DE DATOS
 *Objetivo: Generar un entorno de pruebas robusto y realista.*
 
 #### [ ] CategoryFactory
-*   **PropÃ³sito**: Generar jerarquÃ­as de categorÃ­as (padre/hijo).
+*   **Propósito**: Generar jerarquías de categorías (padre/hijo).
 *   **Requisitos**:
-    *   Soportar recursividad (una categorÃ­a puede tener un `parent_id`).
-    *   Generar `slugs` Ãºnicos automÃ¡ticamente.
+    *   Soportar recursividad (una categoría puede tener un `parent_id`).
+    *   Generar `slugs` únicos automáticamente.
 
 #### [ ] ProductFactory
-*   **PropÃ³sito**: Crear productos base para pruebas.
+*   **Propósito**: Crear productos base para pruebas.
 *   **Requisitos**:
     *   Cubrir tipos: `simple`, `configurable`, `component`.
-    *   Generar precios y stock vÃ¡lidos.
+    *   Generar precios y stock válidos.
     *   Estructura JSON correcta para `images`.
 
 #### [ ] CatalogSeeder
-*   **PropÃ³sito**: Orquestar la poblaciÃ³n de la base de datos.
+*   **Propósito**: Orquestar la población de la base de datos.
 *   **Requisitos**:
-    *   Crear categorÃ­as principales fijas.
-    *   Asignar productos a categorÃ­as.
-    *   **CrÃ­tico**: Poblar la tabla `product_accessories` para probar el configurador.
+    *   Crear categorías principales fijas.
+    *   Asignar productos a categorías.
+    *   **Crítico**: Poblar la tabla `product_accessories` para probar el configurador.
 
 ---
 
 ### FASE 2: CAPA DE PERSISTENCIA
-*Objetivo: Abstraer consultas SQL/Eloquent de la lÃ³gica de negocio.*
+*Objetivo: Abstraer consultas SQL/Eloquent de la lógica de negocio.*
 
 #### [ ] ProductRepositoryInteface (Contrato)
-*   **PropÃ³sito**: Definir quÃ© operaciones de datos son posibles sin exponer cÃ³mo se hacen.
-*   **MÃ©todos Clave**: `findById`, `getActiveBySlug`, `getAccessories`.
+*   **Propósito**: Definir qué operaciones de datos son posibles sin exponer cómo se hacen.
+*   **Métodos Clave**: `findById`, `getActiveBySlug`, `getAccessories`.
 
-#### [ ] EloquentProductRepository (ImplementaciÃ³n)
-*   **PropÃ³sito**: Ejecutar las consultas reales usando Eloquent.
+#### [ ] EloquentProductRepository (Implementación)
+*   **Propósito**: Ejecutar las consultas reales usando Eloquent.
 *   **Requisitos**: Optimizar consultas usando "Eager Loading" para traer relaciones eficientemente.
 
 ---
 
 ### FASE 3: CAPA DE SERVICIO
-*Objetivo: Centralizar la lÃ³gica de negocio y reglas del configurador.*
+*Objetivo: Centralizar la lógica de negocio y reglas del configurador.*
 
 #### [ ] ProductService
-*   **PropÃ³sito**: Intermediario entre el Controlador y el Repositorio.
+*   **Propósito**: Intermediario entre el Controlador y el Repositorio.
 *   **Responsabilidades**:
     *   Validar reglas de negocio (ej: "No vender si stock es 0").
     *   Combinar datos de productos con sus accesorios.
 
 ---
 
-### FASE 4: CAPA DE PRESENTACIÃ“N
-*Objetivo: Exponer la funcionalidad vÃ­a HTTP.*
+### FASE 4: CAPA DE PRESENTACIÓN
+*Objetivo: Exponer la funcionalidad vía HTTP.*
 
 #### [ ] ProductController
 *   **Endpoint**: `GET /products/{slug}`
-*   **AcciÃ³n**: Delegar el slug al Servicio y devolver la respuesta (Inertia/JSON).
+*   **Acción**: Delegar el slug al Servicio y devolver la respuesta (Inertia/JSON).
 
-#### [ ] RefactorizaciÃ³n de Rutas
-*   **AcciÃ³n**: Mover lÃ³gica de `routes/web.php` a controladores dedicados.
+#### [ ] Refactorización de Rutas
+*   **Acción**: Mover lógica de `routes/web.php` a controladores dedicados.
 
 ---
 
@@ -3239,20 +3674,20 @@ GuÃ­a de implementaciÃ³n para la arquitectura de MiKiwi.
 
 ## docs\README_BACKEND
 
-# MiKiwi - DocumentaciÃ³n del Backend (Estado Actual)
+# MiKiwi - Documentación del Backend (Estado Actual)
 
 **Fecha:** 23 de Enero, 2026
 **Estado:** Backend Inicial Configurado (MySQL + Laravel)
 
 ---
 
-## 1. ConfiguraciÃ³n del Entorno
-Hemos migrado la configuraciÃ³n original de PostgreSQL a **MySQL (XAMPP)** para facilitar el desarrollo local en Windows.
+## 1. Configuración del Entorno
+Hemos migrado la configuración original de PostgreSQL a **MySQL (XAMPP)** para facilitar el desarrollo local en Windows.
 
 * **Base de Datos:** `mikiwi_db`
 * **Gestor:** phpMyAdmin / XAMPP
 * **Puerto:** 3306
-* **Usuario DB:** `root` (sin contraseÃ±a)
+* **Usuario DB:** `root` (sin contraseña)
 * **Archivo .env:** Configurado para `DB_CONNECTION=mysql`.
 
 ---
@@ -3262,22 +3697,22 @@ Se han creado las tablas principales del E-commerce adaptadas a MySQL:
 
 ### Tablas Principales
 * **`users`:** Usuarios (Admin, Clientes). Usa `UUID` como ID.
-* **`products`:** CatÃ¡logo hÃ­brido.
-    * Soporta tipos: `simple`, `configurable` (para las muÃ±ecas), `component`.
+* **`products`:** Catálogo híbrido.
+    * Soporta tipos: `simple`, `configurable` (para las muñecas), `component`.
     * Columna `images`: Almacena JSON (ej: `["url1", "url2"]`).
-* **`categories`:** CategorÃ­as jerÃ¡rquicas (con `parent_id`).
-* **`product_accessories`:** Tabla pivote para relacionar componentes (ej: Ojos, CalefacciÃ³n) con productos padre.
+* **`categories`:** Categorías jerárquicas (con `parent_id`).
+* **`product_accessories`:** Tabla pivote para relacionar componentes (ej: Ojos, Calefacción) con productos padre.
 * **`orders` & `order_items`:** Estructura lista para pedidos (con snapshots de precios y direcciones en JSON).
 
 > **Nota:** Se han mantenido las tablas de sistema (`jobs`, `cache`, `failed_jobs`) para uso futuro, aunque de momento no se utilizan activamente.
 
 ---
 
-## 3. Modelos y LÃ³gica (Eloquent)
+## 3. Modelos y Lógica (Eloquent)
 Hemos configurado los Modelos para solucionar el error *"Field 'id' doesn't have a default value"*.
 
-### SoluciÃ³n UUIDs
-Como usamos IDs alfanumÃ©ricos largos (UUID) en lugar de nÃºmeros autoincrementales, hemos aÃ±adido el Trait `HasUuids` a todos los modelos clave:
+### Solución UUIDs
+Como usamos IDs alfanuméricos largos (UUID) en lugar de números autoincrementales, hemos añadido el Trait `HasUuids` a todos los modelos clave:
 
 * `User.php`
 * `Product.php`
@@ -3285,33 +3720,33 @@ Como usamos IDs alfanumÃ©ricos largos (UUID) en lugar de nÃºmeros autoincrem
 * `UserAddress.php`
 
 ### Relaciones Definidas
-* **User:** Tiene relaciÃ³n preparada para `addresses`.
-* **Product:** Pertenece a `Category`. Castea automÃ¡ticamente `images` a Array y `base_price` a Decimal.
+* **User:** Tiene relación preparada para `addresses`.
+* **Product:** Pertenece a `Category`. Castea automáticamente `images` a Array y `base_price` a Decimal.
 
 ---
 
 ## 4. Datos de Prueba (Seeders)
-Hemos creado scripts para poblar la base de datos automÃ¡ticamente con el comando `db:seed`.
+Hemos creado scripts para poblar la base de datos automáticamente con el comando `db:seed`.
 
 ### Archivos Creados:
 1.  **`CatalogSeeder`:**
-    * Crea categorÃ­as: "MuÃ±ecas", "Accesorios".
+    * Crea categorías: "Muñecas", "Accesorios".
     * Crea producto simple: "Lubricante 100ml" (con stock).
-    * Crea producto complejo: "MuÃ±eca Elsa" (sin stock, bajo demanda).
+    * Crea producto complejo: "Muñeca Elsa" (sin stock, bajo demanda).
 2.  **`UserSeeder`:**
     * Crea Admin y Cliente de prueba.
 3.  **`DatabaseSeeder`:**
-    * Orquesta la ejecuciÃ³n de los dos anteriores.
+    * Orquesta la ejecución de los dos anteriores.
 
 ### Credenciales de Acceso (Local)
-| Rol | Email | ContraseÃ±a |
+| Rol | Email | Contraseña |
 | :--- | :--- | :--- |
 | **Admin** | `admin@kinky-toys.com` | `password` |
 | **Cliente** | `juan@test.com` | `password` |
 
 ---
 
-## 5. Comandos Ãštiles para el Desarrollador
+## 5. Comandos Útiles para el Desarrollador
 
 Si la base de datos se corrompe o quieres reiniciar desde cero:
 
@@ -3319,7 +3754,7 @@ bash
 # 1. Borrar todo, volver a crear tablas y rellenar datos
 php artisan migrate:fresh --seed
 
-# 2. Si Laravel da error de conexiÃ³n o "Database not found"
+# 2. Si Laravel da error de conexión o "Database not found"
 php artisan config:clear
 
 # 3. Si creas un archivo nuevo y VS Code no lo detecta
@@ -3328,11 +3763,11 @@ composer dump-autoload
 
 ## 6. Siguientes Pasos (Hoja de Ruta)
 
-El Backend estÃ¡ listo a nivel de estructura de datos (Base de datos, Modelos y Seeders). Ahora debemos construir las "vÃ­as de comunicaciÃ³n" para que la web funcione.
+El Backend está listo a nivel de estructura de datos (Base de datos, Modelos y Seeders). Ahora debemos construir las "vías de comunicación" para que la web funcione.
 
-### 6.1. API de CatÃ¡logo (Lectura)
+### 6.1. API de Catálogo (Lectura)
 El objetivo es que cualquier visitante pueda ver los productos sin estar logueado.
-- [ ] **Controlador:** Crear `ProductController` para gestionar la lÃ³gica.
+- [ ] **Controlador:** Crear `ProductController` para gestionar la lógica.
 - [ ] **Rutas:** Definir endpoints `GET /api/products` y `GET /api/products/{slug}`.
 - [ ] **Prueba:** Verificar que devuelve JSON correctamente en el navegador.
 
@@ -3343,63 +3778,63 @@ El objetivo es que los clientes puedan registrarse y entrar en su cuenta.
 - [ ] **Rutas Protegidas:** Asegurar que solo usuarios logueados puedan ver sus pedidos.
 
 ### 6.3. Frontend (React)
-Una vez la API funcione, pasaremos al diseÃ±o visual.
+Una vez la API funcione, pasaremos al diseño visual.
 - [ ] **Setup:** Inicializar proyecto con Vite + React.
-- [ ] **ConexiÃ³n:** Configurar `Axios` para llamar a nuestra API de Laravel.
-- [ ] **UI:** Maquetar la Home con la lista de productos real traÃ­da de la BBDD.
+- [ ] **Conexión:** Configurar `Axios` para llamar a nuestra API de Laravel.
+- [ ] **UI:** Maquetar la Home con la lista de productos real traída de la BBDD.
 
 
 
-## 7. Informe de EstabilizaciÃ³n: Fase 2 (RefactorizaciÃ³n del NÃºcleo)
-**Responsable TÃ©cnico:** Miguel SÃ¡nchez VÃ¡zquez
+## 7. Informe de Estabilización: Fase 2 (Refactorización del Núcleo)
+**Responsable Técnico:** Miguel Sánchez Vázquez
 **Fecha:** 24 de Enero, 2026
 
-En esta fase crÃ­tica del desarrollo, se ha llevado a cabo una auditorÃ­a profunda y posterior correcciÃ³n del nÃºcleo del backend para alinearlo con los **Pilares del Proyecto** (Enterprise Level Standards).
+En esta fase crítica del desarrollo, se ha llevado a cabo una auditoría profunda y posterior corrección del núcleo del backend para alinearlo con los **Pilares del Proyecto** (Enterprise Level Standards).
 
 ### Logros Principales
 
 #### Integridad Referencial y Seguridad (Critical Fixes)
-1.  **Sessions Table:** Se corrigiÃ³ el tipo de dato de `user_id` en la tabla de sesiones (`BigInt` -> `UUID`), solucionando un fallo de diseÃ±o que habrÃ­a impedido el login de cualquier usuario.
-2.  **User Factory:** Reparado el generador de usuarios de prueba. Ahora genera correctamente `DNI` y `Fecha de Nacimiento`, permitiendo la ejecuciÃ³n de tests automatizados sin errores de integridad SQL.
-3.  **UserAddress Guard:** Se blindÃ³ el modelo de direcciones eliminando `user_id` de la lista de asignaciÃ³n masiva (`$fillable`) para prevenir vulnerabilidades de seguridad (Mass Assignment Injection).
+1.  **Sessions Table:** Se corrigió el tipo de dato de `user_id` en la tabla de sesiones (`BigInt` -> `UUID`), solucionando un fallo de diseño que habría impedido el login de cualquier usuario.
+2.  **User Factory:** Reparado el generador de usuarios de prueba. Ahora genera correctamente `DNI` y `Fecha de Nacimiento`, permitiendo la ejecución de tests automatizados sin errores de integridad SQL.
+3.  **UserAddress Guard:** Se blindó el modelo de direcciones eliminando `user_id` de la lista de asignación masiva (`$fillable`) para prevenir vulnerabilidades de seguridad (Mass Assignment Injection).
 
 #### Completitud del Modelo de Dominio (Domain Driven Design)
-1.  **Modelo `Product`:** Habilitada la relaciÃ³n "Muchos a Muchos" para accesorios, una caracterÃ­stica vital para el "Cross-Selling" y la venta de packs configurables.
-2.  **Modelo `Category`:** Habilitada la recursividad jerÃ¡rquica (Padre/Hijo), permitiendo la construcciÃ³n de menÃºs de navegaciÃ³n multinivel dinÃ¡micos.
-3.  **Modelos de Pedidos (`Order` & `OrderItem`):** Implementados desde cero. Estos modelos existÃ­an en base de datos pero no en cÃ³digo ("Modelos Fantasma"). Ahora incluyen configuraciÃ³n avanzada de Casting para manejar Snapshots de direcciones (JSON) y cÃ¡lculos decimales precisos.
+1.  **Modelo `Product`:** Habilitada la relación "Muchos a Muchos" para accesorios, una característica vital para el "Cross-Selling" y la venta de packs configurables.
+2.  **Modelo `Category`:** Habilitada la recursividad jerárquica (Padre/Hijo), permitiendo la construcción de menús de navegación multinivel dinámicos.
+3.  **Modelos de Pedidos (`Order` & `OrderItem`):** Implementados desde cero. Estos modelos existían en base de datos pero no en código ("Modelos Fantasma"). Ahora incluyen configuración avanzada de Casting para manejar Snapshots de direcciones (JSON) y cálculos decimales precisos.
 
-#### Limpieza de CÃ³digo (Clean Code)
-1.  **Saneamiento:** EliminaciÃ³n de directorios duplicados y cÃ³digo muerto (`app/Models 2`, etc.) que generaba ruido tÃ©cnico y riesgo de conflictos.
+#### Limpieza de Código (Clean Code)
+1.  **Saneamiento:** Eliminación de directorios duplicados y código muerto (`app/Models 2`, etc.) que generaba ruido técnico y riesgo de conflictos.
 
 ### Estado Final de la Fase 2
-El backend ha evolucionado de un prototipo estructural a una **base sÃ³lida y consistente**. Los cimientos son ahora seguros y reflejan fielmente la lÃ³gica de negocio requerida para una plataforma de e-commerce escalable.
+El backend ha evolucionado de un prototipo estructural a una **base sólida y consistente**. Los cimientos son ahora seguros y reflejan fielmente la lógica de negocio requerida para una plataforma de e-commerce escalable.
 
-## 8. Informe de Avance: Fase 3 (MÃ³dulos de InteracciÃ³n y Soporte)
-**Responsable TÃ©cnico:** Miguel SÃ¡nchez VÃ¡zquez
+## 8. Informe de Avance: Fase 3 (Módulos de Interacción y Soporte)
+**Responsable Técnico:** Miguel Sánchez Vázquez
 **Fecha:** 26 de Enero, 2026
 
-En esta fase se ha expandido la funcionalidad del backend integrando mÃ³dulos esenciales para la interacciÃ³n del usuario y el soporte al cliente, manteniendo la consistencia arquitectÃ³nica establecida en la fase anterior.
+En esta fase se ha expandido la funcionalidad del backend integrando módulos esenciales para la interacción del usuario y el soporte al cliente, manteniendo la consistencia arquitectónica establecida en la fase anterior.
 
 ### Logros Principales
 
 #### Sistema de Valoraciones (Social Proof)
-1.  **Modelo `Review`:** ImplementaciÃ³n completa del modelo de reseÃ±as.
-    *   **Identificadores Seguros:** Uso de UUIDs para prevenir enumeraciÃ³n.
+1.  **Modelo `Review`:** Implementación completa del modelo de reseñas.
+    *   **Identificadores Seguros:** Uso de UUIDs para prevenir enumeración.
     *   **Integridad de Datos:** Relaciones definidas con `User` y `Product`.
-    *   **ValidaciÃ³n de Tipos:** Casting estricto para `is_approved` (boolean) y `rating` (integer).
+    *   **Validación de Tipos:** Casting estricto para `is_approved` (boolean) y `rating` (integer).
 
 #### Sistema de Soporte (Customer Care)
 1.  **Modelo `ChatSession`:** Estructura base para tickets o sesiones de chat.
-    *   Incluye gestiÃ³n de estados (`status`) y asuntos (`subject`).
-    *   RelaciÃ³n directa con usuarios para historial de soporte.
-2.  **Modelo `ChatMessage`:** Unidad de comunicaciÃ³n dentro de las sesiones.
+    *   Incluye gestión de estados (`status`) y asuntos (`subject`).
+    *   Relación directa con usuarios para historial de soporte.
+2.  **Modelo `ChatMessage`:** Unidad de comunicación dentro de las sesiones.
     *   Optimizado con `HasUuids` y control de estado de lectura (`is_read`).
 
-#### EstandarizaciÃ³n de Desarrollo (Developer Experience)
-1.  **Limpieza y RefactorizaciÃ³n:** Ajuste de atributos `fillable` en los nuevos modelos para garantizar la seguridad en la asignaciÃ³n masiva.
+#### Estandarización de Desarrollo (Developer Experience)
+1.  **Limpieza y Refactorización:** Ajuste de atributos `fillable` en los nuevos modelos para garantizar la seguridad en la asignación masiva.
 
 ### Estado Final de la Fase 3
-El backend ahora soporta flujos bidireccionales de informaciÃ³n (Usuario <-> Sistema), permitiendo no solo la transacciÃ³n comercial (Pedidos), sino tambiÃ©n la interacciÃ³n social (ReseÃ±as) y el soporte tÃ©cnico (Chat). La arquitectura sigue siendo modular y preparada para la integraciÃ³n con el Frontend.
+El backend ahora soporta flujos bidireccionales de información (Usuario <-> Sistema), permitiendo no solo la transacción comercial (Pedidos), sino también la interacción social (Reseñas) y el soporte técnico (Chat). La arquitectura sigue siendo modular y preparada para la integración con el Frontend.
 
 ---
 
@@ -3407,124 +3842,124 @@ El backend ahora soporta flujos bidireccionales de informaciÃ³n (Usuario <-> S
 
 ## docs\README_CONTROLADORES
 
-# ðŸŽ¯ Controladores Backend - MiKiwi
+# 🎯 Controladores Backend - MiKiwi
 
-## ðŸ“‹ Resumen de ImplementaciÃ³n
+## 📋 Resumen de Implementación
 
 Este documento explica los **controladores backend** creados siguiendo la arquitectura de 4 capas definida en [ROADMAP_BACKEND.md](./ROADMAP_BACKEND.md).
 
-### âœ… Estado Actual: COMPLETADO
+### ✅ Estado Actual: COMPLETADO
 
-Se han implementado **12 archivos nuevos** siguiendo el patrÃ³n **Repository â†’ Service â†’ Controller**:
+Se han implementado **12 archivos nuevos** siguiendo el patrón **Repository → Service → Controller**:
 
-- âœ… 4 Repositories (2 interfaces + 2 implementaciones)
-- âœ… 3 Services con lÃ³gica de negocio
-- âœ… 3 Controllers nuevos
-- âœ… 1 Controller actualizado (ProductController)
-- âœ… ConfiguraciÃ³n de inyecciÃ³n de dependencias
-
----
-
-## ðŸ—ï¸ Arquitectura Implementada
-
-```
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚                    CAPA 4: CONTROLLERS                  â”‚
-â”‚  (Maneja HTTP: Request/Response, ValidaciÃ³n)            â”‚
-â”‚  - ColeccionesController                                â”‚
-â”‚  - CategoryController                                   â”‚
-â”‚  - CartController                                       â”‚
-â”‚  - ProductController (actualizado)                      â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                     â”‚
-                     â–¼
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚                    CAPA 3: SERVICES                     â”‚
-â”‚  (LÃ³gica de Negocio, Validaciones, Reglas)             â”‚
-â”‚  - CategoryService                                      â”‚
-â”‚  - CartService                                          â”‚
-â”‚  - OrderService                                         â”‚
-â”‚  - ProductService (existente)                           â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                     â”‚
-                     â–¼
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚                  CAPA 2: REPOSITORIES                   â”‚
-â”‚  (AbstracciÃ³n de Datos, Consultas Eloquent)            â”‚
-â”‚  - EloquentCategoryRepository                           â”‚
-â”‚  - EloquentOrderRepository                              â”‚
-â”‚  - ProductRepository (existente)                        â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                     â”‚
-                     â–¼
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚                    CAPA 1: MODELS                       â”‚
-â”‚  (Eloquent ORM, Relaciones, Scopes)                    â”‚
-â”‚  - Product, Category, Order, OrderItem, etc.            â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-```
+- ✅ 4 Repositories (2 interfaces + 2 implementaciones)
+- ✅ 3 Services con lógica de negocio
+- ✅ 3 Controllers nuevos
+- ✅ 1 Controller actualizado (ProductController)
+- ✅ Configuración de inyección de dependencias
 
 ---
 
-## ðŸ“‚ Estructura de Archivos Creados
+## 🏗️ Arquitectura Implementada
 
-### 1ï¸âƒ£ Repositories (Capa de Persistencia)
+```
+┌─────────────────────────────────────────────────────────┐
+│                    CAPA 4: CONTROLLERS                  │
+│  (Maneja HTTP: Request/Response, Validación)            │
+│  - ColeccionesController                                │
+│  - CategoryController                                   │
+│  - CartController                                       │
+│  - ProductController (actualizado)                      │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────┐
+│                    CAPA 3: SERVICES                     │
+│  (Lógica de Negocio, Validaciones, Reglas)             │
+│  - CategoryService                                      │
+│  - CartService                                          │
+│  - OrderService                                         │
+│  - ProductService (existente)                           │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────┐
+│                  CAPA 2: REPOSITORIES                   │
+│  (Abstracción de Datos, Consultas Eloquent)            │
+│  - EloquentCategoryRepository                           │
+│  - EloquentOrderRepository                              │
+│  - ProductRepository (existente)                        │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────┐
+│                    CAPA 1: MODELS                       │
+│  (Eloquent ORM, Relaciones, Scopes)                    │
+│  - Product, Category, Order, OrderItem, etc.            │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📂 Estructura de Archivos Creados
+
+### 1️⃣ Repositories (Capa de Persistencia)
 
 #### Interfaces
 ```
 app/Repositories/Interfaces/
-â”œâ”€â”€ CategoryRepositoryInterface.php  â† Define contrato para categorÃ­as
-â””â”€â”€ OrderRepositoryInterface.php     â† Define contrato para pedidos
+├── CategoryRepositoryInterface.php  ← Define contrato para categorías
+└── OrderRepositoryInterface.php     ← Define contrato para pedidos
 ```
 
 #### Implementaciones
 ```
 app/Repositories/Eloquent/
-â”œâ”€â”€ EloquentCategoryRepository.php   â† Consultas de categorÃ­as con Eloquent
-â””â”€â”€ EloquentOrderRepository.php      â† Consultas de pedidos con transacciones
+├── EloquentCategoryRepository.php   ← Consultas de categorías con Eloquent
+└── EloquentOrderRepository.php      ← Consultas de pedidos con transacciones
 ```
 
-### 2ï¸âƒ£ Services (Capa de Negocio)
+### 2️⃣ Services (Capa de Negocio)
 
 ```
 app/Services/
-â”œâ”€â”€ CategoryService.php              â† LÃ³gica de categorÃ­as + breadcrumbs
-â”œâ”€â”€ CartService.php                  â† GestiÃ³n del carrito (sesiÃ³n)
-â””â”€â”€ OrderService.php                 â† CreaciÃ³n y gestiÃ³n de pedidos
+├── CategoryService.php              ← Lógica de categorías + breadcrumbs
+├── CartService.php                  ← Gestión del carrito (sesión)
+└── OrderService.php                 ← Creación y gestión de pedidos
 ```
 
-### 3ï¸âƒ£ Controllers (Capa de PresentaciÃ³n)
+### 3️⃣ Controllers (Capa de Presentación)
 
 ```
 app/Http/Controllers/
-â”œâ”€â”€ ColeccionesController.php        â† CatÃ¡logo principal
-â”œâ”€â”€ CategoryController.php           â† Vista de categorÃ­a
-â”œâ”€â”€ CartController.php               â† Carrito de compras (CRUD)
-â””â”€â”€ ProductController.php            â† Actualizado para usar ProductService
+├── ColeccionesController.php        ← Catálogo principal
+├── CategoryController.php           ← Vista de categoría
+├── CartController.php               ← Carrito de compras (CRUD)
+└── ProductController.php            ← Actualizado para usar ProductService
 ```
 
-### 4ï¸âƒ£ ConfiguraciÃ³n
+### 4️⃣ Configuración
 
 ```
 app/Providers/
-â””â”€â”€ AppServiceProvider.php           â† Bindings de inyecciÃ³n de dependencias
+└── AppServiceProvider.php           ← Bindings de inyección de dependencias
 ```
 
 ---
 
-## ðŸ”Œ Endpoints Disponibles
+## 🔌 Endpoints Disponibles
 
-### CatÃ¡logo y Productos
+### Catálogo y Productos
 
-| MÃ©todo | Ruta | Controller | DescripciÃ³n |
+| Método | Ruta | Controller | Descripción |
 |--------|------|------------|-------------|
-| `GET` | `/colecciones` | `ColeccionesController@index` | CatÃ¡logo principal paginado |
+| `GET` | `/colecciones` | `ColeccionesController@index` | Catálogo principal paginado |
 | `GET` | `/producto/{product}` | `ProductController@show` | Detalles de producto + accesorios |
-| `GET` | `/categoria/{category}` | `CategoryController@show` | Productos por categorÃ­a |
+| `GET` | `/categoria/{category}` | `CategoryController@show` | Productos por categoría |
 
 ### Carrito de Compras
 
-| MÃ©todo | Ruta | Controller | DescripciÃ³n |
+| Método | Ruta | Controller | Descripción |
 |--------|------|------------|-------------|
 | `GET` | `/cart` | `CartController@index` | Ver carrito |
 | `POST` | `/cart/add` | `CartController@store` | Agregar producto |
@@ -3532,52 +3967,52 @@ app/Providers/
 | `DELETE` | `/cart/remove/{id}` | `CartController@destroy` | Eliminar producto |
 | `POST` | `/cart/clear` | `CartController@clear` | Vaciar carrito |
 
-> **Nota**: Las rutas del carrito ya estÃ¡n definidas en `routes/web.php` pero puedes agregar mÃ¡s si es necesario.
+> **Nota**: Las rutas del carrito ya están definidas en `routes/web.php` pero puedes agregar más si es necesario.
 
 ---
 
-## ðŸŽ¨ CaracterÃ­sticas Implementadas
+## 🎨 Características Implementadas
 
-### âœ… Carrito de Compras (Session-Based)
-- **Almacenamiento**: SesiÃ³n de Laravel (no requiere login)
-- **ValidaciÃ³n de stock**: En tiempo real antes de agregar/actualizar
+### ✅ Carrito de Compras (Session-Based)
+- **Almacenamiento**: Sesión de Laravel (no requiere login)
+- **Validación de stock**: En tiempo real antes de agregar/actualizar
 - **Soporte para accesorios**: Productos configurables
-- **CÃ¡lculo automÃ¡tico**: Subtotales y total
+- **Cálculo automático**: Subtotales y total
 
-### âœ… Sistema de Pedidos
-- **NÃºmeros Ãºnicos**: Formato `MK-YYYYMMDD-XXXXXX`
+### ✅ Sistema de Pedidos
+- **Números únicos**: Formato `MK-YYYYMMDD-XXXXXX`
 - **Snapshots**: Guarda estado del producto al momento de compra
 - **Transacciones DB**: Integridad garantizada
-- **Direcciones**: Snapshots de envÃ­o y facturaciÃ³n en JSON
+- **Direcciones**: Snapshots de envío y facturación en JSON
 
-### âœ… CategorÃ­as JerÃ¡rquicas
-- **NavegaciÃ³n multinivel**: Padre â†’ Hijo
-- **Breadcrumbs automÃ¡ticos**: Generados por CategoryService
+### ✅ Categorías Jerárquicas
+- **Navegación multinivel**: Padre → Hijo
+- **Breadcrumbs automáticos**: Generados por CategoryService
 - **Productos filtrados**: Solo activos y con stock
 
-### âœ… OptimizaciÃ³n de Consultas
+### ✅ Optimización de Consultas
 - **Eager Loading**: `with()` para evitar N+1 queries
-- **PaginaciÃ³n**: AutomÃ¡tica en listados
-- **Scopes**: ReutilizaciÃ³n de filtros (`active()`, `inStock()`)
+- **Paginación**: Automática en listados
+- **Scopes**: Reutilización de filtros (`active()`, `inStock()`)
 
 ---
 
-## ðŸš€ Siguientes Pasos
+## 🚀 Siguientes Pasos
 
-### ðŸ“Œ PASO 1: Crear Vistas Frontend (React/Inertia)
+### 📌 PASO 1: Crear Vistas Frontend (React/Inertia)
 
-Los controladores estÃ¡n listos pero necesitan las vistas correspondientes:
+Los controladores están listos pero necesitan las vistas correspondientes:
 
 #### Vistas a Crear:
 
 ```
 resources/js/Pages/
-â”œâ”€â”€ Colecciones/
-â”‚   â””â”€â”€ Index.jsx                    â† CatÃ¡logo principal
-â”œâ”€â”€ Category/
-â”‚   â””â”€â”€ Show.jsx                     â† Vista de categorÃ­a
-â””â”€â”€ Cart/
-    â””â”€â”€ Index.jsx                    â† Carrito de compras
+├── Colecciones/
+│   └── Index.jsx                    ← Catálogo principal
+├── Category/
+│   └── Show.jsx                     ← Vista de categoría
+└── Cart/
+    └── Index.jsx                    ← Carrito de compras
 ```
 
 #### Ejemplo de Vista: `Colecciones/Index.jsx`
@@ -3591,9 +4026,9 @@ export default function Index({ products, categories, pageTitle }) {
             <Head title={pageTitle} />
             
             <div className="container">
-                <h1>CatÃ¡logo de Productos</h1>
+                <h1>Catálogo de Productos</h1>
                 
-                {/* NavegaciÃ³n de categorÃ­as */}
+                {/* Navegación de categorías */}
                 <nav>
                     {categories.map(category => (
                         <a key={category.id} href={`/categoria/${category.slug}`}>
@@ -3607,15 +4042,15 @@ export default function Index({ products, categories, pageTitle }) {
                     {products.data.map(product => (
                         <div key={product.id} className="product-card">
                             <h3>{product.name}</h3>
-                            <p>{product.base_price}â‚¬</p>
+                            <p>{product.base_price}€</p>
                             <a href={`/producto/${product.slug}`}>Ver detalles</a>
                         </div>
                     ))}
                 </div>
                 
-                {/* PaginaciÃ³n */}
+                {/* Paginación */}
                 <div className="pagination">
-                    {/* Usar products.links para paginaciÃ³n */}
+                    {/* Usar products.links para paginación */}
                 </div>
             </div>
         </>
@@ -3625,9 +4060,9 @@ export default function Index({ products, categories, pageTitle }) {
 
 ---
 
-### ðŸ“Œ PASO 2: Actualizar Rutas (Opcional)
+### 📌 PASO 2: Actualizar Rutas (Opcional)
 
-Si necesitas mÃ¡s rutas para el carrito, agrÃ©galas en `routes/web.php`:
+Si necesitas más rutas para el carrito, agrégalas en `routes/web.php`:
 
 ```php
 // Rutas adicionales del carrito
@@ -3642,9 +4077,9 @@ Route::prefix('cart')->group(function () {
 
 ---
 
-### ðŸ“Œ PASO 3: Crear OrderController (Para Checkout)
+### 📌 PASO 3: Crear OrderController (Para Checkout)
 
-Cuando estÃ©s listo para implementar el proceso de compra:
+Cuando estés listo para implementar el proceso de compra:
 
 ```php
 <?php
@@ -3701,7 +4136,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Mostrar confirmaciÃ³n de pedido
+     * Mostrar confirmación de pedido
      */
     public function success(string $orderNumber)
     {
@@ -3716,9 +4151,9 @@ class OrderController extends Controller
 
 ---
 
-### ðŸ“Œ PASO 4: Implementar Funcionalidad AJAX del Carrito
+### 📌 PASO 4: Implementar Funcionalidad AJAX del Carrito
 
-Para agregar productos sin recargar la pÃ¡gina:
+Para agregar productos sin recargar la página:
 
 ```javascript
 // Ejemplo con fetch API
@@ -3754,9 +4189,9 @@ async function addToCart(productSlug, quantity = 1) {
 
 ---
 
-### ðŸ“Œ PASO 5: Testing (Recomendado)
+### 📌 PASO 5: Testing (Recomendado)
 
-Crear tests para validar la lÃ³gica:
+Crear tests para validar la lógica:
 
 ```bash
 # Crear test para CartService
@@ -3785,10 +4220,10 @@ public function test_can_add_product_to_cart()
 
 ---
 
-## ðŸ”§ Comandos Ãštiles
+## 🔧 Comandos Útiles
 
 ```bash
-# Limpiar cachÃ© de configuraciÃ³n
+# Limpiar caché de configuración
 php artisan config:clear
 
 # Regenerar autoload de clases
@@ -3809,33 +4244,33 @@ php artisan db:seed
 
 ---
 
-## ðŸ“Š Flujo de Datos: Ejemplo de Agregar al Carrito
+## 📊 Flujo de Datos: Ejemplo de Agregar al Carrito
 
 ```
 1. Usuario hace clic en "Agregar al Carrito"
-   â†“
-2. Frontend envÃ­a POST a /cart/add
-   â†“
-3. CartController::store() recibe la peticiÃ³n
-   â†“
+   ↓
+2. Frontend envía POST a /cart/add
+   ↓
+3. CartController::store() recibe la petición
+   ↓
 4. CartController valida los datos (Request Validation)
-   â†“
+   ↓
 5. CartController llama a CartService::addToCart()
-   â†“
+   ↓
 6. CartService valida stock usando ProductRepository
-   â†“
-7. CartService agrega producto a la sesiÃ³n
-   â†“
+   ↓
+7. CartService agrega producto a la sesión
+   ↓
 8. CartService retorna datos del carrito actualizado
-   â†“
+   ↓
 9. CartController retorna JSON response
-   â†“
-10. Frontend actualiza UI (contador, notificaciÃ³n)
+   ↓
+10. Frontend actualiza UI (contador, notificación)
 ```
 
 ---
 
-## ðŸ› Troubleshooting
+## 🐛 Troubleshooting
 
 ### Error: "Class not found"
 ```bash
@@ -3845,57 +4280,57 @@ composer dump-autoload
 ### Error: "Target class [CategoryRepositoryInterface] does not exist"
 Verifica que `AppServiceProvider.php` tenga los bindings correctos.
 
-### Carrito no persiste entre pÃ¡ginas
-Verifica que las sesiones estÃ©n configuradas correctamente en `.env`:
+### Carrito no persiste entre páginas
+Verifica que las sesiones estén configuradas correctamente en `.env`:
 ```env
 SESSION_DRIVER=file
 SESSION_LIFETIME=120
 ```
 
 ### Stock no se valida
-AsegÃºrate de que los productos tengan `stock_quantity > 0` y `is_active = true`.
+Asegúrate de que los productos tengan `stock_quantity > 0` y `is_active = true`.
 
 ---
 
-## ðŸ“š DocumentaciÃ³n Adicional
+## 📚 Documentación Adicional
 
 - [ROADMAP_BACKEND.md](./ROADMAP_BACKEND.md) - Arquitectura del proyecto
 - [README_BACKEND.md](./README_BACKEND.md) - Estado del backend
-- [PilaresProyecto.md](./PilaresProyecto.md) - EstÃ¡ndares del proyecto
+- [PilaresProyecto.md](./PilaresProyecto.md) - Estándares del proyecto
 
 ---
 
-## ðŸ‘¥ Para el Equipo
+## 👥 Para el Equipo
 
-### âœ… Backend (Completado)
-- Todos los controladores estÃ¡n creados
+### ✅ Backend (Completado)
+- Todos los controladores están creados
 - Arquitectura de 4 capas implementada
-- InyecciÃ³n de dependencias configurada
+- Inyección de dependencias configurada
 
-### ðŸŽ¨ Frontend (Pendiente)
+### 🎨 Frontend (Pendiente)
 - Crear vistas React/Inertia
 - Implementar llamadas AJAX al carrito
-- DiseÃ±ar UI del checkout
+- Diseñar UI del checkout
 
-### ðŸ§ª Testing (Recomendado)
+### 🧪 Testing (Recomendado)
 - Tests unitarios para Services
-- Tests de integraciÃ³n para Controllers
+- Tests de integración para Controllers
 - Tests E2E para flujo de compra
 
 ---
 
-## ðŸ“ž Contacto
+## 📞 Contacto
 
-Si tienes dudas sobre la implementaciÃ³n, revisa:
-1. Los comentarios en el cÃ³digo
+Si tienes dudas sobre la implementación, revisa:
+1. Los comentarios en el código
 2. El archivo `walkthrough.md` en `.gemini/antigravity/brain/`
-3. La documentaciÃ³n de Laravel: https://laravel.com/docs
+3. La documentación de Laravel: https://laravel.com/docs
 
 ---
 
-**Estado**: âœ… Backend completado - Listo para integraciÃ³n con Frontend
+**Estado**: ✅ Backend completado - Listo para integración con Frontend
 
-**Ãšltima actualizaciÃ³n**: 27 de Enero, 2026
+**Última actualización**: 27 de Enero, 2026
 
 ---
 
@@ -3903,69 +4338,69 @@ Si tienes dudas sobre la implementaciÃ³n, revisa:
 
 ## docs\REVISION_RUBRICA
 
-# MiKiwi: EvaluaciÃ³n de RÃºbrica del Proyecto
+# MiKiwi: Evaluación de Rúbrica del Proyecto
 
-Este documento detalla el estado actual del proyecto MiKiwi frente a los criterios establecidos en la rÃºbrica de evaluaciÃ³n.
+Este documento detalla el estado actual del proyecto MiKiwi frente a los criterios establecidos en la rúbrica de evaluación.
 
-## ðŸŸ¢ 1. Desarrollo en Entorno Servidor
+## 🟢 1. Desarrollo en Entorno Servidor
 
 | Criterio / RA     | Requisito Rubrica                                   | Estado  | Observaciones                                                                      |
 | :---------------- | :-------------------------------------------------- | :-----: | :--------------------------------------------------------------------------------- |
-| **RA5 (a,b,f,g)** | Arquitectura MVC (Models, Controllers, Inertia)     | **[x]** | Uso estricto de Eloquent, Controllers y vistas React/Inertia sin lÃ³gica en vistas. |
-| **RA5 (c,d,e)**   | ConfiguraciÃ³n y Formularios (.env, dinÃ¡micos)       | **[x]** | `.env` configurado. Checkout y carrito gestionados con formularios asÃ­ncronos.     |
-| **RA6 (a,b,c,f)** | Persistencia y CRUD (Productos, Usuarios, Pedidos)  | **[x]** | GestiÃ³n completa implementada mediante Repositorios y Modelos.                     |
-| **RA6 (d,e)**     | Integridad y Seguridad (FormRequests, SanitizaciÃ³n) | **[x]** | Validaciones en servidor mediante `FormRequest` y prevenciÃ³n de inyecciones.       |
-| **RA7 (d,e,g)**   | Servicios Web (CreaciÃ³n y consumo de API)           | **[x]** | API REST implementada en `Api\ProductController` y otros endpoints.                |
-| **RA8 (a,b,f)**   | Framework Servidor (Capacidades Laravel, Roles)     | **[x]** | Uso de Middleware `EnsureUserIsAdmin` y Policies para contenido dinÃ¡mico.          |
-| **RA9 (e,f,g)**   | LibrerÃ­as HÃ­bridas (Stripe, Cloudinary)             | **[/]** | Stripe y Cloudinary integrados. **Falta** generaciÃ³n de PDF y Mapas de entrega.    |
+| **RA5 (a,b,f,g)** | Arquitectura MVC (Models, Controllers, Inertia)     | **[x]** | Uso estricto de Eloquent, Controllers y vistas React/Inertia sin lógica en vistas. |
+| **RA5 (c,d,e)**   | Configuración y Formularios (.env, dinámicos)       | **[x]** | `.env` configurado. Checkout y carrito gestionados con formularios asíncronos.     |
+| **RA6 (a,b,c,f)** | Persistencia y CRUD (Productos, Usuarios, Pedidos)  | **[x]** | Gestión completa implementada mediante Repositorios y Modelos.                     |
+| **RA6 (d,e)**     | Integridad y Seguridad (FormRequests, Sanitización) | **[x]** | Validaciones en servidor mediante `FormRequest` y prevención de inyecciones.       |
+| **RA7 (d,e,g)**   | Servicios Web (Creación y consumo de API)           | **[x]** | API REST implementada en `Api\ProductController` y otros endpoints.                |
+| **RA8 (a,b,f)**   | Framework Servidor (Capacidades Laravel, Roles)     | **[x]** | Uso de Middleware `EnsureUserIsAdmin` y Policies para contenido dinámico.          |
+| **RA9 (e,f,g)**   | Librerías Híbridas (Stripe, Cloudinary)             | **[/]** | Stripe y Cloudinary integrados. **Falta** generación de PDF y Mapas de entrega.    |
 
-## ðŸ”µ 2. Desarrollo en Entorno Cliente
+## 🔵 2. Desarrollo en Entorno Cliente
 
 | Criterio / RA   | Requisito Rubrica                         | Estado  | Observaciones                                                   |
 | :-------------- | :---------------------------------------- | :-----: | :-------------------------------------------------------------- |
-| **RA7 (a,b,e)** | ComunicaciÃ³n AsÃ­ncrona (Inertia/Axios)    | **[x]** | El carrito y filtros se actualizan sin recargar la pÃ¡gina.      |
+| **RA7 (a,b,e)** | Comunicación Asíncrona (Inertia/Axios)    | **[x]** | El carrito y filtros se actualizan sin recargar la página.      |
 | **RA7 (c,d,f)** | Manejo de JSONEntre React y Laravel       | **[x]** | Intercambio de objetos JSON gestionado nativamente por Inertia. |
 | **RA7 (h,i)**   | Uso de Framework (React Hooks, Lifecycle) | **[x]** | Uso extensivo de `useState`, `useEffect` y Custom Hooks.        |
-| **RA7 (g)**     | Compatibilidad Navegadores (Dual Browser) | **[x]** | Confirmada funcionalidad estable en mÃºltiples navegadores.      |
+| **RA7 (g)**     | Compatibilidad Navegadores (Dual Browser) | **[x]** | Confirmada funcionalidad estable en múltiples navegadores.      |
 
-## ðŸŽ¨ 3. DiseÃ±o de Interfaces (UI/UX)
+## 🎨 3. Diseño de Interfaces (UI/UX)
 
 | Criterio / RA   | Requisito Rubrica                                 | Estado  | Observaciones                                                                                     |
 | :-------------- | :------------------------------------------------ | :-----: | :------------------------------------------------------------------------------------------------ |
-| **RA5 (a,c,e)** | Accesibilidad (Etiquetas alt, contraste, teclado) | **[/]** | Etiquetas `alt` presentes en componentes base. Requiere auditorÃ­a profunda de navegaciÃ³n teclado. |
-| **RA5 (f,g)**   | VerificaciÃ³n (Lighthouse, Responsive)             | **[x]** | Verificado con puntuaciÃ³n de 96 en Lighthouse. DiseÃ±o totalmente responsive.                      |
-| **RA6 (a,b,c)** | Usabilidad/UX (NavegaciÃ³n intuitiva, buscador)    | **[x]** | Estructura clara por colecciones, carrito interactivo y flujo de compra lineal.                   |
-| **RA6 (d,f)**   | EstÃ¡ndares (Tailwind CSS, Coherencia visual)      | **[x]** | GuÃ­a de diseÃ±o en `docs/DESIGN_GUIDELINES.md` y Tailwind configurado.                             |
+| **RA5 (a,c,e)** | Accesibilidad (Etiquetas alt, contraste, teclado) | **[/]** | Etiquetas `alt` presentes en componentes base. Requiere auditoría profunda de navegación teclado. |
+| **RA5 (f,g)**   | Verificación (Lighthouse, Responsive)             | **[x]** | Verificado con puntuación de 96 en Lighthouse. Diseño totalmente responsive.                      |
+| **RA6 (a,b,c)** | Usabilidad/UX (Navegación intuitiva, buscador)    | **[x]** | Estructura clara por colecciones, carrito interactivo y flujo de compra lineal.                   |
+| **RA6 (d,f)**   | Estándares (Tailwind CSS, Coherencia visual)      | **[x]** | Guía de diseño en `docs/DESIGN_GUIDELINES.md` y Tailwind configurado.                             |
 
-## ðŸ“… 4. Proyecto Intermodular (GestiÃ³n)
+## 📅 4. Proyecto Intermodular (Gestión)
 
 | Criterio / RA  | Requisito Rubrica                               | Estado  | Observaciones                                                                              |
 | :------------- | :---------------------------------------------- | :-----: | :----------------------------------------------------------------------------------------- |
-| **RA3 (a, f)** | PlanificaciÃ³n Temporal (Gantt/Cronograma)       | **[x]** | Cronograma detallado por semanas y tareas en `docs/ROADMAP.md`.                            |
+| **RA3 (a, f)** | Planificación Temporal (Gantt/Cronograma)       | **[x]** | Cronograma detallado por semanas y tareas en `docs/ROADMAP.md`.                            |
 | **RA3 (b, d)** | Recursos y Procedimientos (Stack, Scrum/Kanban) | **[x]** | Definido en `README.md` y `docs/PilaresProyecto.md`. Uso de GitHub Issues/Pull Requests.   |
-| **RA3 (e)**    | GestiÃ³n de Riesgos (TÃ©cnicos, Seguridad)        | **[x]** | Vulnerabilidades identificadas y plan formal creado en `docs/PLAN_CONTINGENCIA.md`.        |
-| **RA3 (g)**    | ValoraciÃ³n EconÃ³mica (Coste, horas, licencias)  | **[/]** | EstimaciÃ³n de horas (4-5 semanas/2 devs) en Roadmap. **Falta** valoraciÃ³n monetaria total. |
-| **RA3 (h)**    | DocumentaciÃ³n de EjecuciÃ³n (GuÃ­a InstalaciÃ³n)   | **[x]** | `docs/GUIA_INSTALACION.md` completa y funcional.                                           |
-| **RA4 (a, b)** | Indicadores de Calidad (MÃ©tricas, Tests)        | **[x]** | Criterios de aceptaciÃ³n y tests unitarios definidos en `docs/ROADMAP.md`.                  |
-| **RA4 (c, d)** | GestiÃ³n de Incidencias (Git/PRs)                | **[x]** | Uso de Conventional Commits y flujo de Pull Requests documentado.                          |
+| **RA3 (e)**    | Gestión de Riesgos (Técnicos, Seguridad)        | **[x]** | Vulnerabilidades identificadas y plan formal creado en `docs/PLAN_CONTINGENCIA.md`.        |
+| **RA3 (g)**    | Valoración Económica (Coste, horas, licencias)  | **[/]** | Estimación de horas (4-5 semanas/2 devs) en Roadmap. **Falta** valoración monetaria total. |
+| **RA3 (h)**    | Documentación de Ejecución (Guía Instalación)   | **[x]** | `docs/GUIA_INSTALACION.md` completa y funcional.                                           |
+| **RA4 (a, b)** | Indicadores de Calidad (Métricas, Tests)        | **[x]** | Criterios de aceptación y tests unitarios definidos en `docs/ROADMAP.md`.                  |
+| **RA4 (c, d)** | Gestión de Incidencias (Git/PRs)                | **[x]** | Uso de Conventional Commits y flujo de Pull Requests documentado.                          |
 
-## ðŸ¤– 5. Uso de IA Generativa y Tutoriales
+## 🤖 5. Uso de IA Generativa y Tutoriales
 
 | Requisito                        | Estado  | Observaciones                                                           |
 | :------------------------------- | :------ | :---------------------------------------------------------------------- |
-| **DeclaraciÃ³n de Transparencia** | **[x]** | Documentado en `docs/AGENTS.md` (uso de asistentes como tutor y apoyo). |
-| **Responsabilidad TÃ©cnica**      | **[x]** | El Roadmap detalla la comprensiÃ³n de cada vulnerabilidad y soluciÃ³n.    |
-| **AportaciÃ³n de Valor**          | **[x]** | AdaptaciÃ³n del cÃ³digo al patrÃ³n Service/Repository propio del proyecto. |
+| **Declaración de Transparencia** | **[x]** | Documentado en `docs/AGENTS.md` (uso de asistentes como tutor y apoyo). |
+| **Responsabilidad Técnica**      | **[x]** | El Roadmap detalla la comprensión de cada vulnerabilidad y solución.    |
+| **Aportación de Valor**          | **[x]** | Adaptación del código al patrón Service/Repository propio del proyecto. |
 
 ---
 
-## ðŸš€ Resumen de Tareas Faltantes / Puntos CrÃ­ticos
+## 🚀 Resumen de Tareas Faltantes / Puntos Críticos
 
-1.  **LibrerÃ­as HÃ­bridas (RA9):** Implementar generaciÃ³n de facturas en PDF y visualizaciÃ³n de mapas para envÃ­os.
-2.  **ValoraciÃ³n EconÃ³mica (RA3):** Traducir las horas de desarrollo y costes de APIs a un presupuesto monetario.
+1.  **Librerías Híbridas (RA9):** Implementar generación de facturas en PDF y visualización de mapas para envíos.
+2.  **Valoración Económica (RA3):** Traducir las horas de desarrollo y costes de APIs a un presupuesto monetario.
 3.  **Plan de Contingencia (RA3):** Completado en `docs/PLAN_CONTINGENCIA.md`.
-4.  **AuditorÃ­a de NavegaciÃ³n (RA5):** Ejecutar test de Lighthouse (Pasadocon 96) y asegurar navegaciÃ³n fluida solo con teclado.
-5.  **VerificaciÃ³n de Navegadores (RA7):** Confirmada (completado).
+4.  **Auditoría de Navegación (RA5):** Ejecutar test de Lighthouse (Pasadocon 96) y asegurar navegación fluida solo con teclado.
+5.  **Verificación de Navegadores (RA7):** Confirmada (completado).
 
 ---
 
@@ -3973,9 +4408,9 @@ Este documento detalla el estado actual del proyecto MiKiwi frente a los criteri
 
 ## docs\epics\Tarea2\Descripcion
 
-Tarea 2: CreaciÃ³n de Biblioteca de Componentes (Ãtomos)
+Tarea 2: Creación de Biblioteca de Componentes (Átomos)
 
-DiseÃ±ar y codificar botones, inputs, checkboxes, radios y etiquetas.
+Diseñar y codificar botones, inputs, checkboxes, radios y etiquetas.
 
 ---
 
@@ -3983,9 +4418,9 @@ DiseÃ±ar y codificar botones, inputs, checkboxes, radios y etiquetas.
 
 ## docs\epics\Tarea3\Descripcion
 
-Tarea 3: CreaciÃ³n de Componentes Complejos (MolÃ©culas/Organismos)
+Tarea 3: Creación de Componentes Complejos (Moléculas/Organismos)
 
-Definir tarjetas (cards), barras de navegaciÃ³n y modales.
+Definir tarjetas (cards), barras de navegación y modales.
 
 ---
 
@@ -3993,10 +4428,10 @@ Definir tarjetas (cards), barras de navegaciÃ³n y modales.
 
 ## docs\epics\Tarea4\Descripcion
 
-Tarea 4: DocumentaciÃ³n de Uso
+Tarea 4: Documentación de Uso
 
 
-Redactar guÃ­as breves sobre cuÃ¡ndo usar cada componente y sus variaciones
+Redactar guías breves sobre cuándo usar cada componente y sus variaciones
 
 ---
 
@@ -4006,48 +4441,48 @@ Redactar guÃ­as breves sobre cuÃ¡ndo usar cada componente y sus variaciones
 
 Paleta de Colores:
 
-Color principal: PÃºrpura elegante (neutro de gÃ©nero, asociado a premium)
-Paleta neutral dominante para discreciÃ³n en espacios pÃºblicos
-Colores semÃ¡nticos para estados: Ã©xito (verde), error (rojo), warning (amarillo), info (azul)
+Color principal: Púrpura elegante (neutro de género, asociado a premium)
+Paleta neutral dominante para discreción en espacios públicos
+Colores semánticos para estados: éxito (verde), error (rojo), warning (amarillo), info (azul)
 Modo claro por defecto, preparar variables para modo oscuro futuro
 Todos los colores deben cumplir ratio de contraste WCAG AA (4.5:1 para texto normal, 3:1 para texto grande)
 
-TipografÃ­a:
+Tipografía:
 Fuente principal sans-serif moderna (Inter o similar) para legibilidad en pantallas
-Fuente alternativa para headings (Poppins) mÃ¡s distintiva
-Escala tipogrÃ¡fica modular coherente (de 12px a 48px)
-Line-height optimizado: 1.25 para tÃ­tulos, 1.5 para textos, 1.75 para pÃ¡rrafos largos
-Soporte completo para caracteres espaÃ±oles (acentos, Ã±, etc.)
+Fuente alternativa para headings (Poppins) más distintiva
+Escala tipográfica modular coherente (de 12px a 48px)
+Line-height optimizado: 1.25 para títulos, 1.5 para textos, 1.75 para párrafos largos
+Soporte completo para caracteres españoles (acentos, ñ, etc.)
 
 Espaciado:
 Sistema base 8px para consistencia (4, 8, 12, 16, 24, 32, 48, 64, 96px)
-MÃ¡rgenes y paddings siempre mÃºltiplos de 4
-Contenedores responsive: mÃ¡x 1280px desktop, full width mobile con padding lateral
+Márgenes y paddings siempre múltiplos de 4
+Contenedores responsive: máx 1280px desktop, full width mobile con padding lateral
 
 Componentes Base:
 Botones: Primary, Secondary, Tertiary, Ghost, Danger
 Inputs: Text, Email, Password, Number, Textarea, Select, Checkbox, Radio
 Cards: Product card, Info card, Elevated card
-Modales: ConfirmaciÃ³n, InformaciÃ³n, Formularios
+Modales: Confirmación, Información, Formularios
 Toasts/Notifications: Success, Error, Warning, Info
 Loading states: Spinners, Skeletons, Progress bars
 Badges: New, Sale, Out of Stock, Featured
-Breadcrumbs para navegaciÃ³n
-Tabs para organizaciÃ³n de contenido
-Tooltips para informaciÃ³n adicional
+Breadcrumbs para navegación
+Tabs para organización de contenido
+Tooltips para información adicional
 
 Estados Interactivos:
-Hover: cambio sutil de color o elevaciÃ³n
+Hover: cambio sutil de color o elevación
 Active/Pressed: feedback visual inmediato
-Focus: outline visible para navegaciÃ³n por teclado
+Focus: outline visible para navegación por teclado
 Disabled: opacidad reducida + cursor not-allowed
 Loading: indicador claro sin bloquear toda la UI
 
-DocumentaciÃ³n:
+Documentación:
 Storybook o similar con todos los componentes documentados
 Guidelines de uso para cada componente
 Ejemplos de do's and don'ts
-CÃ³digo de colores y tipografÃ­as accesible para todo el equipo
+Código de colores y tipografías accesible para todo el equipo
 
 
 
@@ -4060,7 +4495,7 @@ CÃ³digo de colores y tipografÃ­as accesible para todo el equipo
 ## Paleta de Colores
 
 ### Colores Principales
-- **Primary (PÃºrpura)**: #8B5CF6 (pÃºrpura vibrante)
+- **Primary (Púrpura)**: #8B5CF6 (púrpura vibrante)
 - **Primary Dark**: #7C3AED (hover/active)
 - **Primary Light**: #A78BFA (backgrounds sutiles)
 - **Primary Pale**: #EDE9FE (fondos muy claros)
@@ -4075,14 +4510,14 @@ CÃ³digo de colores y tipografÃ­as accesible para todo el equipo
 - **Blanco**: #FFFFFF
 - **Negro**: #000000
 
-### Colores SemÃ¡nticos
-- **Success**: #10B981 (verde) - Ratio 4.51:1 âœ“
+### Colores Semánticos
+- **Success**: #10B981 (verde) - Ratio 4.51:1 ✓
 - **Success Light**: #D1FAE5 (backgrounds)
-- **Error**: #EF4444 (rojo) - Ratio 4.52:1 âœ“
+- **Error**: #EF4444 (rojo) - Ratio 4.52:1 ✓
 - **Error Light**: #FEE2E2 (backgrounds)
-- **Warning**: #F59E0B (amarillo/naranja) - Ratio 4.54:1 âœ“
+- **Warning**: #F59E0B (amarillo/naranja) - Ratio 4.54:1 ✓
 - **Warning Light**: #FEF3C7 (backgrounds)
-- **Info**: #3B82F6 (azul) - Ratio 4.53:1 âœ“
+- **Info**: #3B82F6 (azul) - Ratio 4.53:1 ✓
 - **Info Light**: #DBEAFE (backgrounds)
 
 ### Variables CSS (preparadas para modo oscuro)
@@ -4117,7 +4552,7 @@ CÃ³digo de colores y tipografÃ­as accesible para todo el equipo
 
 ---
 
-## TipografÃ­a
+## Tipografía
 
 ### Fuentes
 ```css
@@ -4128,7 +4563,7 @@ CÃ³digo de colores y tipografÃ­as accesible para todo el equipo
 --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 ```
 
-### Escala TipogrÃ¡fica
+### Escala Tipográfica
 - **Display**: 48px (3rem) - Peso 700 - Line-height 1.2
 - **H1**: 36px (2.25rem) - Peso 700 - Line-height 1.25
 - **H2**: 30px (1.875rem) - Peso 600 - Line-height 1.25
@@ -4147,14 +4582,14 @@ CÃ³digo de colores y tipografÃ­as accesible para todo el equipo
 
 ### Ejemplo de Uso
 ```css
-/* TÃ­tulos principales (Poppins) */
+/* Títulos principales (Poppins) */
 h1, h2, h3 {
   font-family: var(--font-heading);
   font-weight: 600;
   line-height: 1.25;
 }
 
-/* PÃ¡rrafos (Inter) */
+/* Párrafos (Inter) */
 p {
   font-family: var(--font-body);
   font-size: 16px;
@@ -4173,7 +4608,7 @@ button, label {
 
 ## Espaciado
 
-### Sistema Base (mÃºltiplos de 4px)
+### Sistema Base (múltiplos de 4px)
 ```css
 --space-1: 4px;
 --space-2: 8px;
@@ -4329,7 +4764,7 @@ button, label {
 }
 ```
 
-**TamaÃ±os de Botones**
+**Tamaños de Botones**
 ```css
 .btn-small { padding: 8px 16px; font-size: 14px; }
 .btn-medium { padding: 12px 24px; font-size: 16px; } /* default */
@@ -4382,7 +4817,7 @@ button, label {
 **Input con Label**
 ```html
 <div class="input-group">
-  <label class="input-label">Correo electrÃ³nico</label>
+  <label class="input-label">Correo electrónico</label>
   <input type="email" class="input" placeholder="tu@email.com">
   <span class="input-helper">Texto de ayuda opcional</span>
 </div>
@@ -4712,9 +5147,9 @@ button, label {
 ### Breakpoints
 ```css
 /* Mobile first approach */
---breakpoint-sm: 640px;   /* Tablets pequeÃ±as */
+--breakpoint-sm: 640px;   /* Tablets pequeñas */
 --breakpoint-md: 768px;   /* Tablets */
---breakpoint-lg: 1024px;  /* Desktop pequeÃ±o */
+--breakpoint-lg: 1024px;  /* Desktop pequeño */
 --breakpoint-xl: 1280px;  /* Desktop grande */
 --breakpoint-2xl: 1536px; /* Pantallas extra grandes */
 ```
@@ -4738,67 +5173,67 @@ button, label {
 
 ---
 
-## DocumentaciÃ³n de Uso
+## Documentación de Uso
 
-### âœ… Do's
+### ✅ Do's
 
 **Botones:**
-- âœ… Usa Primary para la acciÃ³n principal por pantalla
-- âœ… Usa Secondary para acciones alternativas importantes
-- âœ… Incluye estados loading en botones de submit
-- âœ… MantÃ©n textos de botÃ³n concisos (mÃ¡x 3 palabras)
+- ✅ Usa Primary para la acción principal por pantalla
+- ✅ Usa Secondary para acciones alternativas importantes
+- ✅ Incluye estados loading en botones de submit
+- ✅ Mantén textos de botón concisos (máx 3 palabras)
 
 **Colores:**
-- âœ… Usa colores semÃ¡nticos para su propÃ³sito (verde = Ã©xito)
-- âœ… Verifica contraste antes de usar colores personalizados
-- âœ… Usa el pÃºrpura principal solo para elementos destacados
+- ✅ Usa colores semánticos para su propósito (verde = éxito)
+- ✅ Verifica contraste antes de usar colores personalizados
+- ✅ Usa el púrpura principal solo para elementos destacados
 
 **Espaciado:**
-- âœ… MantÃ©n espaciado consistente entre elementos similares
-- âœ… Usa mÃ¡s espacio para separar secciones distintas
-- âœ… Respeta el sistema de 4px
+- ✅ Mantén espaciado consistente entre elementos similares
+- ✅ Usa más espacio para separar secciones distintas
+- ✅ Respeta el sistema de 4px
 
-### âŒ Don'ts
+### ❌ Don'ts
 
 **Botones:**
-- âŒ No uses mÃ¡s de un Primary button por secciÃ³n
-- âŒ No combines Ghost y Tertiary en el mismo contexto
-- âŒ No uses Danger button para acciones no destructivas
+- ❌ No uses más de un Primary button por sección
+- ❌ No combines Ghost y Tertiary en el mismo contexto
+- ❌ No uses Danger button para acciones no destructivas
 
 **Colores:**
-- âŒ No uses rojo para Ã©xito o verde para error
-- âŒ No mezcles mÃ¡s de 3 colores en un componente
-- âŒ No uses colores custom fuera de la paleta definida
+- ❌ No uses rojo para éxito o verde para error
+- ❌ No mezcles más de 3 colores en un componente
+- ❌ No uses colores custom fuera de la paleta definida
 
-**TipografÃ­a:**
-- âŒ No uses mÃ¡s de 3 tamaÃ±os de fuente en una secciÃ³n
-- âŒ No pongas textos largos en mayÃºsculas
-- âŒ No reduzcas line-height por debajo de 1.25
+**Tipografía:**
+- ❌ No uses más de 3 tamaños de fuente en una sección
+- ❌ No pongas textos largos en mayúsculas
+- ❌ No reduzcas line-height por debajo de 1.25
 
 ---
 
 ## Accesibilidad (WCAG AA)
 
 ### Ratios de Contraste Verificados
-- âœ… Texto normal (#111827 sobre #FFFFFF): 16.1:1
-- âœ… Primary button (blanco sobre #8B5CF6): 4.6:1
-- âœ… Success text: 4.51:1
-- âœ… Error text: 4.52:1
+- ✅ Texto normal (#111827 sobre #FFFFFF): 16.1:1
+- ✅ Primary button (blanco sobre #8B5CF6): 4.6:1
+- ✅ Success text: 4.51:1
+- ✅ Error text: 4.52:1
 
-### NavegaciÃ³n por Teclado
+### Navegación por Teclado
 - Todos los elementos interactivos deben ser accesibles con Tab
 - Focus visible con outline de 2px
-- Skip to content link para navegaciÃ³n rÃ¡pida
+- Skip to content link para navegación rápida
 
 ### ARIA Labels
 ```html
-<!-- Ejemplo de botÃ³n accesible -->
+<!-- Ejemplo de botón accesible -->
 <button 
   class="btn-primary" 
-  aria-label="AÃ±adir al carrito"
+  aria-label="Añadir al carrito"
   aria-describedby="product-name"
 >
-  AÃ±adir al carrito
+  Añadir al carrito
 </button>
 
 <!-- Input con error -->
@@ -4807,7 +5242,7 @@ button, label {
   aria-invalid="true" 
   aria-describedby="email-error"
 >
-<span id="email-error" role="alert">Email invÃ¡lido</span>
+<span id="email-error" role="alert">Email inválido</span>
 ```
 ```
 
@@ -4819,26 +5254,26 @@ button, label {
 
 ## database\README
 
-# MiKiwi - DocumentaciÃ³n de Base de Datos
+# MiKiwi - Documentación de Base de Datos
 
-> **VersiÃ³n**: 2.0 Enterprise  
+> **Versión**: 2.0 Enterprise  
 > **PostgreSQL**: 16+  
-> **Ãšltima actualizaciÃ³n**: Enero 2026
+> **Última actualización**: Enero 2026
 
 ---
 
-## Ãndice
+## Índice
 
 1. [Estructura de Archivos](#estructura-de-archivos)
 2. [Diagrama ER](#diagrama-er)
-3. [Tablas por MÃ³dulo](#tablas-por-mÃ³dulo)
+3. [Tablas por Módulo](#tablas-por-módulo)
 4. [Constraints e Integridad](#constraints-e-integridad)
-5. [AutomatizaciÃ³n (Triggers)](#automatizaciÃ³n-triggers)
+5. [Automatización (Triggers)](#automatización-triggers)
 6. [Performance](#performance)
 7. [Seguridad](#seguridad)
 8. [Backups](#backups)
 9. [GDPR](#gdpr)
-10. [InstalaciÃ³n](#instalaciÃ³n)
+10. [Instalación](#instalación)
 
 ---
 
@@ -4846,24 +5281,24 @@ button, label {
 
 ```
 database/
-â”œâ”€â”€ 01_schema.sql           # Estructura de tablas
-â”œâ”€â”€ 02_constraints.sql      # FKs, CHECKs, UNIQUE
-â”œâ”€â”€ 03_functions_triggers.sql # AutomatizaciÃ³n
-â”œâ”€â”€ 04_indexes.sql          # Ãndices de rendimiento
-â”œâ”€â”€ 05_materialized_views.sql # Vistas para dashboard
-â”œâ”€â”€ 06_security_roles.sql   # Roles y permisos
-â”œâ”€â”€ 07_partitions.sql       # Particionamiento (audit_logs)
-â”œâ”€â”€ 08_encryption.sql       # EncriptaciÃ³n pgcrypto
-â”œâ”€â”€ 09_gdpr_procedures.sql  # Cumplimiento GDPR
-â”œâ”€â”€ README.md               # Esta documentaciÃ³n
-â””â”€â”€ scripts/
-    â”œâ”€â”€ docker-compose.yml  # PostgreSQL + pgAdmin + Backup
-    â”œâ”€â”€ backup.sh           # Backup automÃ¡tico
-    â”œâ”€â”€ restore.sh          # RestauraciÃ³n
-    â””â”€â”€ .env.example        # Variables de entorno
+├── 01_schema.sql           # Estructura de tablas
+├── 02_constraints.sql      # FKs, CHECKs, UNIQUE
+├── 03_functions_triggers.sql # Automatización
+├── 04_indexes.sql          # Índices de rendimiento
+├── 05_materialized_views.sql # Vistas para dashboard
+├── 06_security_roles.sql   # Roles y permisos
+├── 07_partitions.sql       # Particionamiento (audit_logs)
+├── 08_encryption.sql       # Encriptación pgcrypto
+├── 09_gdpr_procedures.sql  # Cumplimiento GDPR
+├── README.md               # Esta documentación
+└── scripts/
+    ├── docker-compose.yml  # PostgreSQL + pgAdmin + Backup
+    ├── backup.sh           # Backup automático
+    ├── restore.sh          # Restauración
+    └── .env.example        # Variables de entorno
 ```
 
-> El archivo `BBDD.sql` original estÃ¡ **DEPRECATED**.
+> El archivo `BBDD.sql` original está **DEPRECATED**.
 
 ---
 
@@ -4900,63 +5335,63 @@ erDiagram
 
 ---
 
-## Tablas por MÃ³dulo
+## Tablas por Módulo
 
-### MÃ³dulo: Usuarios
+### Módulo: Usuarios
 
-| Tabla | DescripciÃ³n |
+| Tabla | Descripción |
 |-------|-------------|
 | `users` | Usuarios del sistema (customer, admin, support) |
 | `user_preferences` | Preferencias (empaquetado discreto, notificaciones) |
-| `user_addresses` | Direcciones de envÃ­o/facturaciÃ³n |
-| `user_payment_methods` | MÃ©todos de pago tokenizados |
+| `user_addresses` | Direcciones de envío/facturación |
+| `user_payment_methods` | Métodos de pago tokenizados |
 
-### MÃ³dulo: CatÃ¡logo
+### Módulo: Catálogo
 
-| Tabla | DescripciÃ³n |
+| Tabla | Descripción |
 |-------|-------------|
-| `categories` | CategorÃ­as jerÃ¡rquicas con slug Ãºnico |
+| `categories` | Categorías jerárquicas con slug único |
 | `suppliers` | Proveedores con CIF/NIF |
-| `products` | Productos con SKU Ãºnico, precio, stock |
+| `products` | Productos con SKU único, precio, stock |
 | `product_variants` | Variantes (talla, color) con stock propio |
 
-### MÃ³dulo: Carrito
+### Módulo: Carrito
 
-| Tabla | DescripciÃ³n |
+| Tabla | Descripción |
 |-------|-------------|
-| `carts` | Carrito Ãºnico por usuario |
+| `carts` | Carrito único por usuario |
 | `cart_items` | Items en el carrito |
 | `wishlists` | Lista de deseos |
 
-### MÃ³dulo: Pedidos
+### Módulo: Pedidos
 
-| Tabla | DescripciÃ³n |
+| Tabla | Descripción |
 |-------|-------------|
 | `coupons` | Cupones de descuento (% o fijo) |
-| `orders` | Pedidos con nÃºmero MK-YYYY-XXXXX |
+| `orders` | Pedidos con número MK-YYYY-XXXXX |
 | `order_items` | Items del pedido con snapshot de precio |
 
-### MÃ³dulo: Reviews
+### Módulo: Reviews
 
-| Tabla | DescripciÃ³n |
+| Tabla | Descripción |
 |-------|-------------|
-| `reviews` | Valoraciones 1-5 con verificaciÃ³n de compra |
+| `reviews` | Valoraciones 1-5 con verificación de compra |
 
-### MÃ³dulo: Soporte
+### Módulo: Soporte
 
-| Tabla | DescripciÃ³n |
+| Tabla | Descripción |
 |-------|-------------|
 | `support_tickets` | Tickets TK-XXXXX con prioridad |
 | `ticket_messages` | Historial de mensajes |
 | `notifications` | Notificaciones push/email |
 
-### MÃ³dulo: AuditorÃ­a
+### Módulo: Auditoría
 
-| Tabla | DescripciÃ³n |
+| Tabla | Descripción |
 |-------|-------------|
 | `audit_logs` | Logs de cambios (particionado mensual) |
 | `error_logs` | Logs de errores (particionado mensual) |
-| `connection_audit_log` | Intentos de conexiÃ³n |
+| `connection_audit_log` | Intentos de conexión |
 
 ---
 
@@ -4964,16 +5399,16 @@ erDiagram
 
 ### Foreign Keys
 
-| PolÃ­tica | Uso | Ejemplo |
+| Política | Uso | Ejemplo |
 |----------|-----|---------|
-| `CASCADE` | Eliminar dependencias | `user_addresses` â†’ `users` |
-| `RESTRICT` | Preservar histÃ³rico | `orders` â†’ `users` |
+| `CASCADE` | Eliminar dependencias | `user_addresses` → `users` |
+| `RESTRICT` | Preservar histórico | `orders` → `users` |
 | `SET NULL` | Mantener registro | `audit_logs.user_id` |
 
 ### CHECK Constraints
 
 ```sql
--- Rangos numÃ©ricos
+-- Rangos numéricos
 rating >= 1 AND rating <= 5
 base_price >= 0
 stock_quantity >= 0
@@ -4998,13 +5433,13 @@ valid_from < valid_until
 
 ---
 
-## AutomatizaciÃ³n (Triggers)
+## Automatización (Triggers)
 
 ### Defensa en Profundidad
 
 Laravel es la capa principal, los triggers son fallback de seguridad:
 
-| Trigger | AcciÃ³n |
+| Trigger | Acción |
 |---------|--------|
 | `update_modified_column()` | Actualiza `updated_at` |
 | `generate_order_number()` | Genera MK-2026-00001 |
@@ -5023,21 +5458,21 @@ Laravel es la capa principal, los triggers son fallback de seguridad:
 | Vista | Refresh | Uso |
 |-------|---------|-----|
 | `mv_admin_dashboard_stats` | 5 min | Dashboard admin |
-| `mv_bestselling_products` | 1 hora | SecciÃ³n bestsellers |
+| `mv_bestselling_products` | 1 hora | Sección bestsellers |
 | `mv_monthly_sales_report` | Diario | Reportes financieros |
-| `mv_category_products` | 1 hora | Listados categorÃ­a |
+| `mv_category_products` | 1 hora | Listados categoría |
 
-### Ãndices Clave
+### Índices Clave
 
 ```sql
 -- Keyset pagination (eficiente para grandes datasets)
 CREATE INDEX idx_orders_keyset ON orders(created_at DESC, id DESC);
 
--- Full-text search espaÃ±ol
+-- Full-text search español
 CREATE INDEX idx_products_fts ON products 
     USING GIN (to_tsvector('spanish', name || ' ' || description));
 
--- Ãndices parciales (excluyen soft deletes)
+-- Índices parciales (excluyen soft deletes)
 CREATE INDEX idx_products_category ON products(category_id) 
     WHERE deleted_at IS NULL;
 ```
@@ -5046,7 +5481,7 @@ CREATE INDEX idx_products_category ON products(category_id)
 
 - `audit_logs` particionado por **mes**
 - `error_logs` particionado por **mes**
-- RetenciÃ³n automÃ¡tica configurable
+- Retención automática configurable
 
 ---
 
@@ -5060,7 +5495,7 @@ CREATE INDEX idx_products_category ON products(category_id)
 | `readonly_role` | SELECT only | Analytics, BI |
 | `admin_role` | ALL | Mantenimiento |
 
-### EncriptaciÃ³n (pgcrypto)
+### Encriptación (pgcrypto)
 
 **Campos encriptados:**
 - `user_payment_methods.gateway_token_encrypted`
@@ -5068,7 +5503,7 @@ CREATE INDEX idx_products_category ON products(category_id)
 - `user_addresses.phone_encrypted`
 - `orders.shipping_address_encrypted`
 
-**ConfiguraciÃ³n:**
+**Configuración:**
 ```php
 // Laravel config/database.php
 'options' => [
@@ -5080,13 +5515,13 @@ CREATE INDEX idx_products_category ON products(category_id)
 
 ## Backups
 
-### AutomatizaciÃ³n (Docker)
+### Automatización (Docker)
 
-| Tipo | Horario | RetenciÃ³n |
+| Tipo | Horario | Retención |
 |------|---------|-----------|
-| Diario | 02:00 AM | 7 dÃ­as |
+| Diario | 02:00 AM | 7 días |
 | Semanal | Domingo | 4 semanas |
-| Mensual | DÃ­a 1 | 12 meses |
+| Mensual | Día 1 | 12 meses |
 
 ### Comandos
 
@@ -5097,7 +5532,7 @@ docker exec mikiwi_backup /backup.sh full
 # Restaurar
 docker exec -it mikiwi_backup /restore.sh /backups/daily/full_20260114.dump
 
-# Ver estadÃ­sticas
+# Ver estadísticas
 docker exec mikiwi_backup /backup.sh stats
 ```
 
@@ -5107,7 +5542,7 @@ docker exec mikiwi_backup /backup.sh stats
 
 ### Procedimientos Disponibles
 
-| FunciÃ³n | ArtÃ­culo GDPR | Uso |
+| Función | Artículo GDPR | Uso |
 |---------|---------------|-----|
 | `anonymize_user(uuid)` | Art. 17 | Derecho al olvido |
 | `export_user_data(uuid)` | Art. 20 | Portabilidad |
@@ -5129,14 +5564,14 @@ SELECT generate_gdpr_compliance_report();
 
 ---
 
-## InstalaciÃ³n
+## Instalación
 
 ### 1. Configurar Variables
 
 ```bash
 cd database/scripts
 cp .env.example .env
-# Editar con contraseÃ±as seguras
+# Editar con contraseñas seguras
 ```
 
 ### 2. Iniciar Docker
@@ -5147,7 +5582,7 @@ docker-compose up -d
 
 ### 3. Ejecutar Scripts SQL
 
-Los scripts se ejecutan automÃ¡ticamente en orden alfabÃ©tico al iniciar PostgreSQL por primera vez.
+Los scripts se ejecutan automáticamente en orden alfabético al iniciar PostgreSQL por primera vez.
 
 **Manual:**
 ```bash
@@ -5189,18 +5624,18 @@ Para dudas sobre la base de datos, consultar el equipo de desarrollo.
 
 ![][image2]
 
-1. **JustificaciÃ³n, LocalizaciÃ³n y ClasificaciÃ³n de la Empresa (EIE)**  
-   1. **ClasificaciÃ³n**  
-      1. ClasificaciÃ³n por TamaÃ±o  
-      2. ClasificaciÃ³n por Sector EconÃ³mico  
-      3. ClasificaciÃ³n por Actividad (CNAE)  
-      4. ClasificaciÃ³n por Modelo de Negocio: B2C  
-      5. ClasificaciÃ³n por EspecializaciÃ³n y Nicho de Mercado  
+1. **Justificación, Localización y Clasificación de la Empresa (EIE)**  
+   1. **Clasificación**  
+      1. Clasificación por Tamaño  
+      2. Clasificación por Sector Económico  
+      3. Clasificación por Actividad (CNAE)  
+      4. Clasificación por Modelo de Negocio: B2C  
+      5. Clasificación por Especialización y Nicho de Mercado  
    2. **Resumen Ejecutivo**  
-   3. **JustificaciÃ³n**  
-      1. JustificaciÃ³n Social y Cultural  
-      2. JustificaciÃ³n EconÃ³mica y Oportunidad de Mercado  
-   4. **LocalizaciÃ³n**  
+   3. **Justificación**  
+      1. Justificación Social y Cultural  
+      2. Justificación Económica y Oportunidad de Mercado  
+   4. **Localización**  
 2. **Objetivos y Requisitos del Proyecto. DAFO (EIE)**  
    1. **Objetivos del Proyecto**  
       1. Objetivos del Cliente  
@@ -5209,197 +5644,197 @@ Para dudas sobre la base de datos, consultar el equipo de desarrollo.
       1. Requisitos Funcionales (RF)  
       2. Requisitos No Funcionales (RNF)  
    3. **DAFO**  
-3. **Organigrama y DepartamentalizaciÃ³n, Tipo de Bien y Factores Productivos**  
+3. **Organigrama y Departamentalización, Tipo de Bien y Factores Productivos**  
    1. Organigrama  
-   2. DepartamentalizaciÃ³n  
+   2. Departamentalización  
    3. Tipo de Bien y Factores Productivos  
-4. **Imagen Corporativa (DIW \+ EIE) / MisiÃ³n, VisiÃ³n y Valores (EIE)**  
+4. **Imagen Corporativa (DIW \+ EIE) / Misión, Visión y Valores (EIE)**  
    1. Imagen Corporativa (Slogans)  
-   2. Patrocinadores (Alianzas EstratÃ©gicas)  
-   3. MisiÃ³n, VisiÃ³n Y Valores: MIKIWI  
+   2. Patrocinadores (Alianzas Estratégicas)  
+   3. Misión, Visión Y Valores: MIKIWI  
 5. **Marketing y Estrategias (EIE)**
 
-## **ClasificaciÃ³n**
+## **Clasificación**
 
-### **1.1 ClasificaciÃ³n por TamaÃ±o.**
+### **1.1 Clasificación por Tamaño.**
 
 Con sus 5 integrantes, la startup se clasifica como una **Microempresa**, al situarse en el rango de menos de 10 empleados.
 
-Esta clasificaciÃ³n es estratÃ©gicamente relevante, ya que puede facilitar el acceso a ayudas especÃ­ficas, subvenciones para pymes y regÃ­menes fiscales o laborales simplificados.
+Esta clasificación es estratégicamente relevante, ya que puede facilitar el acceso a ayudas específicas, subvenciones para pymes y regímenes fiscales o laborales simplificados.
 
-### **1.2. ClasificaciÃ³n por Sector EconÃ³mico.**
+### **1.2. Clasificación por Sector Económico.**
 
-La actividad de la empresa se encuadra en el **Sector Terciario (Servicios)** y dada la naturaleza de su actividad (desarrollo web y tecnolÃ³gico), se ubica de forma mÃ¡s precisa en el **Sector Cuaternario**. Este subsector agrupa los servicios de alto valor intelectual basados en el conocimiento, la informaciÃ³n y las tecnologÃ­as de la informaciÃ³n (TIC).
+La actividad de la empresa se encuadra en el **Sector Terciario (Servicios)** y dada la naturaleza de su actividad (desarrollo web y tecnológico), se ubica de forma más precisa en el **Sector Cuaternario**. Este subsector agrupa los servicios de alto valor intelectual basados en el conocimiento, la información y las tecnologías de la información (TIC).
 
-### **1.3. ClasificaciÃ³n por Actividad (CNAE).**
+### **1.3. Clasificación por Actividad (CNAE).**
 
-A efectos de la AdministraciÃ³n PÃºblica EspaÃ±ola (Agencia Tributaria), la actividad de la empresa deberÃ¡ registrarse bajo un cÃ³digo CNAE (ClasificaciÃ³n Nacional de Actividades EconÃ³micas).
+A efectos de la Administración Pública Española (Agencia Tributaria), la actividad de la empresa deberá registrarse bajo un código CNAE (Clasificación Nacional de Actividades Económicas).
 
-Los epÃ­grafes relevantes para una startup de desarrollo web se encuentran, habitualmente, en las siguientes categorÃ­as:
+Los epígrafes relevantes para una startup de desarrollo web se encuentran, habitualmente, en las siguientes categorías:
 
-* ConsultorÃ­a de tecnologÃ­as de la informaciÃ³n.  
-* ProgramaciÃ³n informÃ¡tica y desarrollo de software.  
-* DiseÃ±o y desarrollo de pÃ¡ginas web.  
-* GestiÃ³n de portales web.  
+* Consultoría de tecnologías de la información.  
+* Programación informática y desarrollo de software.  
+* Diseño y desarrollo de páginas web.  
+* Gestión de portales web.  
 * Procesamiento de datos y hosting.
 
-### **1.4. ClasificaciÃ³n por Modelo de Negocio: B2C.**
+### **1.4. Clasificación por Modelo de Negocio: B2C.**
 
 El proyecto "miKiwi" adopta un modelo de negocio B2C (Business-to-Consumer).  
-Esto define que su estrategia comercial, el desarrollo de producto y los canales de marketing estÃ¡n diseÃ±ados para dirigirse y vender directamente al **consumidor final**.
+Esto define que su estrategia comercial, el desarrollo de producto y los canales de marketing están diseñados para dirigirse y vender directamente al **consumidor final**.
 
-### **1.5. ClasificaciÃ³n por EspecializaciÃ³n y Nicho de Mercado.**
+### **1.5. Clasificación por Especialización y Nicho de Mercado.**
 
-Esta es la definiciÃ³n clave de la propuesta de valor de "miKiwi". Su enfoque estratÃ©gico se define por los siguientes pilares:
+Esta es la definición clave de la propuesta de valor de "miKiwi". Su enfoque estratégico se define por los siguientes pilares:
 
-* Enfoque TecnolÃ³gico (Tech Stack): Experiencia consolidada en React, Node.js, JavaScript y PHP, conformando un stack tecnolÃ³gico moderno y versÃ¡til.  
-* Nicho de Mercado (Sector): EspecializaciÃ³n en el desarrollo de plataformas e-commerce para el sector de tiendas para adultos.  
+* Enfoque Tecnológico (Tech Stack): Experiencia consolidada en React, Node.js, JavaScript y PHP, conformando un stack tecnológico moderno y versátil.  
+* Nicho de Mercado (Sector): Especialización en el desarrollo de plataformas e-commerce para el sector de tiendas para adultos.  
 * Enfoque de Servicio: Foco en la experiencia de usuario (UX/UI) como elemento diferenciador clave en todos sus desarrollos.  
-* Tipo de SoluciÃ³n: Entrega de productos digitales completos, finalizados y listos para su lanzamiento y operaciÃ³n por el cliente final.
+* Tipo de Solución: Entrega de productos digitales completos, finalizados y listos para su lanzamiento y operación por el cliente final.
 
 ## **Resumen Ejecutivo.**
 
-La creaciÃ³n de **MIKIWI**, una plataforma de e-commerce de bienestar sexual con un foco en la co-creaciÃ³n de productos personalizados bajo demanda (On-Demand), se justifica por una confluencia de factores que seÃ±alan el fin del tabÃº sexual y la oportunidad de capitalizar la demanda de productos a medida en un mercado masificado. **MIKIWI** ofrece la soluciÃ³n de producto para una necesidad cultural ya existente.
+La creación de **MIKIWI**, una plataforma de e-commerce de bienestar sexual con un foco en la co-creación de productos personalizados bajo demanda (On-Demand), se justifica por una confluencia de factores que señalan el fin del tabú sexual y la oportunidad de capitalizar la demanda de productos a medida en un mercado masificado. **MIKIWI** ofrece la solución de producto para una necesidad cultural ya existente.
 
-## **JustificaciÃ³n**
+## **Justificación**
 
-### **JustificaciÃ³n Social y Cultural**
+### **Justificación Social y Cultural**
 
-MIKIWI nace en un momento de desprendimiento de tabÃºes y franca liberaciÃ³n sexual. Hoy, la sexualidad es vista no como un riesgo, sino como un componente esencial del bienestar y la salud integral. El mercado tradicional, con sus catÃ¡logos genÃ©ricos, ha fallado en ofrecer herramientas que satisfagan esta nueva conciencia y la prueba mÃ¡s clara de que el tabÃº ha muerto reside en su constante apariciÃ³n en el mainstream. La sexualidad ha permeado todas las esferas de la cultura, convirtiÃ©ndose en un tema de conversaciÃ³n pÃºblica, arte, polÃ­tica y humor, lo que indica su normalizaciÃ³n total en la vida diaria.
+MIKIWI nace en un momento de desprendimiento de tabúes y franca liberación sexual. Hoy, la sexualidad es vista no como un riesgo, sino como un componente esencial del bienestar y la salud integral. El mercado tradicional, con sus catálogos genéricos, ha fallado en ofrecer herramientas que satisfagan esta nueva conciencia y la prueba más clara de que el tabú ha muerto reside en su constante aparición en el mainstream. La sexualidad ha permeado todas las esferas de la cultura, convirtiéndose en un tema de conversación pública, arte, política y humor, lo que indica su normalización total en la vida diaria.
 
-**Fomento de la Plenitud:** Ofrecer productos personalizados permite a los usuarios superar las barreras fÃ­sicas y mentales para el placer, promoviendo la autoexploraciÃ³n y combatiendo la idea de que la satisfacciÃ³n debe ser estandarizada.
+**Fomento de la Plenitud:** Ofrecer productos personalizados permite a los usuarios superar las barreras físicas y mentales para el placer, promoviendo la autoexploración y combatiendo la idea de que la satisfacción debe ser estandarizada.
 
-**InclusiÃ³n Genuina:** Al permitir la personalizaciÃ³n (anatÃ³mica, funcional y estÃ©tica), **MIKIWI** garantiza que el placer sea accesible para todos los cuerpos y todas las identidades (incluida la comunidad LGTBQ+).
+**Inclusión Genuina:** Al permitir la personalización (anatómica, funcional y estética), **MIKIWI** garantiza que el placer sea accesible para todos los cuerpos y todas las identidades (incluida la comunidad LGTBQ+).
 
-**Compromiso de Confianza:** Garantizamos un compromiso Ã©tico de seguridad, utilizando solo materiales certificados y asegurando la discreciÃ³n absoluta en el envÃ­o y la facturaciÃ³n.
+**Compromiso de Confianza:** Garantizamos un compromiso ético de seguridad, utilizando solo materiales certificados y asegurando la discreción absoluta en el envío y la facturación.
 
 # 
 
-### **JustificaciÃ³n EconÃ³mica y Oportunidad de Mercado:**
+### **Justificación Económica y Oportunidad de Mercado:**
 
-#### **1\.** La PersonalizaciÃ³n como Ventaja.
+#### **1\.** La Personalización como Ventaja.
 
-La justificaciÃ³n econÃ³mica se basa en la capitalizaciÃ³n de un mercado en rÃ¡pido crecimiento y la resoluciÃ³n de la principal fricciÃ³n del consumidor digital en este sector.
+La justificación económica se basa en la capitalización de un mercado en rápido crecimiento y la resolución de la principal fricción del consumidor digital en este sector.
 
-#### **2\.** La FricciÃ³n del Consumidor: Inseguridad y EstandarizaciÃ³n
+#### **2\.** La Fricción del Consumidor: Inseguridad y Estandarización
 
-El sector del bienestar sexual es un mercado digitalizado y en crecimiento constante (8-12% anual) con una demanda madura. Sin embargo, el e-commerce actual estÃ¡ saturado de catÃ¡logos genÃ©ricos y masivos, lo que genera incertidumbre y baja confianza en el consumidor respecto al ajuste real del producto a sus necesidades. El usuario teme comprar un producto que no le sirva o que sea de mala calidad.
+El sector del bienestar sexual es un mercado digitalizado y en crecimiento constante (8-12% anual) con una demanda madura. Sin embargo, el e-commerce actual está saturado de catálogos genéricos y masivos, lo que genera incertidumbre y baja confianza en el consumidor respecto al ajuste real del producto a sus necesidades. El usuario teme comprar un producto que no le sirva o que sea de mala calidad.
 
 #### **3\.** Modelo de Negocio Diferenciado: El Configurador On-Demand
 
-MIKIWI utiliza la innovaciÃ³n tecnolÃ³gica para eliminar esta fricciÃ³n. Nuestro configurador On-Demand nos permite:
+MIKIWI utiliza la innovación tecnológica para eliminar esta fricción. Nuestro configurador On-Demand nos permite:
 
-* Garantizar un Producto a Medida: El usuario personaliza su producto, eliminando la incertidumbre del tamaÃ±o, material y funcionalidad.
+* Garantizar un Producto a Medida: El usuario personaliza su producto, eliminando la incertidumbre del tamaño, material y funcionalidad.
 
 * Posicionamiento Premium: Nos situamos en un nicho de alto valor percibido, lo que nos permite aplicar un precio premium y aumentar el ticket medio.
 
-* Ventaja Competitiva Sostenible: Al centrarnos en la personalizaciÃ³n y la calidad (frente a la logÃ­stica masiva de bajo coste), MIKIWI asegura una posiciÃ³n de mercado Ãºnica.
+* Ventaja Competitiva Sostenible: Al centrarnos en la personalización y la calidad (frente a la logística masiva de bajo coste), MIKIWI asegura una posición de mercado única.
 
 ## 
 
 # 
 
-## **LocalizaciÃ³n**.
+## **Localización**.
 
-El domicilio fiscal de la empresa se establece en **Pago Valdeconejos, s/n, 11550 Chipiona, CÃ¡diz**. Esta direcciÃ³n serÃ¡ la referencia oficial Ãºnica para todas las comunicaciones y notificaciones de la Agencia Estatal de AdministraciÃ³n Tributaria (AEAT) y otros organismos pÃºblicos.
+El domicilio fiscal de la empresa se establece en **Pago Valdeconejos, s/n, 11550 Chipiona, Cádiz**. Esta dirección será la referencia oficial única para todas las comunicaciones y notificaciones de la Agencia Estatal de Administración Tributaria (AEAT) y otros organismos públicos.
 
-La elecciÃ³n de este emplazamiento responde a una decisiÃ³n estratÃ©gica fundamental: este domicilio coincide con el **centro de operaciones principal** de la compaÃ±Ã­a.
+La elección de este emplazamiento responde a una decisión estratégica fundamental: este domicilio coincide con el **centro de operaciones principal** de la compañía.
 
 Dada la naturaleza de nuestra actividad y la modalidad de trabajo, remoto, las instalaciones situadas en esta parcela (zona diseminada) son el activo clave para el desarrollo del negocio.
 
 ## **Objetivos del Proyecto.**
 
-Los objetivos se dividen entre los del **cliente (emprendedor)** y los de **la empresa desarrolladora**, ya que, aunque distintos, deben estar alineados para garantizar el Ã©xito del proyecto.
+Los objetivos se dividen entre los del **cliente (emprendedor)** y los de **la empresa desarrolladora**, ya que, aunque distintos, deben estar alineados para garantizar el éxito del proyecto.
 
 ### **1\. Objetivos del Cliente.**
 
 **Objetivo principal (comercial):**  
-El cliente busca lanzar una plataforma de comercio electrÃ³nico especializada en productos erÃ³ticos que combine elegancia, confianza y una experiencia de compra completamente discreta. El propÃ³sito es posicionar la marca como un referente dentro del sector premium, ofreciendo un catÃ¡logo cuidadosamente seleccionado que inspire placer y bienestar sin caer en estereotipos ni vulgaridades. 
+El cliente busca lanzar una plataforma de comercio electrónico especializada en productos eróticos que combine elegancia, confianza y una experiencia de compra completamente discreta. El propósito es posicionar la marca como un referente dentro del sector premium, ofreciendo un catálogo cuidadosamente seleccionado que inspire placer y bienestar sin caer en estereotipos ni vulgaridades. 
 
 **Objetivo financiero (realista):**  
-El objetivo econÃ³mico inicial es alcanzar el punto de equilibrio (break-even) durante los primeros 12 meses de operaciÃ³n. Para ello, se busca una gestiÃ³n equilibrada entre inversiÃ³n y retorno, optimizando los recursos en desarrollo, marketing, logÃ­stica, gestiÃ³n de stock y atenciÃ³n al cliente. 
+El objetivo económico inicial es alcanzar el punto de equilibrio (break-even) durante los primeros 12 meses de operación. Para ello, se busca una gestión equilibrada entre inversión y retorno, optimizando los recursos en desarrollo, marketing, logística, gestión de stock y atención al cliente. 
 
 **Objetivo de posicionamiento (marketing):**  
-Desde el punto de vista de marca, el propÃ³sito es consolidar una identidad diferenciada, alejada de la imagen habitual de los sex shops tradicionales. La estrategia de marketing se centrarÃ¡ en proyectar confianza, estÃ©tica y profesionalidad, con un enfoque inclusivo y positivo hacia la sexualidad. 
+Desde el punto de vista de marca, el propósito es consolidar una identidad diferenciada, alejada de la imagen habitual de los sex shops tradicionales. La estrategia de marketing se centrará en proyectar confianza, estética y profesionalidad, con un enfoque inclusivo y positivo hacia la sexualidad. 
 
 **Objetivo de cumplimiento (legal):**  
-El cliente considera esencial cumplir con todos los requisitos legales aplicables al comercio electrÃ³nico de productos para adultos, especialmente en materia de verificaciÃ³n de edad, privacidad de datos personales y seguridad en las transacciones. Esto incluye la aplicaciÃ³n rigurosa del Reglamento General de ProtecciÃ³n de Datos (GDPR/LOPD), polÃ­ticas claras de consentimiento informado y mecanismos que garanticen el acceso responsable al contenido y los productos. 
+El cliente considera esencial cumplir con todos los requisitos legales aplicables al comercio electrónico de productos para adultos, especialmente en materia de verificación de edad, privacidad de datos personales y seguridad en las transacciones. Esto incluye la aplicación rigurosa del Reglamento General de Protección de Datos (GDPR/LOPD), políticas claras de consentimiento informado y mecanismos que garanticen el acceso responsable al contenido y los productos. 
 
 ### **2\. Objetivos de la Empresa Desarrolladora.**
 
 #### **2.1. Objetivo principal (financiero):**
 
-Garantizar la **rentabilidad econÃ³mica del proyecto**, obteniendo un margen de beneficio neto que supere los costes totales de desarrollo, licencias, gestiÃ³n y soporte. Esto implica una planificaciÃ³n rigurosa de recursos, una gestiÃ³n eficiente de las horas de trabajo y un control exhaustivo de los posibles desvÃ­os de alcance (*scope creep*). 
+Garantizar la **rentabilidad económica del proyecto**, obteniendo un margen de beneficio neto que supere los costes totales de desarrollo, licencias, gestión y soporte. Esto implica una planificación rigurosa de recursos, una gestión eficiente de las horas de trabajo y un control exhaustivo de los posibles desvíos de alcance (*scope creep*). 
 
-#### **2.2. Objetivo estratÃ©gico (fidelizaciÃ³n):**
+#### **2.2. Objetivo estratégico (fidelización):**
 
-Entregar un producto **tÃ©cnicamente sÃ³lido, estable y escalable**, que cumpla con los mÃ¡s altos estÃ¡ndares de seguridad, rendimiento y diseÃ±o. La calidad del resultado debe inspirar confianza y satisfacciÃ³n en el cliente, fomentando su decisiÃ³n de contratar servicios adicionales de mantenimiento, actualizaciones y soporte tÃ©cnico continuado. 
+Entregar un producto **técnicamente sólido, estable y escalable**, que cumpla con los más altos estándares de seguridad, rendimiento y diseño. La calidad del resultado debe inspirar confianza y satisfacción en el cliente, fomentando su decisión de contratar servicios adicionales de mantenimiento, actualizaciones y soporte técnico continuado. 
 
 #### **2.3. Objetivo secundario (alianza):**
 
-Construir una **alianza tecnolÃ³gica sÃ³lida** con el cliente, basada en la transparencia, la comunicaciÃ³n constante y la fiabilidad. La meta es convertirse en su **socio tecnolÃ³gico de referencia**, de manera que futuras fases de expansiÃ³n â€”como el desarrollo de una app mÃ³vil, un sistema de recomendaciones inteligentes o nuevas integracionesâ€” sean delegadas al mismo equipo. 
+Construir una **alianza tecnológica sólida** con el cliente, basada en la transparencia, la comunicación constante y la fiabilidad. La meta es convertirse en su **socio tecnológico de referencia**, de manera que futuras fases de expansión —como el desarrollo de una app móvil, un sistema de recomendaciones inteligentes o nuevas integraciones— sean delegadas al mismo equipo. 
 
-#### **2.4. interno (aprendizaje y especializaciÃ³n):**
+#### **2.4. interno (aprendizaje y especialización):**
 
-Aprovechar el proyecto como una **oportunidad de crecimiento profesional y tÃ©cnico** dentro de un sector con particularidades complejas. El equipo busca adquirir experiencia real en Ã¡reas clave como **pasarelas de pago de alto riesgo, cumplimiento normativo en contenido adulto, gestiÃ³n de la discreciÃ³n del usuario, marketing digital con restricciones legales y control de datos sensibles**. Este aprendizaje estratÃ©gico permitirÃ¡ a la empresa posicionarse como una **agencia experta en un nicho de mercado con alta barrera de entrada**, abriendo la puerta a futuros proyectos mÃ¡s especializados y con mayor valor aÃ±adido.
+Aprovechar el proyecto como una **oportunidad de crecimiento profesional y técnico** dentro de un sector con particularidades complejas. El equipo busca adquirir experiencia real en áreas clave como **pasarelas de pago de alto riesgo, cumplimiento normativo en contenido adulto, gestión de la discreción del usuario, marketing digital con restricciones legales y control de datos sensibles**. Este aprendizaje estratégico permitirá a la empresa posicionarse como una **agencia experta en un nicho de mercado con alta barrera de entrada**, abriendo la puerta a futuros proyectos más especializados y con mayor valor añadido.
 
-Nuestro objetivo no se limita a la entrega tÃ©cnica del producto, sino a consolidar una relaciÃ³n de confianza con el cliente y posicionarse como un referente en el desarrollo de soluciones digitales dentro de un nicho exigente y en crecimiento.
+Nuestro objetivo no se limita a la entrega técnica del producto, sino a consolidar una relación de confianza con el cliente y posicionarse como un referente en el desarrollo de soluciones digitales dentro de un nicho exigente y en crecimiento.
 
 ## **Requisitos del Proyecto.**
 
 ### **1\. Requisitos Funcionales (RF).**
 
-**RF1. VerificaciÃ³n de edad avanzada:**  
-	El acceso al sitio requerirÃ¡ un sistema de verificaciÃ³n robusto.
+**RF1. Verificación de edad avanzada:**  
+	El acceso al sitio requerirá un sistema de verificación robusto.
 
-* *RF1.1:* Interstitial de acceso con validaciÃ³n activa.
+* *RF1.1:* Interstitial de acceso con validación activa.
 
-* *RF1.2:* Se contempla la integraciÃ³n con servicios externos (verificaciÃ³n de DNI/pasaporte) o un registro interno con validaciÃ³n legal de la fecha de nacimiento.
+* *RF1.2:* Se contempla la integración con servicios externos (verificación de DNI/pasaporte) o un registro interno con validación legal de la fecha de nacimiento.
 
-**RF2. GestiÃ³n de usuarios:**  
-Registro, login, recuperaciÃ³n de contraseÃ±a, panel de usuario con historial, direcciones, productos recomendados segÃºn gustos e intereses y lista de deseos.
+**RF2. Gestión de usuarios:**  
+Registro, login, recuperación de contraseña, panel de usuario con historial, direcciones, productos recomendados según gustos e intereses y lista de deseos.
 
-**RF3. CatÃ¡logo de productos:**  
-Sistema de categorÃ­as jerarquizadas, filtros avanzados, buscador predictivo y control de stock en tiempo real.
+**RF3. Catálogo de productos:**  
+Sistema de categorías jerarquizadas, filtros avanzados, buscador predictivo y control de stock en tiempo real.
 
 **RF4. Ficha de producto:**  
-GalerÃ­a multimedia de alta calidad, descripciones detalladas, variantes (color/tamaÃ±o), valoraciones moderadas y gestiÃ³n de inventario.
+Galería multimedia de alta calidad, descripciones detalladas, variantes (color/tamaño), valoraciones moderadas y gestión de inventario.
 
 **RF5. Checkout y pagos:**
 
-* Carrito persistente, *checkout* optimizado y cÃ¡lculo dinÃ¡mico de envÃ­os.
+* Carrito persistente, *checkout* optimizado y cálculo dinámico de envíos.
 
-* **Pasarelas de alto riesgo:** IntegraciÃ³n con proveedores compatibles con el sector adulto (Redsys con aprobaciÃ³n bancaria o servicios internacionales).
+* **Pasarelas de alto riesgo:** Integración con proveedores compatibles con el sector adulto (Redsys con aprobación bancaria o servicios internacionales).
 
-**RF6. MÃ³dulos a medida (custom):**
+**RF6. Módulos a medida (custom):**
 
-* **RF6.1 CMS Custom:** GestiÃ³n completa del contenido.
+* **RF6.1 CMS Custom:** Gestión completa del contenido.
 
-* **RF6.2 CRM Custom:** SegmentaciÃ³n de clientes y comunicaciones.
+* **RF6.2 CRM Custom:** Segmentación de clientes y comunicaciones.
 
-* **RF6.3 ERP Custom bÃ¡sico:** FacturaciÃ³n, control de pedidos e inventario.
+* **RF6.3 ERP Custom básico:** Facturación, control de pedidos e inventario.
 
-* **RF6.4 MÃ³dulo de marketing:** CreaciÃ³n y envÃ­o de newsletters cumpliendo GDPR.
+* **RF6.4 Módulo de marketing:** Creación y envío de newsletters cumpliendo GDPR.
 
 **RF7. Contenidos:**  
-La empresa desarrolladora redactarÃ¡ y publicarÃ¡ todo el contenido (productos, blog, pÃ¡ginas estÃ¡ticas, FAQ, etc.).
+La empresa desarrolladora redactará y publicará todo el contenido (productos, blog, páginas estáticas, FAQ, etc.).
 
 ### **2\. Requisitos No Funcionales (RNF).**
 
-**RNF1.** DiscreciÃ³n:  
-DiseÃ±o elegante y minimalista, descriptor bancario y remitentes de correo genÃ©ricos.
+**RNF1.** Discreción:  
+Diseño elegante y minimalista, descriptor bancario y remitentes de correo genéricos.
 
 **RNF2.** Seguridad:  
-HTTPS en todo el sitio, encriptaciÃ³n de datos, cumplimiento GDPR y PCI DSS, y protecciÃ³n ante ataques (XSS, SQL Injection).
+HTTPS en todo el sitio, encriptación de datos, cumplimiento GDPR y PCI DSS, y protección ante ataques (XSS, SQL Injection).
 
 **RNF3.** Rendimiento:  
-OptimizaciÃ³n de velocidad (LCP \< 2.5 s), compresiÃ³n WebP, carga diferida y cachÃ© avanzada.
+Optimización de velocidad (LCP \< 2.5 s), compresión WebP, carga diferida y caché avanzada.
 
 **RNF4.** Usabilidad (UX/UI):  
-DiseÃ±o *mobile-first*, navegaciÃ³n intuitiva y experiencia de compra fluida.
+Diseño *mobile-first*, navegación intuitiva y experiencia de compra fluida.
 
 **RNF5. Mantenibilidad y escalabilidad:**  
-CÃ³digo modular y documentado, preparado para ampliaciones y alto trÃ¡fico![][image3]
+Código modular y documentado, preparado para ampliaciones y alto tráfico![][image3]
 
 # 
 
@@ -5407,11 +5842,11 @@ CÃ³digo modular y documentado, preparado para ampliaciones y alto trÃ¡fico![
 
 # 
 
-## **DepartamentalizaciÃ³n**
+## **Departamentalización**
 
-### 1\. Desarrollo / IngenierÃ­a.
+### 1\. Desarrollo / Ingeniería.
 
-* **FunciÃ³n:** Crear el producto o servicio, escribir cÃ³digo, implementar funcionalidades.  
+* **Función:** Crear el producto o servicio, escribir código, implementar funcionalidades.  
 * **Roles:**  
   * Desarrolladores backend y frontend  
   * DevOps / infraestructura  
@@ -5419,19 +5854,19 @@ CÃ³digo modular y documentado, preparado para ampliaciones y alto trÃ¡fico![
 
 * **Equipo:** Completo**.**
 
-### 2\. Producto / GestiÃ³n de Producto.
+### 2\. Producto / Gestión de Producto.
 
-* **FunciÃ³n:** Definir quÃ© se va a construir, priorizar funcionalidades y alinear con la visiÃ³n del negocio.  
+* **Función:** Definir qué se va a construir, priorizar funcionalidades y alinear con la visión del negocio.  
 * **Roles:**  
   * Product Manager  
-  * UX/UI Designer (diseÃ±o de experiencia y diseÃ±o visual)UX/UI Designer   
+  * UX/UI Designer (diseño de experiencia y diseño visual)UX/UI Designer   
   * Scrum Master
 
 * **Equipo:** Completo.
 
 ### 3\. Marketing y Ventas.
 
-* **FunciÃ³n:** Dar a conocer el producto, atraer clientes, generar ingresos.  
+* **Función:** Dar a conocer el producto, atraer clientes, generar ingresos.  
 * **Roles:**  
   * Growth / Marketing digital  
   * Community Manager / Social Media  
@@ -5439,31 +5874,31 @@ CÃ³digo modular y documentado, preparado para ampliaciones y alto trÃ¡fico![
 
 * **Equipo:** Joan, Ismael y Alberto.
 
-### 4\. Finanzas y AdministraciÃ³n.
+### 4\. Finanzas y Administración.
 
-* **FunciÃ³n:** Gestionar cash-flow, pagos, impuestos, contratos, recursos humanos.  
+* **Función:** Gestionar cash-flow, pagos, impuestos, contratos, recursos humanos.  
 * **Roles:**  
   * Contable o gestor financiero  
   * Administrativo
 
-* **Equipo:** Ãngel y Miguel.
+* **Equipo:** Ángel y Miguel.
 
-### 5\. AtenciÃ³n al cliente / soporte.
+### 5\. Atención al cliente / soporte.
 
-* **FunciÃ³n:** Resolver dudas y problemas de los primeros usuarios.  
+* **Función:** Resolver dudas y problemas de los primeros usuarios.  
 * **Roles:**  
   * Customer Support  
-  * Success Manager (enfocado en retenciÃ³n y satisfacciÃ³n)
+  * Success Manager (enfocado en retención y satisfacción)
 
 * **Equipo:** Completo**.**
 
 ## **Tipo de bien y factores productivos (EIE).**
 
-| CategorÃ­a | Tipo de Bien | Factores Productivos Principales | Tipo de InnovaciÃ³n |
+| Categoría | Tipo de Bien | Factores Productivos Principales | Tipo de Innovación |
 | ----- | ----- | ----- | ----- |
-| **Productos estÃ¡ndar** | Bien de consumo duradero o rÃ¡pido | Trabajo (soporte, marketing), Materias primas (juguetes, lubricantes), Capital fÃ­sico (almacÃ©n, servidores), TecnologÃ­a (web, pasarela de pago) | Incremental (mejoras de productos existentes) |
-| **Productos diferenciados / innovadores (muÃ±ecas personalizables)** | Bien de consumo duradero, altamente diferenciable | Trabajo (diseÃ±adores, desarrollo web, soporte), Materias primas (silicona, ropa, accesorios), Capital financiero (inversiÃ³n en prototipos), TecnologÃ­a (configurador 3D, IA) | Radical / disruptiva (nueva categorÃ­a y experiencia digital) |
-| **Servicios asociados (chatbot, recomendaciones)** | Servicio digital / experiencia | Trabajo (IA, soporte, desarrollo), TecnologÃ­a (chatbot IA, anÃ¡lisis de datos), InformaciÃ³n (preferencias de usuario) | InnovaciÃ³n de experiencia / proceso (mejora UX y atenciÃ³n) |
+| **Productos estándar** | Bien de consumo duradero o rápido | Trabajo (soporte, marketing), Materias primas (juguetes, lubricantes), Capital físico (almacén, servidores), Tecnología (web, pasarela de pago) | Incremental (mejoras de productos existentes) |
+| **Productos diferenciados / innovadores (muñecas personalizables)** | Bien de consumo duradero, altamente diferenciable | Trabajo (diseñadores, desarrollo web, soporte), Materias primas (silicona, ropa, accesorios), Capital financiero (inversión en prototipos), Tecnología (configurador 3D, IA) | Radical / disruptiva (nueva categoría y experiencia digital) |
+| **Servicios asociados (chatbot, recomendaciones)** | Servicio digital / experiencia | Trabajo (IA, soporte, desarrollo), Tecnología (chatbot IA, análisis de datos), Información (preferencias de usuario) | Innovación de experiencia / proceso (mejora UX y atención) |
 
 ![][image4]
 
@@ -5479,88 +5914,88 @@ CÃ³digo modular y documentado, preparado para ampliaciones y alto trÃ¡fico![
 
 | Slogan | Tipo | Enfoque de Marca |
 | ----- | ----- | ----- |
-| **AtrÃ©vete a pelar tu lado mÃ¡s dulce** | MetafÃ³rico / LÃºdico | Juega con la identidad de la marca (Kiwi) para invitar a la exploraciÃ³n sensorial y al descubrimiento. |
-| **Tu Placer. Tus Reglas. MIKIWI.** | Directo / Beneficio | Refuerza la personalizaciÃ³n y la autonomÃ­a del usuario. |
-| **AdiÃ³s al CatÃ¡logo, Hola a tu plenitud.** | Anti-TabÃº / Empoderamiento | Destaca la diferenciaciÃ³n On-Demand y el objetivo de bienestar. |
-| **Placer Personalizado. Sin Preguntas.** | Simple / Memorable | Ã‰nfasis en la discreciÃ³n y el valor Ãºnico de la personalizaciÃ³n. |
-| **El Futuro de tu Bienestar Sexual.** | Cultural / Aspiracional | Posiciona a MIKIWI como lÃ­der e innovador en el sector. |
+| **Atrévete a pelar tu lado más dulce** | Metafórico / Lúdico | Juega con la identidad de la marca (Kiwi) para invitar a la exploración sensorial y al descubrimiento. |
+| **Tu Placer. Tus Reglas. MIKIWI.** | Directo / Beneficio | Refuerza la personalización y la autonomía del usuario. |
+| **Adiós al Catálogo, Hola a tu plenitud.** | Anti-Tabú / Empoderamiento | Destaca la diferenciación On-Demand y el objetivo de bienestar. |
+| **Placer Personalizado. Sin Preguntas.** | Simple / Memorable | Énfasis en la discreción y el valor único de la personalización. |
+| **El Futuro de tu Bienestar Sexual.** | Cultural / Aspiracional | Posiciona a MIKIWI como líder e innovador en el sector. |
 
 ### **3\. Patrocinadores.**
 
-La estrategia de MIKIWI serÃ¡ buscar **Alianzas EstratÃ©gicas** que refuercen la credibilidad y el compromiso con la salud y la tecnologÃ­a.
+La estrategia de MIKIWI será buscar **Alianzas Estratégicas** que refuercen la credibilidad y el compromiso con la salud y la tecnología.
 
-**Instituciones de CertificaciÃ³n y Materiales:** Alianzas con laboratorios o entidades que puedan **certificar la bio-compatibilidad y seguridad** de los materiales On-Demand, reforzando el valor de la Confianza y Ã‰tica.
+**Instituciones de Certificación y Materiales:** Alianzas con laboratorios o entidades que puedan **certificar la bio-compatibilidad y seguridad** de los materiales On-Demand, reforzando el valor de la Confianza y Ética.
 
-**Asociaciones de Salud y Bienestar Sexual:** Colaboraciones con **sexÃ³logos, terapeutas o *wellness coaches*** para validar y co-crear contenido educativo, posicionando a MIKIWI como un lÃ­der de pensamiento.
+**Asociaciones de Salud y Bienestar Sexual:** Colaboraciones con **sexólogos, terapeutas o *wellness coaches*** para validar y co-crear contenido educativo, posicionando a MIKIWI como un líder de pensamiento.
 
-**Partners TecnolÃ³gicos (3D/LogÃ­stica):** Acuerdos con empresas de **impresiÃ³n 3D avanzada** o soluciones logÃ­sticas discretas que garanticen la calidad del producto y la confidencialidad del envÃ­o.
+**Partners Tecnológicos (3D/Logística):** Acuerdos con empresas de **impresión 3D avanzada** o soluciones logísticas discretas que garanticen la calidad del producto y la confidencialidad del envío.
 
 ### **4\. Vestimenta.**
 
-Dado que MIKIWI opera 100% de forma remota, no se exige un cÃ³digo de vestimenta formal.
+Dado que MIKIWI opera 100% de forma remota, no se exige un código de vestimenta formal.
 
-**waFlexibilidad:** Los empleados tienen total libertad para elegir su vestimenta para garantizar la mÃ¡xima comodidad durante sus horas de trabajo.
+**waFlexibilidad:** Los empleados tienen total libertad para elegir su vestimenta para garantizar la máxima comodidad durante sus horas de trabajo.
 
-**Requisito de InteracciÃ³n:** En caso de videollamadas con clientes, *partners* o eventos virtuales de marca, se solicita una **vestimenta que refleje una imagen profesional, limpia y adecuada** para el contexto empresarial.
+**Requisito de Interacción:** En caso de videollamadas con clientes, *partners* o eventos virtuales de marca, se solicita una **vestimenta que refleje una imagen profesional, limpia y adecuada** para el contexto empresarial.
 
 ### **5\. Mobiliario.**
 
-Aunque la empresa respeta la privacidad y la organizaciÃ³n del hogar de cada empleado, **MIKIWI fomenta activamente la creaciÃ³n de un espacio de trabajo ergonÃ³mico y productivo.**
+Aunque la empresa respeta la privacidad y la organización del hogar de cada empleado, **MIKIWI fomenta activamente la creación de un espacio de trabajo ergonómico y productivo.**
 
-**Prioridad: ErgonomÃ­a:** Se **recomienda invertir** en sillas y escritorios ajustables que garanticen una postura correcta y prevengan problemas de salud a largo plazo. *La empresa puede ofrecer un subsidio o guÃ­a de compra.*
+**Prioridad: Ergonomía:** Se **recomienda invertir** en sillas y escritorios ajustables que garanticen una postura correcta y prevengan problemas de salud a largo plazo. *La empresa puede ofrecer un subsidio o guía de compra.*
 
-**ConcentraciÃ³n y Ambiente:** Se recomienda mantener el espacio de trabajo **limpio, ordenado y con la menor cantidad de distracciones visuales y sonoras** posible para optimizar la concentraciÃ³n, ya que la calidad del trabajo es nuestro pilar.
+**Concentración y Ambiente:** Se recomienda mantener el espacio de trabajo **limpio, ordenado y con la menor cantidad de distracciones visuales y sonoras** posible para optimizar la concentración, ya que la calidad del trabajo es nuestro pilar.
 
-## **MisiÃ³n, VisiÃ³n Y Valores: MIKIWI.**
+## **Misión, Visión Y Valores: MIKIWI.**
 
-### **1\. MisiÃ³n.**
+### **1\. Misión.**
 
-"Democratizar la plenitud sexual ofreciendo a cada individuo la posibilidad de co-crear herramientas de placer Ãºnicas, personalizadas bajo demanda, con un compromiso inquebrantable de inclusiÃ³n, seguridad y discreciÃ³n."
+"Democratizar la plenitud sexual ofreciendo a cada individuo la posibilidad de co-crear herramientas de placer únicas, personalizadas bajo demanda, con un compromiso inquebrantable de inclusión, seguridad y discreción."
 
-#### **Â¿QuÃ© hacemos?**
+#### **¿Qué hacemos?**
 
-**MIKIWI** crea y ofrece **herramientas de bienestar sexual personalizadas y co-creadas** (On-Demand). Nuestro enfoque no es vender productos genÃ©ricos de un catÃ¡logo masivo, sino proveer una soluciÃ³n tecnolÃ³gica â€”el configuradorâ€” que permite al usuario diseÃ±ar un producto **Ãºnico y a la medida** que se ajusta perfectamente a sus necesidades anatÃ³micas, funcionales y estÃ©ticas. En esencia, estamos creando la prÃ³xima generaciÃ³n de productos de placer, diseÃ±ados por y para el usuario.
+**MIKIWI** crea y ofrece **herramientas de bienestar sexual personalizadas y co-creadas** (On-Demand). Nuestro enfoque no es vender productos genéricos de un catálogo masivo, sino proveer una solución tecnológica —el configurador— que permite al usuario diseñar un producto **único y a la medida** que se ajusta perfectamente a sus necesidades anatómicas, funcionales y estéticas. En esencia, estamos creando la próxima generación de productos de placer, diseñados por y para el usuario.
 
-#### **Â¿Para quiÃ©n lo hacemos?**
+#### **¿Para quién lo hacemos?**
 
-Lo hacemos para **todo individuo** (el cliente consciente) que ve la sexualidad como un componente esencial de su bienestar y que busca la **plenitud** mÃ¡s allÃ¡ de los estÃ¡ndares de la industria tradicional. Esto incluye, de manera crucial, a las comunidades que han sido histÃ³ricamente ignoradas por los productos genÃ©ricos, como la **comunidad LGTBQ+** y aquellos con necesidades anatÃ³micas especÃ­ficas. Buscamos servir al consumidor que exige **calidad, respeto y la seguridad** de que su producto realmente le funcionarÃ¡.
+Lo hacemos para **todo individuo** (el cliente consciente) que ve la sexualidad como un componente esencial de su bienestar y que busca la **plenitud** más allá de los estándares de la industria tradicional. Esto incluye, de manera crucial, a las comunidades que han sido históricamente ignoradas por los productos genéricos, como la **comunidad LGTBQ+** y aquellos con necesidades anatómicas específicas. Buscamos servir al consumidor que exige **calidad, respeto y la seguridad** de que su producto realmente le funcionará.
 
-#### **Â¿CÃ³mo lo hacemos?**
+#### **¿Cómo lo hacemos?**
 
-Lo logramos a travÃ©s de la **innovaciÃ³n tecnolÃ³gica** (nuestro modelo On-Demand) que elimina la fricciÃ³n y la incertidumbre en la compra digital. Nos diferenciamos por nuestro **compromiso Ã©tico** basado en tres pilares:
+Lo logramos a través de la **innovación tecnológica** (nuestro modelo On-Demand) que elimina la fricción y la incertidumbre en la compra digital. Nos diferenciamos por nuestro **compromiso ético** basado en tres pilares:
 
-**InclusiÃ³n Genuina:** Garantizando accesibilidad a travÃ©s de la personalizaciÃ³n total.
+**Inclusión Genuina:** Garantizando accesibilidad a través de la personalización total.
 
-**Seguridad:** Utilizando Ãºnicamente materiales certificados y garantizando la mÃ¡xima calidad.
+**Seguridad:** Utilizando únicamente materiales certificados y garantizando la máxima calidad.
 
-**DiscreciÃ³n Total:** Asegurando la confianza del cliente mediante la absoluta confidencialidad en el proceso de compra, facturaciÃ³n y envÃ­o.
+**Discreción Total:** Asegurando la confianza del cliente mediante la absoluta confidencialidad en el proceso de compra, facturación y envío.
 
-###  **2\. VisiÃ³n.**
+###  **2\. Visión.**
 
-"Ser el referente global del bienestar sexual personalizado, eliminando la estandarizaciÃ³n y normalizando la autoexploraciÃ³n como un componente esencial de la salud integral. Queremos ser la plataforma que transforme el tabÃº en tecnologÃ­a, y la incertidumbre en confianza."
+"Ser el referente global del bienestar sexual personalizado, eliminando la estandarización y normalizando la autoexploración como un componente esencial de la salud integral. Queremos ser la plataforma que transforme el tabú en tecnología, y la incertidumbre en confianza."
 
-#### **Â¿QuÃ© queremos ser?**
+#### **¿Qué queremos ser?**
 
-**MIKIWI** aspira a ser el **lÃ­der indiscutible y el referente global** en el sector del bienestar sexual, pero con una diferencia crucial: seremos reconocidos especÃ­ficamente por nuestra **innovaciÃ³n en la personalizaciÃ³n (On-Demand)**. Buscamos ser el sinÃ³nimo de **placer a medida**, la primera opciÃ³n a la que acude cualquier persona que valora la calidad, la seguridad y la adecuaciÃ³n perfecta de un producto a sus necesidades Ãºnicas. Queremos ser un modelo de negocio que demuestre que la Ã©tica, la inclusiÃ³n y la tecnologÃ­a pueden generar un alto valor.
+**MIKIWI** aspira a ser el **líder indiscutible y el referente global** en el sector del bienestar sexual, pero con una diferencia crucial: seremos reconocidos específicamente por nuestra **innovación en la personalización (On-Demand)**. Buscamos ser el sinónimo de **placer a medida**, la primera opción a la que acude cualquier persona que valora la calidad, la seguridad y la adecuación perfecta de un producto a sus necesidades únicas. Queremos ser un modelo de negocio que demuestre que la ética, la inclusión y la tecnología pueden generar un alto valor.
 
-#### **Â¿QuÃ© queremos lograr?**
+#### **¿Qué queremos lograr?**
 
-Buscamos lograr una **transformaciÃ³n cultural y de mercado** en tres niveles principales:
+Buscamos lograr una **transformación cultural y de mercado** en tres niveles principales:
 
-**Eliminar la estandarizaciÃ³n y acabar con la idea** de que el placer es un concepto de "talla Ãºnica". Queremos que la personalizaciÃ³n sea el estÃ¡ndar esperado por el consumidor en el sector.
+**Eliminar la estandarización y acabar con la idea** de que el placer es un concepto de "talla única". Queremos que la personalización sea el estándar esperado por el consumidor en el sector.
 
-**Normalizar y consolidar la autoexploraciÃ³n** como un **componente natural y esencial de la salud y el bienestar integral**, erradicando los estigmas restantes y el miedo asociado a la compra.
+**Normalizar y consolidar la autoexploración** como un **componente natural y esencial de la salud y el bienestar integral**, erradicando los estigmas restantes y el miedo asociado a la compra.
 
-**Transformar los valores:** Ser la plataforma que utiliza la tecnologÃ­a para **convertir la desconfianza** (generada por productos genÃ©ricos y de baja calidad) **en absoluta seguridad**, y **cambiar el tabÃº cultural por un diÃ¡logo abierto y asistido por la tecnologÃ­a**.
+**Transformar los valores:** Ser la plataforma que utiliza la tecnología para **convertir la desconfianza** (generada por productos genéricos y de baja calidad) **en absoluta seguridad**, y **cambiar el tabú cultural por un diálogo abierto y asistido por la tecnología**.
 
 ### **3\. Valores.**
 
-| Valor | DefiniciÃ³n / Principio GuÃ­a | JustificaciÃ³n en el Proyecto |
+| Valor | Definición / Principio Guía | Justificación en el Proyecto |
 | ----- | ----- | ----- |
-| **InclusiÃ³n** | Garantizar que la bÃºsqueda de placer sea accesible y respetuosa para todos los cuerpos e todas las identidades. | El configurador On-Demand (anatomÃ­a, estÃ©tica, funcionalidad) permite el placer para la comunidad LGTBQ+ y diversos cuerpos. |
-| **Confianza y Ã‰tica** | Mantener un compromiso absoluto con la discreciÃ³n del cliente y la seguridad del producto (materiales certificados). | Aborda la "fricciÃ³n del consumidor" al garantizar seguridad, calidad y discreciÃ³n en el envÃ­o/facturaciÃ³n. |
-| **Plenitud y Bienestar** | Promover la sexualidad como un pilar fundamental de la salud integral y la autoexploraciÃ³n positiva. | Nace de la "JustificaciÃ³n Social y Cultural: El Fin del TabÃº" y el fomento de la autoexploraciÃ³n. |
-| **InnovaciÃ³n TecnolÃ³gica** | Utilizar soluciones de vanguardia, como la co-creaciÃ³n On-Demand, para resolver problemas del consumidor. | El Configurador On-Demand es la base del modelo de negocio diferenciado. |
+| **Inclusión** | Garantizar que la búsqueda de placer sea accesible y respetuosa para todos los cuerpos e todas las identidades. | El configurador On-Demand (anatomía, estética, funcionalidad) permite el placer para la comunidad LGTBQ+ y diversos cuerpos. |
+| **Confianza y Ética** | Mantener un compromiso absoluto con la discreción del cliente y la seguridad del producto (materiales certificados). | Aborda la "fricción del consumidor" al garantizar seguridad, calidad y discreción en el envío/facturación. |
+| **Plenitud y Bienestar** | Promover la sexualidad como un pilar fundamental de la salud integral y la autoexploración positiva. | Nace de la "Justificación Social y Cultural: El Fin del Tabú" y el fomento de la autoexploración. |
+| **Innovación Tecnológica** | Utilizar soluciones de vanguardia, como la co-creación On-Demand, para resolver problemas del consumidor. | El Configurador On-Demand es la base del modelo de negocio diferenciado. |
 
 ## **Marketing**
 
