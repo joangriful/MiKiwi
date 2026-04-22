@@ -2,21 +2,37 @@
 
 namespace App\Domain\Shipping\Services;
 
-use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class CorreosService
 {
     protected $baseUrl;
+
     protected $clientId;
+
     protected $clientSecret;
+
+    protected bool $allowMockFallback;
 
     public function __construct()
     {
         $this->baseUrl = config('services.correos.base_url', 'https://api.correos.es');
         $this->clientId = config('services.correos.client_id');
         $this->clientSecret = config('services.correos.client_secret');
+        $this->allowMockFallback = (bool) config('services.correos.allow_mock_fallback', false);
+    }
+
+    public function hasCredentials(): bool
+    {
+        return filled($this->clientId) && filled($this->clientSecret);
+    }
+
+    public function allowsMockFallback(): bool
+    {
+        return app()->environment(['local', 'testing']) || $this->allowMockFallback;
     }
 
     /**
@@ -25,40 +41,35 @@ class CorreosService
     protected function getToken()
     {
         $token = Cache::get('correos_token');
-        if ($token)
+        if ($token) {
             return $token;
+        }
 
         try {
-            // Often Correos uses /token/v1/accessToken for OAuth2
-            $response = Http::asForm()->post($this->baseUrl . '/token/v1/accessToken', [
-                'grant_type' => 'client_credentials',
-                'client_id' => $this->clientId,
-                'client_secret' => $this->clientSecret,
-            ]);
+            $response = $this->requestToken('/token/v1/accessToken');
 
             if ($response->successful()) {
                 $token = $response->json()['access_token'];
                 Cache::put('correos_token', $token, 3500);
+
                 return $token;
             }
 
-            // Fallback to /token
-            $response = Http::asForm()->post($this->baseUrl . '/token', [
-                'grant_type' => 'client_credentials',
-                'client_id' => $this->clientId,
-                'client_secret' => $this->clientSecret,
-            ]);
+            $response = $this->requestToken('/token');
 
             if ($response->successful()) {
                 $token = $response->json()['access_token'];
                 Cache::put('correos_token', $token, 3500);
+
                 return $token;
             }
 
-            Log::warning('Correos API: No se pudo obtener el token (404/DNS?). Usando mock data.');
+            Log::warning('Correos API: No se pudo obtener el token.');
+
             return null;
         } catch (\Exception $e) {
-            Log::warning('Correos API Exception: ' . $e->getMessage() . '. Usando mock data.');
+            Log::warning('Correos API Exception: '.$e->getMessage());
+
             return null;
         }
     }
@@ -68,38 +79,70 @@ class CorreosService
      */
     public function getTerminals($filters = [])
     {
+        return $this->getRealTerminals($filters);
+    }
+
+    public function getRealTerminals(array $filters = []): array
+    {
+        if (! $this->hasCredentials()) {
+            return [];
+        }
+
         $token = $this->getToken();
 
         if ($token) {
             try {
-                $response = Http::withToken($token)
-                    ->timeout(5)
-                    ->get($this->baseUrl . '/homepaq/v1/homepaqs', $filters);
+                $response = $this->requestTerminals($token, '/homepaq/v1/homepaqs', $filters);
 
                 if ($response->successful()) {
                     return $this->formatTerminals($response->json());
                 }
 
-                $response = Http::withToken($token)
-                    ->timeout(5)
-                    ->get($this->baseUrl . '/terminals/v1/', $filters);
+                $response = $this->requestTerminals($token, '/terminals/v1/', $filters);
 
                 if ($response->successful()) {
                     return $this->formatTerminals($response->json());
                 }
             } catch (\Exception $e) {
-                Log::warning('Correos API Request failed: ' . $e->getMessage());
+                Log::warning('Correos API Request failed: '.$e->getMessage());
             }
         }
 
-        // Fallback to Mock Data if API fails or no token
-        return $this->getMockTerminals($filters);
+        return [];
+    }
+
+    private function requestToken(string $path): Response
+    {
+        $response = Http::asForm()->post($this->baseUrl.$path, [
+            'grant_type' => 'client_credentials',
+            'client_id' => $this->clientId,
+            'client_secret' => $this->clientSecret,
+        ]);
+
+        if (! $response instanceof Response) {
+            throw new \RuntimeException('Correos token request returned an asynchronous promise.');
+        }
+
+        return $response;
+    }
+
+    private function requestTerminals(string $token, string $path, array $filters): Response
+    {
+        $response = Http::withToken($token)
+            ->timeout(5)
+            ->get($this->baseUrl.$path, $filters);
+
+        if (! $response instanceof Response) {
+            throw new \RuntimeException('Correos terminals request returned an asynchronous promise.');
+        }
+
+        return $response;
     }
 
     /**
      * Provide mock data for development/restricted environments
      */
-    protected function getMockTerminals($filters = [])
+    public function getMockTerminals(array $filters = []): array
     {
         $allMocks = [
             // Madrid
@@ -129,7 +172,7 @@ class CorreosService
         $results = [];
 
         // Filter by postal code if provided
-        if (!empty($filters['codPostal'])) {
+        if (! empty($filters['codPostal'])) {
             $cp = (string) $filters['codPostal'];
             $cpPrefix = substr($cp, 0, 2);
 
@@ -142,29 +185,29 @@ class CorreosService
             if (empty($results) && strlen($cp) === 5) {
                 return [
                     [
-                        'id' => 'mock-gen-' . $cp . '-1',
-                        'name' => 'Citypaq - Sucursal Correos (' . $cp . ')',
+                        'id' => 'mock-gen-'.$cp.'-1',
+                        'name' => 'Citypaq - Sucursal Correos ('.$cp.')',
                         'address' => 'Calle Mayor 1',
-                        'city' => 'Localidad ' . $cp,
+                        'city' => 'Localidad '.$cp,
                         'postal_code' => $cp,
                     ],
                     [
-                        'id' => 'mock-gen-' . $cp . '-2',
-                        'name' => 'Citypaq - Centro Comercial Zona ' . $cp,
+                        'id' => 'mock-gen-'.$cp.'-2',
+                        'name' => 'Citypaq - Centro Comercial Zona '.$cp,
                         'address' => 'Avenida de la Libertad 10',
-                        'city' => 'Localidad ' . $cp,
+                        'city' => 'Localidad '.$cp,
                         'postal_code' => $cp,
                     ],
                     [
-                        'id' => 'mock-gen-' . $cp . '-3',
-                        'name' => 'Citypaq - Gasolinera 24h CP ' . $cp,
+                        'id' => 'mock-gen-'.$cp.'-3',
+                        'name' => 'Citypaq - Gasolinera 24h CP '.$cp,
                         'address' => 'Carretera Nacional km 4',
-                        'city' => 'Localidad ' . $cp,
+                        'city' => 'Localidad '.$cp,
                         'postal_code' => $cp,
-                    ]
+                    ],
                 ];
             }
-        } elseif (!empty($filters['poblacion'])) {
+        } elseif (! empty($filters['poblacion'])) {
             // Filter by city (poblacion) if provided
             $city = strtoupper($filters['poblacion']);
             $results = array_values(array_filter($allMocks, function ($item) use ($city) {
@@ -172,7 +215,7 @@ class CorreosService
             }));
         }
 
-        return !empty($results) ? $results : array_slice($allMocks, 0, 5);
+        return ! empty($results) ? $results : array_slice($allMocks, 0, 5);
     }
 
     /**
@@ -183,8 +226,9 @@ class CorreosService
         $terminals = [];
         $items = $data['items'] ?? $data['list'] ?? $data['terminals'] ?? $data;
 
-        if (!is_array($items))
+        if (! is_array($items)) {
             return [];
+        }
 
         foreach ($items as $item) {
             $terminals[] = [

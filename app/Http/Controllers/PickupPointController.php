@@ -30,9 +30,8 @@ class PickupPointController extends Controller
             $filters['codPostal'] = $request->postal_code;
         }
 
-        // Try real Correos API if credentials configured
-        if (config('services.correos.client_id')) {
-            $externalTerminals = $this->correosService->getTerminals($filters);
+        if ($this->correosService->hasCredentials()) {
+            $externalTerminals = $this->correosService->getRealTerminals($filters);
 
             if (! empty($externalTerminals)) {
                 foreach ($externalTerminals as $ext) {
@@ -70,8 +69,11 @@ class PickupPointController extends Controller
             return response()->json($dbResults);
         }
 
-        // Always fallback to mock data so users always see results
-        $mocks = $this->correosService->getTerminals($filters);
+        if (! $this->correosService->allowsMockFallback()) {
+            return response()->json([]);
+        }
+
+        $mocks = $this->correosService->getMockTerminals($filters);
 
         return response()->json($mocks);
     }

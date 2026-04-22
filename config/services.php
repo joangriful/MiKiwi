@@ -45,6 +45,7 @@ return [
         'base_url' => env('CORREOS_BASE_URL', 'https://api.correos.es'),
         'client_id' => env('CORREOS_CLIENT_ID'),
         'client_secret' => env('CORREOS_CLIENT_SECRET'),
+        'allow_mock_fallback' => env('CORREOS_ALLOW_MOCK_FALLBACK', false),
     ],
 
 ];

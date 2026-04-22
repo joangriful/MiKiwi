@@ -226,13 +226,13 @@ Mock automatico solo en `local` y `testing`. En produccion, mock solo con flag e
 
 **Checklist:**
 
-- [ ] Anadir config en `config/services.php`.
-- [ ] Anadir variable a `.env.example`.
-- [ ] Separar fallback real/local/mock en `PickupPointController`.
-- [ ] Evitar mock silencioso en produccion.
-- [ ] Anadir test para entorno local/testing.
-- [ ] Anadir test para entorno production sin flag.
-- [ ] Anadir test para production con flag explicito.
+- [x] Anadir config en `config/services.php`.
+- [x] Anadir variable a `.env.example`.
+- [x] Separar fallback real/local/mock en `PickupPointController`.
+- [x] Evitar mock silencioso en produccion.
+- [x] Anadir test para entorno local/testing.
+- [x] Anadir test para entorno production sin flag.
+- [x] Anadir test para production con flag explicito.
 
 ## Fase 8 - Revisar Indices PostgreSQL
 
