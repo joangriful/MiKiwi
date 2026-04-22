@@ -1,0 +1,34 @@
+.root {
+    padding: 120px 8%;
+    background: var(--color-surface-subtle);
+    text-align: center;
+}
+
+.keywords {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1em;
+    margin-bottom: 40px;
+    color: var(--color-text-strongest);
+    font-family: var(--font-head);
+    font-size: 4rem;
+    font-weight: 900;
+    line-height: 0.9;
+    text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+    .root {
+        padding: 80px 6%;
+    }
+
+    .keywords {
+        font-size: 2.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .keywords {
+        font-size: 2.2rem;
+    }
+}

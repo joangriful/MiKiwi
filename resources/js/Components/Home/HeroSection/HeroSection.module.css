@@ -1,24 +1,150 @@
 .root {
     position: relative;
     display: flex;
-    min-height: 100vh;
-    align-items: flex-end;
-    justify-content: flex-start;
+    min-height: 95vh;
     overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 5%;
+    background-color: var(--color-secondary);
 }
 
 .content {
     position: relative;
-    z-index: 1;
-    margin-bottom: 20vh;
+    z-index: 10;
+    width: 100%;
+    max-width: 1400px;
+}
+
+.split {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    width: 100%;
+}
+
+.logoWrap {
+    display: flex;
+    justify-content: center;
+    width: clamp(280px, 80vw, 550px);
 }
 
 .logo {
-    position: absolute;
-    right: 5%;
-    bottom: 0;
-    z-index: 1;
-    display: block;
-    width: clamp(120px, 20vw, 320px);
+    width: 100%;
     height: auto;
+    object-fit: contain;
+}
+
+.textSide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.slogan {
+    max-width: 800px;
+    color: var(--color-black);
+    font-family: var(--font-body);
+    font-size: clamp(1.8rem, 5vw, 3.8rem);
+    font-weight: 900;
+    line-height: 0.95;
+    text-transform: uppercase;
+}
+
+.ctaBox {
+    margin-top: 3rem;
+}
+
+.cta {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px 65px;
+    border: 2px solid var(--color-black);
+    border-radius: 100px;
+    background: var(--color-white);
+    box-shadow: 0 10px 0 var(--color-border-strong);
+    color: var(--color-black);
+    font-family: var(--font-head);
+    font-size: 1.3rem;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: var(--transition-premium);
+    cursor: pointer;
+}
+
+.cta:hover,
+.cta:focus-visible {
+    background: var(--color-white);
+    box-shadow: 0 14px 0 var(--color-border-strong);
+    outline: none;
+    transform: translateY(-4px);
+}
+
+.cta:active {
+    box-shadow: 0 4px 0 var(--color-border-strong);
+    transform: translateY(6px);
+}
+
+@media (min-width: 1025px) {
+    .split {
+        flex-direction: row-reverse;
+        align-items: center;
+        justify-content: space-between;
+        text-align: left;
+    }
+
+    .textSide {
+        flex: 1;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .logoWrap {
+        flex: 1;
+        justify-content: flex-end;
+        max-width: 650px;
+    }
+
+    .slogan {
+        max-width: 700px;
+        font-size: 5.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .root {
+        min-height: 85vh;
+        padding: 40px 6%;
+    }
+
+    .logoWrap {
+        width: 85vw;
+        margin-bottom: 1.5rem;
+    }
+
+    .slogan {
+        font-size: 1.4rem;
+        line-height: 1.2;
+    }
+
+    .cta {
+        padding: 18px 45px;
+        font-size: 1.1rem;
+        letter-spacing: 0.15em;
+    }
+}
+
+@media (max-width: 480px) {
+    .cta {
+        width: 100%;
+        padding: 20px 30px;
+        font-size: 1rem;
+    }
 }
