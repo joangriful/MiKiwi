@@ -1,1 +1,215 @@
-.root {}
+.contactForm {
+    display: grid;
+    max-width: 56rem;
+    gap: 1.5rem;
+    margin-bottom: 5rem;
+}
+
+.formGrid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.contactForm input,
+.contactForm textarea,
+.newsletter input[type='email'] {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    color: var(--text-main);
+    padding: 0.9rem 1rem;
+    font: inherit;
+}
+
+.contactForm textarea {
+    resize: vertical;
+}
+
+.contactForm input:focus,
+.contactForm textarea:focus,
+.newsletter input[type='email']:focus {
+    border-color: var(--color-primary);
+    outline: 2px solid var(--color-primary-ring);
+}
+
+.contactForm button,
+.newsletter button,
+.helpCards a,
+.helpCards button {
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background-color 160ms ease, color 160ms ease, opacity 160ms ease;
+}
+
+.contactForm button {
+    width: 100%;
+    max-width: 14rem;
+    border: 2px solid var(--color-primary);
+    background: transparent;
+    color: var(--color-primary-dark);
+    padding: 0.85rem 1.25rem;
+}
+
+.contactForm button:hover {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.bottomGrid {
+    display: grid;
+    gap: 3rem;
+}
+
+.newsletter {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 2rem;
+    border: 1px solid rgb(34 43 36 / 12%);
+    border-radius: var(--radius-md);
+    background: var(--color-secondary);
+    color: var(--text-main);
+    box-shadow: var(--shadow-md);
+}
+
+.newsletter h2,
+.help h2 {
+    margin: 0 0 1.5rem;
+    color: var(--text-main);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.newsletter p {
+    margin: 0 0 2rem;
+    font-size: 1.125rem;
+    line-height: 1.6;
+}
+
+.radioGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    border: 0;
+}
+
+.radioGroup legend {
+    width: 100%;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.radioGroup label,
+.checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.checkbox {
+    margin-top: 1.25rem;
+    font-size: 0.875rem;
+}
+
+.newsletter button {
+    border: 0;
+    background: var(--text-main);
+    color: var(--color-white);
+    padding: 0.85rem 1.5rem;
+}
+
+.newsletter button:disabled,
+.contactForm button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.finePrint {
+    margin: 1rem 0 0;
+    color: rgb(34 43 36 / 70%);
+    font-size: 0.75rem;
+}
+
+.helpCards {
+    display: grid;
+    gap: 1rem;
+}
+
+.helpCards article {
+    display: grid;
+    align-content: space-between;
+    gap: 1.5rem;
+    min-height: 11rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.helpCards p {
+    max-width: 12rem;
+    margin: 0;
+    color: var(--text-main);
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.helpCards a,
+.helpCards button {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--color-secondary);
+    background: transparent;
+    color: var(--color-secondary-dark);
+    padding: 0.75rem 1rem;
+    text-align: center;
+    text-decoration: none;
+}
+
+.helpCards a:hover,
+.helpCards button:hover {
+    background: var(--color-secondary);
+    color: var(--color-white);
+}
+
+.helpLinks {
+    margin-top: 2rem;
+    border-top: 1px solid var(--color-border-soft);
+}
+
+.helpLinks a {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--color-border-soft);
+    color: var(--text-main);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.helpLinks a:hover {
+    color: var(--color-secondary-dark);
+}
+
+@media (min-width: 768px) {
+    .formGrid,
+    .helpCards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .bottomGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

@@ -1,0 +1,35 @@
+.tableWrapper {
+    margin-top: 1rem;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    min-width: 40rem;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+}
+
+.table th {
+    border: 1px solid var(--color-border-default);
+    background: var(--color-surface-subtle);
+    color: var(--color-text-soft);
+    font-weight: 700;
+    padding: 0.75rem;
+    text-align: left;
+}
+
+.table td {
+    border: 1px solid var(--color-border-default);
+    color: var(--color-text-soft);
+    padding: 0.75rem;
+    vertical-align: top;
+}
+
+.table tbody tr:hover {
+    background: var(--color-surface-subtle);
+}
+
+.cookieName {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
