@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Payments\Services\StripeService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PaymentMethodController extends Controller
@@ -21,8 +20,8 @@ class PaymentMethodController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
-        if (!$user->stripe_customer_id) {
+
+        if (! $user->stripe_customer_id) {
             return response()->json([]);
         }
 
@@ -55,8 +54,15 @@ class PaymentMethodController extends Controller
     public function destroy($id)
     {
         try {
-            $paymentMethod = \Stripe\PaymentMethod::retrieve($id);
-            $paymentMethod->detach();
+            $user = Auth::user();
+
+            if (! $user?->stripe_customer_id) {
+                return response()->json(['error' => 'No Stripe customer found for this user.'], 403);
+            }
+
+            if (! $this->stripeService->detachPaymentMethodForCustomer($id, $user->stripe_customer_id)) {
+                return response()->json(['error' => 'Unauthorized payment method access.'], 403);
+            }
 
             return response()->json(['success' => true]);
         } catch (\Exception $e) {

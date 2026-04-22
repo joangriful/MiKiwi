@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAddressRequest;
+use App\Http\Requests\UpdateAddressRequest;
 use App\Models\UserAddress;
-use App\Http\Requests\StoreAddressRequest; // ¡Importante!
-use App\Http\Requests\UpdateAddressRequest; // ¡Importante!
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class UserAddressController extends Controller
@@ -22,48 +22,43 @@ class UserAddressController extends Controller
         ]);
     }
 
-    // Inyectamos StoreAddressRequest
     public function store(StoreAddressRequest $request)
     {
-        // $request->validated() devuelve solo los datos limpios y seguros
-        $address = auth()->user()->addresses()->create($request->validated());
+        $data = $request->validated();
 
-        // Si es principal, desmarcar las demás
-        if (! empty($data['is_default'])) {
-            UserAddress::where('user_id', Auth::id())
-                ->update(['is_default' => false]);
-        }
+        DB::transaction(function () use ($data): void {
+            if (! empty($data['is_default'])) {
+                UserAddress::where('user_id', Auth::id())
+                    ->update(['is_default' => false]);
+            }
 
-        UserAddress::create([
-            'user_id' => Auth::id(),
-            ...$data,
-        ]);
+            auth()->user()->addresses()->create($data);
+        });
 
         return back()->with('success', 'Dirección guardada correctamente');
     }
 
-    // Inyectamos UpdateAddressRequest
     public function update(UpdateAddressRequest $request, UserAddress $address)
     {
-        // Autorización (Policy creada en Etapa 2)
         $this->authorize('update', $address);
 
-        $address->update($request->validated());
+        $data = $request->validated();
 
-        if (! empty($data['is_default'])) {
-            UserAddress::where('user_id', Auth::id())
-                ->update(['is_default' => false]);
-        }
+        DB::transaction(function () use ($address, $data): void {
+            if (! empty($data['is_default'])) {
+                UserAddress::where('user_id', Auth::id())
+                    ->where('id', '!=', $address->getKey())
+                    ->update(['is_default' => false]);
+            }
 
-        $address->update($data);
+            $address->update($data);
+        });
 
         return back()->with('success', 'Dirección actualizada');
     }
 
-    // Eliminar dirección
     public function destroy(UserAddress $address)
     {
-        // Autorización (Policy creada en Etapa 2)
         $this->authorize('delete', $address);
 
         $address->delete();

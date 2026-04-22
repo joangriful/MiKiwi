@@ -4,6 +4,7 @@ namespace App\Domain\Payments\Services;
 
 use Illuminate\Support\Facades\Config;
 use Stripe\PaymentIntent;
+use Stripe\PaymentMethod;
 use Stripe\Stripe;
 
 class StripeService
@@ -43,8 +44,8 @@ class StripeService
 
     /**
      * Create or retrieve a Stripe Customer
-     * 
-     * @param \App\Models\User $user
+     *
+     * @param  \App\Models\User  $user
      * @return \Stripe\Customer
      */
     public function getOrCreateCustomer($user)
@@ -72,16 +73,40 @@ class StripeService
 
     /**
      * List payment methods for a customer
-     * 
-     * @param string $customerId
+     *
+     * @param  string  $customerId
      * @return \Stripe\Collection
      */
     public function listPaymentMethods($customerId)
     {
-        return \Stripe\PaymentMethod::all([
+        return PaymentMethod::all([
             'customer' => $customerId,
             'type' => 'card',
         ]);
+    }
+
+    /**
+     * Retrieve a payment method by its ID.
+     */
+    public function retrievePaymentMethod(string $id): PaymentMethod
+    {
+        return PaymentMethod::retrieve($id);
+    }
+
+    /**
+     * Detach a payment method only if it belongs to the expected customer.
+     */
+    public function detachPaymentMethodForCustomer(string $paymentMethodId, string $customerId): bool
+    {
+        $paymentMethod = $this->retrievePaymentMethod($paymentMethodId);
+
+        if (($paymentMethod->customer ?? null) !== $customerId) {
+            return false;
+        }
+
+        $paymentMethod->detach();
+
+        return true;
     }
 
     /**
