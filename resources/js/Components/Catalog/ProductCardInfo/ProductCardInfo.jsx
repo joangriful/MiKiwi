@@ -18,13 +18,23 @@ export default function ProductCardInfo({ name, description, price }) {
 
             <div className={styles.meta}>
                 <div className={styles.ratingRow}>
-                    <div className={styles.ratingStars} onMouseLeave={() => setHoverRating(0)}>
+                    <div
+                        className={styles.ratingStars}
+                        onMouseLeave={() => setHoverRating(0)}
+                        role="radiogroup"
+                        tabIndex={0}
+                        aria-label="Valorar producto"
+                    >
                         {[1, 2, 3, 4, 5].map((star) => (
                             <button
                                 key={star}
+                                type="button"
                                 className={`${styles.ratingButton} ${star <= (hoverRating || rating) ? styles.ratingButtonActive : styles.ratingButtonInactive}`}
                                 onClick={() => setRating(star)}
                                 onMouseEnter={() => setHoverRating(star)}
+                                role="radio"
+                                aria-checked={star === rating}
+                                aria-label={`${star} estrellas`}
                             >
                                 ★
                             </button>

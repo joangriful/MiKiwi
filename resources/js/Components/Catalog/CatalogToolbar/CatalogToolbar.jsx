@@ -14,6 +14,7 @@ export default function CatalogToolbar({
                     type="text"
                     placeholder="Buscar..."
                     value={searchTerm}
+                    aria-label="Buscar productos"
                     onChange={(event) => onSearchChange(event.target.value)}
                     className={styles.searchInput}
                 />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { router } from '@inertiajs/react';
 import styles from './FilterMenu.module.css';
 
@@ -86,6 +86,15 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
             <div
                 className={styles.backdrop}
                 onClick={onClose}
+                onKeyDown={(event) => {
+                    if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        onClose();
+                    }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label="Cerrar filtros"
             />
 
             <div className={panelClassName}>
@@ -94,7 +103,7 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
                         <h2 className={styles.title}>Filtros Avanzados</h2>
                         <span className={styles.eyebrow}>Sincronía Sensorial</span>
                     </div>
-                    <button onClick={onClose} className={styles.closeButton}>
+                    <button type="button" onClick={onClose} className={styles.closeButton} aria-label="Cerrar panel de filtros">
                         <span className={`material-symbols-outlined ${styles.closeIcon}`}>close</span>
                     </button>
                 </div>
@@ -103,16 +112,22 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
 
                     <div className={styles.toggleGrid}>
                         <button
+                            type="button"
                             onClick={() => updateLocalFilter({ stock: localFilters.stock ? null : 1 })}
                             className={`${styles.toggleCard} ${localFilters.stock ? styles.toggleCardActive : styles.toggleCardInactive}`}
+                            aria-pressed={Boolean(localFilters.stock)}
+                            aria-label="Filtrar productos en stock"
                         >
                             <span className={styles.toggleLabel}>En Stock</span>
-                            <div className={`${styles.toggleDot} ${localFilters.stock ? styles.toggleDotActive : styles.toggleDotInactive}`}></div>
+                            <div className={`${styles.toggleDot} ${localFilters.stock ? styles.toggleDotActive : styles.toggleDotInactive}`} />
                         </button>
 
                         <button
+                            type="button"
                             onClick={() => updateLocalFilter({ offer: localFilters.offer ? null : 1 })}
                             className={`${styles.toggleCard} ${localFilters.offer ? styles.toggleCardActive : styles.toggleCardInactive}`}
+                            aria-pressed={Boolean(localFilters.offer)}
+                            aria-label="Filtrar productos con descuento"
                         >
                             <span className={styles.toggleLabel}>Descuentos</span>
                             <span className={styles.offerBadge}>%</span>
@@ -124,9 +139,12 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
                         <div className={styles.categoryGrid}>
                             {categories.map((category) => (
                                 <button
+                                    type="button"
                                     key={category.id}
                                     onClick={() => handleCategoryClick(category)}
                                     className={`${styles.categoryButton} ${localFilters.category == category.id ? styles.categoryButtonActive : styles.categoryButtonInactive}`}
+                                    aria-pressed={String(localFilters.category) === String(category.id)}
+                                    aria-label={`Filtrar por categoría ${category.name}`}
                                 >
                                     <span>{category.name}</span>
                                     <span className={`${styles.categoryCount} ${localFilters.category == category.id ? styles.categoryCountActive : styles.categoryCountInactive}`}>
@@ -140,9 +158,12 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
                             <div className={styles.subCategoryWrap}>
                                 {localFilters.activeChildren.map((sub) => (
                                     <button
+                                        type="button"
                                         key={sub.id}
                                         onClick={() => updateLocalFilter({ subCategory: localFilters.subCategory === sub.name ? null : sub.name })}
                                         className={`${styles.subCategoryButton} ${localFilters.subCategory === sub.name ? styles.subCategoryButtonActive : styles.subCategoryButtonInactive}`}
+                                        aria-pressed={localFilters.subCategory === sub.name}
+                                        aria-label={`Filtrar por subcategoría ${sub.name}`}
                                     >
                                         <span>{sub.name}</span>
                                         <span className={`${styles.subCategoryCount} ${localFilters.subCategory === sub.name ? styles.subCategoryCountActive : styles.subCategoryCountInactive}`}>
@@ -159,9 +180,12 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
                         <div className={styles.ratingRow}>
                             {[5, 4, 3, 2, 1].map((rating) => (
                                 <button
+                                    type="button"
                                     key={rating}
                                     onClick={() => updateLocalFilter({ rating: localFilters.rating == rating ? null : rating })}
                                     className={`${styles.ratingButton} ${localFilters.rating == rating ? styles.ratingButtonActive : styles.ratingButtonInactive}`}
+                                    aria-pressed={Number(localFilters.rating) === rating}
+                                    aria-label={`Filtrar por ${rating} estrellas o más`}
                                 >
                                     <span className={styles.ratingLabel}>{rating}</span>
                                     <span className={`material-symbols-outlined ${styles.ratingIcon} ${localFilters.rating == rating ? styles.ratingIconActive : ''}`}>star</span>
@@ -175,9 +199,12 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
                         <div className={styles.categoryGrid}>
                             {NOISE_LEVELS.map((level) => (
                                 <button
+                                    type="button"
                                     key={level.value}
                                     onClick={() => updateLocalFilter({ noise: localFilters.noise === level.value ? null : level.value })}
                                     className={`${styles.categoryButton} ${localFilters.noise === level.value ? styles.categoryButtonActive : styles.categoryButtonInactive}`}
+                                    aria-pressed={localFilters.noise === level.value}
+                                    aria-label={`Filtrar por nivel de silencio ${level.label}`}
                                 >
                                     {level.label}
                                 </button>
@@ -190,9 +217,12 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
                         <div className={styles.pillWrap}>
                             {USAGE_OPTIONS.map((use) => (
                                 <button
+                                    type="button"
                                     key={use}
                                     onClick={() => updateLocalFilter({ usage: localFilters.usage === use ? null : use })}
                                     className={`${styles.usageButton} ${localFilters.usage === use ? styles.usageButtonActive : styles.usageButtonInactive}`}
+                                    aria-pressed={localFilters.usage === use}
+                                    aria-label={`Filtrar por uso ${use}`}
                                 >
                                     {use}
                                 </button>
@@ -205,9 +235,12 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
                         <div className={styles.colorRow}>
                             {COLOR_OPTIONS.map((color) => (
                                 <button
+                                    type="button"
                                     key={color.name}
                                     onClick={() => updateLocalFilter({ color: localFilters.color === color.name ? null : color.name })}
                                     className={`${styles.colorButton} ${localFilters.color === color.name ? styles.colorButtonActive : ''}`}
+                                    aria-pressed={localFilters.color === color.name}
+                                    aria-label={`Filtrar por color ${color.name}`}
                                 >
                                     <div
                                         className={styles.colorSwatch}
@@ -222,17 +255,19 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
 
                 <div className={styles.footer}>
                     <button
+                        type="button"
                         onClick={handleClear}
                         className={styles.clearButton}
                     >
                         Limpiar Todo
                     </button>
                     <button
+                        type="button"
                         onClick={handleApply}
                         className={styles.applyButton}
                     >
                         <span className={styles.applyButtonLabel}>Aplicar Filtros</span>
-                        <div className={styles.applyButtonGlow}></div>
+                        <div className={styles.applyButtonGlow} />
                     </button>
                 </div>
             </div>

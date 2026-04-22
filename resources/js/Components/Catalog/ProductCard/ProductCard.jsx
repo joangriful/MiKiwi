@@ -35,11 +35,13 @@ export default function ProductCard({ product }) {
 
                 {/* Like Button - Minimalist Overlay */}
                 <button
+                    type="button"
                     onClick={(e) => {
                         e.preventDefault();
                         setIsLiked(!isLiked);
                     }}
                     className={styles.likeButton}
+                    aria-label={isLiked ? `Quitar ${product.name} de favoritos` : `Añadir ${product.name} a favoritos`}
                 >
                     <div
                         className={`${styles.likeIcon} ${isLiked ? styles.likeIconActive : styles.likeIconInactive}`}
@@ -53,7 +55,7 @@ export default function ProductCard({ product }) {
                             WebkitMaskRepeat: 'no-repeat',
                             WebkitMaskPosition: 'center',
                         }}
-                    ></div>
+                    />
                 </button>
             </div>
 

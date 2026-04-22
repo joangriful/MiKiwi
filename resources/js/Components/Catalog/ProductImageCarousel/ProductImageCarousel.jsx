@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './ProductImageCarousel.module.css';
 
 export default function ProductImageCarousel({ images = [], selectedImage, onSelectImage }) {
@@ -18,6 +17,7 @@ export default function ProductImageCarousel({ images = [], selectedImage, onSel
         <div className={styles.root}>
             <div className={styles.layout}>
                 <button
+                    type="button"
                     onClick={handlePrev}
                     className={styles.navButton}
                     aria-label="Anterior imagen"
@@ -28,9 +28,11 @@ export default function ProductImageCarousel({ images = [], selectedImage, onSel
                 <div className={styles.thumbnailTrack}>
                     {images.map((img, index) => (
                         <button
+                            type="button"
                             key={index}
                             onClick={() => onSelectImage(img)}
                             className={`${styles.thumbnailButton} ${selectedImage === img ? styles.thumbnailButtonActive : styles.thumbnailButtonInactive}`}
+                            aria-label={`Seleccionar imagen ${index + 1}`}
                         >
                             <img
                                 src={img}
@@ -42,6 +44,7 @@ export default function ProductImageCarousel({ images = [], selectedImage, onSel
                 </div>
 
                 <button
+                    type="button"
                     onClick={handleNext}
                     className={styles.navButton}
                     aria-label="Siguiente imagen"
