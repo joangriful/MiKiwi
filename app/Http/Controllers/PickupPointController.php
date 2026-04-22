@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Shipping\Services\CorreosService;
 use App\Models\PickupPoint;
+use App\Support\Database\CaseInsensitiveSearch;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class PickupPointController extends Controller
 {
     protected $correosService;
 
-    public function __construct(\App\Domain\Shipping\Services\CorreosService $correosService)
+    public function __construct(CorreosService $correosService)
     {
         $this->correosService = $correosService;
     }
@@ -31,30 +34,33 @@ class PickupPointController extends Controller
         if (config('services.correos.client_id')) {
             $externalTerminals = $this->correosService->getTerminals($filters);
 
-            if (!empty($externalTerminals)) {
+            if (! empty($externalTerminals)) {
                 foreach ($externalTerminals as $ext) {
                     PickupPoint::updateOrCreate(
                         ['address' => $ext['address'], 'postal_code' => $ext['postal_code']],
                         ['name' => $ext['name'], 'city' => $ext['city'], 'is_active' => true]
                     );
                 }
+
                 return response()->json($externalTerminals);
             }
         }
 
         // Try local DB
-        $query = PickupPoint::where('is_active', true);
+        $query = PickupPoint::query()->where('is_active', true);
 
         if ($request->filled('city')) {
-            $query->where('city', 'like', '%' . $request->city . '%');
+            CaseInsensitiveSearch::contains($query, 'city', $request->string('city')->toString());
         }
 
         if ($request->filled('postal_code')) {
             $cp = $request->postal_code;
             $prefix = substr($cp, 0, 2);
-            $query->where(function ($q) use ($cp, $prefix) {
+            $query->where(function (Builder $q) use ($cp, $prefix) {
                 $q->where('postal_code', $cp)
-                    ->orWhere('postal_code', 'like', $prefix . '%');
+                    ->orWhere(function (Builder $query) use ($prefix) {
+                        return CaseInsensitiveSearch::startsWith($query, 'postal_code', $prefix);
+                    });
             });
         }
 
@@ -66,6 +72,7 @@ class PickupPointController extends Controller
 
         // Always fallback to mock data so users always see results
         $mocks = $this->correosService->getTerminals($filters);
+
         return response()->json($mocks);
     }
 }

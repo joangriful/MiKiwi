@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Support\Database\CaseInsensitiveSearch;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -22,12 +23,13 @@ class ProductSeeder extends Seeder
         // ========================================
 
         // Buscamos la categoría principal. Si no existe el slug, tomamos la primera de la tabla.
-        $catMunecasPremium = Category::where('slug', 'munecas-premium')->first() 
-                            ?? Category::where('name', 'LIKE', '%Premium%')->first()
+        $catMunecasPremium = Category::where('slug', 'munecas-premium')->first()
+                            ?? CaseInsensitiveSearch::contains(Category::query(), 'name', 'Premium')->first()
                             ?? Category::first();
 
-        if (!$catMunecasPremium) {
+        if (! $catMunecasPremium) {
             $this->command->error('❌ ERROR CRÍTICO: No hay categorías en la base de datos. Abortando.');
+
             return;
         }
 

@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Domain\Products\Services\ProductService;
+use App\Models\Category;
+use App\Models\Product;
+use App\Support\Database\CaseInsensitiveSearch;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class ProductController extends Controller
 {
@@ -21,9 +25,8 @@ class ProductController extends Controller
      * Mostrar detalles de un producto
      *
      * @param  Product  $product  - Laravel resolverá automáticamente por slug
-     * @return \Inertia\Response
      */
-    public function show(Product $product)
+    public function show(Product $product): Response
     {
         try {
             // Usar el servicio para obtener detalles completos del producto
@@ -31,7 +34,7 @@ class ProductController extends Controller
 
             // Obtener productos relacionados de la misma categoría
             $relatedProducts = Product::where('category_id', $product->category_id)
-                ->where('id', '!=', $product->id)
+                ->where('id', '!=', $product->getKey())
                 ->where('is_active', true)
                 ->with('category') // Eager load category
                 ->inRandomOrder()
@@ -42,24 +45,25 @@ class ProductController extends Controller
                 'product' => $productData['product'],
                 'accessories' => $productData['accessories'],
                 'relatedProducts' => $relatedProducts,
-                'pageTitle' => $product->name . ' - MiKiwi',
+                'pageTitle' => $product->name.' - MiKiwi',
             ]);
         } catch (ModelNotFoundException $e) {
             abort(404, 'Producto no encontrado');
         }
     }
+
     /**
      * Listado de productos con filtros
      */
-    public function index(\Illuminate\Http\Request $request)
+    public function index(Request $request)
     {
-        $query = Product::where('is_active', true);
+        $query = Product::query()->where('is_active', true);
 
         // Filtrar por categoría (ID o Slug, Incluyendo subcategorías de forma recursiva)
         if ($request->has('category')) {
             $categoryParam = $request->query('category');
 
-            $categoryQuery = \App\Models\Category::query();
+            $categoryQuery = Category::query();
 
             if (Str::isUuid($categoryParam)) {
                 $categoryQuery->where('id', $categoryParam);
@@ -73,7 +77,7 @@ class ProductController extends Controller
                 // Special case: "parejas" collection shows all non-BDSM products
                 if ($category->slug === 'parejas') {
                     // Exclude BDSM category and all its descendants
-                    $bdsmCategory = \App\Models\Category::where('slug', 'bdsm-y-fetiche')->first();
+                    $bdsmCategory = Category::query()->where('slug', 'bdsm-y-fetiche')->first();
                     if ($bdsmCategory) {
                         $bdsmIds = $this->getCategoryAndDescendants($bdsmCategory);
                         $query->whereNotIn('category_id', $bdsmIds);
@@ -90,7 +94,7 @@ class ProductController extends Controller
         if ($request->has('subCategory')) {
             $subCategoryParam = $request->subCategory;
 
-            $subCategory = \App\Models\Category::query()
+            $subCategory = Category::query()
                 ->when(
                     Str::isUuid($subCategoryParam),
                     fn ($query) => $query->where('id', $subCategoryParam),
@@ -99,7 +103,7 @@ class ProductController extends Controller
                 ->first();
 
             if ($subCategory) {
-                $query->where('category_id', $subCategory->id);
+                $query->where('category_id', $subCategory->getKey());
             }
         }
 
@@ -113,7 +117,7 @@ class ProductController extends Controller
 
         // Filtrar por nombre (Búsqueda)
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            CaseInsensitiveSearch::contains($query, 'name', $request->string('search')->toString());
         }
 
         // Filtrar por productos destacados (Top Ventas)
@@ -141,7 +145,7 @@ class ProductController extends Controller
         $products = $query->paginate(12)->withQueryString();
 
         // Obtener categorías con sus hijos para el sidebar
-        $categories = \App\Models\Category::root()
+        $categories = Category::root()
             ->where('is_active', true)
             ->with([
                 'children' => function ($q) {
@@ -149,15 +153,15 @@ class ProductController extends Controller
                         ->withCount([
                             'products' => function ($query) {
                                 $query->where('is_active', true)->where('stock_quantity', '>', 0);
-                            }
+                            },
                         ])
                         ->orderBy('name');
-                }
+                },
             ])
             ->withCount([
                 'products' => function ($query) {
                     $query->where('is_active', true)->where('stock_quantity', '>', 0);
-                }
+                },
             ])
             ->orderBy('name')
             ->get();
@@ -178,15 +182,16 @@ class ProductController extends Controller
     /**
      * Get a category and all its descendants (children, grandchildren, etc.) recursively
      *
-     * @param \App\Models\Category $category
      * @return \Illuminate\Support\Collection
      */
-    private function getCategoryAndDescendants(\App\Models\Category $category)
+    private function getCategoryAndDescendants(Category $category)
     {
-        $ids = collect([$category->id]);
+        $ids = collect([$category->getKey()]);
 
         // Get all children recursively
-        $children = \App\Models\Category::where('parent_id', $category->id)->get();
+        $children = Category::query()->where('parent_id', $category->getKey())->get();
+
+        /** @var Category $child */
         foreach ($children as $child) {
             $ids = $ids->merge($this->getCategoryAndDescendants($child));
         }
