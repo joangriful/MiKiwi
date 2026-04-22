@@ -291,6 +291,29 @@ Reglas:
 - Si se añaden variables de entorno, actualizar `.env.example`.
 - No commitear secretos.
 
+### Compatibilidad PostgreSQL
+
+PostgreSQL/Supabase es la base vigente del proyecto. Las migraciones, seeders, queries y tests deben escribirse pensando en PostgreSQL, no en compatibilidad histórica con MySQL.
+
+Reglas obligatorias:
+
+- No usar `after()` en migraciones nuevas. Es una conveniencia de MySQL y no debe condicionar el esquema.
+- No introducir SQL específico de MySQL. Si una operación requiere SQL específico del motor, debe aislarse, justificarse y protegerse por driver.
+- No asumir que `LIKE` es case-insensitive. Para búsquedas sin distinguir mayúsculas/minúsculas usar un helper/scope común que encapsule `ILIKE`.
+- Tratar JSON como zona sensible: preferir casts Eloquent a `array` y helpers de Laravel como `whereJsonContains`; evitar `json_encode`/`json_decode` manual salvo caso justificado.
+- Tratar enums SQL como zona sensible: la dirección técnica es migrar progresivamente a columnas `string` con validación en Requests/services y constantes/enums PHP.
+- Tratar UUID como zona sensible: validar como `uuid`, no asumir IDs enteros y revisar factories, seeders, relaciones y route model binding.
+- Los seeders deben ser idempotentes: usar `firstOrCreate`, `updateOrCreate` o `upsert` con claves únicas claras (`slug`, `sku`, `code`, `email`).
+
+Checklist para cualquier PR que toque base de datos:
+
+- ¿Introduce SQL específico de MySQL o una dependencia de orden de columnas tipo `after()`?
+- ¿Usa búsquedas de texto con `LIKE` donde debería ir el helper/scope de `ILIKE`?
+- ¿Toca JSON, enum SQL o UUID?
+- ¿Mantiene seeders y factories compatibles con PostgreSQL?
+- ¿Funciona con datos ya existentes en Supabase?
+- ¿Incluye o actualiza tests sobre PostgreSQL local cuando afecta a datos críticos?
+
 ## Comandos Útiles
 
 ```bash

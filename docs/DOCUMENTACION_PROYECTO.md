@@ -54,6 +54,17 @@ Objetivos principales:
 - Supabase remoto para desarrollo normal.
 - PostgreSQL local separado para tests automatizados.
 
+Decisiones de compatibilidad:
+
+- las búsquedas de texto sin distinguir mayúsculas/minúsculas deben usar una abstracción común basada en `ILIKE`;
+- los enums SQL se migrarán progresivamente a columnas `string` con validación en backend y constantes/enums PHP;
+- los campos JSON deben gestionarse preferentemente con casts Eloquent a `array`;
+- los UUIDs deben mantenerse extremo a extremo como UUID, sin tratarlos como enteros;
+- los seeders deben poder ejecutarse varias veces sin duplicar datos;
+- los puntos de recogida mock de Correos solo deben usarse automáticamente en `local` y `testing`; en producción requieren fallback explícito.
+
+Plan de auditoría: `docs/db/POSTGRES_COMPATIBILITY_PLAN.md`.
+
 ## 3. Arquitectura Actual
 
 El proyecto sigue esta separación:
