@@ -3,9 +3,10 @@
 namespace App\Domain\Dolls\Services;
 
 use App\Domain\Media\Services\CloudinaryAssetCacheService;
+use App\Models\DollSetting;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
 
 class DollSettingsService
 {
@@ -16,11 +17,9 @@ class DollSettingsService
     public function getSettings(): array
     {
         try {
-            $settings = DB::table('doll_settings')
-                ->where('key', 'default_config')
-                ->value('value');
+            $setting = DollSetting::query()->find('default_config');
 
-            return $settings ? json_decode($settings, true) : [];
+            return $setting?->value ?? [];
         } catch (\Exception $e) {
             Log::error('Failed to get doll settings from DB: '.$e->getMessage());
 
@@ -31,9 +30,9 @@ class DollSettingsService
     public function saveSettings(array $settings): bool
     {
         try {
-            DB::table('doll_settings')->updateOrInsert(
+            DollSetting::query()->updateOrCreate(
                 ['key' => 'default_config'],
-                ['value' => json_encode($settings), 'updated_at' => now()]
+                ['value' => $settings]
             );
 
             return true;

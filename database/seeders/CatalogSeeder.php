@@ -18,7 +18,7 @@ class CatalogSeeder extends Seeder
 
         // 2. TU PRODUCTO SIMPLE (Lubricante)
         Product::create([
-            'category_id' => $catToys->id,
+            'category_id' => $catToys->getKey(),
             'name' => 'Lubricante 100ml',
             'slug' => 'lube-100',
             'sku' => 'LUBE-001',
@@ -26,12 +26,12 @@ class CatalogSeeder extends Seeder
             'stock_quantity' => 50,
             'product_type' => 'simple',
             'is_active' => true, // Aseguramos que esté activo
-            'images' => json_encode(['https://placehold.co/400?text=Lube']),
+            'images' => ['https://placehold.co/400?text=Lube'],
         ]);
 
         // 3. TU MUÑECA CONFIGURABLE (Elsa)
         $elsa = Product::create([
-            'category_id' => $catDolls->id,
+            'category_id' => $catDolls->getKey(),
             'name' => 'Muñeca Elsa',
             'slug' => 'elsa-doll',
             'sku' => 'DOLL-001',
@@ -39,12 +39,12 @@ class CatalogSeeder extends Seeder
             'stock_quantity' => 10, // Le ponemos stock para que el OrderController no falle
             'product_type' => 'configurable',
             'is_active' => true,
-            'images' => json_encode(['https://placehold.co/400?text=Elsa']),
+            'images' => ['https://placehold.co/400?text=Elsa'],
         ]);
 
         // 4. NUEVO: CREAR COMPONENTES (Para probar el configurador)
         $ojosAzules = Product::create([
-            'category_id' => $catComponents->id,
+            'category_id' => $catComponents->getKey(),
             'name' => 'Ojos Azules Cristal',
             'slug' => 'ojos-azules',
             'sku' => 'COMP-EYE-BLU',
@@ -55,7 +55,7 @@ class CatalogSeeder extends Seeder
         ]);
 
         $pelucaRubia = Product::create([
-            'category_id' => $catComponents->id,
+            'category_id' => $catComponents->getKey(),
             'name' => 'Peluca Rubia Larga',
             'slug' => 'peluca-rubia',
             'sku' => 'COMP-HAIR-BLND',
@@ -70,14 +70,14 @@ class CatalogSeeder extends Seeder
 
         // Opción A: Si tienes la relación 'accessories' en el Modelo Product
         if (method_exists($elsa, 'accessories')) {
-            $elsa->accessories()->attach([$ojosAzules->id, $pelucaRubia->id]);
+            $elsa->accessories()->attach([$ojosAzules->getKey(), $pelucaRubia->getKey()]);
         }
         // Opción B: Inserción manual en la tabla pivote (si no has definido la relación aún)
         else {
             // Asegúrate que la tabla se llame 'product_accessories' o la que hayas definido
             DB::table('product_accessories')->insert([
-                ['product_id' => $elsa->id, 'accessory_id' => $ojosAzules->id],
-                ['product_id' => $elsa->id, 'accessory_id' => $pelucaRubia->id],
+                ['product_id' => $elsa->getKey(), 'accessory_id' => $ojosAzules->getKey()],
+                ['product_id' => $elsa->getKey(), 'accessory_id' => $pelucaRubia->getKey()],
             ]);
         }
 
@@ -85,7 +85,7 @@ class CatalogSeeder extends Seeder
         // Creamos 15 muñecas extra usando el Factory
         if (class_exists(\Database\Factories\ProductFactory::class)) {
             Product::factory()->count(15)->create([
-                'category_id' => $catDolls->id,
+                'category_id' => $catDolls->getKey(),
                 'product_type' => 'configurable',
             ]);
         }

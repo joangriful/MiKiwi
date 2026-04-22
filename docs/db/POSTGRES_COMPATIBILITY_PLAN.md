@@ -104,14 +104,14 @@ Preferir casts Eloquent a `array` y evitar `json_encode/json_decode` manual salv
 
 **Checklist:**
 
-- [ ] Confirmar casts de `Product.images`.
-- [ ] Confirmar casts de `Order.shipping_address_snapshot`.
-- [ ] Confirmar casts de `Order.billing_address_snapshot`.
-- [ ] Evitar `json_encode` en seeders si el modelo castea a array.
-- [ ] Valorar modelo/cast dedicado para `doll_settings.value`.
-- [ ] Anadir test de guardado/lectura JSON de productos.
-- [ ] Anadir test de guardado/lectura JSON de pedidos.
-- [ ] Anadir test de configuracion de muñecas.
+- [x] Confirmar casts de `Product.images`.
+- [x] Confirmar casts de `Order.shipping_address_snapshot`.
+- [x] Confirmar casts de `Order.billing_address_snapshot`.
+- [x] Evitar `json_encode` en seeders si el modelo castea a array.
+- [x] Valorar modelo/cast dedicado para `doll_settings.value`.
+- [x] Anadir test de guardado/lectura JSON de productos.
+- [x] Anadir test de guardado/lectura JSON de pedidos.
+- [x] Anadir test de configuracion de muñecas.
 
 ## Fase 4 - Migrar Enums SQL Progresivamente
 
