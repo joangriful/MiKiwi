@@ -8,7 +8,11 @@ const componentImports = import.meta.glob([
     '!/resources/js/Components/Configurator/Mannequin3DViewer/components/MannequinScene3D.jsx',
 ], { eager: true });
 const pageImports = import.meta.glob('/resources/js/Pages/**/*.jsx', { eager: true });
-const componentRawStart = import.meta.glob('/resources/js/Components/**/*.jsx', { query: '?raw', import: 'default' });
+const componentRawStart = import.meta.glob([
+    '/resources/js/Components/**/*.jsx',
+    '!/resources/js/Components/Configurator/Mannequin3DViewer/components/MannequinScene3D.jsx',
+    '!/resources/js/Components/Configurator/DollScene3D/DollScene3D.jsx',
+], { query: '?raw', import: 'default' });
 const pageRawStart = import.meta.glob('/resources/js/Pages/**/*.jsx', { query: '?raw', import: 'default' });
 const DYNAMIC_COLORS = parseColorsFromCss(cssContent);
 
