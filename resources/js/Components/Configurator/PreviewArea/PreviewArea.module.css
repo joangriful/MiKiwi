@@ -15,6 +15,9 @@
 
 .emptyState {
     color: var(--color-text-subtle);
+    text-align: center;
+    letter-spacing: 0.04em;
+    font-size: 0.9rem;
     font-weight: 500;
     z-index: 0;
 }
@@ -29,10 +32,22 @@
 
 .viewportIndicator {
     position: absolute;
-    border: 2px solid var(--color-danger);
-    box-shadow: var(--shadow-md);
-    background: rgb(234 179 8 / 10%);
+    border: 2px solid var(--color-secondary-dark);
+    border-radius: 0.875rem;
+    box-shadow: 0 8px 18px rgb(214 151 200 / 30%);
+    background: rgb(248 183 234 / 20%);
+    backdrop-filter: blur(1px);
     pointer-events: none;
     z-index: 900;
     transition: opacity 200ms ease;
+}
+
+.root:focus {
+    outline: none;
+}
+
+.root:focus-visible {
+    outline: 2px solid var(--color-secondary-dark);
+    outline-offset: -2px;
+    border-radius: 0.875rem;
 }
