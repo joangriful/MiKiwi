@@ -1,4 +1,4 @@
-import React from 'react';
+import HomeLogoLink from '@/Components/HomeLogoLink/HomeLogoLink';
 import { Link } from '@inertiajs/react';
 import styles from './ManagerHeader.module.css';
 
@@ -10,6 +10,7 @@ function SearchField({ searchTerm, setSearchTerm }) {
                 placeholder="Search components..."
                 className={styles.searchInput}
                 value={searchTerm}
+                aria-label="Buscar componentes o páginas"
                 onChange={(event) => setSearchTerm(event.target.value)}
             />
         </div>
@@ -33,6 +34,12 @@ export default function ManagerHeader({ searchTerm, setSearchTerm, activeManager
     return (
         <header className={styles.header}>
             <div className={styles.brand}>
+                <HomeLogoLink
+                    className={styles.logoLink}
+                    logoClassName={styles.logo}
+                    size="sm"
+                    ariaLabel="Volver al inicio desde el manager"
+                />
                 <Link href="/" className={styles.backLink}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={styles.backIcon}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />

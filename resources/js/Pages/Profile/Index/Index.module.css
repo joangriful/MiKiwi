@@ -1,1 +1,23 @@
-.root {}
+.root {
+    min-height: 100vh;
+}
+
+.header {
+    display: flex;
+    justify-content: flex-start;
+    padding: 1rem 1rem 0;
+}
+
+.logoLink {
+    color: #ffffff;
+}
+
+.logo {
+    height: 2rem;
+}
+
+@media (min-width: 768px) {
+    .header {
+        padding: 1.5rem 2rem 0;
+    }
+}

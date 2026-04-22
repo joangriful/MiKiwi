@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
+import HomeLogoLink from '@/Components/HomeLogoLink/HomeLogoLink';
 import styles from './Index.module.css';
 
 const MODEL_OPTIONS = [
@@ -136,18 +137,23 @@ export default function Index() {
             <Head title="Configurador" />
 
             <div className={styles.topBar}>
-                <div className={styles.brand}>MI KIWI</div>
+                <HomeLogoLink
+                    className={styles.brand}
+                    logoClassName={styles.brandLogo}
+                    size="sm"
+                    ariaLabel="Volver al inicio desde configurador"
+                />
 
                 <div className={styles.progress}>
                     {[1, 2, 3].map((step) => (
                         <React.Fragment key={step}>
                             <div
                                 className={`${styles.progressDot} ${currentStep >= step ? styles.progressDotActive : ''}`}
-                            ></div>
+                            />
                             {step < 3 && (
                                 <div
                                     className={`${styles.progressLine} ${currentStep > step ? styles.progressLineActive : ''}`}
-                                ></div>
+                                />
                             )}
                         </React.Fragment>
                     ))}
@@ -168,8 +174,8 @@ export default function Index() {
                                 opacity: selections.finish.type === 'glossy' ? 0.6 : 0.3,
                                 borderRadius: 'inherit',
                             }}
-                        ></div>
-                        <div className={styles.previewHighlight}></div>
+                        />
+                        <div className={styles.previewHighlight} />
                     </div>
 
                     <div className={styles.previewLabel}>VISTA PREVIA EN VIVO</div>
@@ -237,7 +243,7 @@ export default function Index() {
                                             style={{ backgroundColor: color.hex }}
                                             onClick={() => updateSelection('color', color)}
                                             aria-label={`Seleccionar ${color.name}`}
-                                        ></button>
+                                        />
                                     ))}
                                 </div>
                                 <div className={styles.colorName}>{selections.color.name}</div>

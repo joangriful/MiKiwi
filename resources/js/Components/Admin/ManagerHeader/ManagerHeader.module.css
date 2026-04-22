@@ -16,6 +16,14 @@
     gap: 1rem;
 }
 
+.logoLink {
+    color: #ffffff;
+}
+
+.logo {
+    height: 2rem;
+}
+
 .backLink {
     color: var(--color-text-muted-ui);
     transition: color 0.2s ease;

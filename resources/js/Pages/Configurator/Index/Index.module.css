@@ -20,10 +20,15 @@
 }
 
 .brand {
-    color: var(--text-main);
-    font-size: 1.2rem;
-    font-weight: 800;
-    letter-spacing: 3px;
+    display: inline-flex;
+    align-items: center;
+    color: #ffffff;
+    line-height: 0;
+}
+
+.brandLogo {
+    width: auto;
+    height: 2.1rem;
 }
 
 .progress {

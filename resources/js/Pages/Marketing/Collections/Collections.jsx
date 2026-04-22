@@ -1,38 +1,40 @@
-import React, { useState } from 'react';
+import HomeLogoLink from '@/Components/HomeLogoLink/HomeLogoLink';
+import { Link } from '@inertiajs/react';
+import { useState } from 'react';
 
 // Iconos SVG inline
 const ShoppingCartIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="9" cy="21" r="1"></circle>
-    <circle cx="20" cy="21" r="1"></circle>
-    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+    <circle cx="9" cy="21" r="1" />
+    <circle cx="20" cy="21" r="1" />
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
   </svg>
 );
 
 const UserIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-    <circle cx="12" cy="7" r="4"></circle>
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
   </svg>
 );
 
 const MoonIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
   </svg>
 );
 
 const SunIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="5"></circle>
-    <line x1="12" y1="1" x2="12" y2="3"></line>
-    <line x1="12" y1="21" x2="12" y2="23"></line>
-    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-    <line x1="1" y1="12" x2="3" y2="12"></line>
-    <line x1="21" y1="12" x2="23" y2="12"></line>
-    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    <circle cx="12" cy="12" r="5" />
+    <line x1="12" y1="1" x2="12" y2="3" />
+    <line x1="12" y1="21" x2="12" y2="23" />
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+    <line x1="1" y1="12" x2="3" y2="12" />
+    <line x1="21" y1="12" x2="23" y2="12" />
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
   </svg>
 );
 
@@ -126,11 +128,14 @@ export default function Collections() {
         {/* Header */}
         <header style={{ backgroundColor: 'var(--bg-surface)', boxShadow: 'var(--shadow-sm)' }} className="sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-            <div className="text-3xl font-bold tracking-tight" style={{ color: 'var(--color-primary)' }}>
-              MIKIWI
-            </div>
+            <HomeLogoLink
+              className="text-3xl font-bold tracking-tight"
+              logoClassName="h-8 md:h-10"
+              size="sm"
+              ariaLabel="Volver al inicio desde colecciones"
+            />
             <nav className="hidden md:flex space-x-8 text-sm font-medium">
-              <a href="#" style={{ color: 'var(--text-main)' }} className="hover:opacity-70 transition-opacity">INICIO</a>
+              <Link href={route('home')} style={{ color: 'var(--text-main)' }} className="hover:opacity-70 transition-opacity">INICIO</Link>
               <a href="#" style={{ color: 'var(--text-main)' }} className="hover:opacity-70 transition-opacity">CATEGORÍAS</a>
               <a href="#" style={{ color: 'var(--text-main)' }} className="hover:opacity-70 transition-opacity">NOVEDADES</a>
               <a href="#" style={{ color: 'var(--text-main)' }} className="hover:opacity-70 transition-opacity">CONTACTO</a>
@@ -183,12 +188,12 @@ export default function Collections() {
                 <div
                   className="absolute top-0 left-0 right-0 h-1 transition-all duration-300 group-hover:h-2"
                   style={{ backgroundColor: index % 3 === 0 ? 'var(--color-primary)' : index % 3 === 1 ? 'var(--color-secondary)' : 'var(--text-muted)' }}
-                ></div>
+                />
 
                 {/* Content */}
                 <div className="relative h-full flex flex-col justify-between p-8">
                   <div className="flex-1 flex items-center justify-center">
-                    <div className="w-20 h-20 rounded-full opacity-10" style={{ backgroundColor: 'var(--color-primary)' }}></div>
+                    <div className="w-20 h-20 rounded-full opacity-10" style={{ backgroundColor: 'var(--color-primary)' }} />
                   </div>
 
                   <div className="space-y-3">
@@ -207,7 +212,7 @@ export default function Collections() {
                     >
                       Ver más
                       <svg className="ml-1 w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
                   </div>
