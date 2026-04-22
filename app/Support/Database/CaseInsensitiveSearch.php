@@ -33,7 +33,21 @@ final class CaseInsensitiveSearch
         string $pattern,
         string $boolean
     ): EloquentBuilder|QueryBuilder {
-        return $query->where($column, 'ILIKE', $pattern, $boolean);
+        // ILIKE is PostgreSQL-only. MySQL's LIKE is already case-insensitive
+        // with the default utf8mb4_unicode_ci / utf8_general_ci collation.
+        $operator = self::isPostgres($query) ? 'ILIKE' : 'LIKE';
+
+        return $query->where($column, $operator, $pattern, $boolean);
+    }
+
+    private static function isPostgres(EloquentBuilder|QueryBuilder $query): bool
+    {
+        $connection = $query instanceof EloquentBuilder
+            ? $query->getQuery()->getConnection()
+            : $query->getConnection();
+
+        // getDriverName() is not part of ConnectionInterface; use PDO instead.
+        return $connection->getPdo()->getAttribute(\PDO::ATTR_DRIVER_NAME) === 'pgsql';
     }
 
     private static function escapeLike(string $value): string

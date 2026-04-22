@@ -58,8 +58,8 @@ class JsonCastingTest extends TestCase
 
         $order->refresh();
 
-        $this->assertSame($shippingAddress, $order->shipping_address_snapshot);
-        $this->assertSame($billingAddress, $order->billing_address_snapshot);
+        $this->assertEquals($shippingAddress, $order->shipping_address_snapshot);
+        $this->assertEquals($billingAddress, $order->billing_address_snapshot);
     }
 
     public function test_doll_settings_are_persisted_and_read_as_array(): void
@@ -76,6 +76,6 @@ class JsonCastingTest extends TestCase
         $service = app(DollSettingsService::class);
 
         $this->assertTrue($service->saveSettings($settings));
-        $this->assertSame($settings, $service->getSettings());
+        $this->assertEquals($settings, $service->getSettings());
     }
 }

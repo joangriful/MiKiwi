@@ -22,7 +22,7 @@ return new class extends Migration
                 $table->foreignUuid('user_id')->constrained()->restrictOnDelete();
                 $table->string('order_number')->unique()->nullable(); // Haremos esto por PHP
                 $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'cancelled'])->default('pending');
-                $table->enum('payment_status', ['pending', 'paid', 'failed'])->default('pending');
+                $table->enum('payment_status', ['pending', 'paid', 'failed', 'refunded'])->default('pending');
                 $table->decimal('total_amount', 10, 2);
                 $table->string('payment_method')->nullable();
                 $table->text('notes')->nullable();

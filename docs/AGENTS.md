@@ -291,16 +291,18 @@ Reglas:
 - Si se añaden variables de entorno, actualizar `.env.example`.
 - No commitear secretos.
 
-### Compatibilidad PostgreSQL
+### Compatibilidad PostgreSQL y MySQL (GitHub Actions)
 
-PostgreSQL/Supabase es la base vigente del proyecto. Las migraciones, seeders, queries y tests deben escribirse pensando en PostgreSQL, no en compatibilidad histórica con MySQL.
+PostgreSQL (Supabase) es la base vigente del proyecto en producción, y PostgreSQL local es el entorno de testing preferido (`.env.testing`).
+**🚨 AVISO CRÍTICO: GitHub Actions (CI) utiliza MySQL.**
+Cualquier cambio en migraciones, seeders, queries o tests DEBE funcionar en ambos motores para no romper el pipeline.
 
-Reglas obligatorias:
+Reglas obligatorias para la doble compatibilidad:
 
 - No usar `after()` en migraciones nuevas. Es una conveniencia de MySQL y no debe condicionar el esquema.
-- No introducir SQL específico de MySQL. Si una operación requiere SQL específico del motor, debe aislarse, justificarse y protegerse por driver.
-- No asumir que `LIKE` es case-insensitive. Para búsquedas sin distinguir mayúsculas/minúsculas usar un helper/scope común que encapsule `ILIKE`.
-- Tratar JSON como zona sensible: preferir casts Eloquent a `array` y helpers de Laravel como `whereJsonContains`; evitar `json_encode`/`json_decode` manual salvo caso justificado.
+- No introducir SQL específico de MySQL ni de PostgreSQL. Si una operación requiere SQL específico del motor, debe aislarse, justificarse y protegerse por driver (ej: `Schema::getConnection()->getDriverName() === 'pgsql'`).
+- No asumir que `LIKE` es case-insensitive en todas partes, ni usar `ILIKE` crudo (romperá en MySQL). Para búsquedas sin distinguir mayúsculas/minúsculas usar un helper/scope común que detecte el driver y use `LIKE` (MySQL) o `ILIKE` (PostgreSQL).
+- Tratar JSON como zona sensible: preferir casts Eloquent a `array` y helpers de Laravel como `whereJsonContains`. **Ojo en los tests:** MySQL no garantiza el orden de las claves JSON. Usa `assertEquals` en vez de `assertSame` al comparar arrays que vienen de columnas JSON.
 - Tratar enums SQL como zona sensible: la dirección técnica es migrar progresivamente a columnas `string` con validación en Requests/services y constantes/enums PHP.
 - Tratar UUID como zona sensible: validar como `uuid`, no asumir IDs enteros y revisar factories, seeders, relaciones y route model binding.
 - Los seeders deben ser idempotentes: usar `firstOrCreate`, `updateOrCreate` o `upsert` con claves únicas claras (`slug`, `sku`, `code`, `email`).
