@@ -24,7 +24,7 @@ export default function BodyPartSelector({
     if (loading || !partLibrary) {
         return (
             <div className={`${styles.bodyPartSelectorCompact} ${styles.loading}`}>
-                <div className={styles.loadingSpinner}></div>
+                <div className={styles.loadingSpinner} />
                 <p>Cargando biblioteca de partes...</p>
             </div>
         );
@@ -73,11 +73,13 @@ export default function BodyPartSelector({
         const selected = isPartSelected(part);
 
         return (
-            <div
+            <button
+                type="button"
                 key={`${part.dollId}-${part.partType}`}
                 className={`${styles.partThumbnailCompact} ${selected ? styles.selected : ''}`}
                 onClick={() => handlePartClick(part)}
                 title={part.dollName}
+                aria-label={`${getPartTypeName(part.partType)} variante ${part.variantNumber} de ${part.dollName}`}
             >
                 <div className={styles.thumbnailImageWrapper}>
                     <img
@@ -104,7 +106,7 @@ export default function BodyPartSelector({
                     )}
                 </div>
                 <div className={styles.thumbnailNumber}>{part.variantNumber}</div>
-            </div>
+            </button>
         );
     };
 

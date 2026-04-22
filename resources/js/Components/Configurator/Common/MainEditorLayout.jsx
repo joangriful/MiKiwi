@@ -64,14 +64,16 @@ export default function MainEditorLayout({
             </div>
 
             {/* Drag Handle - Mobile/Tablet (Visible on lg:hidden) */}
-            <div
+            <button
+                type="button"
                 onMouseDown={handleDragStart}
                 onTouchStart={handleDragStart}
+                aria-label="Ajustar altura del panel"
                 className="absolute w-full h-10 z-[100] flex items-center justify-center cursor-row-resize touch-none lg:hidden"
                 style={{ bottom: `${100 - topSectionHeight}%`, transform: 'translateY(50%)' }}
             >
                 <div className="w-16 h-2 bg-gray-400 rounded-full shadow-md mx-auto hover:bg-gray-600 transition-colors" />
-            </div>
+            </button>
 
             {/* Right Column: Options Bar + Controls */}
             <div

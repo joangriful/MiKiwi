@@ -64,12 +64,6 @@ export default function DollSectionOrderConfigurator({ views, currentOrder, onSa
         }
     };
 
-    const handleDragLeave = (e) => {
-        // Only clear if we actually left the list container? 
-        // Logic might be tricky with child elements firing dragleave.
-        // A safer way is to clear placeholder onDrop or onDragEnd.
-    };
-
     const handleDragEnd = () => {
         setDraggedItemIndex(null);
         setDropPlaceholderIndex(null);
@@ -155,11 +149,18 @@ export default function DollSectionOrderConfigurator({ views, currentOrder, onSa
                             <React.Fragment key={section}>
                                 {showPlaceholderBefore && (
                                     <div
+                                        role="button"
+                                        tabIndex={0}
                                         onDragOver={(e) => {
                                             e.preventDefault();
                                             e.dataTransfer.dropEffect = 'move';
                                         }}
                                         onDrop={handleDrop}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                handleDrop(e);
+                                            }
+                                        }}
                                         className={`${styles.dropZone} ${styles.dropZoneExpanded}`}
                                     >
                                         Drop here
@@ -168,10 +169,22 @@ export default function DollSectionOrderConfigurator({ views, currentOrder, onSa
 
                                 <div
                                     draggable
+                                    role="button"
+                                    tabIndex={0}
                                     onDragStart={(e) => handleDragStart(e, index)}
                                     onDragOver={(e) => handleDragOver(e, index)}
                                     onDragEnd={handleDragEnd}
                                     onDrop={handleDrop}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'ArrowUp') {
+                                            e.preventDefault();
+                                            moveUp(index);
+                                        }
+                                        if (e.key === 'ArrowDown') {
+                                            e.preventDefault();
+                                            moveDown(index);
+                                        }
+                                    }}
                                     className={`${styles.row} ${
                                         isDragged ? styles.rowDragged : ''
                                     }`}
@@ -196,10 +209,12 @@ export default function DollSectionOrderConfigurator({ views, currentOrder, onSa
 
                                     <div className={styles.controls}>
                                         <button
+                                            type="button"
                                             onClick={() => moveUp(index)}
                                             disabled={index === 0}
                                             className={styles.controlButton}
                                             title="Move Up"
+                                            aria-label={`Mover ${section} arriba`}
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -211,10 +226,12 @@ export default function DollSectionOrderConfigurator({ views, currentOrder, onSa
                                             </svg>
                                         </button>
                                         <button
+                                            type="button"
                                             onClick={() => moveDown(index)}
                                             disabled={index === orderedSections.length - 1}
                                             className={styles.controlButton}
                                             title="Move Down"
+                                            aria-label={`Mover ${section} abajo`}
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -234,11 +251,18 @@ export default function DollSectionOrderConfigurator({ views, currentOrder, onSa
                     {/* Placeholder for dropping at the very end */}
                     {dropPlaceholderIndex === orderedSections.length && (
                         <div
+                            role="button"
+                            tabIndex={0}
                             onDragOver={(e) => {
                                 e.preventDefault();
                                 e.dataTransfer.dropEffect = 'move';
                             }}
                             onDrop={handleDrop}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    handleDrop(e);
+                                }
+                            }}
                             className={`${styles.dropZone} ${styles.dropZoneEnd}`}
                         >
                             Drop here

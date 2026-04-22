@@ -192,6 +192,17 @@ export default function PartOption({
                             : ''
                     )}
                     onMouseDown={isOverlay ? handleMouseDown : undefined}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(event) => {
+                        if (!isOverlay) {
+                            return;
+                        }
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                        }
+                    }}
+                    aria-label={`Editor de posicion para ${item.id}`}
                 >
                     <img
                         src={src}
@@ -236,13 +247,15 @@ export default function PartOption({
                     {renderContent(false)}
 
                     {onSavePosition ? (
-                        <div
+                        <button
+                            type="button"
                             onClick={(event) => {
                                 event.stopPropagation();
                                 setIsEditing(true);
                             }}
                             className={styles.editTrigger}
                             title="Editar posición"
+                            aria-label={`Editar posicion de ${item.id}`}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -258,7 +271,7 @@ export default function PartOption({
                                     d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
                                 />
                             </svg>
-                        </div>
+                        </button>
                     ) : null}
                 </button>
             </div>
@@ -268,8 +281,8 @@ export default function PartOption({
                     <div className={styles.overlayCard}>
                         <div className={styles.overlayCanvas}>
                             <div className={styles.guideOverlay}>
-                                <div className={styles.guideVertical}></div>
-                                <div className={styles.guideHorizontal}></div>
+                                <div className={styles.guideVertical} />
+                                <div className={styles.guideHorizontal} />
                             </div>
 
                             {renderContent(true)}
@@ -277,12 +290,14 @@ export default function PartOption({
 
                         <div className={styles.overlayControls}>
                             <button
+                                type="button"
                                 onClick={handleSave}
                                 className={getClassName(
                                     styles.controlButton,
                                     styles.saveButton
                                 )}
                                 title="Guardar y cerrar"
+                                aria-label="Guardar posicion"
                             >
                                 <svg
                                     className={styles.controlIcon}
@@ -300,12 +315,14 @@ export default function PartOption({
                             </button>
 
                             <button
+                                type="button"
                                 onClick={handleCancel}
                                 className={getClassName(
                                     styles.controlButton,
                                     styles.cancelButton
                                 )}
                                 title="Cancelar"
+                                aria-label="Cancelar edicion"
                             >
                                 <svg
                                     className={styles.controlIcon}

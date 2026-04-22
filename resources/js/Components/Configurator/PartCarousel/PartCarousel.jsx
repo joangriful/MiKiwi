@@ -233,9 +233,11 @@ export default function PartCarousel({
     return (
         <div id={id} className={styles.root}>
             <button
+                type="button"
                 onClick={onToggle}
                 className={styles.headerButton}
                 aria-expanded={isOpen}
+                aria-label={`${isOpen ? 'Cerrar' : 'Abrir'} ${categoryLabel}`}
             >
                 <div className={styles.headerContent}>
                     <div
@@ -280,6 +282,7 @@ export default function PartCarousel({
                 <div className={styles.panel} data-carousel-root="true">
                     <div className={styles.scrollRow}>
                         <button
+                            type="button"
                             onClick={() => onSelect(null)}
                             onKeyDown={(event) => handleKeyDown(event, null)}
                             className={getClassName(
@@ -287,6 +290,7 @@ export default function PartCarousel({
                                 !selectedItem ? styles.clearButtonSelected : ''
                             )}
                             title={`Quitar ${categoryLabel}`}
+                            aria-label={`Quitar ${categoryLabel}`}
                         >
                             <span className={styles.clearIcon}>✕</span>
                             <span className={styles.clearLabel}>Ninguno</span>

@@ -1,5 +1,4 @@
 import React, { useMemo, useRef, useEffect } from 'react';
-import { getCloudinaryUrl } from '@/Utils/cloudinary';
 import { usePartOptimization } from '@/Components/Configurator/hooks/usePartOptimization';
 import styles from './PreviewArea.module.css';
 
@@ -110,7 +109,7 @@ export default function PreviewArea({ selectedParts, viewportInfo, onViewportCha
             }, 500);
             return () => clearTimeout(timer);
         }
-    }, [renderedLayers.length]);
+    }, [onReady, renderedLayers.length]);
 
     const containerRef = useRef(null);
     const draggingRef = useRef(false);
@@ -216,6 +215,14 @@ export default function PreviewArea({ selectedParts, viewportInfo, onViewportCha
             ref={containerRef}
             className={[styles.root, className].filter(Boolean).join(' ')}
             onMouseDown={handleMouseDown}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                }
+            }}
+            aria-label="Vista previa de muñeca"
         >
             {renderedLayers.length === 0 && (
                 <div className={styles.emptyState}>

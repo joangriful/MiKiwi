@@ -106,9 +106,17 @@ export default function PartPositionEditor({ part, view, onClose, onSave }) {
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
                     onMouseLeave={handleMouseUp}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                        }
+                    }}
+                    aria-label={`Lienzo de edicion para ${part.id}`}
                 >
                     <div className={styles.guideOverlay}>
-                        <div className={styles.guideFrame}></div>
+                        <div className={styles.guideFrame} />
                     </div>
 
                     <img
@@ -126,6 +134,7 @@ export default function PartPositionEditor({ part, view, onClose, onSave }) {
                     <div className={styles.sliderGroup}>
                         <label className={styles.label}>Zoom: {position.scale.toFixed(2)}x</label>
                         <input
+                            id="part-position-editor-zoom"
                             type="range"
                             min="0.1"
                             max="3"
@@ -133,6 +142,7 @@ export default function PartPositionEditor({ part, view, onClose, onSave }) {
                             value={position.scale}
                             onChange={(e) => setPosition(prev => ({ ...prev, scale: parseFloat(e.target.value) }))}
                             className={styles.slider}
+                            aria-label="Zoom"
                         />
                     </div>
                     <div className={styles.metrics}>

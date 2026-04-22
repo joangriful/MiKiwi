@@ -156,6 +156,7 @@ export default function CustomizationPanel({
                             <h3 className={styles.sectionTitle}>Tamaño de Ojos</h3>
                             <div className={styles.sliderContainer}>
                                 <input
+                                    id="eye-size-slider"
                                     type="range"
                                     min="0.7"
                                     max="1.5"
@@ -163,6 +164,7 @@ export default function CustomizationPanel({
                                     value={eyeSize}
                                     onChange={(e) => setEyeSize(parseFloat(e.target.value))}
                                     className={styles.customSlider}
+                                    aria-label="Tamaño de ojos"
                                 />
                                 <div className={styles.sliderLabels}>
                                     <span>Pequeños</span>
@@ -199,6 +201,7 @@ export default function CustomizationPanel({
                                         <span className={styles.proportionValue}>{bodyProportions.height.toFixed(2)}</span>
                                     </label>
                                     <input
+                                        id="body-height-slider"
                                         type="range"
                                         min="0.8"
                                         max="1.2"
@@ -206,6 +209,7 @@ export default function CustomizationPanel({
                                         value={bodyProportions.height}
                                         onChange={(e) => setBodyProportions({ ...bodyProportions, height: parseFloat(e.target.value) })}
                                         className={styles.customSlider}
+                                        aria-label="Altura"
                                     />
                                 </div>
                                 <div className={styles.proportionItem}>
@@ -214,6 +218,7 @@ export default function CustomizationPanel({
                                         <span className={styles.proportionValue}>{bodyProportions.bust.toFixed(2)}</span>
                                     </label>
                                     <input
+                                        id="body-bust-slider"
                                         type="range"
                                         min="0.6"
                                         max="1.8"
@@ -221,6 +226,7 @@ export default function CustomizationPanel({
                                         value={bodyProportions.bust}
                                         onChange={(e) => setBodyProportions({ ...bodyProportions, bust: parseFloat(e.target.value) })}
                                         className={styles.customSlider}
+                                        aria-label="Busto"
                                     />
                                 </div>
                             </div>
