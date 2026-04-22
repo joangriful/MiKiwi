@@ -166,13 +166,13 @@ Los estados de pedido y pago son los que mas probablemente cambian en un ecommer
 
 **Checklist:**
 
-- [ ] Revisar validaciones `uuid`.
-- [ ] Revisar `exists:...,id` en Requests y controllers.
-- [ ] Revisar factories con relaciones UUID.
-- [ ] Revisar seeders con relaciones UUID.
-- [ ] Revisar route model binding.
-- [ ] Revisar tests que puedan asumir IDs numericos.
-- [ ] Anadir tests con UUID reales en flujos criticos.
+- [x] Revisar validaciones `uuid`.
+- [x] Revisar `exists:...,id` en Requests y controllers.
+- [x] Revisar factories con relaciones UUID.
+- [x] Revisar seeders con relaciones UUID.
+- [x] Revisar route model binding.
+- [x] Revisar tests que puedan asumir IDs numericos.
+- [x] Anadir tests con UUID reales en flujos criticos.
 
 ## Fase 6 - Hacer Seeders Idempotentes
 

@@ -37,9 +37,6 @@ class EloquentOrderRepositoryTest extends TestCase
                 'country' => 'Test Country',
             ],
             'items' => [
-                [
-                    'product_id' => 1,
-                ],
             ],
         ];
 
