@@ -1,4 +1,3 @@
-
 import Header from "@/Components/Header/Header";
 import Footer from "@/Components/Footer/Footer";
 import ProfileSidebar from "@/Components/Profile/ProfileSidebar/ProfileSidebar";
@@ -26,7 +25,7 @@ export default function Profile({ recommendedProducts, orders = [], initialTab =
                 return <OrderHistoryTab orders={orders} />;
             case 'edit-account':
                 return <EditAccountTab />;
-            case 'cards': // Added Case
+            case 'cards':
                 return <CardsTab />;
             case 'preferences':
                 return <PreferencesTab />;
@@ -38,18 +37,16 @@ export default function Profile({ recommendedProducts, orders = [], initialTab =
     };
 
     return (
-        <div className={`${styles.root} flex flex-col font-sans select-none cursor-default bg-gray-50/50`}>
+        <div className={styles.root}>
             <Head title="Mi Perfil - MiKiwi" />
 
-            <div className="flex flex-col min-h-[98vh]">
+            <div className={styles.shell}>
                 <Header />
-                <main className="flex-1 flex flex-col lg:flex-row text-gray-800">
-                    {/* Sidebar de navegación */}
+                <main className={styles.main}>
                     <ProfileSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-                    {/* Contenido principal dinámico */}
-                    <section className="flex-1 bg-gray-50/50 p-6 lg:p-10 overflow-y-auto">
-                        <div className="w-full">
+                    <section className={styles.content}>
+                        <div className={styles.contentInner}>
                             {renderTabContent()}
                         </div>
                     </section>

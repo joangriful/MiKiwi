@@ -10,30 +10,30 @@ export default function Edit({ mustVerifyEmail, status }) {
         <div className={styles.root}>
             <AuthenticatedLayout
                 header={
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                    <h2 className={styles.title}>
                         Profile
                     </h2>
                 }
             >
                 <Head title="Profile" />
 
-                <div className="py-12">
-                    <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                        <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                <div className={styles.page}>
+                    <div className={styles.container}>
+                        <section className={styles.card}>
                             <UpdateProfileInformationForm
                                 mustVerifyEmail={mustVerifyEmail}
                                 status={status}
-                                className="max-w-xl"
+                                className={styles.form}
                             />
-                        </div>
+                        </section>
 
-                        <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                            <UpdatePasswordForm className="max-w-xl" />
-                        </div>
+                        <section className={styles.card}>
+                            <UpdatePasswordForm className={styles.form} />
+                        </section>
 
-                        <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                            <DeleteUserForm className="max-w-xl" />
-                        </div>
+                        <section className={styles.card}>
+                            <DeleteUserForm className={styles.form} />
+                        </section>
                     </div>
                 </div>
             </AuthenticatedLayout>

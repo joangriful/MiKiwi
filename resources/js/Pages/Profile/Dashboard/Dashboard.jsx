@@ -7,19 +7,17 @@ export default function Dashboard() {
         <div className={styles.root}>
             <AuthenticatedLayout
                 header={
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                    <h2 className={styles.title}>
                         Dashboard
                     </h2>
                 }
             >
                 <Head title="Dashboard" />
 
-                <div className="py-12">
-                    <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                        <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                            <div className="p-6 text-gray-900">
-                                You're logged in!
-                            </div>
+                <div className={styles.page}>
+                    <div className={styles.container}>
+                        <div className={styles.card}>
+                            You're logged in!
                         </div>
                     </div>
                 </div>

@@ -9,7 +9,7 @@
 }
 
 .logoLink {
-    color: #ffffff;
+    color: var(--color-white);
 }
 
 .logo {
