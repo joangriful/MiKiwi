@@ -3,6 +3,7 @@ import PreviewArea from '@/Components/Configurator/PreviewArea/PreviewArea';
 import CloseUp from '@/Components/Configurator/CloseUp/CloseUp';
 import OptionsBar from '@/Components/Configurator/OptionsBar/OptionsBar';
 import PartSelector from '@/Components/Configurator/PartSelector/PartSelector';
+import useMediaQuery from '@/Hooks/useMediaQuery';
 
 export default function MainEditorLayout({
     topSectionHeight,
@@ -22,6 +23,9 @@ export default function MainEditorLayout({
     sectionOrder,
     handleSavePosition
 }) {
+    const isCompactPreview = useMediaQuery('(max-width: 723px)');
+    const isStackedEditor = useMediaQuery('(max-width: 1023px)');
+
     return (
         <>
             {/* Left Content Area (Images ONLY) */}
@@ -32,7 +36,7 @@ export default function MainEditorLayout({
                         className="absolute left-4 z-50 w-24 h-auto aspect-[2/3] pointer-events-none shadow-xl border-2 border-white rounded-lg bg-white overflow-hidden transition-all duration-75 ease-linear
                                    min-[724px]:relative min-[724px]:bottom-auto min-[724px]:left-auto min-[724px]:w-1/2 min-[724px]:h-full min-[724px]:pointer-events-auto min-[724px]:border-r min-[724px]:border-gray-200 min-[724px]:shadow-none min-[724px]:rounded-none min-[724px]:aspect-auto
                                    lg:w-1/4"
-                        style={{ bottom: window.innerWidth < 724 ? `calc(${100 - topSectionHeight}% + 1rem)` : undefined }}
+                        style={{ bottom: isCompactPreview ? `calc(${100 - topSectionHeight}% + 1rem)` : undefined }}
                     >
                         <div className="absolute inset-0 flex items-center justify-center">
                             <PreviewArea
@@ -73,7 +77,7 @@ export default function MainEditorLayout({
             <div
                 className="absolute bottom-0 left-0 w-full flex flex-col bg-gradient-to-b from-[var(--bg-surface)] to-[var(--bg-main)] backdrop-blur-2xl z-40 border-t border-[var(--border)]
                            min-[724px]:w-full lg:relative lg:w-[420px] lg:h-full lg:border-t-0 lg:border-l lg:border-[var(--border)] lg:flex-none transition-all duration-500 ease-premium shadow-[-20px_0_50px_rgba(0,0,0,0.05)]"
-                style={{ height: window.innerWidth < 1024 ? `${100 - topSectionHeight}%` : '100%' }}
+                style={{ height: isStackedEditor ? `${100 - topSectionHeight}%` : '100%' }}
             >
                 <div className="flex-none z-[60] relative">
                     <OptionsBar

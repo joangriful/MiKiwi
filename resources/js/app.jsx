@@ -3,6 +3,7 @@ import '../css/app.css';
 import { createInertiaApp } from '@inertiajs/react';
 import { createRoot } from 'react-dom/client';
 import AppLayout from '@/Layouts/AppLayout';
+import AppErrorBoundary from '@/Components/AppErrorBoundary/AppErrorBoundary';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 const pageModules = import.meta.glob('./Pages/**/*.jsx');
@@ -32,9 +33,11 @@ createInertiaApp({
         const root = createRoot(el);
 
         root.render(
-            <AppLayout>
-                <App {...props} />
-            </AppLayout>
+            <AppErrorBoundary>
+                <AppLayout page={props.initialPage.component}>
+                    <App {...props} />
+                </AppLayout>
+            </AppErrorBoundary>
         );
     },
     progress: {

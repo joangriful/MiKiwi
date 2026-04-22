@@ -8,6 +8,7 @@ import PreviewArea from '@/Components/Configurator/PreviewArea/PreviewArea';
 import PartSelector from '@/Components/Configurator/PartSelector/PartSelector';
 import CloseUp from '@/Components/Configurator/CloseUp/CloseUp';
 import OptionsBar from '@/Components/Configurator/OptionsBar/OptionsBar';
+import useMediaQuery from '@/Hooks/useMediaQuery';
 import styles from './DollConfigTest.module.css';
 
 // Pre-load the 3D viewer chunk
@@ -33,6 +34,8 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
     const is3DMountedRef = useRef(false); // Track if 3D is already "warm"
     const idleTimerRef = useRef(null);
     const isDraggingRef = useRef(false);
+    const isCompactPreview = useMediaQuery('(max-width: 723px)');
+    const isStackedEditor = useMediaQuery('(max-width: 1023px)');
 
     const handleDragStart = () => {
         isDraggingRef.current = true;
@@ -181,7 +184,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                                 <div
                                     className={styles.previewPanel}
                                     style={{
-                                        bottom: window.innerWidth < 724 ? `calc(${100 - topSectionHeight}% + 1rem)` : undefined
+                                        bottom: isCompactPreview ? `calc(${100 - topSectionHeight}% + 1rem)` : undefined
                                     }}
                                 >
                                     <div className={styles.previewContent}>
@@ -209,7 +212,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                         </div>
 
                         {/* Drag Handle - Mobile/Tablet Only */}
-                        {window.innerWidth < 1024 && (
+                        {isStackedEditor && (
                             <div
                                 onMouseDown={handleDragStart}
                                 onTouchStart={handleDragStart}
@@ -223,7 +226,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                         {/* Right Column: Options Bar + Controls */}
                         <div
                             className={styles.rightColumn}
-                            style={{ height: window.innerWidth < 1024 ? `${100 - topSectionHeight}%` : '100%' }}
+                            style={{ height: isStackedEditor ? `${100 - topSectionHeight}%` : '100%' }}
                         >
                             <div className={styles.optionsBarShell}>
                                 <OptionsBar
