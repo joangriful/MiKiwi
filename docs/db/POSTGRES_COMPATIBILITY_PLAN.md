@@ -254,11 +254,11 @@ Mock automatico solo en `local` y `testing`. En produccion, mock solo con flag e
 
 **Checklist:**
 
-- [ ] Auditar indices ya creados por `unique`, `foreignUuid` e `index`.
-- [ ] Anadir indices simples donde falten.
-- [ ] No crear indices trigram para `ILIKE` hasta medir necesidad real.
-- [ ] Valorar `pg_trgm` si busqueda textual se vuelve critica.
-- [ ] Validar migraciones en PostgreSQL testing.
+- [x] Auditar indices ya creados por `unique`, `foreignUuid` e `index`.
+- [x] Anadir indices simples donde falten.
+- [x] No crear indices trigram para `ILIKE` hasta medir necesidad real.
+- [x] Valorar `pg_trgm` si busqueda textual se vuelve critica.
+- [x] Validar migraciones en PostgreSQL testing.
 
 ## Fase 9 - Tests De Compatibilidad PostgreSQL
 
