@@ -6,7 +6,7 @@
         "build": "node scripts/build-report.mjs",
         "build:raw": "vite build",
         "dev": "vite",
-        "lint:frontend": "eslint \"resources/js/{app.jsx,Hooks/**/*.js,Layouts/AuthenticatedLayout.jsx,Pages/Auth/**/*.jsx,Components/{AppErrorBoundary,Auth,Checkout,Dropdown}/**/*.{js,jsx}}\"",
+        "lint:frontend": "eslint \"resources/js/{app.jsx,Hooks/**/*.js,Layouts/AuthenticatedLayout.jsx,Pages/{Auth,Configurator}/**/*.jsx,Components/{AppErrorBoundary,Auth,Catalog,Checkout,Configurator,Dropdown}/**/*.{js,jsx}}\"",
         "lint:frontend:full": "eslint \"resources/js/**/*.{js,jsx}\"",
         "start": "concurrently \"php artisan serve\" \"npm run dev\""
     },

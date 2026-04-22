@@ -36,6 +36,11 @@ export default [
             'jsx-a11y': jsxA11yPlugin,
         },
         rules: {
+            'no-unused-vars': ['error', {
+                varsIgnorePattern: '^React$',
+                argsIgnorePattern: '^_',
+                caughtErrorsIgnorePattern: '^_',
+            }],
             'no-console': ['warn', { allow: ['warn', 'error'] }],
             'react/jsx-uses-vars': 'error',
             'react/jsx-no-useless-fragment': 'error',
