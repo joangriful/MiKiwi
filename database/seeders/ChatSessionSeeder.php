@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\ChatSenderType;
 use App\Enums\ChatSessionStatus;
+use App\Enums\UserRole;
 use App\Models\ChatMessage;
 use App\Models\ChatSession;
 use App\Models\User;
@@ -22,11 +23,11 @@ class ChatSessionSeeder extends Seeder
      */
     public function run(): void
     {
-        $customers = User::where('role', 'customer')->limit(10)->get();
+        $customers = User::where('role', UserRole::Customer->value)->limit(10)->get();
 
         if ($customers->isEmpty()) {
             $this->command->warn('⚠️  No hay clientes. Creando 5 clientes de prueba...');
-            $customers = User::factory()->count(5)->create(['role' => 'customer']);
+            $customers = User::factory()->count(5)->create(['role' => UserRole::Customer->value]);
         }
 
         $totalSessions = 0;

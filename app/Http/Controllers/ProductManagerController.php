@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Products\Services\ProductManagerService;
+use App\Enums\ProductType;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class ProductManagerController extends Controller
 {
     public function __construct(
         private readonly ProductManagerService $productManagerService,
-    ) {
-    }
+    ) {}
 
     public function uploadProduct(Request $request)
     {
@@ -23,7 +24,7 @@ class ProductManagerController extends Controller
             'description' => 'nullable|string',
             'base_price' => 'required|numeric|min:0',
             'stock_quantity' => 'nullable|integer|min:0',
-            'product_type' => 'required|in:simple,configurable,component',
+            'product_type' => ['required', Rule::in(ProductType::values())],
             'is_adult_only' => 'boolean',
             'is_active' => 'boolean',
             'images' => 'nullable|array',
@@ -38,8 +39,9 @@ class ProductManagerController extends Controller
             return redirect()->back()->with('success', 'Producto creado correctamente');
 
         } catch (\Exception $e) {
-            Log::error('Error uploading product: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al crear el producto: ' . $e->getMessage());
+            Log::error('Error uploading product: '.$e->getMessage());
+
+            return redirect()->back()->with('error', 'Error al crear el producto: '.$e->getMessage());
         }
     }
 
@@ -47,12 +49,12 @@ class ProductManagerController extends Controller
     {
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
-            'sku' => 'sometimes|string|unique:products,sku,' . $product->id,
+            'sku' => 'sometimes|string|unique:products,sku,'.$product->getKey(),
             'category_id' => 'nullable|uuid|exists:categories,id',
             'description' => 'nullable|string',
             'base_price' => 'sometimes|numeric|min:0',
             'stock_quantity' => 'nullable|integer|min:0',
-            'product_type' => 'sometimes|in:simple,configurable,component',
+            'product_type' => ['sometimes', Rule::in(ProductType::values())],
             'is_adult_only' => 'boolean',
             'is_active' => 'boolean',
             'is_featured' => 'sometimes|boolean',
@@ -68,7 +70,8 @@ class ProductManagerController extends Controller
             return redirect()->back()->with('success', 'Producto actualizado correctamente');
 
         } catch (\Exception $e) {
-            Log::error('Error updating product: ' . $e->getMessage());
+            Log::error('Error updating product: '.$e->getMessage());
+
             return redirect()->back()->with('error', 'Error al actualizar el producto');
         }
     }
@@ -81,7 +84,8 @@ class ProductManagerController extends Controller
             return redirect()->back()->with('success', 'Producto eliminado correctamente');
 
         } catch (\Exception $e) {
-            Log::error('Error deleting product: ' . $e->getMessage());
+            Log::error('Error deleting product: '.$e->getMessage());
+
             return redirect()->back()->with('error', 'Error al eliminar el producto');
         }
     }
@@ -102,7 +106,7 @@ class ProductManagerController extends Controller
     {
         $validated = $request->validate([
             'product_name' => 'required|string',
-            'source' => 'required|string'
+            'source' => 'required|string',
         ]);
 
         $result = $this->productManagerService->linkCloudinaryFolder(
@@ -117,7 +121,7 @@ class ProductManagerController extends Controller
 
             return response()->json($result);
         } catch (\Exception $e) {
-            \Log::error('Error linking folder: ' . $e->getMessage());
+            Log::error('Error linking folder: '.$e->getMessage());
 
             return response()->json(['success' => false, 'error' => 'No se pudo vincular la carpeta.'], 400);
         }
@@ -128,7 +132,7 @@ class ProductManagerController extends Controller
         $request->validate([
             'images' => 'required|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:10240',
-            'product_name' => 'required|string'
+            'product_name' => 'required|string',
         ]);
 
         try {
@@ -140,12 +144,13 @@ class ProductManagerController extends Controller
             return response()->json([
                 'success' => true,
                 'urls' => $uploadResult['urls'],
-                'message' => count($uploadResult['urls']) . ' imágenes subidas a ' . $uploadResult['folder'],
+                'message' => count($uploadResult['urls']).' imágenes subidas a '.$uploadResult['folder'],
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Error en uploadImagesTemp: ' . $e->getMessage());
-            return response()->json(['success' => false, 'error' => 'Error subiendo imágenes al servidor: ' . $e->getMessage()], 500);
+            Log::error('Error en uploadImagesTemp: '.$e->getMessage());
+
+            return response()->json(['success' => false, 'error' => 'Error subiendo imágenes al servidor: '.$e->getMessage()], 500);
         }
     }
 }

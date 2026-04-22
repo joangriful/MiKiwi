@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserRole;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
@@ -21,7 +22,7 @@ class ReviewSeeder extends Seeder
     public function run(): void
     {
         $products = Product::all();
-        $customers = User::where('role', 'customer')->get();
+        $customers = User::where('role', UserRole::Customer->value)->get();
 
         if ($products->isEmpty()) {
             $this->command->error('❌ No hay productos. Ejecuta ProductSeeder primero.');
@@ -31,7 +32,7 @@ class ReviewSeeder extends Seeder
 
         if ($customers->isEmpty()) {
             $this->command->warn('⚠️  No hay clientes. Creando 5 clientes de prueba...');
-            $customers = User::factory()->count(5)->create(['role' => 'customer']);
+            $customers = User::factory()->count(5)->create(['role' => UserRole::Customer->value]);
         }
 
         $totalReviews = 0;

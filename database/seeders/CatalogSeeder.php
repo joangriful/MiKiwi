@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\ProductType;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
@@ -24,7 +25,7 @@ class CatalogSeeder extends Seeder
             'sku' => 'LUBE-001',
             'base_price' => 15.00,
             'stock_quantity' => 50,
-            'product_type' => 'simple',
+            'product_type' => ProductType::Simple->value,
             'is_active' => true, // Aseguramos que esté activo
             'images' => ['https://placehold.co/400?text=Lube'],
         ]);
@@ -37,7 +38,7 @@ class CatalogSeeder extends Seeder
             'sku' => 'DOLL-001',
             'base_price' => 1200.00,
             'stock_quantity' => 10, // Le ponemos stock para que el OrderController no falle
-            'product_type' => 'configurable',
+            'product_type' => ProductType::Configurable->value,
             'is_active' => true,
             'images' => ['https://placehold.co/400?text=Elsa'],
         ]);
@@ -50,7 +51,7 @@ class CatalogSeeder extends Seeder
             'sku' => 'COMP-EYE-BLU',
             'base_price' => 50.00,
             'stock_quantity' => 100,
-            'product_type' => 'component', // O simple, según tu lógica
+            'product_type' => ProductType::Component->value, // O simple, según tu lógica
             'is_active' => true,
         ]);
 
@@ -61,7 +62,7 @@ class CatalogSeeder extends Seeder
             'sku' => 'COMP-HAIR-BLND',
             'base_price' => 80.00,
             'stock_quantity' => 100,
-            'product_type' => 'component',
+            'product_type' => ProductType::Component->value,
             'is_active' => true,
         ]);
 
@@ -86,7 +87,7 @@ class CatalogSeeder extends Seeder
         if (class_exists(\Database\Factories\ProductFactory::class)) {
             Product::factory()->count(15)->create([
                 'category_id' => $catDolls->getKey(),
-                'product_type' => 'configurable',
+                'product_type' => ProductType::Configurable->value,
             ]);
         }
     }

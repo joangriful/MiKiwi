@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\OrderStatus;
+use App\Enums\UserRole;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -15,7 +17,7 @@ class OrderPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role === 'admin';
+        return $user->role === UserRole::Admin->value;
     }
 
     /**
@@ -23,7 +25,7 @@ class OrderPolicy
      */
     public function view(User $user, Order $order): bool
     {
-        return $user->id === $order->user_id || $user->role === 'admin';
+        return $user->id === $order->user_id || $user->role === UserRole::Admin->value;
     }
 
     /**
@@ -39,7 +41,7 @@ class OrderPolicy
      */
     public function update(User $user, Order $order): bool
     {
-        return $user->role === 'admin';
+        return $user->role === UserRole::Admin->value;
     }
 
     /**
@@ -47,11 +49,11 @@ class OrderPolicy
      */
     public function cancel(User $user, Order $order): Response
     {
-        if ($user->id !== $order->user_id && $user->role !== 'admin') {
+        if ($user->id !== $order->user_id && $user->role !== UserRole::Admin->value) {
             return Response::deny('No puedes cancelar este pedido.');
         }
 
-        if (! in_array($order->status, ['pending', 'processing'])) {
+        if (! in_array($order->status, OrderStatus::cancellableValues(), true)) {
             return Response::deny('No se puede cancelar un pedido ya enviado o entregado.');
         }
 
@@ -63,6 +65,6 @@ class OrderPolicy
      */
     public function delete(User $user, Order $order): bool
     {
-        return $user->role === 'admin';
+        return $user->role === UserRole::Admin->value;
     }
 }

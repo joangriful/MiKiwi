@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\ProductType;
 use App\Models\Category;
 use App\Models\Product;
 use App\Support\Database\CaseInsensitiveSearch;
@@ -56,7 +57,7 @@ class ProductSeeder extends Seeder
                 'description' => 'Muñeca realista de silicona médica con esqueleto articulado. Altura 165cm, peso 30kg. Personalizable.',
                 'base_price' => 1899.00,
                 'stock_quantity' => 5,
-                'product_type' => 'configurable',
+                'product_type' => ProductType::Configurable->value,
                 'is_active' => true,
                 'is_adult_only' => true,
                 'images' => ['https://placehold.co/800x800/EEE/333?text=Muñeca+Elsa+1'],
@@ -73,7 +74,7 @@ class ProductSeeder extends Seeder
                 'description' => 'Muñeca de TPE de alta calidad. Opción económica con excelente realismo.',
                 'base_price' => 899.00,
                 'stock_quantity' => 12,
-                'product_type' => 'simple',
+                'product_type' => ProductType::Simple->value,
                 'is_active' => true,
                 'is_adult_only' => true,
                 'images' => ['https://placehold.co/800x800/EEE/333?text=Muñeca+Anna'],
@@ -90,7 +91,7 @@ class ProductSeeder extends Seeder
                 'description' => 'Lubricante premium a base de agua. pH balanceado.',
                 'base_price' => 12.90,
                 'stock_quantity' => 150,
-                'product_type' => 'simple',
+                'product_type' => ProductType::Simple->value,
                 'is_active' => true,
                 'is_adult_only' => true,
                 'images' => ['https://placehold.co/800x800/EEE/333?text=Lubricante+Agua'],
@@ -107,7 +108,7 @@ class ProductSeeder extends Seeder
                 'description' => 'Ojos de cristal azul intenso con acabado realista.',
                 'base_price' => 50.00,
                 'stock_quantity' => 100,
-                'product_type' => 'component',
+                'product_type' => ProductType::Component->value,
                 'is_active' => true,
                 'is_adult_only' => true,
                 'images' => ['https://placehold.co/800x800/EEE/333?text=Ojos+Azules'],
@@ -123,7 +124,7 @@ class ProductSeeder extends Seeder
                 'description' => 'Ojos marrones cálidos. Acabado ultra realista.',
                 'base_price' => 50.00,
                 'stock_quantity' => 100,
-                'product_type' => 'component',
+                'product_type' => ProductType::Component->value,
                 'is_active' => true,
                 'is_adult_only' => true,
                 'images' => ['https://placehold.co/800x800/EEE/333?text=Ojos+Marrones'],
@@ -139,7 +140,7 @@ class ProductSeeder extends Seeder
                 'description' => 'Cabello sintético premium resistente al calor.',
                 'base_price' => 80.00,
                 'stock_quantity' => 100,
-                'product_type' => 'component',
+                'product_type' => ProductType::Component->value,
                 'is_active' => true,
                 'is_adult_only' => true,
                 'images' => ['https://placehold.co/800x800/EEE/333?text=Peluca+Rubia'],
@@ -155,7 +156,7 @@ class ProductSeeder extends Seeder
                 'description' => 'Peluca de cabello sintético negro azabache.',
                 'base_price' => 80.00,
                 'stock_quantity' => 100,
-                'product_type' => 'component',
+                'product_type' => ProductType::Component->value,
                 'is_active' => true,
                 'is_adult_only' => true,
                 'images' => ['https://placehold.co/800x800/EEE/333?text=Peluca+Negra'],

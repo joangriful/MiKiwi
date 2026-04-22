@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -31,8 +33,8 @@ class OrderFactory extends Factory
         return [
             'user_id' => User::factory(),
             'order_number' => $this->generateOrderNumber(),
-            'status' => 'pending',
-            'payment_status' => 'pending',
+            'status' => OrderStatus::Pending->value,
+            'payment_status' => PaymentStatus::Pending->value,
             'total_amount' => $this->faker->randomFloat(2, 20.00, 500.00),
             'shipping_address_snapshot' => $this->generateAddressSnapshot(),
             'billing_address_snapshot' => $this->generateAddressSnapshot(),
@@ -76,7 +78,7 @@ class OrderFactory extends Factory
     public function processing(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'processing',
+            'status' => OrderStatus::Processing->value,
         ]);
     }
 
@@ -86,7 +88,7 @@ class OrderFactory extends Factory
     public function shipped(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'shipped',
+            'status' => OrderStatus::Shipped->value,
         ]);
     }
 
@@ -96,7 +98,7 @@ class OrderFactory extends Factory
     public function delivered(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'delivered',
+            'status' => OrderStatus::Delivered->value,
         ]);
     }
 
@@ -106,7 +108,7 @@ class OrderFactory extends Factory
     public function cancelled(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'cancelled',
+            'status' => OrderStatus::Cancelled->value,
         ]);
     }
 
@@ -116,7 +118,7 @@ class OrderFactory extends Factory
     public function paid(): static
     {
         return $this->state(fn (array $attributes) => [
-            'payment_status' => 'paid',
+            'payment_status' => PaymentStatus::Paid->value,
         ]);
     }
 
@@ -126,7 +128,7 @@ class OrderFactory extends Factory
     public function paymentFailed(): static
     {
         return $this->state(fn (array $attributes) => [
-            'payment_status' => 'failed',
+            'payment_status' => PaymentStatus::Failed->value,
         ]);
     }
 
@@ -136,8 +138,8 @@ class OrderFactory extends Factory
     public function completed(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'delivered',
-            'payment_status' => 'paid',
+            'status' => OrderStatus::Delivered->value,
+            'payment_status' => PaymentStatus::Paid->value,
         ]);
     }
 }

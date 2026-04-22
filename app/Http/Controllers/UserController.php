@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRole;
 use App\Models\User;
 
 class UserController extends Controller
@@ -19,7 +20,9 @@ class UserController extends Controller
     {
         $this->authorize('toggleAdmin', $user);  // ← Protección activa
 
-        $newRole = $user->role === 'admin' ? 'customer' : 'admin';
+        $newRole = $user->role === UserRole::Admin->value
+            ? UserRole::Customer->value
+            : UserRole::Admin->value;
         $user->update(['role' => $newRole]);
 
         return back()->with('success', 'Rol actualizado');

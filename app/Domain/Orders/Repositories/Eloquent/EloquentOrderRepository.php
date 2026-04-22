@@ -2,8 +2,10 @@
 
 namespace App\Domain\Orders\Repositories\Eloquent;
 
-use App\Models\Order;
 use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
+use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
+use App\Models\Order;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -20,9 +22,9 @@ class EloquentOrderRepository implements OrderRepositoryInterface
             $order = Order::create([
                 'user_id' => $data['user_id'],
                 'order_number' => $data['order_number'],
-                'status' => $data['status'] ?? 'pending',
+                'status' => $data['status'] ?? OrderStatus::Pending->value,
                 'total_amount' => $data['total_amount'],
-                'payment_status' => $data['payment_status'] ?? 'pending',
+                'payment_status' => $data['payment_status'] ?? PaymentStatus::Pending->value,
                 'payment_method' => $data['payment_method'] ?? null,
                 'shipping_address_snapshot' => $data['shipping_address_snapshot'] ?? null,
                 'billing_address_snapshot' => $data['billing_address_snapshot'] ?? null,

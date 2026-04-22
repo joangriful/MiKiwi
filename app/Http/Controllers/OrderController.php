@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Domain\Carts\Services\CartService;
+use App\Domain\Payments\Services\StripeService;
+use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
 use App\Exceptions\CartEmptyException;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Domain\Carts\Services\CartService;
-use App\Domain\Payments\Services\StripeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -65,7 +67,7 @@ class OrderController extends Controller
         ]);
 
         $cartValidation = $this->cartService->validateCartStock();
-        if (!$cartValidation['valid']) {
+        if (! $cartValidation['valid']) {
             return back()->with('error', implode(' ', $cartValidation['errors']));
         }
 
@@ -77,15 +79,15 @@ class OrderController extends Controller
         }
 
         try {
-            $paymentStatus = 'pending';
+            $paymentStatus = PaymentStatus::Pending->value;
             if ($request->payment_intent_id) {
                 try {
                     $intent = $this->stripeService->getPaymentIntent($request->payment_intent_id);
                     if ($intent->status === 'succeeded') {
-                        $paymentStatus = 'paid';
+                        $paymentStatus = PaymentStatus::Paid->value;
                     }
                 } catch (\Exception $e) {
-                    Log::error('Stripe reveal error: ' . $e->getMessage());
+                    Log::error('Stripe reveal error: '.$e->getMessage());
                 }
             }
 
@@ -100,8 +102,8 @@ class OrderController extends Controller
 
                 $order = Order::create([
                     'user_id' => Auth::id(),
-                    'order_number' => 'ORD-' . strtoupper(Str::random(10)),
-                    'status' => 'pending',
+                    'order_number' => 'ORD-'.strtoupper(Str::random(10)),
+                    'status' => OrderStatus::Pending->value,
                     'total_amount' => $cartData['total'],
                     'payment_status' => $paymentStatus,
                     'payment_method' => $request->payment_method,
@@ -132,7 +134,7 @@ class OrderController extends Controller
 
             return redirect()->route('orders.success')->with('success', '¡Pedido realizado con éxito!');
         } catch (\Exception $e) {
-            return back()->with('error', 'Error al procesar: ' . $e->getMessage());
+            return back()->with('error', 'Error al procesar: '.$e->getMessage());
         }
     }
 
@@ -168,6 +170,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::where('user_id', Auth::id())->with('items')->latest()->get();
+
         return Inertia::render('Profile/Orders', ['orders' => $orders]);
     }
 
@@ -179,11 +182,11 @@ class OrderController extends Controller
         }
 
         // Only pending orders can be cancelled
-        if (!in_array($order->status, ['pending', 'processing'])) {
+        if (! in_array($order->status, OrderStatus::cancellableValues(), true)) {
             return back()->with('error', 'Este pedido no puede cancelarse.');
         }
 
-        $order->update(['status' => 'cancelled']);
+        $order->update(['status' => OrderStatus::Cancelled->value]);
 
         // Restore stock for each item
         foreach ($order->items as $item) {

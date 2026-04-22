@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -50,7 +51,7 @@ class Order extends Model
      */
     public function scopePaid($query)
     {
-        return $query->where('payment_status', 'paid');
+        return $query->where('payment_status', PaymentStatus::Paid->value);
     }
 
     /**

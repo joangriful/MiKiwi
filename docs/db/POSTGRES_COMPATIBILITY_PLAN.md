@@ -141,15 +141,15 @@ Los estados de pedido y pago son los que mas probablemente cambian en un ecommer
 
 **Checklist:**
 
-- [ ] Crear inventario de valores usados.
-- [ ] Crear constantes/enums PHP para estados de pedido.
-- [ ] Migrar validaciones a `Rule::in(...)` o enum PHP.
-- [ ] Preparar migracion segura de `enum` a `string`.
-- [ ] Migrar `orders.status`.
-- [ ] Migrar `orders.payment_status`.
-- [ ] Repetir para `products.product_type`.
-- [ ] Repetir para `coupons.type`.
-- [ ] Evaluar `users.role` en una fase posterior.
+- [x] Crear inventario de valores usados.
+- [x] Crear constantes/enums PHP para estados de pedido.
+- [x] Migrar validaciones a `Rule::in(...)` o enum PHP.
+- [x] Preparar migracion segura de `enum` a `string`.
+- [x] Migrar `orders.status`.
+- [x] Migrar `orders.payment_status`.
+- [x] Repetir para `products.product_type`.
+- [x] Repetir para `coupons.type`.
+- [x] Evaluar `users.role` en una fase posterior.
 
 ## Fase 5 - Verificar UUID Extremo A Extremo
 

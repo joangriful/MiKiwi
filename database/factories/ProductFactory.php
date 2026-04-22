@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\ProductType;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -43,7 +44,7 @@ class ProductFactory extends Factory
     public function simple(): static
     {
         return $this->state(fn (array $attributes) => [
-            'product_type' => 'simple',
+            'product_type' => ProductType::Simple->value,
         ]);
     }
 
@@ -53,7 +54,7 @@ class ProductFactory extends Factory
     public function configurable(): static
     {
         return $this->state(fn (array $attributes) => [
-            'product_type' => 'configurable',
+            'product_type' => ProductType::Configurable->value,
             'base_price' => $this->faker->randomFloat(2, 500, 3000),
         ]);
     }
@@ -64,7 +65,7 @@ class ProductFactory extends Factory
     public function component(): static
     {
         return $this->state(fn (array $attributes) => [
-            'product_type' => 'component',
+            'product_type' => ProductType::Component->value,
             'base_price' => $this->faker->randomFloat(2, 20, 200),
         ]);
     }

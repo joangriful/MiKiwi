@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Domain\Orders\Actions;
 
+use App\Domain\Carts\Services\CartService;
+use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
 use App\Events\OrderCreated;
 use App\Exceptions\CartEmptyException;
 use App\Exceptions\InsufficientStockException;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Domain\Carts\Services\CartService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -48,9 +50,9 @@ class CreateOrder
             $order = Order::create([
                 'user_id' => Auth::id(),
                 'order_number' => $this->generateOrderNumber(),
-                'status' => 'pending',
+                'status' => OrderStatus::Pending->value,
                 'total_amount' => $cart['total'],
-                'payment_status' => 'pending',
+                'payment_status' => PaymentStatus::Pending->value,
                 'payment_method' => $data['payment_method'],
                 'payment_id' => $data['payment_intent_id'] ?? null,
                 'shipping_address_snapshot' => $data['shipping_address'],

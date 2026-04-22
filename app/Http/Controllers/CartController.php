@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Carts\Services\CartService;
+use App\Enums\ProductType;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -24,13 +25,16 @@ class CartController extends Controller
     {
         $cart = $this->cartService->getCart();
         $popularProducts = \App\Models\Product::where('is_active', true)
-            ->whereIn('product_type', ['configurable', 'simple'])
+            ->whereIn('product_type', [
+                ProductType::Configurable->value,
+                ProductType::Simple->value,
+            ])
             ->limit(8)
             ->get();
 
         $couponData = session('coupon');
-        \Log::info("CartController::index - Coupon in session: " . json_encode($couponData));
-        
+        \Log::info('CartController::index - Coupon in session: '.json_encode($couponData));
+
         if ($couponData) {
             $coupon = \App\Models\Coupon::where('code', $couponData['code'])->first();
             if ($coupon && $coupon->isValid()) {
@@ -43,8 +47,8 @@ class CartController extends Controller
         }
 
         return Inertia::render('Checkout/Cart', [
-            'cart' => $request->has('buy_now') && session()->has('buy_now_item') 
-                ? $this->cartService->getBuyNowItem() 
+            'cart' => $request->has('buy_now') && session()->has('buy_now_item')
+                ? $this->cartService->getBuyNowItem()
                 : $cart,
             'isBuyNow' => $request->has('buy_now') && session()->has('buy_now_item'),
             'popularProducts' => $popularProducts,

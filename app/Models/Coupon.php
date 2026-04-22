@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\CouponType;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class Coupon extends Model
 {
@@ -23,7 +23,7 @@ class Coupon extends Model
 
     public function isValid()
     {
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return false;
         }
 
@@ -36,7 +36,7 @@ class Coupon extends Model
 
     public function calculateDiscount($subtotal)
     {
-        if ($this->type === 'percent') {
+        if ($this->type === CouponType::Percent->value) {
             return ($subtotal * $this->value) / 100;
         }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -30,7 +31,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'dni' => fake()->unique()->numerify('#########'), // 9 dígitos
             'birth_date' => fake()->date('Y-m-d', '-18 years'), // Fecha válida
-            'role' => 'customer',
+            'role' => UserRole::Customer->value,
             'is_active' => true,
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
@@ -54,7 +55,7 @@ class UserFactory extends Factory
     public function admin(): static
     {
         return $this->state(fn (array $attributes) => [
-            'role' => 'admin',
+            'role' => UserRole::Admin->value,
             'email_verified_at' => now(),
         ]);
     }
@@ -65,7 +66,7 @@ class UserFactory extends Factory
     public function customer(): static
     {
         return $this->state(fn (array $attributes) => [
-            'role' => 'customer',
+            'role' => UserRole::Customer->value,
         ]);
     }
 

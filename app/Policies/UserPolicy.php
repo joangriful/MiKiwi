@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -14,7 +15,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role === 'admin';
+        return $user->role === UserRole::Admin->value;
     }
 
     /**
@@ -23,7 +24,7 @@ class UserPolicy
     public function view(User $authenticatedUser, User $targetUser): bool
     {
         return $authenticatedUser->id === $targetUser->id
-            || $authenticatedUser->role === 'admin';
+            || $authenticatedUser->role === UserRole::Admin->value;
     }
 
     /**
@@ -31,7 +32,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === 'admin';
+        return $user->role === UserRole::Admin->value;
     }
 
     /**
@@ -40,7 +41,7 @@ class UserPolicy
     public function update(User $authenticatedUser, User $targetUser): bool
     {
         return $authenticatedUser->id === $targetUser->id
-            || $authenticatedUser->role === 'admin';
+            || $authenticatedUser->role === UserRole::Admin->value;
     }
 
     /**
@@ -49,7 +50,7 @@ class UserPolicy
      */
     public function toggleAdmin(User $authenticatedUser, User $targetUser): Response
     {
-        if ($authenticatedUser->role !== 'admin') {
+        if ($authenticatedUser->role !== UserRole::Admin->value) {
             return Response::deny('Solo los administradores pueden cambiar roles.');
         }
 
@@ -69,7 +70,7 @@ class UserPolicy
             return Response::deny('No puedes eliminar tu propia cuenta.');
         }
 
-        if ($authenticatedUser->role !== 'admin') {
+        if ($authenticatedUser->role !== UserRole::Admin->value) {
             return Response::deny('No tienes permisos para eliminar usuarios.');
         }
 

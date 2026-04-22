@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Orders\Actions;
 
+use App\Enums\OrderStatus;
 use App\Events\OrderStatusUpdated;
 use App\Exceptions\InvalidOrderException;
 use App\Models\Order;
@@ -12,7 +13,7 @@ class CancelOrder
 {
     public function execute(Order $order, string $reason = ''): Order
     {
-        if (! in_array($order->status, ['pending', 'processing'])) {
+        if (! in_array($order->status, OrderStatus::cancellableValues(), true)) {
             throw new InvalidOrderException(
                 'cannot_cancel',
                 $order->order_number,
@@ -23,7 +24,7 @@ class CancelOrder
         $oldStatus = $order->status;
 
         $order->update([
-            'status' => 'cancelled',
+            'status' => OrderStatus::Cancelled->value,
             'notes' => $order->notes."\n[CANCELADO]: {$reason}",
         ]);
 
@@ -34,7 +35,7 @@ class CancelOrder
             }
         }
 
-        event(new OrderStatusUpdated($order, $oldStatus, 'cancelled'));
+        event(new OrderStatusUpdated($order, $oldStatus, OrderStatus::Cancelled->value));
 
         return $order;
     }

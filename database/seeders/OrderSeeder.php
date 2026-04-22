@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
+use App\Enums\UserRole;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -23,11 +26,11 @@ class OrderSeeder extends Seeder
     public function run(): void
     {
         // Obtener clientes (customers)
-        $customers = User::where('role', 'customer')->get();
+        $customers = User::where('role', UserRole::Customer->value)->get();
 
         if ($customers->isEmpty()) {
             $this->command->warn('⚠️  No hay clientes. Creando 5 clientes de prueba...');
-            $customers = User::factory()->count(5)->create(['role' => 'customer']);
+            $customers = User::factory()->count(5)->create(['role' => UserRole::Customer->value]);
         }
 
         $totalOrders = 0;
@@ -128,39 +131,39 @@ class OrderSeeder extends Seeder
         // 50% - Entregadas y pagadas
         if ($rand <= 50) {
             return [
-                'status' => 'delivered',
-                'payment_status' => 'paid',
+                'status' => OrderStatus::Delivered->value,
+                'payment_status' => PaymentStatus::Paid->value,
             ];
         }
 
         // 70% acumulado - Enviadas y pagadas
         if ($rand <= 70) {
             return [
-                'status' => 'shipped',
-                'payment_status' => 'paid',
+                'status' => OrderStatus::Shipped->value,
+                'payment_status' => PaymentStatus::Paid->value,
             ];
         }
 
         // 85% acumulado - En proceso y pagadas
         if ($rand <= 85) {
             return [
-                'status' => 'processing',
-                'payment_status' => 'paid',
+                'status' => OrderStatus::Processing->value,
+                'payment_status' => PaymentStatus::Paid->value,
             ];
         }
 
         // 95% acumulado - Canceladas
         if ($rand <= 95) {
             return [
-                'status' => 'cancelled',
-                'payment_status' => rand(0, 1) ? 'paid' : 'failed',
+                'status' => OrderStatus::Cancelled->value,
+                'payment_status' => rand(0, 1) ? PaymentStatus::Paid->value : PaymentStatus::Failed->value,
             ];
         }
 
         // 5% - Pendientes
         return [
-            'status' => 'pending',
-            'payment_status' => 'pending',
+            'status' => OrderStatus::Pending->value,
+            'payment_status' => PaymentStatus::Pending->value,
         ];
     }
 }

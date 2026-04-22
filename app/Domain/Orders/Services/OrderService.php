@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Domain\Orders\Services;
 
+use App\Domain\Carts\Services\CartService;
+use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
+use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
+use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
 use App\Exceptions\CartEmptyException;
 use App\Exceptions\InvalidOrderException;
-use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
-use App\Domain\Carts\Services\CartService;
-use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Support\Str;
 
 class OrderService
@@ -74,9 +76,9 @@ class OrderService
         $order = $this->orderRepository->create([
             'user_id' => $userId,
             'order_number' => $orderNumber,
-            'status' => 'pending',
+            'status' => OrderStatus::Pending->value,
             'total_amount' => $totalAmount,
-            'payment_status' => 'pending',
+            'payment_status' => PaymentStatus::Pending->value,
             'payment_method' => $paymentMethod,
             'shipping_address_snapshot' => $shippingAddress,
             'billing_address_snapshot' => $billingAddress ?? $shippingAddress,
@@ -134,9 +136,7 @@ class OrderService
      */
     public function updateOrderStatus(string $orderId, string $status): bool
     {
-        $validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
-
-        if (! in_array($status, $validStatuses)) {
+        if (! in_array($status, OrderStatus::values(), true)) {
             throw new InvalidOrderException('invalid_status');
         }
 
