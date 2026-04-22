@@ -20,38 +20,53 @@ export default defineConfig({
         },
     },
     build: {
+        chunkSizeWarningLimit: 700,
         rollupOptions: {
             output: {
                 manualChunks(id) {
-                    if (!id.includes('node_modules')) {
+                    const normalizedId = id.replace(/\\/g, '/');
+
+                    if (!normalizedId.includes('/node_modules/')) {
                         return;
                     }
 
-                    if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('@inertiajs')) {
+                    if (normalizedId.includes('/react/') || normalizedId.includes('/react-dom/') || normalizedId.includes('@inertiajs')) {
                         return 'react-stack';
                     }
 
-                    if (id.includes('\\three\\') || id.includes('/three/')) {
-                        return 'three-core';
-                    }
-
-                    if (id.includes('@react-three/fiber') || id.includes('@react-three/drei')) {
+                    if (normalizedId.includes('@react-three/fiber') || normalizedId.includes('@react-three/drei')) {
                         return 'react-three';
                     }
 
-                    if (id.includes('@stripe')) {
+                    if (normalizedId.includes('/three-stdlib/')) {
+                        return 'three-stdlib';
+                    }
+
+                    if (normalizedId.includes('/three/examples/jsm/loaders/')) {
+                        return 'three-loaders';
+                    }
+
+                    if (normalizedId.includes('/three/examples/jsm/')) {
+                        return 'three-examples';
+                    }
+
+                    if (normalizedId.includes('/three/')) {
+                        return 'three-core';
+                    }
+
+                    if (normalizedId.includes('@stripe')) {
                         return 'stripe-vendor';
                     }
 
-                    if (id.includes('framer-motion')) {
+                    if (normalizedId.includes('framer-motion')) {
                         return 'motion-vendor';
                     }
 
-                    if (id.includes('@headlessui')) {
+                    if (normalizedId.includes('@headlessui')) {
                         return 'headlessui-vendor';
                     }
 
-                    if (id.includes('lodash')) {
+                    if (normalizedId.includes('lodash')) {
                         return 'lodash-vendor';
                     }
                 },
