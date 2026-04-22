@@ -9,6 +9,7 @@ import ResetPasswordForm from '@/Components/Auth/ResetPasswordForm/ResetPassword
 import ConfirmPasswordForm from '@/Components/Auth/ConfirmPasswordForm/ConfirmPasswordForm';
 import VerifyEmailForm from '@/Components/Auth/VerifyEmailForm/VerifyEmailForm';
 import { authClass } from '@/Components/Auth/AuthShell/authShellStyles';
+import useMediaQuery from '@/Hooks/useMediaQuery';
 import styles from './Auth.module.css';
 
 export default function Auth({ view, title, subtitle, status, canResetPassword, token, email }) {
@@ -94,6 +95,7 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
     const currentAuthState = hoveredAuthPanel ?? selectedAuthPanel ?? (isRegisterActive ? 'register' : 'login');
     const loginHref = route('login');
     const registerHref = route('register');
+    const isMobileViewport = useMediaQuery('(max-width: 767px)');
 
     const handleAuthSwitchClick = (event, target) => {
         if (!isSplitLayout || isMobileViewport) {
@@ -104,35 +106,6 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
         setSelectedAuthPanel(target);
         setHoveredAuthPanel(target);
     };
-
-    const [isMobileViewport, setIsMobileViewport] = React.useState(() => {
-        if (typeof window === 'undefined') {
-            return false;
-        }
-
-        return window.matchMedia('(max-width: 767px)').matches;
-    });
-
-    React.useEffect(() => {
-        if (typeof window === 'undefined') {
-            return;
-        }
-
-        const mediaQuery = window.matchMedia('(max-width: 767px)');
-        const handleChange = (event) => setIsMobileViewport(event.matches);
-
-        setIsMobileViewport(mediaQuery.matches);
-
-        if (mediaQuery.addEventListener) {
-            mediaQuery.addEventListener('change', handleChange);
-
-            return () => mediaQuery.removeEventListener('change', handleChange);
-        }
-
-        mediaQuery.addListener(handleChange);
-
-        return () => mediaQuery.removeListener(handleChange);
-    }, []);
 
     return (
         <div className={authClass('mk-auth-shell')}>
@@ -242,8 +215,8 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
                     <main className={authClass('mk-auth-main', 'mk-auth-main-split', 'mk-auth-main-desktop')}>
                         <section
                             className={authClass('mk-auth-panel', currentAuthState === 'login' && 'mk-auth-panel-active')}
-                            onMouseEnter={() => setHoveredAuthPanel('login')}
-                            onMouseLeave={() => setHoveredAuthPanel(null)}
+                            onPointerEnter={() => setHoveredAuthPanel('login')}
+                            onPointerLeave={() => setHoveredAuthPanel(null)}
                         >
                             <div className={authClass('mk-auth-tech-grid')} />
                             <div className={authClass('mk-auth-aurora', 'mk-auth-aurora-login')} />
@@ -271,8 +244,8 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
                                 'mk-auth-panel-register',
                                 currentAuthState === 'register' && 'mk-auth-panel-active'
                             )}
-                            onMouseEnter={() => setHoveredAuthPanel('register')}
-                            onMouseLeave={() => setHoveredAuthPanel(null)}
+                            onPointerEnter={() => setHoveredAuthPanel('register')}
+                            onPointerLeave={() => setHoveredAuthPanel(null)}
                         >
                             <div className={authClass('mk-auth-tech-grid')} />
                             <div className={authClass('mk-auth-aurora', 'mk-auth-aurora-register')} />

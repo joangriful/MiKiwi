@@ -25,7 +25,7 @@ export default function RegisterForm({ autoFocus = false }) {
         return () => {
             reset('password', 'password_confirmation');
         };
-    }, []);
+    }, [reset, setData]);
 
     const submit = (e) => {
         e.preventDefault();
@@ -50,6 +50,7 @@ export default function RegisterForm({ autoFocus = false }) {
                     className={`${authClass('mk-auth-input', 'mk-auth-input-lime')} ${styles.input} ${styles.desktopAlign}`}
                     autoComplete="name"
                     autoFocus={autoFocus}
+                    aria-label="Nombre completo"
                     onChange={(e) => setData('name', e.target.value)}
                     placeholder=" "
                     required
@@ -68,6 +69,7 @@ export default function RegisterForm({ autoFocus = false }) {
                     value={data.email}
                     className={`${authClass('mk-auth-input', 'mk-auth-input-lime')} ${styles.input} ${styles.desktopAlign}`}
                     autoComplete="username"
+                    aria-label="Correo electrónico"
                     onChange={(e) => setData('email', e.target.value)}
                     placeholder=" "
                     required
@@ -86,6 +88,7 @@ export default function RegisterForm({ autoFocus = false }) {
                     value={data.password}
                     className={`${authClass('mk-auth-input', 'mk-auth-input-lime')} ${styles.input} ${styles.desktopAlign}`}
                     autoComplete="new-password"
+                    aria-label="Contraseña"
                     onChange={(e) => setData('password', e.target.value)}
                     placeholder=" "
                     required
@@ -104,6 +107,7 @@ export default function RegisterForm({ autoFocus = false }) {
                     value={data.password_confirmation}
                     className={`${authClass('mk-auth-input', 'mk-auth-input-lime')} ${styles.input} ${styles.desktopAlign}`}
                     autoComplete="new-password"
+                    aria-label="Confirmar contraseña"
                     onChange={(e) => setData('password_confirmation', e.target.value)}
                     placeholder=" "
                     required

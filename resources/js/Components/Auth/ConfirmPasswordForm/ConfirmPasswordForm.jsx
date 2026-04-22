@@ -13,7 +13,7 @@ export default function ConfirmPasswordForm() {
         return () => {
             reset('password');
         };
-    }, []);
+    }, [reset]);
 
     const submit = (e) => {
         e.preventDefault();
@@ -35,6 +35,7 @@ export default function ConfirmPasswordForm() {
                     className={`${authClass('mk-auth-input')} ${styles.input}`}
                     autoFocus
                     required
+                    aria-label="Contraseña actual"
                     placeholder=" "
                     onChange={(e) => setData('password', e.target.value)}
                 />

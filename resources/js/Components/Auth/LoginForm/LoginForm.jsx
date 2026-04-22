@@ -24,7 +24,7 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
         return () => {
             reset('password');
         };
-    }, []);
+    }, [reset, setData]);
 
     const submit = (e) => {
         e.preventDefault();
@@ -57,6 +57,7 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
                     autoComplete="username"
                     autoFocus={autoFocus}
                     required
+                    aria-label="Correo electrónico"
                     placeholder=" "
                     onChange={(e) => setData('email', e.target.value)}
                 />
@@ -75,6 +76,7 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
                     className={`${authClass('mk-auth-input', 'mk-auth-input-access')} ${styles.input}`}
                     autoComplete="current-password"
                     required
+                    aria-label="Contraseña"
                     placeholder=" "
                     onChange={(e) => setData('password', e.target.value)}
                 />
@@ -88,6 +90,7 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
                         name="remember"
                         checked={data.remember}
                         className={styles.checkboxInput}
+                        aria-label="Recordarme"
                         onChange={(e) => setData('remember', e.target.checked)}
                     />
                     <span className={styles.checkboxText}>

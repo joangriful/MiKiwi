@@ -16,7 +16,7 @@ export default function ResetPasswordForm({ token, email }) {
         return () => {
             reset('password', 'password_confirmation');
         };
-    }, []);
+    }, [reset]);
 
     const submit = (e) => {
         e.preventDefault();
@@ -38,6 +38,7 @@ export default function ResetPasswordForm({ token, email }) {
                     className={`${authClass('mk-auth-input')} ${styles.input}`}
                     autoComplete="username"
                     required
+                    aria-label="Correo electrónico"
                     placeholder=" "
                     onChange={(e) => setData('email', e.target.value)}
                 />
@@ -57,6 +58,7 @@ export default function ResetPasswordForm({ token, email }) {
                     autoComplete="new-password"
                     autoFocus
                     required
+                    aria-label="Nueva contraseña"
                     placeholder=" "
                     onChange={(e) => setData('password', e.target.value)}
                 />
@@ -75,6 +77,7 @@ export default function ResetPasswordForm({ token, email }) {
                     className={`${authClass('mk-auth-input')} ${styles.input}`}
                     autoComplete="new-password"
                     required
+                    aria-label="Confirmar contraseña"
                     placeholder=" "
                     onChange={(e) => setData('password_confirmation', e.target.value)}
                 />

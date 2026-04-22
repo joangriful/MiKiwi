@@ -34,6 +34,7 @@ export default function ForgotPasswordForm({ status }) {
                     className={`${authClass('mk-auth-input')} ${styles.input}`}
                     autoFocus
                     required
+                    aria-label="Correo electrónico"
                     placeholder=" "
                     onChange={(e) => setData('email', e.target.value)}
                 />
