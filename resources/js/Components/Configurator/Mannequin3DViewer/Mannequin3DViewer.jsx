@@ -1,8 +1,9 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
+import { loadMannequinScene3D } from '@/Components/Configurator/utils/lazyLoaders';
 import styles from './Mannequin3DViewer.module.css';
 
 // Lazy load the 3D scene component
-const MannequinScene3D = lazy(() => import('./components/MannequinScene3D'));
+const MannequinScene3D = lazy(loadMannequinScene3D);
 
 const availableModels = [
     {
@@ -102,6 +103,7 @@ export default function Mannequin3DViewer({ onModelMounted, isActive = false }) 
                         {availableModels.map((model) => (
                             <button
                                 key={model.id}
+                                type="button"
                                 onClick={() => setSelectedModel(model)}
                                 className={[
                                     styles.modelButton,
@@ -111,6 +113,8 @@ export default function Mannequin3DViewer({ onModelMounted, isActive = false }) 
                                 ]
                                     .filter(Boolean)
                                     .join(' ')}
+                                aria-pressed={selectedModel.id === model.id}
+                                aria-label={`Seleccionar modelo ${model.name}`}
                             >
                                 {model.name}
                             </button>

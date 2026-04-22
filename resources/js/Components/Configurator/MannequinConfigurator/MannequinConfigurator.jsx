@@ -4,9 +4,10 @@ import ConfiguratorLayout from '@/Layouts/ConfiguratorLayout';
 import SegmentedDoll2D from '@/Components/Configurator/PreviewArea/components/SegmentedDoll2D';
 import BodyPartSelector from '@/Components/Configurator/CustomizationPanel/BodyPartSelector';
 import { availableModels } from '@/Components/Configurator/MannequinModel/modelsMetadata';
+import { loadMannequinScene3D } from '@/Components/Configurator/utils/lazyLoaders';
 import styles from './MannequinConfigurator.module.css';
 
-const MannequinScene3D = lazy(() => import('@/Components/Configurator/Mannequin3DViewer/components/MannequinScene3D'));
+const MannequinScene3D = lazy(loadMannequinScene3D);
 
 const DEFAULT_BODY_PARAMS = {
     height: 0.5,

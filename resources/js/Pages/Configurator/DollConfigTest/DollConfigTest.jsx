@@ -3,6 +3,7 @@ import { Head } from '@inertiajs/react';
 import axios from 'axios';
 import ConfiguratorLayout from '@/Layouts/ConfiguratorLayout';
 import { use3DPreload } from '@/Components/Configurator/hooks/use3DPreload';
+import { loadMannequin3DViewer } from '@/Components/Configurator/utils/lazyLoaders';
 import LoadingScreen from '@/Components/Configurator/Common/LoadingScreen';
 import PreviewArea from '@/Components/Configurator/PreviewArea/PreviewArea';
 import PartSelector from '@/Components/Configurator/PartSelector/PartSelector';
@@ -12,8 +13,7 @@ import useMediaQuery from '@/Hooks/useMediaQuery';
 import styles from './DollConfigTest.module.css';
 
 // Pre-load the 3D viewer chunk
-const load3DEngine = () => import('@/Components/Configurator/Mannequin3DViewer/Mannequin3DViewer');
-const Mannequin3DViewer = React.lazy(load3DEngine);
+const Mannequin3DViewer = React.lazy(loadMannequin3DViewer);
 
 export default function DollConfigTest({ views, defaultSettings, partPositions: initialPartPositions }) {
     // 1. Shared Logic & Network Pre-fetching (Only fetches files to cache, no CPU parsing)
@@ -69,7 +69,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
         resetIdleTimer();
 
         // 3D Engine JS Pre-fetch (Load the code, stay idle on the parse)
-        load3DEngine().then(() => {
+        loadMannequin3DViewer().then(() => {
             console.warn("%c[System] %cMotor 3D listo para inicialización silenciosa.", "color: #9c27b0; font-weight: bold", "color: #666");
         });
 

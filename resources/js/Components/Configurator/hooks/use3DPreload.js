@@ -1,7 +1,5 @@
 import { useRef } from 'react';
-
-// Dynamic import for the 3D Engine
-const load3DEngine = () => import('@/Components/Configurator/Mannequin3DViewer/Mannequin3DViewer');
+import { loadMannequin3DViewer } from '@/Components/Configurator/utils/lazyLoaders';
 
 // Helper to preload binary/image assets with silent background fetching
 const preloadAsset = (path, type) => {
@@ -33,7 +31,7 @@ export function use3DPreload(views, defaultSettings) {
 
         // Track all 3 heavy requirements
         const tasks = [
-            load3DEngine(), // Engine code
+            loadMannequin3DViewer(), // Engine code
             preloadAsset('/models/naked-queen/source/NakedQueen.fbx', 'fetch'), // Main model
             preloadAsset('/models/naked-queen/textures/NakedQueen.jpeg', 'image'), // Texture
             preloadAsset('https://raw.githack.com/pmndrs/drei-assets/master/hdri/studio_small_08_1k.hdr', 'fetch') // Environment HDR
@@ -46,5 +44,5 @@ export function use3DPreload(views, defaultSettings) {
         });
     };
 
-    return { handle2DReady, load3DEngine };
+    return { handle2DReady, load3DEngine: loadMannequin3DViewer };
 }
