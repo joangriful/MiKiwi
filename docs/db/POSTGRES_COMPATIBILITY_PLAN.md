@@ -276,15 +276,15 @@ Mock automatico solo en `local` y `testing`. En produccion, mock solo con flag e
 
 **Checklist:**
 
-- [ ] Test crear pedido.
-- [ ] Test cancelar pedido y restaurar stock.
-- [ ] Test crear review.
-- [ ] Test filtros de productos/categorias.
-- [ ] Test busqueda de pickup points con mayusculas/minusculas.
-- [ ] Test JSON de productos.
-- [ ] Test JSON de pedidos.
-- [ ] Test JSON de configurador.
-- [ ] Test seeders idempotentes criticos.
+- [x] Test crear pedido.
+- [x] Test cancelar pedido y restaurar stock.
+- [x] Test crear review.
+- [x] Test filtros de productos/categorias.
+- [x] Test busqueda de pickup points con mayusculas/minusculas.
+- [x] Test JSON de productos.
+- [x] Test JSON de pedidos.
+- [x] Test JSON de configurador.
+- [x] Test seeders idempotentes criticos.
 
 ## Validacion Final
 
