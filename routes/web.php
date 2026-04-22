@@ -12,6 +12,7 @@ use App\Http\Controllers\MarketingPageController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserAddressController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -122,6 +123,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/perfil', [ProfileController::class, 'show'])->name('perfil.view');
 
     // Gestión de Direcciones del Usuario
+    Route::get('/perfil/direcciones', [UserAddressController::class, 'index'])->name('profile.addresses.index');
+    Route::post('/perfil/direcciones', [UserAddressController::class, 'store'])->name('profile.addresses.store');
+    Route::put('/perfil/direcciones/{address}', [UserAddressController::class, 'update'])->name('profile.addresses.update');
+    Route::delete('/perfil/direcciones/{address}', [UserAddressController::class, 'destroy'])->name('profile.addresses.destroy');
 });
 
 /*

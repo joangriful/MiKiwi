@@ -17,7 +17,7 @@ class UserAddressController extends Controller
             ->orderByDesc('is_default')
             ->get();
 
-        return Inertia::render('Profile/Addresses/Index', [
+        return Inertia::render('Profile/Index', [
             'addresses' => $addresses,
         ]);
     }
@@ -32,7 +32,10 @@ class UserAddressController extends Controller
                     ->update(['is_default' => false]);
             }
 
-            auth()->user()->addresses()->create($data);
+            UserAddress::create([
+                ...$data,
+                'user_id' => Auth::id(),
+            ]);
         });
 
         return back()->with('success', 'Dirección guardada correctamente');
