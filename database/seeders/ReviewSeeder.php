@@ -37,26 +37,17 @@ class ReviewSeeder extends Seeder
 
         $totalReviews = 0;
 
-        // Cada producto tiene entre 0-10 reviews
         foreach ($products as $product) {
-            $reviewsCount = $this->getRandomReviewCount();
+            foreach ($customers->take(3)->values() as $index => $customer) {
+                $rating = $this->getSeededRating($index);
 
-            for ($i = 0; $i < $reviewsCount; $i++) {
-                // Seleccionar cliente aleatorio
-                $customer = $customers->random();
-
-                // Rating con distribución realista (más ratings altos)
-                $rating = $this->getWeightedRating();
-
-                // 70% de reviews tienen comentario
-                $hasComment = rand(1, 100) <= 70;
-
-                Review::create([
-                    'user_id' => $customer->id,
-                    'product_id' => $product->id,
+                Review::updateOrCreate([
+                    'user_id' => $customer->getKey(),
+                    'product_id' => $product->getKey(),
+                ], [
                     'rating' => $rating,
-                    'comment' => $hasComment ? $this->getRealisticComment($rating) : null,
-                    'is_approved' => rand(1, 100) <= 80, // 80% aprobadas
+                    'comment' => $this->getRealisticComment($rating, $index),
+                    'is_approved' => $index !== 2,
                 ]);
 
                 $totalReviews++;
@@ -68,58 +59,17 @@ class ReviewSeeder extends Seeder
     }
 
     /**
-     * Cantidad aleatoria de reviews por producto
-     * La mayoría tiene entre 2-5 reviews
+     * Rating determinístico con sesgo positivo.
      */
-    private function getRandomReviewCount(): int
+    private function getSeededRating(int $index): int
     {
-        $rand = rand(1, 100);
-
-        if ($rand <= 10) {
-            return 0;
-        }  // 10% sin reviews
-        if ($rand <= 30) {
-            return rand(1, 2);
-        }  // 20% con 1-2 reviews
-        if ($rand <= 70) {
-            return rand(3, 5);
-        }  // 40% con 3-5 reviews
-        if ($rand <= 90) {
-            return rand(6, 8);
-        }  // 20% con 6-8 reviews
-
-        return rand(9, 10);  // 10% con 9-10 reviews
-    }
-
-    /**
-     * Rating con distribución realista (sesgo positivo)
-     *
-     * @return int Rating entre 1-5
-     */
-    private function getWeightedRating(): int
-    {
-        $rand = rand(1, 100);
-
-        if ($rand <= 40) {
-            return 5;
-        }  // 40% → 5 estrellas
-        if ($rand <= 70) {
-            return 4;
-        }  // 30% → 4 estrellas
-        if ($rand <= 85) {
-            return 3;
-        }  // 15% → 3 estrellas
-        if ($rand <= 95) {
-            return 2;
-        }  // 10% → 2 estrellas
-
-        return 1;  // 5% → 1 estrella
+        return [5, 4, 3][$index % 3];
     }
 
     /**
      * Generar comentario realista basado en el rating
      */
-    private function getRealisticComment(int $rating): string
+    private function getRealisticComment(int $rating, int $index): string
     {
         $comments = [
             5 => [
@@ -159,6 +109,6 @@ class ReviewSeeder extends Seeder
             ],
         ];
 
-        return $comments[$rating][array_rand($comments[$rating])];
+        return $comments[$rating][$index % count($comments[$rating])];
     }
 }

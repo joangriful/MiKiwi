@@ -46,7 +46,13 @@ class PickupPointSeeder extends Seeder
         ];
 
         foreach ($points as $point) {
-            PickupPoint::create($point);
+            PickupPoint::updateOrCreate(
+                [
+                    'name' => $point['name'],
+                    'postal_code' => $point['postal_code'],
+                ],
+                $point + ['is_active' => true]
+            );
         }
     }
 }

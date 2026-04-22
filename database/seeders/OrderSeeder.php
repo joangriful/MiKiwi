@@ -44,9 +44,9 @@ class OrderSeeder extends Seeder
             return;
         }
 
-        // Crear 2-4 órdenes por cliente (15-20 órdenes aprox)
-        foreach ($customers->take(5) as $customer) {
-            $ordersCount = rand(2, 4);
+        // Crear 3 órdenes determinísticas por cliente.
+        foreach ($customers->take(5)->values() as $customerIndex => $customer) {
+            $ordersCount = 3;
 
             for ($i = 0; $i < $ordersCount; $i++) {
                 // Asegurar que el cliente tenga dirección
@@ -56,51 +56,53 @@ class OrderSeeder extends Seeder
                 }
 
                 // Determinar estado de la orden con distribución realista
-                $statusData = $this->getRandomStatus();
+                $statusData = $this->getSeededStatus($customerIndex + $i);
+                $orderNumber = sprintf('SEED-ORD-%s-%02d', substr(sha1((string) $customer->getKey()), 0, 10), $i + 1);
 
-                // Crear orden
-                $order = Order::create([
-                    'user_id' => $customer->id,
-                    'order_number' => 'ORD-'.now()->subDays(rand(1, 90))->format('Ymd').'-'.strtoupper(substr(md5(rand()), 0, 5)),
+                $order = Order::updateOrCreate([
+                    'order_number' => $orderNumber,
+                ], [
+                    'user_id' => $customer->getKey(),
                     'status' => $statusData['status'],
                     'payment_status' => $statusData['payment_status'],
-                    'total_amount' => 0, // Se calculará después
+                    'total_amount' => 0,
                     'shipping_address_snapshot' => [
-                        'full_name' => $address->full_name,
-                        'phone' => $address->phone,
-                        'street_address' => $address->street_address,
-                        'city' => $address->city,
-                        'postal_code' => $address->postal_code,
-                        'country' => $address->country,
+                        'full_name' => $address->getAttribute('full_name'),
+                        'phone' => $address->getAttribute('phone'),
+                        'street_address' => $address->getAttribute('street_address'),
+                        'city' => $address->getAttribute('city'),
+                        'postal_code' => $address->getAttribute('postal_code'),
+                        'country' => $address->getAttribute('country'),
                     ],
                     'billing_address_snapshot' => [
-                        'full_name' => $address->full_name,
-                        'phone' => $address->phone,
-                        'street_address' => $address->street_address,
-                        'city' => $address->city,
-                        'postal_code' => $address->postal_code,
-                        'country' => $address->country,
+                        'full_name' => $address->getAttribute('full_name'),
+                        'phone' => $address->getAttribute('phone'),
+                        'street_address' => $address->getAttribute('street_address'),
+                        'city' => $address->getAttribute('city'),
+                        'postal_code' => $address->getAttribute('postal_code'),
+                        'country' => $address->getAttribute('country'),
                     ],
                 ]);
 
-                // Agregar 1-4 items a la orden
-                $itemsCount = rand(1, 4);
                 $total = 0;
+                $items = $products
+                    ->values()
+                    ->slice(($customerIndex + $i) % max(1, $products->count()), 2);
 
-                for ($j = 0; $j < $itemsCount; $j++) {
-                    $product = $products->random();
-                    if (! $product) {
-                        continue;
-                    }
+                if ($items->count() < 2) {
+                    $items = $items->merge($products->values()->take(2 - $items->count()));
+                }
 
-                    $quantity = rand(1, 3);
-                    $price = $product->base_price;
+                foreach ($items as $itemIndex => $product) {
+                    $quantity = $itemIndex + 1;
+                    $price = $product->getAttribute('base_price');
 
-                    OrderItem::create([
-                        'order_id' => $order->id,
-                        'product_id' => $product->id,
-                        'product_name_snapshot' => $product->name,
-                        'sku_snapshot' => $product->sku,
+                    OrderItem::updateOrCreate([
+                        'order_id' => $order->getKey(),
+                        'product_id' => $product->getKey(),
+                    ], [
+                        'product_name_snapshot' => $product->getAttribute('name'),
+                        'sku_snapshot' => $product->getAttribute('sku'),
                         'quantity' => $quantity,
                         'unit_price' => $price,
                     ]);
@@ -109,7 +111,6 @@ class OrderSeeder extends Seeder
                     $totalItems++;
                 }
 
-                // Actualizar total de la orden
                 $order->update(['total_amount' => $total]);
                 $totalOrders++;
             }
@@ -124,46 +125,29 @@ class OrderSeeder extends Seeder
      *
      * @return array{status: string, payment_status: string}
      */
-    private function getRandomStatus(): array
+    private function getSeededStatus(int $index): array
     {
-        $rand = rand(1, 100);
-
-        // 50% - Entregadas y pagadas
-        if ($rand <= 50) {
-            return [
+        return match ($index % 5) {
+            0, 1 => [
                 'status' => OrderStatus::Delivered->value,
                 'payment_status' => PaymentStatus::Paid->value,
-            ];
-        }
-
-        // 70% acumulado - Enviadas y pagadas
-        if ($rand <= 70) {
-            return [
+            ],
+            2 => [
                 'status' => OrderStatus::Shipped->value,
                 'payment_status' => PaymentStatus::Paid->value,
-            ];
-        }
-
-        // 85% acumulado - En proceso y pagadas
-        if ($rand <= 85) {
-            return [
+            ],
+            3 => [
                 'status' => OrderStatus::Processing->value,
                 'payment_status' => PaymentStatus::Paid->value,
-            ];
-        }
-
-        // 95% acumulado - Canceladas
-        if ($rand <= 95) {
-            return [
+            ],
+            4 => [
                 'status' => OrderStatus::Cancelled->value,
-                'payment_status' => rand(0, 1) ? PaymentStatus::Paid->value : PaymentStatus::Failed->value,
-            ];
-        }
-
-        // 5% - Pendientes
-        return [
-            'status' => OrderStatus::Pending->value,
-            'payment_status' => PaymentStatus::Pending->value,
-        ];
+                'payment_status' => PaymentStatus::Failed->value,
+            ],
+            default => [
+                'status' => OrderStatus::Pending->value,
+                'payment_status' => PaymentStatus::Pending->value,
+            ],
+        };
     }
 }

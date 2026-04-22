@@ -33,33 +33,33 @@ class ChatSessionSeeder extends Seeder
         $totalSessions = 0;
         $totalMessages = 0;
 
-        // Cada cliente tiene 1-3 sesiones de soporte
-        foreach ($customers as $customer) {
-            $sessionsCount = rand(1, 3);
+        // Cada cliente tiene 2 sesiones determinísticas de soporte.
+        foreach ($customers as $customerIndex => $customer) {
+            $sessionsCount = 2;
 
             for ($i = 0; $i < $sessionsCount; $i++) {
-                // 70% cerradas, 30% activas
-                $isClosed = rand(1, 100) <= 70;
+                $isClosed = ($customerIndex + $i) % 3 !== 0;
+                $subject = $this->getSeededSubject($i);
 
-                // Crear sesión
-                $session = ChatSession::create([
-                    'user_id' => $customer->id,
-                    'status' => $isClosed ? ChatSessionStatus::Closed : ChatSessionStatus::Active,
-                    'subject' => $this->getRandomSubject(),
+                $session = ChatSession::updateOrCreate([
+                    'user_id' => $customer->getKey(),
+                    'subject' => $subject,
+                ], [
+                    'status' => $isClosed ? ChatSessionStatus::Closed->value : ChatSessionStatus::Active->value,
                 ]);
 
-                // Crear 3-15 mensajes por sesión
-                $messagesCount = rand(3, 15);
+                $messagesCount = 4;
 
                 for ($j = 0; $j < $messagesCount; $j++) {
-                    // Alternar entre cliente y agente (siempre empieza el cliente)
                     $isCustomer = ($j % 2 === 0);
+                    $messageBody = $this->getRealisticMessage($isCustomer, $j);
 
-                    ChatMessage::create([
-                        'session_id' => $session->id,
-                        'sender_type' => $isCustomer ? ChatSenderType::Customer : ChatSenderType::Agent,
-                        'message_body' => $this->getRealisticMessage($isCustomer, $j),
-                        'is_read' => ! $isCustomer || $isClosed, // Mensajes de agente siempre leídos
+                    ChatMessage::updateOrCreate([
+                        'session_id' => $session->getKey(),
+                        'message_body' => $messageBody,
+                    ], [
+                        'sender_type' => $isCustomer ? ChatSenderType::Customer->value : ChatSenderType::Agent->value,
+                        'is_read' => ! $isCustomer || $isClosed,
                     ]);
 
                     $totalMessages++;
@@ -76,7 +76,7 @@ class ChatSessionSeeder extends Seeder
     /**
      * Asuntos realistas para sesiones de soporte
      */
-    private function getRandomSubject(): string
+    private function getSeededSubject(int $index): string
     {
         $subjects = [
             'Consulta sobre producto',
@@ -93,7 +93,7 @@ class ChatSessionSeeder extends Seeder
             'Disponibilidad de stock',
         ];
 
-        return $subjects[array_rand($subjects)];
+        return $subjects[$index % count($subjects)];
     }
 
     /**
@@ -135,6 +135,6 @@ class ChatSessionSeeder extends Seeder
             ];
         }
 
-        return $messages[array_rand($messages)];
+        return $messages[$messageIndex % count($messages)];
     }
 }

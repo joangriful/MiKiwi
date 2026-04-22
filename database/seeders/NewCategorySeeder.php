@@ -63,7 +63,7 @@ class NewCategorySeeder extends Seeder
                     [
                         'name' => $childName,
                         'is_active' => true,
-                        'parent_id' => $parent->id
+                        'parent_id' => $parent->getKey()
                     ]
                 );
             }

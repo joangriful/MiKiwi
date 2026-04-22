@@ -181,26 +181,27 @@ Los estados de pedido y pago son los que mas probablemente cambian en un ecommer
 **Archivos detectados:**
 
 - `database/seeders/CatalogSeeder.php`
-- `database/seeders/LegacyCatalogSeeder.php`
+- `database/seeders/LegacyCatalogSeeder.php` (no existe actualmente en el repo)
 - `database/seeders/CategorySeeder.php`
 - `database/seeders/PickupPointSeeder.php`
 - `database/seeders/OrderSeeder.php`
 - `database/seeders/ReviewSeeder.php`
 - `database/seeders/ProductSeeder.php`
+- `database/seeders/ChatSessionSeeder.php` (incluido porque lo ejecuta `DatabaseSeeder`)
 
 **Norma:**  
 Usar `firstOrCreate`, `updateOrCreate` o `upsert` con claves unicas claras: `slug`, `sku`, `code`, `email`.
 
 **Checklist:**
 
-- [ ] Sustituir `create()` duplicable en catalogo/categorias.
-- [ ] Sustituir `insert()` duplicable en pivots por `upsert`.
-- [ ] Evitar busquedas por `LIKE` en seeders.
-- [ ] Mantener productos por `slug` o `sku`.
-- [ ] Mantener categorias por `slug`.
-- [ ] Mantener cupones por `code`.
-- [ ] Ejecutar seeders dos veces seguidas en testing.
-- [ ] Anadir test de idempotencia para seeders criticos.
+- [x] Sustituir `create()` duplicable en catalogo/categorias.
+- [x] Sustituir `insert()` duplicable en pivots por `upsert`.
+- [x] Evitar busquedas por `LIKE` en seeders.
+- [x] Mantener productos por `slug` o `sku`.
+- [x] Mantener categorias por `slug`.
+- [x] Mantener cupones por `code`.
+- [x] Ejecutar seeders dos veces seguidas en testing.
+- [x] Anadir test de idempotencia para seeders criticos.
 
 ## Fase 7 - Limitar Mock De Correos Por Entorno
 

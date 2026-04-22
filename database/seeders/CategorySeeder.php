@@ -16,20 +16,6 @@ class CategorySeeder extends Seeder
 {
     public function run(): void
     {
-        // Desactivar restricciones de clave foránea para limpiar la tabla
-        $driver = \DB::getDriverName();
-        if ($driver === 'mysql') {
-            \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        } elseif ($driver === 'sqlite') {
-            \DB::statement('PRAGMA foreign_keys = OFF;');
-        }
-        Category::truncate();
-        if ($driver === 'mysql') {
-            \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        } elseif ($driver === 'sqlite') {
-            \DB::statement('PRAGMA foreign_keys = ON;');
-        }
-
         $structure = [
             // ─── 1. Estimulación Externa ───────────────────────────────────────────
             [
@@ -105,24 +91,26 @@ class CategorySeeder extends Seeder
         ];
 
         foreach ($structure as $parentData) {
-            // Crear categoría padre
-            $parent = Category::create([
-                'name'        => $parentData['name'],
-                'slug'        => Str::slug($parentData['name']),
-                'description' => $parentData['description'],
-                'is_active'   => true,
-                'parent_id'   => null,
-            ]);
+            $parent = Category::updateOrCreate(
+                ['slug' => Str::slug($parentData['name'])],
+                [
+                    'name' => $parentData['name'],
+                    'description' => $parentData['description'],
+                    'is_active' => true,
+                    'parent_id' => null,
+                ]
+            );
 
-            // Crear subcategorías
             foreach ($parentData['children'] as $childData) {
-                Category::create([
-                    'name'        => $childData['name'],
-                    'slug'        => Str::slug($childData['name']),
-                    'description' => $childData['description'],
-                    'is_active'   => true,
-                    'parent_id'   => $parent->id,
-                ]);
+                Category::updateOrCreate(
+                    ['slug' => Str::slug($childData['name'])],
+                    [
+                        'name' => $childData['name'],
+                        'description' => $childData['description'],
+                        'is_active' => true,
+                        'parent_id' => $parent->getKey(),
+                    ]
+                );
             }
         }
 

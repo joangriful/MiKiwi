@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Enums\ProductType;
 use App\Models\Category;
 use App\Models\Product;
-use App\Support\Database\CaseInsensitiveSearch;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -25,7 +24,6 @@ class ProductSeeder extends Seeder
 
         // Buscamos la categoría principal. Si no existe el slug, tomamos la primera de la tabla.
         $catMunecasPremium = Category::where('slug', 'munecas-premium')->first()
-                            ?? CaseInsensitiveSearch::contains(Category::query(), 'name', 'Premium')->first()
                             ?? Category::first();
 
         if (! $catMunecasPremium) {
@@ -48,10 +46,10 @@ class ProductSeeder extends Seeder
         // ========================================
 
         // Muñeca Elsa
-        $elsa = Product::firstOrCreate(
+        $elsa = Product::updateOrCreate(
             ['sku' => 'DOLL-ELSA-001'],
             [
-                'category_id' => $catMunecasPremium->id,
+                'category_id' => $catMunecasPremium->getKey(),
                 'name' => 'Muñeca Elsa Premium',
                 'slug' => 'muneca-elsa-premium',
                 'description' => 'Muñeca realista de silicona médica con esqueleto articulado. Altura 165cm, peso 30kg. Personalizable.',
@@ -65,10 +63,10 @@ class ProductSeeder extends Seeder
         );
 
         // Muñeca Anna
-        Product::firstOrCreate(
+        Product::updateOrCreate(
             ['sku' => 'DOLL-ANNA-001'],
             [
-                'category_id' => $catMunecasBasicas->id,
+                'category_id' => $catMunecasBasicas->getKey(),
                 'name' => 'Muñeca Anna Básica',
                 'slug' => 'muneca-anna-basica',
                 'description' => 'Muñeca de TPE de alta calidad. Opción económica con excelente realismo.',
@@ -82,10 +80,10 @@ class ProductSeeder extends Seeder
         );
 
         // Lubricante Agua
-        Product::firstOrCreate(
+        Product::updateOrCreate(
             ['sku' => 'LUBE-WAT-100'],
             [
-                'category_id' => $catLubricantesAgua->id,
+                'category_id' => $catLubricantesAgua->getKey(),
                 'name' => 'Lubricante Base Agua Premium 100ml',
                 'slug' => 'lubricante-agua-100ml',
                 'description' => 'Lubricante premium a base de agua. pH balanceado.',
@@ -99,10 +97,10 @@ class ProductSeeder extends Seeder
         );
 
         // Componentes (Ojos y Pelucas)
-        $ojosAzules = Product::firstOrCreate(
+        $ojosAzules = Product::updateOrCreate(
             ['sku' => 'COMP-EYE-BLU'],
             [
-                'category_id' => $catComponentes->id,
+                'category_id' => $catComponentes->getKey(),
                 'name' => 'Ojos Azules Cristal Premium',
                 'slug' => 'ojos-azules-cristal',
                 'description' => 'Ojos de cristal azul intenso con acabado realista.',
@@ -115,10 +113,10 @@ class ProductSeeder extends Seeder
             ]
         );
 
-        $ojosMarrones = Product::firstOrCreate(
+        $ojosMarrones = Product::updateOrCreate(
             ['sku' => 'COMP-EYE-BRW'],
             [
-                'category_id' => $catComponentes->id,
+                'category_id' => $catComponentes->getKey(),
                 'name' => 'Ojos Marrones Avellana',
                 'slug' => 'ojos-marrones-avellana',
                 'description' => 'Ojos marrones cálidos. Acabado ultra realista.',
@@ -131,10 +129,10 @@ class ProductSeeder extends Seeder
             ]
         );
 
-        $pelucaRubia = Product::firstOrCreate(
+        $pelucaRubia = Product::updateOrCreate(
             ['sku' => 'COMP-HAIR-BLND'],
             [
-                'category_id' => $catComponentes->id,
+                'category_id' => $catComponentes->getKey(),
                 'name' => 'Peluca Rubia Larga Premium',
                 'slug' => 'peluca-rubia-larga',
                 'description' => 'Cabello sintético premium resistente al calor.',
@@ -147,10 +145,10 @@ class ProductSeeder extends Seeder
             ]
         );
 
-        $pelucaNegra = Product::firstOrCreate(
+        $pelucaNegra = Product::updateOrCreate(
             ['sku' => 'COMP-HAIR-BLK'],
             [
-                'category_id' => $catComponentes->id,
+                'category_id' => $catComponentes->getKey(),
                 'name' => 'Peluca Negra Lisa',
                 'slug' => 'peluca-negra-lisa',
                 'description' => 'Peluca de cabello sintético negro azabache.',
@@ -170,10 +168,10 @@ class ProductSeeder extends Seeder
         $this->command->info('📍 Configurando accesorios para productos...');
 
         DB::table('product_accessories')->upsert([
-            ['parent_product_id' => $elsa->id, 'accessory_product_id' => $ojosAzules->id, 'is_mandatory' => false, 'group_name' => 'Ojos', 'created_at' => now(), 'updated_at' => now()],
-            ['parent_product_id' => $elsa->id, 'accessory_product_id' => $ojosMarrones->id, 'is_mandatory' => false, 'group_name' => 'Ojos', 'created_at' => now(), 'updated_at' => now()],
-            ['parent_product_id' => $elsa->id, 'accessory_product_id' => $pelucaRubia->id, 'is_mandatory' => false, 'group_name' => 'Cabello', 'created_at' => now(), 'updated_at' => now()],
-            ['parent_product_id' => $elsa->id, 'accessory_product_id' => $pelucaNegra->id, 'is_mandatory' => false, 'group_name' => 'Cabello', 'created_at' => now(), 'updated_at' => now()],
+            ['parent_product_id' => $elsa->getKey(), 'accessory_product_id' => $ojosAzules->getKey(), 'is_mandatory' => false, 'group_name' => 'Ojos', 'created_at' => now(), 'updated_at' => now()],
+            ['parent_product_id' => $elsa->getKey(), 'accessory_product_id' => $ojosMarrones->getKey(), 'is_mandatory' => false, 'group_name' => 'Ojos', 'created_at' => now(), 'updated_at' => now()],
+            ['parent_product_id' => $elsa->getKey(), 'accessory_product_id' => $pelucaRubia->getKey(), 'is_mandatory' => false, 'group_name' => 'Cabello', 'created_at' => now(), 'updated_at' => now()],
+            ['parent_product_id' => $elsa->getKey(), 'accessory_product_id' => $pelucaNegra->getKey(), 'is_mandatory' => false, 'group_name' => 'Cabello', 'created_at' => now(), 'updated_at' => now()],
         ], ['parent_product_id', 'accessory_product_id'], ['group_name', 'updated_at']);
 
         // ========================================
@@ -183,12 +181,27 @@ class ProductSeeder extends Seeder
         $allCategories = Category::all();
 
         if ($allCategories->isNotEmpty()) {
-            $this->command->info('Creando productos adicionales con Faker...');
-            foreach (range(1, 7) as $i) {
-                Product::factory()->create([
-                    'category_id' => $allCategories->random()->id,
-                    'is_adult_only' => true,
-                ]);
+            $this->command->info('Verificando productos adicionales de demo...');
+            $categories = $allCategories->values();
+
+            foreach (range(1, 7) as $index) {
+                $category = $categories->get(($index - 1) % $categories->count());
+
+                Product::updateOrCreate(
+                    ['sku' => sprintf('DEMO-PROD-%03d', $index)],
+                    [
+                        'category_id' => $category->getKey(),
+                        'name' => sprintf('Producto Demo %02d', $index),
+                        'slug' => sprintf('producto-demo-%02d', $index),
+                        'description' => sprintf('Producto de demostración %02d para catálogo.', $index),
+                        'base_price' => 25 + ($index * 5),
+                        'stock_quantity' => 20,
+                        'product_type' => ProductType::Simple->value,
+                        'is_active' => true,
+                        'is_adult_only' => true,
+                        'images' => [sprintf('https://placehold.co/800x800/EEE/333?text=Demo+%02d', $index)],
+                    ]
+                );
             }
         }
 

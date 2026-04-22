@@ -3,7 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
+use App\Models\ChatMessage;
+use App\Models\ChatSession;
 use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\PickupPoint;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
@@ -128,5 +132,31 @@ class SeederTest extends TestCase
             $this->assertGreaterThanOrEqual(1, $review->rating);
             $this->assertLessThanOrEqual(5, $review->rating);
         }
+    }
+
+    public function test_database_seeder_is_idempotent_for_critical_catalog_data(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        $firstRunCounts = $this->criticalSeederCounts();
+
+        $this->seed(DatabaseSeeder::class);
+
+        $this->assertSame($firstRunCounts, $this->criticalSeederCounts());
+    }
+
+    private function criticalSeederCounts(): array
+    {
+        return [
+            'categories' => Category::count(),
+            'products' => Product::count(),
+            'product_accessories' => \DB::table('product_accessories')->count(),
+            'orders' => Order::count(),
+            'order_items' => OrderItem::count(),
+            'reviews' => Review::count(),
+            'chat_sessions' => ChatSession::count(),
+            'chat_messages' => ChatMessage::count(),
+            'pickup_points' => PickupPoint::count(),
+        ];
     }
 }
