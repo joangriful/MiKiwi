@@ -172,14 +172,32 @@ function ModelContent({
 
     useEffect(() => {
         if (!fbx) return;
+
+        const fallbackColor = color || '#ffd5b4';
+
         fbx.traverse(obj => {
             if (obj.isMesh && obj.material) {
                 (Array.isArray(obj.material) ? obj.material : [obj.material]).forEach(m => {
-                    if (customTexture) { m.map = userTexture; m.color.set('#ffffff'); }
-                    else if (texturePath && autoTexture?.image) { 
-                        m.map = autoTexture; m.color.set('#ffffff'); 
-                        if (normalPath && normalTexture?.image) { m.normalMap = normalTexture; m.normalScale.set(1, 1); }
-                    } else { m.color.set(color); m.map = null; }
+                    if (customTexture && userTexture) {
+                        m.map = userTexture;
+                        m.normalMap = null;
+                        m.color.set('#ffffff');
+                    } else if (texturePath && autoTexture) {
+                        m.map = autoTexture;
+                        m.color.set('#ffffff');
+
+                        if (normalPath && normalTexture) {
+                            m.normalMap = normalTexture;
+                            m.normalScale.set(1, 1);
+                        } else {
+                            m.normalMap = null;
+                        }
+                    } else {
+                        m.map = null;
+                        m.normalMap = null;
+                        m.color.set(fallbackColor);
+                    }
+
                     m.needsUpdate = true;
                 });
             }
