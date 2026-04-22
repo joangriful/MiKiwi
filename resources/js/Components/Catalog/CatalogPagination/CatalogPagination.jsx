@@ -2,7 +2,12 @@ import { Link } from '@inertiajs/react';
 import styles from './CatalogPagination.module.css';
 
 function cleanPaginationLabel(label) {
-    return label.replace('Previous', '').replace('Next', '');
+    return label
+        .replace(/&laquo;/g, '')
+        .replace(/&raquo;/g, '')
+        .replace('Previous', '')
+        .replace('Next', '')
+        .trim();
 }
 
 export default function CatalogPagination({ links = [] }) {
@@ -21,8 +26,9 @@ export default function CatalogPagination({ links = [] }) {
                             <span
                                 key={`${label}-${index}`}
                                 className={styles.disabledItem}
-                                dangerouslySetInnerHTML={{ __html: label }}
-                            />
+                            >
+                                {label}
+                            </span>
                         );
                     }
 
@@ -31,8 +37,9 @@ export default function CatalogPagination({ links = [] }) {
                             key={`${label}-${index}`}
                             href={link.url}
                             className={`${styles.item} ${link.active ? styles.itemActive : styles.itemInactive}`}
-                            dangerouslySetInnerHTML={{ __html: label }}
-                        />
+                        >
+                            {label}
+                        </Link>
                     );
                 })}
             </div>

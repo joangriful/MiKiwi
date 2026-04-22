@@ -9,13 +9,20 @@ export default function useLenisScroll() {
             smoothWheel: true,
         });
 
+        let rafId = null;
+
         function raf(time) {
             lenis.raf(time);
-            requestAnimationFrame(raf);
+            rafId = requestAnimationFrame(raf);
         }
-        requestAnimationFrame(raf);
+
+        rafId = requestAnimationFrame(raf);
 
         return () => {
+            if (rafId !== null) {
+                cancelAnimationFrame(rafId);
+            }
+
             lenis.destroy();
         };
     }, []);

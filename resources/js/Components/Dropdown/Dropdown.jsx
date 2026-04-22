@@ -1,6 +1,6 @@
 import { Transition } from '@headlessui/react';
 import { Link } from '@inertiajs/react';
-import { createContext, useContext, useState } from 'react';
+import { cloneElement, createContext, isValidElement, useContext, useState } from 'react';
 import styles from './Dropdown.module.css';
 
 const DropDownContext = createContext();
@@ -22,13 +22,28 @@ const Dropdown = ({ children }) => {
 const Trigger = ({ children }) => {
     const { open, setOpen, toggleOpen } = useContext(DropDownContext);
 
+    if (!isValidElement(children)) {
+        throw new Error('Dropdown.Trigger expects a single valid React element child.');
+    }
+
+    const childProps = {
+        onClick: (event) => {
+            children.props.onClick?.(event);
+            toggleOpen();
+        },
+        'aria-expanded': open,
+        'aria-haspopup': 'menu',
+    };
+
     return (
         <>
-            <div onClick={toggleOpen}>{children}</div>
+            {cloneElement(children, childProps)}
 
             {open && (
-                <div
+                <button
+                    type="button"
                     className={styles.backdrop}
+                    aria-label="Cerrar menú desplegable"
                     onClick={() => setOpen(false)}
                 />
             )}
@@ -42,7 +57,7 @@ const Content = ({
     contentClasses = '',
     children,
 }) => {
-    const { open, setOpen } = useContext(DropDownContext);
+    const { open } = useContext(DropDownContext);
 
     const alignmentClassName =
         align === 'left' ? styles.alignLeft : styles.alignRight;
@@ -69,7 +84,6 @@ const Content = ({
                 ]
                     .filter(Boolean)
                     .join(' ')}
-                onClick={() => setOpen(false)}
             >
                 <div className={panelClassName}>{children}</div>
             </div>
@@ -78,10 +92,11 @@ const Content = ({
 };
 
 const DropdownLink = ({ className = '', children, ...props }) => {
+    const { setOpen } = useContext(DropDownContext);
     const linkClassName = [styles.link, className].filter(Boolean).join(' ');
 
     return (
-        <Link {...props} className={linkClassName}>
+        <Link {...props} className={linkClassName} onClick={() => setOpen(false)}>
             {children}
         </Link>
     );
