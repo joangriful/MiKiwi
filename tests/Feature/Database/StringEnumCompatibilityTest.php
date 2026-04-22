@@ -12,6 +12,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
 class StringEnumCompatibilityTest extends TestCase
@@ -45,5 +46,27 @@ class StringEnumCompatibilityTest extends TestCase
         $this->assertSame(OrderStatus::Cancelled->value, $order->fresh()->status);
         $this->assertSame(PaymentStatus::Refunded->value, $order->fresh()->payment_status);
         $this->assertSame(CouponType::Fixed->value, $coupon->fresh()->type);
+    }
+
+    public function test_database_enum_fields_are_backed_by_string_columns(): void
+    {
+        foreach ($this->stringEnumColumns() as [$table, $column]) {
+            $metadata = collect(Schema::getColumns($table))->firstWhere('name', $column);
+            $typeName = strtolower((string) ($metadata['type_name'] ?? $metadata['type'] ?? ''));
+
+            $this->assertNotSame('enum', $typeName, "{$table}.{$column} should not be a SQL enum.");
+            $this->assertStringContainsString('char', $typeName, "{$table}.{$column} should be a string column.");
+        }
+    }
+
+    private function stringEnumColumns(): array
+    {
+        return [
+            ['users', 'role'],
+            ['products', 'product_type'],
+            ['orders', 'status'],
+            ['orders', 'payment_status'],
+            ['coupons', 'type'],
+        ];
     }
 }
