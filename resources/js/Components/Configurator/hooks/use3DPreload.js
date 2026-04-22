@@ -27,7 +27,7 @@ export function use3DPreload(views, defaultSettings) {
         hasStartedPreload.current = true;
 
         // User requested Log 1: Starting
-        console.log('%c[System] %cIniciando descarga del modelo Queen para visualización instantánea...', "color: #2196F3; font-weight: bold", "color: #666");
+        console.warn('%c[System] %cIniciando descarga del modelo Queen para visualización instantánea...', "color: #2196F3; font-weight: bold", "color: #666");
         
         const startTime = performance.now();
 
@@ -42,7 +42,7 @@ export function use3DPreload(views, defaultSettings) {
         Promise.all(tasks).then(() => {
             const duration = Math.round(performance.now() - startTime);
             // User requested Log 2: Ready
-            console.log(`%c[System] %cModelo Queen listo para visualización instantánea (%c${duration}ms%c)`, "color: #4CAF50; font-weight: bold", "color: #666", "color: #4CAF50", "color: #666");
+            console.warn(`%c[System] %cModelo Queen listo para visualización instantánea (%c${duration}ms%c)`, "color: #4CAF50; font-weight: bold", "color: #666", "color: #4CAF50", "color: #666");
         });
     };
 

@@ -70,6 +70,11 @@ function ModelContent({
     onModelMounted
 }) {
     const loadStart = useRef(performance.now());
+    const onModelMountedRef = useRef(onModelMounted);
+
+    useEffect(() => {
+        onModelMountedRef.current = onModelMounted;
+    }, [onModelMounted]);
     
     // 1. Load Model
     const fbx = useLoader(FBXLoader, modelPath, (loader) => {
@@ -93,7 +98,7 @@ function ModelContent({
         });
         const duration = Math.round(performance.now() - texStart);
         if (duration > 5) {
-            console.log(`%c[3D GPU] %cPreparación de texturas completada en %c${duration}ms`, "color: #E91E63; font-weight: bold", "color: #666", "color: #E91E63; font-weight: bold");
+            console.warn(`%c[3D GPU] %cPreparación de texturas completada en %c${duration}ms`, "color: #E91E63; font-weight: bold", "color: #666", "color: #E91E63; font-weight: bold");
         }
     }, [autoTexture, normalTexture, userTexture]);
 
@@ -147,9 +152,11 @@ function ModelContent({
 
         // Ensure 3D Ready Log (User request)
         const end = performance.now();
-        console.log(`%c[3D Model] %cModelo ${modelId} montado con éxito en %c${Math.round(end - loadStart.current)}ms`, "color: #4CAF50; font-weight: bold", "color: #666", "color: #4CAF50");
+        console.warn(`%c[3D Model] %cModelo ${modelId} montado con éxito en %c${Math.round(end - loadStart.current)}ms`, "color: #4CAF50; font-weight: bold", "color: #666", "color: #4CAF50");
 
-        if (onModelMounted) onModelMounted();
+        if (onModelMountedRef.current) {
+            onModelMountedRef.current();
+        }
 
         return () => {
             fbx.traverse(obj => {

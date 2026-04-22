@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, useRef, Suspense, useCallback } from 'react';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
 import ConfiguratorLayout from '@/Layouts/ConfiguratorLayout';
@@ -42,7 +42,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
     };
 
     // Reset idle timer whenever user interacts with the 2D UI
-    const resetIdleTimer = () => {
+    const resetIdleTimer = useCallback(() => {
         if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
         // Only restart if we haven't warmed up yet
         if (!canStartBackgroundWarming) {
@@ -50,7 +50,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                 setCanStartBackgroundWarming(true);
             }, 3000); // Only 3 seconds of inactivity needed to start background GPU prep
         }
-    };
+    }, [canStartBackgroundWarming]);
 
     // 3. Sync & Handlers
     useEffect(() => {
@@ -70,7 +70,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
 
         // 3D Engine JS Pre-fetch (Load the code, stay idle on the parse)
         load3DEngine().then(() => {
-            console.log("%c[System] %cMotor 3D listo para inicialización silenciosa.", "color: #9c27b0; font-weight: bold", "color: #666");
+            console.warn("%c[System] %cMotor 3D listo para inicialización silenciosa.", "color: #9c27b0; font-weight: bold", "color: #666");
         });
 
         const handleMove = (e) => {
@@ -103,7 +103,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
             window.removeEventListener('touchmove', handleMove);
             window.removeEventListener('touchend', handleUp);
         };
-    }, [canStartBackgroundWarming]);
+    }, [canStartBackgroundWarming, resetIdleTimer]);
 
     const handleSavePosition = (data) => {
         const key = `${data.view}|${data.category}|${data.part_id}`;
@@ -135,7 +135,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
             const now = performance.now();
             if (is3DMountedRef.current) {
                 // If already warmed, it's instant!
-                console.log(`%c[UX Metric] %cTransición INSTANTÁNEA (Pre-warming activo): %c${Math.round(now - now)}ms`, "color: #2196F3; font-weight: bold", "color: #666", "color: #2196F3; font-weight: bold");
+                console.warn(`%c[UX Metric] %cTransición INSTANTÁNEA (Pre-warming activo): %c${Math.round(now - now)}ms`, "color: #2196F3; font-weight: bold", "color: #666", "color: #2196F3; font-weight: bold");
             } else {
                 setTransitionStartTime(now); // Start UX stopwatch
             }
@@ -153,14 +153,14 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                     <div className={styles.tabsInner}>
                         <button
                             type="button"
-                            onClick={() => setActiveTab('customize')}
+                            onClick={() => handleTabChange('customize')}
                             className={`${styles.tabButton} ${activeTab === 'customize' ? styles.tabButtonActive : ''}`}
                         >
                             PERSONALIZAR
                         </button>
                         <button
                             type="button"
-                            onClick={() => setActiveTab('ready')}
+                            onClick={() => handleTabChange('ready')}
                             className={`${styles.tabButton} ${activeTab === 'ready' ? styles.tabButtonActive : ''}`}
                         >
                             MUÑECAS LISTAS
@@ -194,6 +194,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                                             onViewportChange={setViewportInfo}
                                             className={styles.previewArea}
                                             partPositions={partPositions}
+                                            onReady={handle2DReady}
                                         />
                                     </div>
                                 </div>
@@ -213,14 +214,16 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
 
                         {/* Drag Handle - Mobile/Tablet Only */}
                         {isStackedEditor && (
-                            <div
+                            <button
+                                type="button"
                                 onMouseDown={handleDragStart}
                                 onTouchStart={handleDragStart}
                                 className={styles.dragHandle}
                                 style={{ bottom: `${100 - topSectionHeight}%`, transform: 'translateY(50%)' }}
+                                aria-label="Ajustar altura del panel"
                             >
                                 <div className={styles.dragHandleKnob} />
-                            </div>
+                            </button>
                         )}
 
                         {/* Right Column: Options Bar + Controls */}
@@ -256,7 +259,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                     <div className={styles.readyView}>
                         <Suspense fallback={
                             <div className={styles.viewerLoading}>
-                                <div className={styles.viewerSpinner}></div>
+                                <div className={styles.viewerSpinner} />
                                 <p className={styles.viewerText}>Inicializando motor 3D...</p>
                             </div>
                         }>
@@ -266,10 +269,10 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                                     is3DMountedRef.current = true;
                                     if (transitionStartTime) {
                                         const totalTime = Math.round(performance.now() - transitionStartTime);
-                                        console.log(`%c[UX Metric] %cTransición completada (Carga bajo demanda): %c${totalTime}ms`, "color: #2196F3; font-weight: bold", "color: #666", "color: #2196F3; font-weight: bold");
+                                        console.warn(`%c[UX Metric] %cTransición completada (Carga bajo demanda): %c${totalTime}ms`, "color: #2196F3; font-weight: bold", "color: #666", "color: #2196F3; font-weight: bold");
                                         setTransitionStartTime(null);
                                     } else {
-                                        console.log("%c[System] %cEscena 3D pre-hidratada (GPU ready).", "color: #4CAF50; font-weight: bold", "color: #666");
+                                        console.warn("%c[System] %cEscena 3D pre-hidratada (GPU ready).", "color: #4CAF50; font-weight: bold", "color: #666");
                                     }
                                 }} 
                             />
