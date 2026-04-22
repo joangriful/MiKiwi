@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
  */
 export default function SegmentedDoll2D({
     selectedParts,
-    bodyProportions = { height: 1, bust: 1, waist: 1, hips: 1 },
+    bodyProportions: _bodyProportions = { height: 1, bust: 1, waist: 1, hips: 1 },
     canvasWidth = 800,
     canvasHeight = 1000,
     showGuides = false
@@ -240,8 +240,7 @@ export default function SegmentedDoll2D({
                         fontSize="20"
                         fontFamily="Arial, sans-serif"
                         opacity="0.7"
-                    >
-                    </text>
+                     />
                 )}
             </svg>
         </div>

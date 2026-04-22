@@ -44,7 +44,7 @@ const DEFAULT_HAIR_PARAMS = { style: 'bald', color: '#5d4037' };
 function Loader({ label = 'Cargando modelo...' }) {
     return (
         <div className={styles.loader}>
-            <div className={styles.loaderSpinner}></div>
+            <div className={styles.loaderSpinner} />
             <p>{label}</p>
         </div>
     );

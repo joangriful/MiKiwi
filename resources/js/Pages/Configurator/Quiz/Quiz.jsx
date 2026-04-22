@@ -264,8 +264,8 @@ export default function Quiz() {
             <Head title="Quiz de Identidad - MiKiwi" />
 
             <main className={styles.main}>
-                <div className={`${styles.blob} ${styles.blobOne}`}></div>
-                <div className={`${styles.blob} ${styles.blobTwo}`}></div>
+                <div className={`${styles.blob} ${styles.blobOne}`} />
+                <div className={`${styles.blob} ${styles.blobTwo}`} />
 
                 <div className={styles.card}>
                     {!isFinished ? (
@@ -281,7 +281,7 @@ export default function Quiz() {
                                         Volver
                                     </button>
                                 ) : (
-                                    <div className={styles.navigationSpacer}></div>
+                                    <div className={styles.navigationSpacer} />
                                 )}
                             </div>
                             <div className={styles.stepIndicator}>

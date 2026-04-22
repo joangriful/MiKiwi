@@ -1,6 +1,5 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Html, useTexture } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
 import { DoubleSide } from 'three';
 import styles from './ModelErrorBoundary.module.css';
 
@@ -23,11 +22,11 @@ export default class ModelErrorBoundary extends React.Component {
         this.state = { hasError: false };
     }
 
-    static getDerivedStateFromError(error) {
+    static getDerivedStateFromError(_error) {
         return { hasError: true };
     }
 
-    componentDidCatch(error, errorInfo) {
+    componentDidCatch(error, _errorInfo) {
         console.warn("3D Model missing, utilizing 2D fallback:", error);
     }
 

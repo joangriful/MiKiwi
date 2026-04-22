@@ -5,7 +5,6 @@ import React, { useMemo } from 'react';
  * Slices Head, Bust, Arms, Torso, Pelvis, and Legs from source images.
  */
 export default function Mannequin2D({ bodyParams, selectedParts }) {
-    const bp = bodyParams || {};
     const sp = selectedParts || {};
 
     const dollRegistry = {
@@ -15,12 +14,12 @@ export default function Mannequin2D({ bodyParams, selectedParts }) {
     };
 
     const transforms = useMemo(() => {
-        const h = bp.height ?? 0.5;
-        const hd = bp.head ?? 0.5;
-        const sh = bp.shoulders ?? 0.5;
-        const l = bp.legs ?? 0.5;
-        const b = bp.bust ?? 0.5;
-        const w = bp.waist ?? 0.5;
+        const h = bodyParams?.height ?? 0.5;
+        const hd = bodyParams?.head ?? 0.5;
+        const sh = bodyParams?.shoulders ?? 0.5;
+        const l = bodyParams?.legs ?? 0.5;
+        const b = bodyParams?.bust ?? 0.5;
+        const w = bodyParams?.waist ?? 0.5;
 
         return {
             overall: { transform: `scale(${0.9 + h * 0.2})`, transformOrigin: 'bottom center' },
@@ -30,7 +29,14 @@ export default function Mannequin2D({ bodyParams, selectedParts }) {
             torso: { transform: `scaleX(${0.9 + w * 0.2})`, transformOrigin: 'center center' },
             legs: { transform: `scaleY(${0.8 + l * 0.4})`, transformOrigin: 'top center' }
         };
-    }, [bp]);
+    }, [
+        bodyParams?.height,
+        bodyParams?.head,
+        bodyParams?.shoulders,
+        bodyParams?.legs,
+        bodyParams?.bust,
+        bodyParams?.waist,
+    ]);
 
     const getDollSrc = (key) => dollRegistry[sp[key]]?.src || dollRegistry['doll-2'].src;
 

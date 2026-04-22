@@ -45,7 +45,7 @@ const availableModels = [
 function Loader() {
     return (
         <div className={styles.loader}>
-            <div className={styles.spinner}></div>
+            <div className={styles.spinner} />
             <p className={styles.loaderText}>Cargando modelo 3D...</p>
         </div>
     );
@@ -54,7 +54,7 @@ function Loader() {
 export default function Mannequin3DViewer({ onModelMounted, isActive = false }) {
     const [selectedModel, setSelectedModel] = useState(availableModels[0]);
     const [isModelReady, setIsModelReady] = useState(false);
-    const [bodyParams, setBodyParams] = useState({
+    const [bodyParams] = useState({
         height: 0.5,
         bust: 0.5,
         hips: 0.5,
@@ -72,10 +72,6 @@ export default function Mannequin3DViewer({ onModelMounted, isActive = false }) 
     const handleModelMounted = () => {
         setIsModelReady(true);
         if (onModelMounted) onModelMounted();
-    };
-
-    const updateBodyParam = (key, value) => {
-        setBodyParams(prev => ({ ...prev, [key]: parseFloat(value) }));
     };
 
     return (

@@ -11,7 +11,7 @@ const DollScene3D = lazy(() => import('@/Components/Configurator/DollScene3D/Dol
 function Loading() {
     return (
         <div className={styles.loadingScreen}>
-            <div className={styles.loadingSpinner}></div>
+            <div className={styles.loadingSpinner} />
             <p className={styles.loadingText}>Cargando configurador...</p>
         </div>
     );

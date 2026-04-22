@@ -5,7 +5,7 @@ import PartSelector from '@/Components/Configurator/PartSelector/PartSelector';
 import OptionsBar from '@/Components/Configurator/OptionsBar/OptionsBar';
 import styles from './DollDefaultConfigurator.module.css';
 
-export default function DollDefaultConfigurator({ views, currentSelections, onSelectionChange, saving, partPositions }) {
+export default function DollDefaultConfigurator({ views, currentSelections, onSelectionChange, saving: _saving, partPositions }) {
     const [currentView, setCurrentView] = useState('front');
     const [viewportInfo, setViewportInfo] = useState({ visible: false });
     const [zoomLevel, setZoomLevel] = useState(100);

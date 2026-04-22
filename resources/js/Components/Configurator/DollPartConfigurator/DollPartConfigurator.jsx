@@ -4,7 +4,7 @@ import PartSelector from '@/Components/Configurator/PartSelector/PartSelector';
 import OptionsBar from '@/Components/Configurator/OptionsBar/OptionsBar';
 import styles from './DollPartConfigurator.module.css';
 
-export default function DollPartConfigurator({ views, saving, setMessage, partPositions, onSavePosition }) {
+export default function DollPartConfigurator({ views, saving: _saving, setMessage: _setMessage, partPositions, onSavePosition }) {
     const [currentView, setCurrentView] = useState('front');
 
     // Helper to get available parts for current view
