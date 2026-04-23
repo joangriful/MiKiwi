@@ -61,7 +61,6 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                 toast.error(response.data.message || 'Error al subir la imagen');
             }
         } catch (error) {
-            console.error('Upload error:', error);
             toast.error(error.response?.data?.message || 'Error al subir la imagen. Por favor, inténtalo de nuevo.');
         } finally {
             setUploadingProfile(false);
@@ -86,7 +85,6 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                 toast.error(response.data.message || 'Error al subir el banner');
             }
         } catch (error) {
-            console.error('Upload error:', error);
             toast.error(error.response?.data?.message || 'Error al subir el banner. Por favor, inténtalo de nuevo.');
         } finally {
             setUploadingBanner(false);
@@ -114,7 +112,7 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                             backgroundPosition: 'center',
                         } : {}}
                     >
-                        {!currentBannerImage && <div className={styles.bannerPattern}></div>}
+                        {!currentBannerImage && <div className={styles.bannerPattern} />}
                     </div>
 
                     <div className={styles.bannerOverlay}>
@@ -166,7 +164,7 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                                     </div>
                                 )}
 
-                                {!uploadingProfile && <div className={styles.statusDot}></div>}
+                                {!uploadingProfile && <div className={styles.statusDot} />}
                             </div>
 
                             <div className={styles.identityText}>
@@ -222,12 +220,14 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                                             )}
                                         </>
                                     ) : (
-                                        <div className={styles.productPlaceholder}></div>
+                                        <div className={styles.productPlaceholder} />
                                     )}
 
                                     <button
+                                        type="button"
                                         onClick={(event) => event.preventDefault()}
                                         className={styles.favoriteButton}
+                                        aria-label={`Añadir ${product.name} a favoritos`}
                                     >
                                         <div
                                             className={styles.favoriteIcon}
@@ -235,7 +235,7 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                                                 maskImage: `url('/assets/icons/MdiCardsHeartOutline.svg')`,
                                                 WebkitMaskImage: `url('/assets/icons/MdiCardsHeartOutline.svg')`,
                                             }}
-                                        ></div>
+                                        />
                                     </button>
                                 </div>
 
@@ -246,7 +246,7 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                                             {new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(product.base_price)}
                                         </span>
                                     </div>
-                                    <div className={styles.productDivider}></div>
+                                    <div className={styles.productDivider} />
                                     <p className={styles.productDescription}>
                                         {product.description || 'Ingeniería sensorial premium'}
                                     </p>

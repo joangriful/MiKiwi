@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
@@ -49,7 +49,7 @@ function CardForm({ onCancel, onSuccess }) {
             } else {
                 onSuccess();
             }
-        } catch (errorResponse) {
+        } catch {
             setError('Error al iniciar el proceso de registro.');
             setIsProcessing(false);
         }
@@ -58,7 +58,7 @@ function CardForm({ onCancel, onSuccess }) {
     return (
         <div className={styles.modalOverlay}>
             <div className={styles.modalCard}>
-                <button onClick={onCancel} className={styles.closeButton}>
+                <button type="button" onClick={onCancel} className={styles.closeButton} aria-label="Cerrar formulario de tarjeta">
                     <span className={styles.materialIcon}>close</span>
                 </button>
 
@@ -67,8 +67,10 @@ function CardForm({ onCancel, onSuccess }) {
 
                 <form onSubmit={handleSubmit} className={styles.modalForm}>
                     <div>
-                        <label className={styles.fieldLabel}>Nombre del Titular</label>
+                        <label htmlFor="card-holder-name" className={styles.fieldLabel}>Nombre del Titular</label>
                         <input
+                            id="card-holder-name"
+                            aria-label="Nombre del titular"
                             type="text"
                             required
                             value={holder}
@@ -79,7 +81,7 @@ function CardForm({ onCancel, onSuccess }) {
                     </div>
 
                     <div>
-                        <label className={styles.fieldLabel}>Datos de la Tarjeta</label>
+                        <span className={styles.fieldLabel}>Datos de la Tarjeta</span>
                         <div className={styles.cardElementWrap}>
                             <CardElement
                                 options={{
@@ -106,7 +108,7 @@ function CardForm({ onCancel, onSuccess }) {
                     <button type="submit" disabled={!stripe || isProcessing} className={styles.submitButton}>
                         {isProcessing ? (
                             <>
-                                <div className={styles.spinnerSmall}></div>
+                                <div className={styles.spinnerSmall} />
                                 <span>Guardando...</span>
                             </>
                         ) : (
@@ -138,21 +140,21 @@ export default function CardsTab() {
         setTimeout(() => setCopiedId(null), 2000);
     };
 
-    const fetchCards = async () => {
+    const fetchCards = useCallback(async () => {
         setIsLoading(true);
         try {
             const { data } = await axios.get(route('payment-methods.index'));
             setCards(data);
-        } catch (error) {
-            console.error('Error fetching cards:', error);
+        } catch {
+            setCards([]);
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchCards();
-    }, []);
+    }, [fetchCards]);
 
     const handleDelete = async (id) => {
         if (!confirm('¿Estás seguro de que quieres eliminar esta tarjeta?')) {
@@ -161,8 +163,8 @@ export default function CardsTab() {
 
         try {
             await axios.delete(route('payment-methods.destroy', id));
-            setCards(cards.filter((card) => card.id !== id));
-        } catch (error) {
+            setCards((currentCards) => currentCards.filter((card) => card.id !== id));
+        } catch {
             alert('Error al eliminar la tarjeta.');
         }
     };
@@ -193,7 +195,7 @@ export default function CardsTab() {
 
             {isLoading ? (
                 <div className={styles.centerState}>
-                    <div className={styles.loader}></div>
+                    <div className={styles.loader} />
                     <span className={styles.stateText}>Sincronizando con Stripe...</span>
                 </div>
             ) : cards.length > 0 ? (
@@ -202,7 +204,7 @@ export default function CardsTab() {
                         <div key={card.id} className={styles.cardRow}>
                             <div className={styles.brandBlock}>
                                 <span className={`${styles.brandName} ${getBrandClass(card.card.brand)}`}>{card.card.brand}</span>
-                                <div className={styles.brandDivider}></div>
+                                <div className={styles.brandDivider} />
                                 <span className={styles.brandType}>Credit</span>
                             </div>
 
@@ -213,7 +215,7 @@ export default function CardsTab() {
                                         <span className={styles.cardMetaIcon}>calendar_month</span>
                                         Expira: {card.card.exp_month}/{card.card.exp_year}
                                     </span>
-                                    <div className={styles.cardMetaDot}></div>
+                                    <div className={styles.cardMetaDot} />
                                     <span className={styles.cardMetaItem}>
                                         <span className={styles.cardMetaIcon}>person</span>
                                         {card.billing_details.name || 'Titular'}

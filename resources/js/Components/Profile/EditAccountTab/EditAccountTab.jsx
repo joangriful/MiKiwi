@@ -28,10 +28,6 @@ export default function EditAccountTab() {
         setFormData((previous) => ({ ...previous, [name]: value }));
     };
 
-    const handleSave = () => {
-        console.log('Saving account details:', formData);
-    };
-
     const handlePhoneChange = (phone, data) => {
         if (data && data.dialCode) {
             if (!phone || phone === data.dialCode) {
@@ -58,8 +54,10 @@ export default function EditAccountTab() {
             <div className={styles.form}>
                 <div className={styles.grid}>
                     <div>
-                        <label className={styles.label}>Nombre Completo</label>
+                        <label htmlFor="profile-account-name" className={styles.label}>Nombre Completo</label>
                         <input
+                            id="profile-account-name"
+                            aria-label="Nombre completo"
                             type="text"
                             name="name"
                             value={formData.name}
@@ -69,8 +67,10 @@ export default function EditAccountTab() {
                     </div>
 
                     <div>
-                        <label className={styles.label}>Nombre de Usuario</label>
+                        <label htmlFor="profile-account-username" className={styles.label}>Nombre de Usuario</label>
                         <input
+                            id="profile-account-username"
+                            aria-label="Nombre de usuario"
                             type="text"
                             name="username"
                             value={formData.username}
@@ -81,8 +81,10 @@ export default function EditAccountTab() {
                 </div>
 
                 <div>
-                    <label className={styles.label}>Correo Electrónico</label>
+                    <label htmlFor="profile-account-email" className={styles.label}>Correo Electrónico</label>
                     <input
+                        id="profile-account-email"
+                        aria-label="Correo electrónico"
                         type="email"
                         name="email"
                         value={formData.email}
@@ -92,7 +94,7 @@ export default function EditAccountTab() {
                 </div>
 
                 <div>
-                    <label className={styles.label}>Teléfono Móvil</label>
+                    <label htmlFor="profile-account-phone" className={styles.label}>Teléfono Móvil</label>
                     <PhoneInput
                         country="es"
                         value={formData.phone}
@@ -107,12 +109,18 @@ export default function EditAccountTab() {
                         buttonClass={styles.phoneButton}
                         dropdownClass={styles.phoneDropdown}
                         searchClass={styles.phoneSearch}
+                        inputProps={{
+                            id: 'profile-account-phone',
+                            name: 'phone',
+                            'aria-label': 'Teléfono móvil',
+                        }}
                     />
                 </div>
 
                 <div>
-                    <label className={styles.label}>Método de Pago Predeterminado</label>
+                    <label htmlFor="profile-account-payment-method" className={styles.label}>Método de Pago Predeterminado</label>
                     <select
+                        id="profile-account-payment-method"
                         name="default_payment_method"
                         value={formData.default_payment_method}
                         onChange={handleChange}
@@ -129,7 +137,7 @@ export default function EditAccountTab() {
                 </div>
 
                 <div className={styles.actions}>
-                    <button onClick={handleSave} className={styles.saveButton}>
+                    <button type="button" className={styles.saveButton}>
                         Guardar Cambios
                     </button>
                 </div>

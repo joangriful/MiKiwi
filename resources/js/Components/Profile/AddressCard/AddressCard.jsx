@@ -41,6 +41,7 @@ export default function AddressCard({ address, onSave, onDelete, onSetDefault, i
     const [isEditing, setIsEditing] = useState(address.isNew || false);
     const [formData, setFormData] = useState({ ...address });
     const [suggestions, setSuggestions] = useState([]);
+    const fieldIdPrefix = `address-${address.id}`;
 
     useEffect(() => {
         if (formData.zip && formData.zip.length === 5) {
@@ -63,9 +64,7 @@ export default function AddressCard({ address, onSave, onDelete, onSetDefault, i
                         }));
                     }
                 })
-                .catch((error) => {
-                    console.log('Zippopotam error or zip not found:', error);
-                });
+                .catch(() => {});
         }
     }, [formData.zip]);
 
@@ -93,6 +92,13 @@ export default function AddressCard({ address, onSave, onDelete, onSetDefault, i
             state: item.province,
         }));
         setSuggestions([]);
+    };
+
+    const handleSuggestionKeyDown = (event, item) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            selectCity(item);
+        }
     };
 
     const handleChange = (event) => {
@@ -140,8 +146,10 @@ export default function AddressCard({ address, onSave, onDelete, onSetDefault, i
 
                 <div className={styles.formGrid}>
                     <div className={styles.fullWidthField}>
-                        <label className={styles.label}>Nombre completo / Etiqueta</label>
+                        <label htmlFor={`${fieldIdPrefix}-name`} className={styles.label}>Nombre completo / Etiqueta</label>
                         <input
+                            id={`${fieldIdPrefix}-name`}
+                            aria-label="Nombre completo o etiqueta de la dirección"
                             type="text"
                             name="name"
                             value={formData.name || ''}
@@ -152,8 +160,10 @@ export default function AddressCard({ address, onSave, onDelete, onSetDefault, i
                     </div>
 
                     <div className={styles.fullWidthField}>
-                        <label className={styles.label}>Dirección</label>
+                        <label htmlFor={`${fieldIdPrefix}-street`} className={styles.label}>Dirección</label>
                         <input
+                            id={`${fieldIdPrefix}-street`}
+                            aria-label="Dirección"
                             type="text"
                             name="street"
                             value={formData.street || ''}
@@ -164,8 +174,10 @@ export default function AddressCard({ address, onSave, onDelete, onSetDefault, i
                     </div>
 
                     <div>
-                        <label className={styles.label}>Código Postal</label>
+                        <label htmlFor={`${fieldIdPrefix}-zip`} className={styles.label}>Código Postal</label>
                         <input
+                            id={`${fieldIdPrefix}-zip`}
+                            aria-label="Código postal"
                             type="text"
                             name="zip"
                             value={formData.zip || ''}
@@ -177,8 +189,10 @@ export default function AddressCard({ address, onSave, onDelete, onSetDefault, i
                     </div>
 
                     <div className={styles.autocompleteField}>
-                        <label className={styles.label}>Ciudad</label>
+                        <label htmlFor={`${fieldIdPrefix}-city`} className={styles.label}>Ciudad</label>
                         <input
+                            id={`${fieldIdPrefix}-city`}
+                            aria-label="Ciudad"
                             type="text"
                             name="city"
                             value={formData.city || ''}
@@ -189,11 +203,15 @@ export default function AddressCard({ address, onSave, onDelete, onSetDefault, i
                         />
 
                         {suggestions.length > 0 && (
-                            <ul className={styles.suggestions}>
+                            <ul className={styles.suggestions} role="listbox">
                                 {suggestions.map((item) => (
                                     <li
                                         key={`${item.city}-${item.province}`}
+                                        role="option"
+                                        aria-selected={formData.city === item.city}
+                                        tabIndex={0}
                                         onClick={() => selectCity(item)}
+                                        onKeyDown={(event) => handleSuggestionKeyDown(event, item)}
                                         className={styles.suggestionItem}
                                     >
                                         {item.city}
@@ -205,8 +223,10 @@ export default function AddressCard({ address, onSave, onDelete, onSetDefault, i
                     </div>
 
                     <div>
-                        <label className={styles.label}>Provincia</label>
+                        <label htmlFor={`${fieldIdPrefix}-state`} className={styles.label}>Provincia</label>
                         <input
+                            id={`${fieldIdPrefix}-state`}
+                            aria-label="Provincia"
                             type="text"
                             name="state"
                             value={formData.state || ''}
@@ -216,7 +236,7 @@ export default function AddressCard({ address, onSave, onDelete, onSetDefault, i
                     </div>
 
                     <div>
-                        <label className={styles.label}>Teléfono móvil</label>
+                        <label htmlFor={`${fieldIdPrefix}-phone`} className={styles.label}>Teléfono móvil</label>
                         <PhoneInput
                             country="es"
                             value={formData.phone || ''}
@@ -231,6 +251,11 @@ export default function AddressCard({ address, onSave, onDelete, onSetDefault, i
                             buttonClass={styles.phoneButton}
                             dropdownClass={styles.phoneDropdown}
                             searchClass={styles.phoneSearch}
+                            inputProps={{
+                                id: `${fieldIdPrefix}-phone`,
+                                name: 'phone',
+                                'aria-label': 'Teléfono móvil',
+                            }}
                         />
                     </div>
                 </div>

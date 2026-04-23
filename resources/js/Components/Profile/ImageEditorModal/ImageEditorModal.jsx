@@ -124,8 +124,8 @@ export default function ImageEditorModal({
             const croppedBlob = await getCroppedImg(imageUrl, croppedAreaPixels, rotation);
             onSave(croppedBlob);
             handleClose();
-        } catch (error) {
-            console.error('Error cropping image:', error);
+        } catch {
+            alert('No se pudo procesar la imagen. Inténtalo de nuevo.');
         } finally {
             setSaving(false);
         }
@@ -157,13 +157,14 @@ export default function ImageEditorModal({
 
                 {!imageUrl ? (
                     <div className={styles.emptyArea}>
-                        <div
+                        <label
+                            htmlFor="file-input-editor"
+                            aria-label="Seleccionar imagen"
                             onDragEnter={handleDrag}
                             onDragLeave={handleDrag}
                             onDragOver={handleDrag}
                             onDrop={handleDrop}
                             className={`${styles.dropZone} ${dragActive ? styles.dropZoneActive : styles.dropZoneIdle}`}
-                            onClick={() => document.getElementById('file-input-editor').click()}
                         >
                             <div className={styles.dropZoneContent}>
                                 <span className={`${styles.materialIconHero} ${styles.dropZoneIcon}`}>
@@ -184,12 +185,13 @@ export default function ImageEditorModal({
                             </div>
                             <input
                                 id="file-input-editor"
+                                aria-label="Seleccionar imagen"
                                 type="file"
                                 onChange={handleFileInput}
                                 accept="image/jpeg,image/jpg,image/png"
                                 className={styles.hiddenInput}
                             />
-                        </div>
+                        </label>
                     </div>
                 ) : (
                     <>
@@ -211,11 +213,13 @@ export default function ImageEditorModal({
 
                         <div className={styles.controlsPanel}>
                             <div className={styles.controlGroup}>
-                                <label className={styles.controlLabel}>
+                                <label htmlFor="image-editor-zoom" className={styles.controlLabel}>
                                     <span className={styles.materialIcon}>zoom_in</span>
                                     Zoom: {zoom.toFixed(1)}x
                                 </label>
                                 <input
+                                    id="image-editor-zoom"
+                                    aria-label="Zoom de imagen"
                                     type="range"
                                     min={1}
                                     max={3}
@@ -227,10 +231,10 @@ export default function ImageEditorModal({
                             </div>
 
                             <div className={styles.controlGroup}>
-                                <label className={styles.controlLabel}>
+                                <span className={styles.controlLabel}>
                                     <span className={styles.materialIcon}>rotate_right</span>
                                     Rotación: {rotation}°
-                                </label>
+                                </span>
                                 <div className={styles.rotationActions}>
                                     <button type="button" onClick={() => setRotation((value) => value - 90)} className={styles.secondaryAction}>
                                         <span className={styles.materialIcon}>rotate_left</span>
