@@ -40,6 +40,11 @@ class ProductService
         return $this->productRepository->getLatestActiveInStock($limit);
     }
 
+    public function getCartPopularProducts(int $limit = 8)
+    {
+        return $this->productRepository->getCartPopularProducts($limit);
+    }
+
     public function getAdminProducts()
     {
         return $this->productRepository->getAllForAdmin();

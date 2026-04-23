@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Products\Repositories\Eloquent;
 
-use App\Models\Product;
 use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -87,6 +87,17 @@ class EloquentProductRepository implements ProductRepositoryInterface
             ->inStock()
             ->with('category:id,name,slug')
             ->latest()
+            ->limit($limit)
+            ->get();
+    }
+
+    public function getCartPopularProducts(int $limit = 8): Collection
+    {
+        return Product::active()
+            ->whereIn('product_type', [
+                \App\Enums\ProductType::Configurable->value,
+                \App\Enums\ProductType::Simple->value,
+            ])
             ->limit($limit)
             ->get();
     }

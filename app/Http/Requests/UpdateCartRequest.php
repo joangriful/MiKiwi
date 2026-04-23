@@ -5,21 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class UpdateCartRequest extends FormRequest
 {
-    /**
-     * Determina si el usuario está autorizado
-     */
     public function authorize(): bool
     {
-        return Auth::check();
+        return true;
     }
 
-    /**
-     * Reglas de validación para actualizar cantidad en carrito
-     */
     public function rules(): array
     {
         return [
@@ -27,9 +20,6 @@ class UpdateCartRequest extends FormRequest
         ];
     }
 
-    /**
-     * Mensajes de error en español
-     */
     public function messages(): array
     {
         return [
@@ -40,9 +30,6 @@ class UpdateCartRequest extends FormRequest
         ];
     }
 
-    /**
-     * Atributos personalizados
-     */
     public function attributes(): array
     {
         return [

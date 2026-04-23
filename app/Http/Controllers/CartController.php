@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Concerns\InteractsWithApiErrors;
+use App\Domain\Carts\Services\CartPageService;
 use App\Domain\Carts\Services\CartService;
-use App\Enums\ProductType;
+use App\Http\Controllers\Concerns\InteractsWithApiErrors;
+use App\Http\Requests\StoreCartRequest;
+use App\Http\Requests\UpdateCartRequest;
 use App\Http\Resources\ProductResource;
-use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -15,70 +16,29 @@ class CartController extends Controller
 {
     use InteractsWithApiErrors;
 
-    protected $cartService;
+    public function __construct(
+        protected CartService $cartService,
+        private readonly CartPageService $cartPageService,
+    ) {}
 
-    public function __construct(CartService $cartService)
-    {
-        $this->cartService = $cartService;
-    }
-
-    /**
-     * Mostrar el carrito de compras
-     *
-     * @return \Inertia\Response
-     */
     public function index(Request $request)
     {
-        $cart = $this->cartService->getCart();
-        $popularProducts = Product::where('is_active', true)
-            ->whereIn('product_type', [
-                ProductType::Configurable->value,
-                ProductType::Simple->value,
-            ])
-            ->limit(8)
-            ->get();
-
-        $couponData = session('coupon');
-        Log::info('CartController::index - Coupon in session: '.json_encode($couponData));
-
-        if ($couponData) {
-            $coupon = \App\Models\Coupon::where('code', $couponData['code'])->first();
-            if ($coupon && $coupon->isValid()) {
-                $couponData['discount'] = $coupon->calculateDiscount($cart['total']);
-                session(['coupon' => $couponData]); // Update session with new discount
-            } else {
-                session()->forget('coupon'); // Remove invalid coupon
-                $couponData = null;
-            }
-        }
-
-        $selectedCart = $request->has('buy_now') && session()->has('buy_now_item')
-            ? $this->cartService->getBuyNowItem()
-            : $cart;
+        $pageData = $this->cartPageService->getPageData($request->boolean('buy_now'));
 
         return Inertia::render('Checkout/Cart', [
-            'cart' => $this->publicCart($selectedCart, $request),
-            'isBuyNow' => $request->has('buy_now') && session()->has('buy_now_item'),
-            'popularProducts' => ProductResource::collection($popularProducts)->resolve($request),
+            'cart' => $this->publicCart($pageData['cart'], $request),
+            'isBuyNow' => $pageData['isBuyNow'],
+            'popularProducts' => ProductResource::collection($pageData['popularProducts'])->resolve($request),
             'pageTitle' => 'Carrito de Compras - MiKiwi',
             'stripeKey' => config('services.stripe.key'),
-            'coupon' => $couponData,
+            'coupon' => $pageData['coupon'],
         ]);
     }
 
-    /**
-     * Agregar producto al carrito
-     *
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
-     */
-    public function store(Request $request)
+    public function store(StoreCartRequest $request)
     {
         try {
-            $validated = $request->validate([
-                'product_slug' => 'required|string',
-                'quantity' => 'required|integer|min:1',
-                'accessories' => 'nullable|array',
-            ]);
+            $validated = $request->validated();
 
             $cart = $this->cartService->addToCart(
                 $validated['product_slug'],
@@ -110,17 +70,10 @@ class CartController extends Controller
         }
     }
 
-    /**
-     * Actualizar cantidad de un producto en el carrito
-     *
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
-     */
-    public function update(Request $request, string $id)
+    public function update(UpdateCartRequest $request, string $id)
     {
         try {
-            $validated = $request->validate([
-                'quantity' => 'required|integer|min:1',
-            ]);
+            $validated = $request->validated();
 
             $this->cartService->updateQuantity($id, $validated['quantity']);
 
@@ -147,11 +100,6 @@ class CartController extends Controller
         }
     }
 
-    /**
-     * Eliminar producto del carrito
-     *
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
-     */
     public function destroy(Request $request, string $id)
     {
         try {
@@ -180,11 +128,6 @@ class CartController extends Controller
         }
     }
 
-    /**
-     * Vaciar el carrito
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function clear(Request $request)
     {
         try {
@@ -205,17 +148,10 @@ class CartController extends Controller
         }
     }
 
-    /**
-     * Comprar un producto directamente (aislado del carrito)
-     */
-    public function buyNow(Request $request)
+    public function buyNow(StoreCartRequest $request)
     {
         try {
-            $validated = $request->validate([
-                'product_slug' => 'required|string',
-                'quantity' => 'required|integer|min:1',
-                'accessories' => 'nullable|array',
-            ]);
+            $validated = $request->validated();
 
             $this->cartService->setBuyNowItem(
                 $validated['product_slug'],

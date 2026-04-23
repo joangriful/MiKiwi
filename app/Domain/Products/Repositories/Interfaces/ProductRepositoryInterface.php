@@ -24,5 +24,7 @@ interface ProductRepositoryInterface
 
     public function getLatestActiveInStock(int $limit = 4): Collection;
 
+    public function getCartPopularProducts(int $limit = 8): Collection;
+
     public function getAllForAdmin(): Collection;
 }

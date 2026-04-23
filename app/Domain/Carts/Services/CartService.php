@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Domain\Carts\Services;
 
+use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Exceptions\InsufficientStockException;
 use App\Exceptions\ProductNotFoundException;
-use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Support\Facades\Session;
 
 class CartService
@@ -14,6 +14,7 @@ class CartService
     protected ProductRepositoryInterface $productRepository;
 
     protected string $cartSessionKey = 'shopping_cart';
+
     protected string $buyNowSessionKey = 'buy_now_item';
 
     public function __construct(ProductRepositoryInterface $productRepository)
@@ -253,8 +254,9 @@ class CartService
 
         $product = $this->productRepository->getActiveBySlug($item['slug']);
 
-        if (!$product) {
+        if (! $product) {
             $this->clearBuyNowItem();
+
             return null;
         }
 
@@ -279,5 +281,10 @@ class CartService
     public function clearBuyNowItem(): void
     {
         Session::forget($this->buyNowSessionKey);
+    }
+
+    public function hasBuyNowItem(): bool
+    {
+        return Session::has($this->buyNowSessionKey);
     }
 }
