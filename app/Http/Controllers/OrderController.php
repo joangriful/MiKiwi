@@ -10,16 +10,20 @@ use App\Domain\Orders\Actions\CreateOrder;
 use App\Domain\Orders\Actions\ResolveOrderPaymentStatus;
 use App\Domain\Orders\Services\OrderService;
 use App\Domain\Payments\Services\StripeService;
-use App\Exceptions\CartEmptyException;
 use App\Exceptions\InvalidOrderException;
+use App\Http\Controllers\Concerns\InteractsWithApiErrors;
 use App\Http\Requests\StoreOrderRequest;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class OrderController extends Controller
 {
+    use InteractsWithApiErrors;
+
     public function __construct(
         protected CartService $cartService,
         protected StripeService $stripeService,
@@ -56,14 +60,18 @@ class OrderController extends Controller
     {
         $cartValidation = $this->cartService->validateCartStock();
         if (! $cartValidation['valid']) {
-            return back()->with('error', implode(' ', $cartValidation['errors']));
+            throw ValidationException::withMessages([
+                'checkout' => implode(' ', $cartValidation['errors']),
+            ]);
         }
 
         $isBuyNow = session()->has('buy_now_item');
         $cartData = $isBuyNow ? $this->cartService->getBuyNowItem() : $this->cartService->getCart();
 
         if (! $cartData || $cartData['item_count'] === 0) {
-            throw new CartEmptyException('checkout');
+            throw ValidationException::withMessages([
+                'checkout' => 'Tu carrito está vacío. Añade al menos un producto antes de continuar con el pago.',
+            ]);
         }
 
         try {
@@ -76,7 +84,11 @@ class OrderController extends Controller
 
             return redirect()->route('orders.success')->with('success', '¡Pedido realizado con éxito!');
         } catch (\Throwable $exception) {
-            return back()->with('error', 'Error al procesar: '.$exception->getMessage());
+            Log::error('Order creation failed: '.$exception->getMessage());
+
+            throw ValidationException::withMessages([
+                'checkout' => 'No pudimos guardar tu pedido. Si el cargo se ha realizado, contacta con soporte con tu referencia de pago.',
+            ]);
         }
     }
 
@@ -87,26 +99,40 @@ class OrderController extends Controller
 
     public function createPaymentIntent(Request $request)
     {
-        $isBuyNow = session()->has('buy_now_item');
-        $cartData = $isBuyNow ? $this->cartService->getBuyNowItem() : $this->cartService->getCart();
+        try {
+            $isBuyNow = session()->has('buy_now_item');
+            $cartData = $isBuyNow ? $this->cartService->getBuyNowItem() : $this->cartService->getCart();
 
-        if ($cartData['item_count'] === 0) {
-            return response()->json(['error' => 'Cart is empty'], 400);
+            if ($cartData['item_count'] === 0) {
+                return $this->apiError(
+                    'checkout_cart_empty',
+                    'Tu carrito está vacío. Añade al menos un producto antes de continuar con el pago.',
+                    422
+                );
+            }
+
+            $user = Auth::user();
+            $customer = $this->stripeService->getOrCreateCustomer($user);
+
+            $intent = $this->stripeService->createPaymentIntent(
+                $cartData['total'],
+                'eur',
+                ['order_type' => $isBuyNow ? 'buy_now' : 'standard'],
+                $customer->id
+            );
+
+            return response()->json([
+                'clientSecret' => $intent->client_secret,
+            ]);
+        } catch (\Throwable $exception) {
+            Log::error('Payment intent creation failed: '.$exception->getMessage());
+
+            return $this->apiError(
+                'checkout_payment_intent_failed',
+                'No pudimos iniciar el pago seguro. Inténtalo de nuevo en unos minutos.',
+                500
+            );
         }
-
-        $user = Auth::user();
-        $customer = $this->stripeService->getOrCreateCustomer($user);
-
-        $intent = $this->stripeService->createPaymentIntent(
-            $cartData['total'],
-            'eur',
-            ['order_type' => $isBuyNow ? 'buy_now' : 'standard'],
-            $customer->id
-        );
-
-        return response()->json([
-            'clientSecret' => $intent->client_secret,
-        ]);
     }
 
     public function index()

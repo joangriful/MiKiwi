@@ -30,11 +30,14 @@
     --color-surface-overlay: rgb(0 0 0 / 50%);
     --color-black-faint: rgb(0 0 0 / 10%);
     --color-white-faint: rgb(255 255 255 / 10%);
+    --color-white-overlay: rgb(255 255 255 / 20%);
     --color-white-muted: rgb(255 255 255 / 60%);
     --color-white-dim: rgb(255 255 255 / 70%);
     --color-white-soft: rgb(255 255 255 / 90%);
     --color-primary-soft: rgb(153 184 73 / 10%);
     --color-primary-ring: rgb(153 184 73 / 20%);
+    --color-primary-ring-strong: rgb(153 184 73 / 30%);
+    --color-primary-muted: rgb(153 184 73 / 60%);
     --color-info: #3b82f6;
     --color-info-soft: #eff6ff;
     --color-info-soft-hover: #dbeafe;
@@ -48,6 +51,7 @@
     --color-purple-ring: rgb(139 92 246 / 20%);
     --color-success: #22c55e;
     --color-success-soft: #ecfdf5;
+    --color-success-soft-transparent: rgb(236 253 245 / 20%);
     --color-success-strong: #047857;
     --color-success-border: #d1fae5;
     --color-warning: #eab308;
@@ -63,6 +67,7 @@
     --color-danger-soft: #ef4444;
     --color-danger-strong: #b91c1c;
     --color-danger-bg: #fef2f2;
+    --color-danger-bg-transparent: rgb(254 242 242 / 20%);
     --color-danger-border: #fecaca;
     --color-danger-ring: rgb(239 68 68 / 20%);
 
@@ -80,6 +85,8 @@
     --transition-premium: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     --shadow-soft: 0 4px 20px rgb(0 0 0 / 4%);
     --shadow-medium: 0 8px 30px rgb(0 0 0 / 8%);
+    --shadow-inset-soft: inset 0 1px 3px rgb(34 43 36 / 5%);
+    --shadow-primary-soft: 0 18px 30px rgb(153 184 73 / 5%);
     --radius-sm: 8px;
     --radius-md: 16px;
     --radius-lg: 24px;

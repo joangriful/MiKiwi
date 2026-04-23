@@ -7,6 +7,7 @@ export default function ImageEditorModal({
     onClose,
     aspectRatio = 1,
     onSave,
+    onError,
     type = 'profile',
     existingImageUrl = null,
 }) {
@@ -28,13 +29,13 @@ export default function ImageEditorModal({
         }
 
         if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
-            alert('Por favor selecciona una imagen JPEG o PNG');
+            onError(`Selecciona una imagen en formato JPG o PNG para tu ${type === 'banner' ? 'banner' : 'foto de perfil'}.`);
             return;
         }
 
         const maxSize = type === 'banner' ? 10 * 1024 * 1024 : 5 * 1024 * 1024;
         if (file.size > maxSize) {
-            alert(`La imagen debe ser menor a ${type === 'banner' ? '10MB' : '5MB'}`);
+            onError(`La imagen es demasiado grande. El tamaño máximo para tu ${type === 'banner' ? 'banner' : 'foto de perfil'} es de ${type === 'banner' ? '10 MB' : '5 MB'}.`);
             return;
         }
 
@@ -125,7 +126,7 @@ export default function ImageEditorModal({
             onSave(croppedBlob);
             handleClose();
         } catch {
-            alert('No se pudo procesar la imagen. Inténtalo de nuevo.');
+            onError(`No pudimos procesar la ${type === 'banner' ? 'imagen del banner' : 'foto de perfil'}. Prueba con otra imagen o vuelve a intentarlo.`);
         } finally {
             setSaving(false);
         }

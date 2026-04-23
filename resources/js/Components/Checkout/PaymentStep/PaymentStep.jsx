@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { CardElement, useStripe } from "@stripe/react-stripe-js";
 import axios from "axios";
 import InputLabel from "@/Components/InputLabel/InputLabel";
+import { normalizeApiError } from "@/Utils/httpError";
 import styles from "./PaymentStep.module.css";
 
 const TEST_CARDS = [
@@ -48,17 +49,60 @@ function BillingField({ label, htmlFor, value, onChange, placeholder }) {
     );
 }
 
-export default function PaymentStep({ data, setData, auth, onSubmit, onBack, processing }) {
+export default function PaymentStep({ data, setData, auth, onSubmit, onBack, processing, submitError, onClearSubmitError }) {
     const isAdmin = auth?.user?.role === "admin";
     const stripe = useStripe();
     const [cardError, setCardError] = useState(null);
     const [isConfirming, setIsConfirming] = useState(false);
     const [savedCards, setSavedCards] = useState([]);
     const [isLoadingCards, setIsLoadingCards] = useState(false);
+    const [savedCardsError, setSavedCardsError] = useState(null);
     const [paymentOption, setPaymentOption] = useState("new");
     const [showAdminTestCards, setShowAdminTestCards] = useState(false);
     const [copiedId, setCopiedId] = useState(null);
     const [isCardComplete, setIsCardComplete] = useState(false);
+    const cardElementOptions = useMemo(() => {
+        const fallbackColors = {
+            text: "#1f2937",
+            placeholder: "#9ca3af",
+            invalid: "#ef4444",
+        };
+
+        if (typeof window === "undefined") {
+            return {
+                style: {
+                    base: {
+                        fontSize: "16px",
+                        color: fallbackColors.text,
+                        "::placeholder": {
+                            color: fallbackColors.placeholder,
+                        },
+                    },
+                    invalid: {
+                        color: fallbackColors.invalid,
+                    },
+                },
+            };
+        }
+
+        const cssVars = getComputedStyle(document.documentElement);
+        const readVar = (name, fallback) => cssVars.getPropertyValue(name).trim() || fallback;
+
+        return {
+            style: {
+                base: {
+                    fontSize: "16px",
+                    color: readVar("--color-text-strong", fallbackColors.text),
+                    "::placeholder": {
+                        color: readVar("--color-text-subtle", fallbackColors.placeholder),
+                    },
+                },
+                invalid: {
+                    color: readVar("--color-danger-soft", fallbackColors.invalid),
+                },
+            },
+        };
+    }, []);
 
     useEffect(() => {
         if (!processing) {
@@ -72,6 +116,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
         try {
             const { data: cards } = await axios.get(route("payment-methods.index"));
             setSavedCards(cards);
+            setSavedCardsError(null);
 
             if (cards.length > 0) {
                 setPaymentOption(cards[0].id);
@@ -81,7 +126,12 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                 setData("selected_payment_method", null);
             }
         } catch (error) {
-            console.error("Error fetching saved cards:", error);
+            setSavedCards([]);
+            setSavedCardsError(normalizeApiError(error, {
+                title: "No pudimos cargar tus tarjetas",
+                message: "No pudimos cargar tus tarjetas guardadas. Puedes continuar usando una tarjeta nueva.",
+                code: "payment_method_list_failed",
+            }));
         } finally {
             setIsLoadingCards(false);
         }
@@ -96,6 +146,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
     const handleOptionChange = (optionId) => {
         setPaymentOption(optionId);
         setData("selected_payment_method", optionId === "new" ? null : optionId);
+        onClearSubmitError();
     };
 
     const copyToClipboard = (text, id) => {
@@ -107,6 +158,9 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
     const handleCardChange = (event) => {
         setIsCardComplete(event.complete);
         setCardError(event.error ? event.error.message : null);
+        if (event.error === undefined) {
+            onClearSubmitError();
+        }
     };
 
     const onSubmitClick = (event) => {
@@ -119,22 +173,8 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
 
         setIsConfirming(true);
         setCardError(null);
+        onClearSubmitError();
         onSubmit();
-    };
-
-    const cardElementOptions = {
-        style: {
-            base: {
-                fontSize: "16px",
-                color: "#1f2937",
-                "::placeholder": {
-                    color: "#9ca3af",
-                },
-            },
-            invalid: {
-                color: "#ef4444",
-            },
-        },
     };
 
     const isSubmitDisabled =
@@ -176,6 +216,19 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
             </div>
 
             <div className={styles.paymentSection}>
+                {savedCardsError ? (
+                    <div className={styles.errorBanner}>
+                        <svg className={styles.iconSm} fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                fillRule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                clipRule="evenodd"
+                            />
+                        </svg>
+                        <span className={styles.errorBannerText}>{savedCardsError.message}</span>
+                    </div>
+                ) : null}
+
                 {showSavedCards ? (
                     <div className={styles.optionGroup}>
                         <div className={styles.groupLabel}>
@@ -391,6 +444,19 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                             />
                         </svg>
                         <span className={styles.errorBannerText}>{cardError}</span>
+                    </div>
+                ) : null}
+
+                {submitError ? (
+                    <div className={styles.errorBanner}>
+                        <svg className={styles.iconSm} fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                fillRule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                clipRule="evenodd"
+                            />
+                        </svg>
+                        <span className={styles.errorBannerText}>{submitError.message}</span>
                     </div>
                 ) : null}
             </div>

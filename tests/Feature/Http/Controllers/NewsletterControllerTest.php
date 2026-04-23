@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Domain\Newsletters\Services\NewsletterService;
 use App\Models\Subscriber;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -40,6 +41,27 @@ class NewsletterControllerTest extends TestCase
             ])
             ->assertRedirect('/')
             ->assertSessionHasErrors(['newsletter']);
+
+        $this->assertSame(0, Subscriber::query()->count());
+    }
+
+    public function test_newsletter_service_failure_returns_human_error_message(): void
+    {
+        $service = $this->createMock(NewsletterService::class);
+        $service->method('subscribe')
+            ->willThrowException(new \RuntimeException('Resend API timeout with internal token data'));
+
+        $this->app->instance(NewsletterService::class, $service);
+
+        $this->from('/')
+            ->post(route('newsletter.subscribe'), [
+                'email' => 'guest@example.com',
+                'gender' => 'vulva',
+            ])
+            ->assertRedirect('/')
+            ->assertSessionHasErrors([
+                'newsletter' => 'No pudimos completar tu suscripción ahora mismo. Inténtalo de nuevo en unos minutos.',
+            ]);
 
         $this->assertSame(0, Subscriber::query()->count());
     }

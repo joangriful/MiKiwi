@@ -26,11 +26,11 @@ export default class AppErrorBoundary extends React.Component {
             return (
                 <main className={styles.root} role="alert">
                     <div className={styles.panel}>
-                        <p className={styles.eyebrow}>Error de aplicacion</p>
-                        <h1 className={styles.title}>Se produjo un error inesperado</h1>
+                        <p className={styles.eyebrow}>Algo no ha salido como esperábamos</p>
+                        <h1 className={styles.title}>No pudimos mostrar esta pantalla</h1>
                         <p className={styles.message}>
-                            La interfaz no pudo renderizar esta vista correctamente. Recarga la pagina y, si el problema persiste,
-                            revisa la consola para identificar el componente que ha fallado.
+                            Ha ocurrido un problema al cargar esta parte de la aplicación. Recarga la página y, si vuelve a pasar,
+                            inténtalo de nuevo dentro de unos minutos.
                         </p>
                     </div>
                 </main>

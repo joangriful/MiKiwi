@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
+import { toast } from 'react-toastify';
+import { normalizeApiError, normalizeStripeError } from '@/Utils/httpError';
 import styles from './CardsTab.module.css';
 import {
     Elements,
@@ -44,13 +46,21 @@ function CardForm({ onCancel, onSuccess }) {
             });
 
             if (result.error) {
-                setError(result.error.message);
+                setError(normalizeStripeError(result.error, {
+                    title: 'No pudimos validar la tarjeta',
+                    message: 'No pudimos validar tu tarjeta. Revisa los datos e inténtalo de nuevo.',
+                    code: 'payment_method_setup_failed',
+                }).message);
                 setIsProcessing(false);
             } else {
                 onSuccess();
             }
-        } catch {
-            setError('Error al iniciar el proceso de registro.');
+        } catch (error) {
+            setError(normalizeApiError(error, {
+                title: 'No pudimos iniciar el registro de la tarjeta',
+                message: 'No pudimos iniciar el registro de tu tarjeta. Inténtalo de nuevo en unos minutos.',
+                code: 'payment_method_setup_failed',
+            }).message);
             setIsProcessing(false);
         }
     };
@@ -145,8 +155,13 @@ export default function CardsTab() {
         try {
             const { data } = await axios.get(route('payment-methods.index'));
             setCards(data);
-        } catch {
+        } catch (error) {
             setCards([]);
+            toast.error(normalizeApiError(error, {
+                title: 'No pudimos cargar tus tarjetas',
+                message: 'No pudimos cargar tus tarjetas guardadas. Inténtalo de nuevo en unos minutos.',
+                code: 'payment_method_list_failed',
+            }).message);
         } finally {
             setIsLoading(false);
         }
@@ -164,8 +179,13 @@ export default function CardsTab() {
         try {
             await axios.delete(route('payment-methods.destroy', id));
             setCards((currentCards) => currentCards.filter((card) => card.id !== id));
-        } catch {
-            alert('Error al eliminar la tarjeta.');
+            toast.success('Tarjeta eliminada correctamente.');
+        } catch (error) {
+            toast.error(normalizeApiError(error, {
+                title: 'No se pudo eliminar la tarjeta',
+                message: 'No pudimos eliminar tu tarjeta. Inténtalo de nuevo más tarde.',
+                code: 'payment_method_delete_failed',
+            }).message);
         }
     };
 

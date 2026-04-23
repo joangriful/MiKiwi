@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\InteractsWithApiErrors;
 use App\Domain\Carts\Services\CartService;
 use App\Enums\ProductType;
 use App\Http\Resources\ProductResource;
@@ -12,6 +13,8 @@ use Inertia\Inertia;
 
 class CartController extends Controller
 {
+    use InteractsWithApiErrors;
+
     protected $cartService;
 
     public function __construct(CartService $cartService)
@@ -93,14 +96,17 @@ class CartController extends Controller
 
             return redirect()->back()->with('success', 'Producto agregado al carrito');
         } catch (\Exception $e) {
+            Log::error('Cart add failed: '.$e->getMessage());
+
             if ($request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                ], 400);
+                return $this->apiError(
+                    'cart_add_failed',
+                    'No pudimos agregar el producto al carrito. Inténtalo de nuevo.',
+                    400
+                );
             }
 
-            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+            return redirect()->back()->withErrors(['error' => 'No pudimos agregar el producto al carrito. Inténtalo de nuevo.']);
         }
     }
 
@@ -127,14 +133,17 @@ class CartController extends Controller
 
             return redirect()->back()->with('success', 'Cantidad actualizada');
         } catch (\Exception $e) {
+            Log::error('Cart update failed: '.$e->getMessage());
+
             if ($request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                ], 400);
+                return $this->apiError(
+                    'cart_update_failed',
+                    'No pudimos actualizar la cantidad del producto. Inténtalo de nuevo.',
+                    400
+                );
             }
 
-            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+            return redirect()->back()->withErrors(['error' => 'No pudimos actualizar la cantidad del producto. Inténtalo de nuevo.']);
         }
     }
 
@@ -157,14 +166,17 @@ class CartController extends Controller
 
             return redirect()->back()->with('success', 'Producto eliminado del carrito');
         } catch (\Exception $e) {
+            Log::error('Cart delete failed: '.$e->getMessage());
+
             if ($request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                ], 400);
+                return $this->apiError(
+                    'cart_remove_failed',
+                    'No pudimos eliminar el producto del carrito. Inténtalo de nuevo.',
+                    400
+                );
             }
 
-            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+            return redirect()->back()->withErrors(['error' => 'No pudimos eliminar el producto del carrito. Inténtalo de nuevo.']);
         }
     }
 
@@ -183,10 +195,13 @@ class CartController extends Controller
                 'message' => 'Carrito vaciado',
             ]);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 400);
+            Log::error('Cart clear failed: '.$e->getMessage());
+
+            return $this->apiError(
+                'cart_clear_failed',
+                'No pudimos vaciar el carrito. Inténtalo de nuevo.',
+                400
+            );
         }
     }
 
@@ -217,14 +232,17 @@ class CartController extends Controller
 
             return redirect()->route('cart.index', ['buy_now' => 1]);
         } catch (\Exception $e) {
+            Log::error('Buy now failed: '.$e->getMessage());
+
             if ($request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                ], 400);
+                return $this->apiError(
+                    'cart_buy_now_failed',
+                    'No pudimos preparar la compra directa. Inténtalo de nuevo.',
+                    400
+                );
             }
 
-            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+            return redirect()->back()->withErrors(['error' => 'No pudimos preparar la compra directa. Inténtalo de nuevo.']);
         }
     }
 

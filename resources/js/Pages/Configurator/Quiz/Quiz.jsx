@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import ConfiguratorLayout from '@/Layouts/ConfiguratorLayout';
+import { normalizeApiError } from '@/Utils/httpError';
 import styles from './Quiz.module.css';
 
 const QUIZ_STEPS = [
@@ -201,7 +203,13 @@ export default function Quiz() {
         if (auth?.user) {
             // If authenticated, save immediately to database
             axios.post(route('profile.quiz.save'), { category: bestCategory })
-                .catch(err => console.error('Error saving quiz result', err));
+                .catch((error) => {
+                    toast.error(normalizeApiError(error, {
+                        title: 'No pudimos guardar tu resultado',
+                        message: 'No pudimos guardar tu resultado del quiz. Inténtalo de nuevo en unos minutos.',
+                        code: 'quiz_result_save_failed',
+                    }).message);
+                });
         } else {
             // If not authenticated, quiz data is saved to localStorage via useEffect
             // Show message to login/register

@@ -3,6 +3,7 @@ import { usePage, router, Link } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import ImageEditorModal from '@/Components/Profile/ImageEditorModal/ImageEditorModal';
+import { normalizeApiError } from '@/Utils/httpError';
 import styles from './ProfileTab.module.css';
 
 export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
@@ -58,10 +59,14 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                 toast.success('✓ Foto de perfil actualizada correctamente');
                 router.reload({ only: ['auth'] });
             } else {
-                toast.error(response.data.message || 'Error al subir la imagen');
+                toast.error(normalizeApiError({ response: { data: response.data } }).message);
             }
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Error al subir la imagen. Por favor, inténtalo de nuevo.');
+            toast.error(normalizeApiError(error, {
+                title: 'No pudimos actualizar la foto',
+                message: 'No pudimos actualizar tu foto de perfil. Inténtalo de nuevo en unos minutos.',
+                code: 'profile_image_upload_failed',
+            }).message);
         } finally {
             setUploadingProfile(false);
         }
@@ -82,10 +87,14 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                 toast.success('✓ Banner actualizado correctamente');
                 router.reload({ only: ['auth'] });
             } else {
-                toast.error(response.data.message || 'Error al subir el banner');
+                toast.error(normalizeApiError({ response: { data: response.data } }).message);
             }
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Error al subir el banner. Por favor, inténtalo de nuevo.');
+            toast.error(normalizeApiError(error, {
+                title: 'No pudimos actualizar el banner',
+                message: 'No pudimos actualizar tu banner. Inténtalo de nuevo en unos minutos.',
+                code: 'profile_banner_upload_failed',
+            }).message);
         } finally {
             setUploadingBanner(false);
         }
@@ -98,6 +107,7 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                 onClose={() => setEditorOpen(false)}
                 aspectRatio={editingType === 'profile' ? 1 : 16 / 4}
                 onSave={handleEditorSave}
+                onError={(message) => toast.error(message)}
                 type={editingType}
                 existingImageUrl={existingImage}
             />

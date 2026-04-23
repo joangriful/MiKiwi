@@ -18,6 +18,21 @@ class OrderControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_create_payment_intent_returns_structured_error_when_cart_is_empty(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->postJson(route('payment-intent.create'))
+            ->assertStatus(422)
+            ->assertJsonStructure(['success', 'code', 'message'])
+            ->assertJson([
+                'success' => false,
+                'code' => 'checkout_cart_empty',
+                'message' => 'Tu carrito está vacío. Añade al menos un producto antes de continuar con el pago.',
+            ]);
+    }
+
     public function test_store_creates_order_from_cart_and_clears_cart(): void
     {
         $user = User::factory()->create();
