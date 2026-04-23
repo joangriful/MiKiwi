@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Domain\Products\Services\ProductService;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\JsonResponse;
 
-class ProductController extends Controller
+class ProductCatalogController extends Controller
 {
     protected $productService;
 
@@ -17,11 +19,11 @@ class ProductController extends Controller
     }
 
     // GET /api/products
-    public function index(): JsonResponse
+    public function index(): AnonymousResourceCollection
     {
         $products = $this->productService->getCatalogItems();
 
-        return response()->json($products);
+        return ProductResource::collection($products);
     }
 
     // GET /api/products/{slug}
@@ -32,7 +34,10 @@ class ProductController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $data,
+                'data' => [
+                    'product' => ProductResource::make($data['product']),
+                    'accessories' => ProductResource::collection($data['accessories']),
+                ],
             ]);
 
         } catch (\Exception $e) {

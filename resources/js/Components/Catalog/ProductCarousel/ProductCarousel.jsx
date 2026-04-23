@@ -10,7 +10,7 @@ const ProductCarousel = forwardRef(function ProductCarousel({ products = [] }, r
         >
             {products && products.length > 0 ? (
                 products.map((product, index) => (
-                    <ProductCard key={product.id || index} product={product} />
+                    <ProductCard key={product.slug || index} product={product} />
                 ))
             ) : (
                 <div className={styles.emptyState}>

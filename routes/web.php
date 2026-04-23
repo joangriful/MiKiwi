@@ -10,7 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketingPageController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CatalogProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserAddressController;
 use Illuminate\Support\Facades\Route;
@@ -34,12 +34,12 @@ Route::get('/dashboard', DashboardController::class)
 */
 
 // Catálogo Principal
-Route::get('/productos', [ProductController::class, 'index'])->name('products.index');
+Route::get('/productos', [CatalogProductController::class, 'index'])->name('products.index');
 Route::redirect('/products', '/productos'); // Alias for english url
 Route::get('/colecciones', [ColeccionesController::class, 'index'])->name('colecciones');
 
 // Ver Producto Individual
-Route::get('/producto/{product}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/producto/{product}', [CatalogProductController::class, 'show'])->name('products.show');
 
 // Ver Categoría Específica
 Route::get('/categoria/{category}', [CategoryController::class, 'show'])->name('categories.show');

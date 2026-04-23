@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProductCatalogController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Route;
 
 // 1. RUTAS PÚBLICAS
 // Catálogo de Productos (Usa tu nueva arquitectura: Controller -> Service -> Repo)
-Route::get('/products', [ProductController::class, 'index']);
-Route::get('/products/{slug}', [ProductController::class, 'show']);
+Route::get('/products', [ProductCatalogController::class, 'index']);
+Route::get('/products/{slug}', [ProductCatalogController::class, 'show']);
 
 // Autenticación con Rate Limiting
 Route::middleware('throttle:auth-sensitive')->group(function () {

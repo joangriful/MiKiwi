@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Domain\Carts\Services\CartService;
 use App\Enums\ProductType;
+use App\Http\Resources\ProductResource;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class CartController extends Controller
@@ -24,7 +27,7 @@ class CartController extends Controller
     public function index(Request $request)
     {
         $cart = $this->cartService->getCart();
-        $popularProducts = \App\Models\Product::where('is_active', true)
+        $popularProducts = Product::where('is_active', true)
             ->whereIn('product_type', [
                 ProductType::Configurable->value,
                 ProductType::Simple->value,
@@ -33,7 +36,7 @@ class CartController extends Controller
             ->get();
 
         $couponData = session('coupon');
-        \Log::info('CartController::index - Coupon in session: '.json_encode($couponData));
+        Log::info('CartController::index - Coupon in session: '.json_encode($couponData));
 
         if ($couponData) {
             $coupon = \App\Models\Coupon::where('code', $couponData['code'])->first();
@@ -46,12 +49,14 @@ class CartController extends Controller
             }
         }
 
+        $selectedCart = $request->has('buy_now') && session()->has('buy_now_item')
+            ? $this->cartService->getBuyNowItem()
+            : $cart;
+
         return Inertia::render('Checkout/Cart', [
-            'cart' => $request->has('buy_now') && session()->has('buy_now_item')
-                ? $this->cartService->getBuyNowItem()
-                : $cart,
+            'cart' => $this->publicCart($selectedCart, $request),
             'isBuyNow' => $request->has('buy_now') && session()->has('buy_now_item'),
-            'popularProducts' => $popularProducts,
+            'popularProducts' => ProductResource::collection($popularProducts)->resolve($request),
             'pageTitle' => 'Carrito de Compras - MiKiwi',
             'stripeKey' => config('services.stripe.key'),
             'coupon' => $couponData,
@@ -221,5 +226,22 @@ class CartController extends Controller
 
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
+    }
+
+    private function publicCart(?array $cart, Request $request): ?array
+    {
+        if ($cart === null) {
+            return null;
+        }
+
+        $cart['items'] = array_map(function (array $item) use ($request): array {
+            if (isset($item['product'])) {
+                $item['product'] = ProductResource::make($item['product'])->resolve($request);
+            }
+
+            return $item;
+        }, $cart['items'] ?? []);
+
+        return $cart;
     }
 }

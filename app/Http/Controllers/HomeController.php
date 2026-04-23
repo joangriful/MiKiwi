@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Home\Services\HomePageService;
+use App\Http\Resources\ProductResource;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -13,8 +15,11 @@ class HomeController extends Controller
     ) {
     }
 
-    public function __invoke(): Response
+    public function __invoke(Request $request): Response
     {
-        return Inertia::render('Home/Home', $this->homePageService->getPageData());
+        $pageData = $this->homePageService->getPageData();
+        $pageData['featuredProducts'] = ProductResource::collection($pageData['featuredProducts'])->resolve($request);
+
+        return Inertia::render('Home/Home', $pageData);
     }
 }
