@@ -189,6 +189,8 @@ Route::controller(ConfiguratorPageController::class)->prefix('configurador')->gr
     Route::post('/cart/buy-now', [App\Http\Controllers\CartController::class, 'buyNow'])->name('cart.buy-now');
 });
 
-Route::get('/doll_config_test', [ConfiguratorPageController::class, 'dollConfigTest'])->name('doll.config.test');
+Route::get('/doll_config_test', [ConfiguratorPageController::class, 'dollConfigTest'])
+    ->middleware(['auth', 'admin'])
+    ->name('doll.config.test');
 
 require __DIR__.'/auth.php';
