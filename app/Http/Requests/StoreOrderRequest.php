@@ -30,8 +30,13 @@ class StoreOrderRequest extends FormRequest
             'shipping_address.country' => 'required|string|max:100',
             'payment_method' => 'required|string|in:stripe,cash,pickup',
             'payment_intent_id' => 'nullable|string',
-            'pickup_point_id' => 'nullable|exists:pickup_points,id',
+            'pickup_point_id' => 'nullable|string|max:255',
             'notes' => 'nullable|string|max:1000',
+            'billing_address' => 'nullable|array',
+            'billing_address.street_address' => 'required_with:billing_address|string|max:255',
+            'billing_address.city' => 'required_with:billing_address|string|max:100',
+            'billing_address.postal_code' => 'required_with:billing_address|string|max:20',
+            'billing_address.country' => 'required_with:billing_address|string|max:100',
         ];
     }
 

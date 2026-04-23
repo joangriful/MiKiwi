@@ -63,6 +63,26 @@ class StoreOrderRequestTest extends TestCase
         $this->assertFalse($validator->fails());
     }
 
+    public function test_accepts_external_pickup_point_identifier(): void
+    {
+        $request = new StoreOrderRequest;
+
+        $data = [
+            'shipping_address' => [
+                'street_address' => 'Test Street 123',
+                'city' => 'Test City',
+                'postal_code' => '12345',
+                'country' => 'Spain',
+            ],
+            'payment_method' => 'pickup',
+            'pickup_point_id' => 'mock-pickup-point-123',
+        ];
+
+        $validator = Validator::make($data, $request->rules());
+
+        $this->assertFalse($validator->fails());
+    }
+
     public function test_validates_payment_method_enum(): void
     {
         $request = new StoreOrderRequest;
