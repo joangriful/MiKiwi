@@ -3,16 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Products\Services\ProductService;
+use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
 use App\Support\Database\CaseInsensitiveSearch;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ProductController extends Controller
+class CatalogProductController extends Controller
 {
     protected $productService;
 
@@ -26,7 +31,7 @@ class ProductController extends Controller
      *
      * @param  Product  $product  - Laravel resolverá automáticamente por slug
      */
-    public function show(Product $product): Response
+    public function show(Request $request, Product $product): Response
     {
         try {
             // Usar el servicio para obtener detalles completos del producto
@@ -34,7 +39,7 @@ class ProductController extends Controller
 
             // Obtener productos relacionados de la misma categoría
             $relatedProducts = Product::where('category_id', $product->category_id)
-                ->where('id', '!=', $product->getKey())
+                ->where('id', '!=', $product->id)
                 ->where('is_active', true)
                 ->with('category') // Eager load category
                 ->inRandomOrder()
@@ -42,9 +47,9 @@ class ProductController extends Controller
                 ->get();
 
             return Inertia::render('Catalog/ProductPage', [
-                'product' => $productData['product'],
-                'accessories' => $productData['accessories'],
-                'relatedProducts' => $relatedProducts,
+                'product' => ProductResource::make($productData['product'])->resolve($request),
+                'accessories' => ProductResource::collection($productData['accessories'])->resolve($request),
+                'relatedProducts' => ProductResource::collection($relatedProducts)->resolve($request),
                 'pageTitle' => $product->name.' - MiKiwi',
             ]);
         } catch (ModelNotFoundException $e) {
@@ -55,10 +60,25 @@ class ProductController extends Controller
     /**
      * Listado de productos con filtros
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $query = Product::query()->where('is_active', true);
 
+        $this->applyCatalogFilters($query, $request);
+        $this->applyCatalogSort($query, $request);
+
+        return Inertia::render('Catalog/Products', [
+            'products' => $this->paginatedPublicProducts($query, $request),
+            'categories' => $this->catalogCategories(),
+            'filters' => $request->only(['category', 'subCategory', 'min_price', 'max_price', 'sort', 'search', 'featured']),
+        ]);
+    }
+
+    /**
+     * @param  Builder<Product>  $query
+     */
+    private function applyCatalogFilters(Builder $query, Request $request): void
+    {
         // Filtrar por categoría (ID o Slug, Incluyendo subcategorías de forma recursiva)
         if ($request->has('category')) {
             $categoryParam = $request->query('category');
@@ -103,7 +123,7 @@ class ProductController extends Controller
                 ->first();
 
             if ($subCategory) {
-                $query->where('category_id', $subCategory->getKey());
+                $query->where('category_id', $subCategory->id);
             }
         }
 
@@ -124,7 +144,13 @@ class ProductController extends Controller
         if ($request->boolean('featured')) {
             $query->where('is_featured', true);
         }
+    }
 
+    /**
+     * @param  Builder<Product>  $query
+     */
+    private function applyCatalogSort(Builder $query, Request $request): void
+    {
         // Ordenar
         $sort = $request->input('sort', 'newest');
         switch ($sort) {
@@ -141,9 +167,24 @@ class ProductController extends Controller
                 $query->orderBy('created_at', 'desc');
                 break;
         }
+    }
 
-        $products = $query->paginate(12)->withQueryString();
+    /**
+     * @param  Builder<Product>  $query
+     */
+    private function paginatedPublicProducts(Builder $query, Request $request): LengthAwarePaginator
+    {
+        $products = $query->with('category')->paginate(12)->withQueryString();
+        $products->through(fn (Product $product): array => ProductResource::make($product)->resolve($request));
 
+        return $products;
+    }
+
+    /**
+     * @return Collection<int, Category>
+     */
+    private function catalogCategories(): Collection
+    {
         // Obtener categorías con sus hijos para el sidebar
         $categories = Category::root()
             ->where('is_active', true)
@@ -172,24 +213,20 @@ class ProductController extends Controller
             $category->total_products_count = $category->products_count + $childrenCount;
         });
 
-        return Inertia::render('Catalog/Products', [
-            'products' => $products,
-            'categories' => $categories,
-            'filters' => $request->only(['category', 'subCategory', 'min_price', 'max_price', 'sort', 'search', 'featured']),
-        ]);
+        return $categories;
     }
 
     /**
      * Get a category and all its descendants (children, grandchildren, etc.) recursively
      *
-     * @return \Illuminate\Support\Collection
+     * @return SupportCollection<int, string>
      */
-    private function getCategoryAndDescendants(Category $category)
+    private function getCategoryAndDescendants(Category $category): SupportCollection
     {
-        $ids = collect([$category->getKey()]);
+        $ids = collect([$category->id]);
 
         // Get all children recursively
-        $children = Category::query()->where('parent_id', $category->getKey())->get();
+        $children = Category::query()->where('parent_id', $category->id)->get();
 
         /** @var Category $child */
         foreach ($children as $child) {

@@ -1,0 +1,20 @@
+{
+  "name": "mikiwi-local",
+  "interface": {
+    "displayName": "MiKiwi Local Agents"
+  },
+  "plugins": [
+    {
+      "name": "mikiwi-agent",
+      "source": {
+        "source": "local",
+        "path": "./plugins/mikiwi-agent"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

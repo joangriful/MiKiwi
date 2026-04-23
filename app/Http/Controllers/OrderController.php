@@ -5,30 +5,29 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Domain\Carts\Services\CartService;
+use App\Domain\Orders\Actions\CancelOrder;
+use App\Domain\Orders\Actions\CreateOrder;
+use App\Domain\Orders\Actions\ResolveOrderPaymentStatus;
+use App\Domain\Orders\Services\OrderService;
 use App\Domain\Payments\Services\StripeService;
-use App\Enums\OrderStatus;
-use App\Enums\PaymentStatus;
 use App\Exceptions\CartEmptyException;
+use App\Exceptions\InvalidOrderException;
+use App\Http\Requests\StoreOrderRequest;
 use App\Models\Order;
-use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class OrderController extends Controller
 {
-    protected CartService $cartService;
-
-    protected StripeService $stripeService;
-
-    public function __construct(CartService $cartService, StripeService $stripeService)
-    {
-        $this->cartService = $cartService;
-        $this->stripeService = $stripeService;
-    }
+    public function __construct(
+        protected CartService $cartService,
+        protected StripeService $stripeService,
+        private readonly CreateOrder $createOrder,
+        private readonly CancelOrder $cancelOrder,
+        private readonly ResolveOrderPaymentStatus $resolvePaymentStatus,
+        private readonly OrderService $orderService,
+    ) {}
 
     public function show(Order $order)
     {
@@ -53,19 +52,8 @@ class OrderController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreOrderRequest $request)
     {
-        $request->validate([
-            'shipping_address' => 'required|array',
-            'shipping_address.street_address' => 'required|string',
-            'shipping_address.city' => 'required|string',
-            'shipping_address.postal_code' => 'required|string',
-            'shipping_address.country' => 'required|string',
-            'payment_method' => 'required|string',
-            'payment_intent_id' => 'nullable|string',
-            'pickup_point_id' => 'nullable', // Removed exists check as we might be using mock points not yet in DB
-        ]);
-
         $cartValidation = $this->cartService->validateCartStock();
         if (! $cartValidation['valid']) {
             return back()->with('error', implode(' ', $cartValidation['errors']));
@@ -74,67 +62,21 @@ class OrderController extends Controller
         $isBuyNow = session()->has('buy_now_item');
         $cartData = $isBuyNow ? $this->cartService->getBuyNowItem() : $this->cartService->getCart();
 
-        if ($cartData['item_count'] === 0) {
+        if (! $cartData || $cartData['item_count'] === 0) {
             throw new CartEmptyException('checkout');
         }
 
         try {
-            $paymentStatus = PaymentStatus::Pending->value;
-            if ($request->payment_intent_id) {
-                try {
-                    $intent = $this->stripeService->getPaymentIntent($request->payment_intent_id);
-                    if ($intent->status === 'succeeded') {
-                        $paymentStatus = PaymentStatus::Paid->value;
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Stripe reveal error: '.$e->getMessage());
-                }
-            }
+            $validated = $request->validated();
+            $validated['cart'] = $cartData;
+            $validated['is_buy_now'] = $isBuyNow;
+            $validated['payment_status'] = $this->resolvePaymentStatus->execute($validated['payment_intent_id'] ?? null);
 
-            DB::transaction(function () use ($request, $cartData, $paymentStatus, $isBuyNow) {
-                // Enrich shipping address with metadata since we can't migrate columns
-                $shippingAddress = $request->shipping_address;
-                $shippingAddress['metadata'] = [
-                    'payment_id' => $request->payment_intent_id,
-                    'pickup_point_id' => $request->pickup_point_id,
-                    'processed_at' => now()->toDateTimeString(),
-                ];
-
-                $order = Order::create([
-                    'user_id' => Auth::id(),
-                    'order_number' => 'ORD-'.strtoupper(Str::random(10)),
-                    'status' => OrderStatus::Pending->value,
-                    'total_amount' => $cartData['total'],
-                    'payment_status' => $paymentStatus,
-                    'payment_method' => $request->payment_method,
-                    'shipping_address_snapshot' => $shippingAddress,
-                    'billing_address_snapshot' => $request->billing_address ?? $shippingAddress,
-                    'notes' => $request->notes ?? null,
-                ]);
-
-                foreach ($cartData['items'] as $item) {
-                    $product = $item['product'];
-                    OrderItem::create([
-                        'order_id' => $order->id,
-                        'product_id' => $product->id,
-                        'product_name_snapshot' => $product->name,
-                        'sku_snapshot' => $product->sku ?? 'SKU-GENERICO',
-                        'quantity' => $item['quantity'],
-                        'unit_price' => $product->base_price,
-                    ]);
-                    $product->decrement('stock_quantity', $item['quantity']);
-                }
-
-                if ($isBuyNow) {
-                    $this->cartService->clearBuyNowItem();
-                } else {
-                    $this->cartService->clearCart();
-                }
-            });
+            $this->createOrder->execute($validated);
 
             return redirect()->route('orders.success')->with('success', '¡Pedido realizado con éxito!');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Error al procesar: '.$e->getMessage());
+        } catch (\Throwable $exception) {
+            return back()->with('error', 'Error al procesar: '.$exception->getMessage());
         }
     }
 
@@ -169,30 +111,19 @@ class OrderController extends Controller
 
     public function index()
     {
-        $orders = Order::where('user_id', Auth::id())->with('items')->latest()->get();
+        $orders = $this->orderService->getLatestUserOrders(Auth::id());
 
         return Inertia::render('Profile/Orders', ['orders' => $orders]);
     }
 
     public function cancel(Request $request, Order $order)
     {
-        // Only the owner can cancel
-        if ($order->user_id !== Auth::id()) {
-            abort(403, 'No autorizado.');
-        }
+        $this->authorize('view', $order);
 
-        // Only pending orders can be cancelled
-        if (! in_array($order->status, OrderStatus::cancellableValues(), true)) {
+        try {
+            $this->cancelOrder->execute($order, $request->string('reason')->toString());
+        } catch (InvalidOrderException) {
             return back()->with('error', 'Este pedido no puede cancelarse.');
-        }
-
-        $order->update(['status' => OrderStatus::Cancelled->value]);
-
-        // Restore stock for each item
-        foreach ($order->items as $item) {
-            if ($item->product) {
-                $item->product->increment('stock_quantity', $item->quantity);
-            }
         }
 
         return back()->with('success', 'Pedido cancelado correctamente.');

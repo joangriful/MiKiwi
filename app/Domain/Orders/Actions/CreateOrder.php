@@ -27,13 +27,13 @@ class CreateOrder
 
     public function execute(array $data): Order
     {
-        $cart = $this->cartService->getCart();
+        $isBuyNow = (bool) ($data['is_buy_now'] ?? false);
+        $cart = $data['cart'] ?? ($isBuyNow ? $this->cartService->getBuyNowItem() : $this->cartService->getCart());
 
-        if (empty($cart['items'])) {
+        if (! $cart || empty($cart['items'])) {
             throw new CartEmptyException('checkout');
         }
 
-        // Validar stock
         foreach ($cart['items'] as $item) {
             $product = $item['product'];
             if ($product->stock_quantity < $item['quantity']) {
@@ -46,18 +46,18 @@ class CreateOrder
             }
         }
 
-        return DB::transaction(function () use ($data, $cart) {
+        return DB::transaction(function () use ($data, $cart, $isBuyNow) {
+            $shippingAddress = $this->shippingAddressWithMetadata($data);
+
             $order = Order::create([
-                'user_id' => Auth::id(),
+                'user_id' => $data['user_id'] ?? Auth::id(),
                 'order_number' => $this->generateOrderNumber(),
                 'status' => OrderStatus::Pending->value,
                 'total_amount' => $cart['total'],
-                'payment_status' => PaymentStatus::Pending->value,
+                'payment_status' => $data['payment_status'] ?? PaymentStatus::Pending->value,
                 'payment_method' => $data['payment_method'],
-                'payment_id' => $data['payment_intent_id'] ?? null,
-                'shipping_address_snapshot' => $data['shipping_address'],
-                'billing_address_snapshot' => $data['shipping_address'],
-                'pickup_point_id' => $data['pickup_point_id'] ?? null,
+                'shipping_address_snapshot' => $shippingAddress,
+                'billing_address_snapshot' => $data['billing_address'] ?? $shippingAddress,
                 'notes' => $data['notes'] ?? null,
             ]);
 
@@ -76,7 +76,11 @@ class CreateOrder
                 $product->decrement('stock_quantity', $item['quantity']);
             }
 
-            $this->cartService->clearCart();
+            if ($isBuyNow) {
+                $this->cartService->clearBuyNowItem();
+            } else {
+                $this->cartService->clearCart();
+            }
 
             event(new OrderCreated($order));
 
@@ -87,5 +91,21 @@ class CreateOrder
     protected function generateOrderNumber(): string
     {
         return 'MK-'.date('Ymd').'-'.strtoupper(Str::random(6));
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function shippingAddressWithMetadata(array $data): array
+    {
+        $shippingAddress = $data['shipping_address'];
+        $shippingAddress['metadata'] = [
+            'payment_id' => $data['payment_intent_id'] ?? null,
+            'pickup_point_id' => $data['pickup_point_id'] ?? null,
+            'processed_at' => now()->toDateTimeString(),
+        ];
+
+        return $shippingAddress;
     }
 }

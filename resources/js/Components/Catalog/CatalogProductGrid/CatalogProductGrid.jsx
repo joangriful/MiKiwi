@@ -6,7 +6,7 @@ export default function CatalogProductGrid({ products = [] }) {
         <div className={styles.root}>
             {products.map((product, index) => (
                 <div
-                    key={product.id || `product-${index}`}
+                    key={product.slug || `product-${index}`}
                     className={styles.item}
                     style={{ animationDelay: `${index * 100}ms` }}
                 >

@@ -15,9 +15,13 @@ class EloquentProductRepository implements ProductRepositoryInterface
     {
         return Product::active()
             ->where('slug', $slug)
-            ->with(['category' => function($q) {
-                $q->with('parent');
-            }, 'accessories', 'reviews'])
+            ->with([
+                'category' => function ($q) {
+                    $q->with('parent');
+                },
+                'accessories',
+                'reviews' => fn ($query) => $query->approved()->latest(),
+            ])
             ->first();
     }
 
@@ -49,7 +53,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     {
         return Product::active()
             ->inStock()
-            ->with('category:id,name')
+            ->with('category:id,name,slug')
             ->where('is_featured', true)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -59,7 +63,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     {
         return Product::active()
             ->inStock()
-            ->with('category:id,name')
+            ->with('category:id,name,slug')
             ->whereIn('category_id', $categoryIds)
             ->inRandomOrder()
             ->limit($limit)
@@ -70,7 +74,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     {
         return Product::active()
             ->inStock()
-            ->with('category:id,name')
+            ->with('category:id,name,slug')
             ->where('is_featured', true)
             ->inRandomOrder()
             ->limit($limit)
@@ -81,7 +85,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     {
         return Product::active()
             ->inStock()
-            ->with('category:id,name')
+            ->with('category:id,name,slug')
             ->latest()
             ->limit($limit)
             ->get();

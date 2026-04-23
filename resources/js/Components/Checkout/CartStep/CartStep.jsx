@@ -17,7 +17,7 @@ function PopularProducts({ popularProducts, addToCart }) {
 
             <div className={styles.popularGrid}>
                 {popularProducts.map((product) => (
-                    <div key={product.id} className={styles.popularCard}>
+                    <div key={product.slug} className={styles.popularCard}>
                         <Link
                             href={route("products.show", product.slug)}
                             className={styles.popularImageLink}
