@@ -360,7 +360,7 @@ Si no se puede ejecutar algo, indicarlo claramente al usuario.
 
 La documentación de proyecto debe vivir en `docs/DOCUMENTACION_PROYECTO.md`.
 
-Este archivo (`docs/AGENTS.md`) debe contener solo instrucciones para programar:
+Este archivo (`AGENTS.md`) debe contener solo instrucciones para programar:
 
 - arquitectura;
 - estructura;

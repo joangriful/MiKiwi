@@ -1,0 +1,41 @@
+{
+  "name": "mikiwi-agent",
+  "version": "0.1.0",
+  "description": "Repo-local Codex helper plugin for MiKiwi architecture, refactors, security checks, and validation.",
+  "author": {
+    "name": "MiKiwi",
+    "email": "dev@example.com",
+    "url": "https://example.com"
+  },
+  "homepage": "./AGENTS.md",
+  "repository": ".",
+  "license": "UNLICENSED",
+  "keywords": [
+    "mikiwi",
+    "laravel",
+    "react",
+    "inertia",
+    "solid"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "MiKiwi Agent",
+    "shortDescription": "Codex helpers for MiKiwi project conventions.",
+    "longDescription": "Project-specific Codex skills that route work through AGENTS.md, SOLID, Laravel domain boundaries, React/Inertia structure, CSS Modules, security, and validation rules.",
+    "developerName": "MiKiwi",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://example.com",
+    "privacyPolicyURL": "https://example.com/privacy",
+    "termsOfServiceURL": "https://example.com/terms",
+    "defaultPrompt": [
+      "Use MiKiwi architecture rules for this change.",
+      "Review this MiKiwi change for security risks.",
+      "Refactor this MiKiwi area following SOLID."
+    ],
+    "brandColor": "#2F8F6B"
+  }
+}
