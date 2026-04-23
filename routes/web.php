@@ -51,11 +51,17 @@ Route::get('/categoria/{category}', [CategoryController::class, 'show'])->name('
 */
 Route::prefix('cart')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/add', [CartController::class, 'store'])->name('cart.add');
-    Route::patch('/update/{id}', [CartController::class, 'update'])->name('cart.update');
-    Route::delete('/remove/{id}', [CartController::class, 'destroy'])->name('cart.remove');
-    Route::post('/coupon', [App\Http\Controllers\CouponController::class, 'apply'])->name('cart.coupon.apply');
-    Route::delete('/coupon', [App\Http\Controllers\CouponController::class, 'remove'])->name('cart.coupon.remove');
+
+    Route::middleware('throttle:cart')->group(function () {
+        Route::post('/add', [CartController::class, 'store'])->name('cart.add');
+        Route::patch('/update/{id}', [CartController::class, 'update'])->name('cart.update');
+        Route::delete('/remove/{id}', [CartController::class, 'destroy'])->name('cart.remove');
+    });
+
+    Route::middleware('throttle:coupon')->group(function () {
+        Route::post('/coupon', [App\Http\Controllers\CouponController::class, 'apply'])->name('cart.coupon.apply');
+        Route::delete('/coupon', [App\Http\Controllers\CouponController::class, 'remove'])->name('cart.coupon.remove');
+    });
 });
 
 /*
@@ -70,8 +76,10 @@ Route::middleware('auth')->group(function () {
         ->name('orders.create');
 
     // Procesar compra
-    Route::post('/checkout', [OrderController::class, 'store'])
-        ->name('orders.store');
+    Route::middleware('throttle:checkout-payment')->group(function () {
+        Route::post('/checkout', [OrderController::class, 'store'])
+            ->name('orders.store');
+    });
 
     // Página de éxito
     Route::get('/orders/success', [OrderController::class, 'success'])
@@ -87,21 +95,28 @@ Route::middleware('auth')->group(function () {
 
     // Cancelar pedido
     Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])
+        ->middleware('throttle:checkout-payment')
         ->name('orders.cancel');
 
-    // API de Puntos de Recogida
-    Route::get('/api/pickup-points', [App\Http\Controllers\PickupPointController::class, 'index'])
+    // Puntos de Recogida
+    Route::get('/checkout/pickup-points', [App\Http\Controllers\PickupPointController::class, 'index'])
+        ->middleware('throttle:external-service')
         ->name('pickup-points.index');
 
     // Stripe Payment Intent
-    Route::post('/api/payment-intent', [OrderController::class, 'createPaymentIntent'])
-        ->name('payment-intent.create');
+    Route::middleware('throttle:checkout-payment')->group(function () {
+        Route::post('/checkout/payment-intent', [OrderController::class, 'createPaymentIntent'])
+            ->name('payment-intent.create');
+    });
 
     // Gestión de Tarjetas Guardadas
-    Route::prefix('api/payment-methods')->name('payment-methods.')->group(function () {
+    Route::prefix('account/payment-methods')->name('payment-methods.')->group(function () {
         Route::get('/', [App\Http\Controllers\PaymentMethodController::class, 'index'])->name('index');
-        Route::post('/setup-intent', [App\Http\Controllers\PaymentMethodController::class, 'createSetupIntent'])->name('setup-intent');
-        Route::delete('/{id}', [App\Http\Controllers\PaymentMethodController::class, 'destroy'])->name('destroy');
+
+        Route::middleware('throttle:checkout-payment')->group(function () {
+            Route::post('/setup-intent', [App\Http\Controllers\PaymentMethodController::class, 'createSetupIntent'])->name('setup-intent');
+            Route::delete('/{id}', [App\Http\Controllers\PaymentMethodController::class, 'destroy'])->name('destroy');
+        });
     });
 });
 
@@ -112,21 +127,29 @@ Route::middleware('auth')->group(function () {
 */
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::middleware('throttle:profile-write')->group(function () {
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+        Route::post('/profile/quiz-result', [ProfileController::class, 'saveQuizResult'])->name('profile.quiz.save');
+    });
 
     // Profile image and banner uploads
-    Route::post('/profile/image', [ProfileController::class, 'updateProfileImage'])->name('profile.image.update');
-    Route::post('/profile/banner', [ProfileController::class, 'updateBanner'])->name('profile.banner.update');
-    Route::post('/profile/quiz-result', [ProfileController::class, 'saveQuizResult'])->name('profile.quiz.save');
+    Route::middleware('throttle:uploads')->group(function () {
+        Route::post('/profile/image', [ProfileController::class, 'updateProfileImage'])->name('profile.image.update');
+        Route::post('/profile/banner', [ProfileController::class, 'updateBanner'])->name('profile.banner.update');
+    });
 
     Route::get('/perfil', [ProfileController::class, 'show'])->name('perfil.view');
 
     // Gestión de Direcciones del Usuario
     Route::get('/perfil/direcciones', [UserAddressController::class, 'index'])->name('profile.addresses.index');
-    Route::post('/perfil/direcciones', [UserAddressController::class, 'store'])->name('profile.addresses.store');
-    Route::put('/perfil/direcciones/{address}', [UserAddressController::class, 'update'])->name('profile.addresses.update');
-    Route::delete('/perfil/direcciones/{address}', [UserAddressController::class, 'destroy'])->name('profile.addresses.destroy');
+
+    Route::middleware('throttle:profile-write')->group(function () {
+        Route::post('/perfil/direcciones', [UserAddressController::class, 'store'])->name('profile.addresses.store');
+        Route::put('/perfil/direcciones/{address}', [UserAddressController::class, 'update'])->name('profile.addresses.update');
+        Route::delete('/perfil/direcciones/{address}', [UserAddressController::class, 'destroy'])->name('profile.addresses.destroy');
+    });
 });
 
 /*
@@ -138,26 +161,50 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/components-manager', ComponentsManagerController::class)->name('components.manager');
 
-    Route::post('/doll-settings', [App\Http\Controllers\DollSettingsController::class, 'saveSettings'])->name('doll.settings.save');
+    Route::post('/doll-settings', [App\Http\Controllers\DollSettingsController::class, 'saveSettings'])
+        ->middleware('throttle:admin-write')
+        ->name('doll.settings.save');
     Route::get('/doll-settings/positions', [App\Http\Controllers\DollSettingsController::class, 'getPartPositions'])->name('doll.settings.positions');
-    Route::post('/doll-settings/position', [App\Http\Controllers\DollSettingsController::class, 'savePartPosition'])->name('doll.settings.savePosition');
-    Route::post('/users/{user}/toggle-role', [App\Http\Controllers\UserController::class, 'toggleAdmin'])->name('users.toggleRole');
-    Route::post('/content/hero/upload', [App\Http\Controllers\ContentController::class, 'uploadHeroImages'])->name('content.hero.upload');
-    Route::delete('/content/hero/{heroImage}', [App\Http\Controllers\ContentController::class, 'deleteHeroImage'])->name('content.hero.delete');
-    Route::post('/content/collections/upload', [App\Http\Controllers\ContentController::class, 'uploadCollectionImage'])->name('content.collections.upload');
+    Route::post('/doll-settings/position', [App\Http\Controllers\DollSettingsController::class, 'savePartPosition'])
+        ->middleware('throttle:admin-write')
+        ->name('doll.settings.savePosition');
+    Route::post('/users/{user}/toggle-role', [App\Http\Controllers\UserController::class, 'toggleAdmin'])
+        ->middleware('throttle:admin-write')
+        ->name('users.toggleRole');
+
+    Route::middleware('throttle:uploads')->group(function () {
+        Route::post('/content/hero/upload', [App\Http\Controllers\ContentController::class, 'uploadHeroImages'])->name('content.hero.upload');
+        Route::post('/content/collections/upload', [App\Http\Controllers\ContentController::class, 'uploadCollectionImage'])->name('content.collections.upload');
+    });
+
+    Route::delete('/content/hero/{heroImage}', [App\Http\Controllers\ContentController::class, 'deleteHeroImage'])
+        ->middleware('throttle:admin-write')
+        ->name('content.hero.delete');
 
     // Product Management
-    Route::get('/admin/products/cloudinary-images', [App\Http\Controllers\ProductManagerController::class, 'getProductImages'])->name('products.cloudinary-images');
-    Route::post('/admin/products/link-folder', [App\Http\Controllers\ProductManagerController::class, 'linkCloudinaryFolder'])->name('products.link-folder');
-    Route::post('/admin/products/upload-images', [App\Http\Controllers\ProductManagerController::class, 'uploadImagesTemp'])->name('products.upload-images');
-    Route::post('/products/upload', [App\Http\Controllers\ProductManagerController::class, 'uploadProduct'])->name('products.upload');
-    Route::put('/products/{product:id}', [App\Http\Controllers\ProductManagerController::class, 'updateProduct'])->name('products.update');
-    Route::delete('/products/{product:id}', [App\Http\Controllers\ProductManagerController::class, 'deleteProduct'])->name('products.delete');
+    Route::get('/admin/products/cloudinary-images', [App\Http\Controllers\ProductManagerController::class, 'getProductImages'])
+        ->middleware('throttle:external-service')
+        ->name('products.cloudinary-images');
+    Route::post('/admin/products/link-folder', [App\Http\Controllers\ProductManagerController::class, 'linkCloudinaryFolder'])
+        ->middleware('throttle:external-service')
+        ->name('products.link-folder');
+
+    Route::middleware('throttle:uploads')->group(function () {
+        Route::post('/admin/products/upload-images', [App\Http\Controllers\ProductManagerController::class, 'uploadImagesTemp'])->name('products.upload-images');
+        Route::post('/products/upload', [App\Http\Controllers\ProductManagerController::class, 'uploadProduct'])->name('products.upload');
+    });
+
+    Route::middleware('throttle:admin-write')->group(function () {
+        Route::put('/products/{product:id}', [App\Http\Controllers\ProductManagerController::class, 'updateProduct'])->name('products.update');
+        Route::delete('/products/{product:id}', [App\Http\Controllers\ProductManagerController::class, 'deleteProduct'])->name('products.delete');
+    });
 
 });
 
 // Newsletter
-Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])
+    ->middleware('throttle:public-form')
+    ->name('newsletter.subscribe');
 
 Route::get('/formulario-reclamaciones', ClaimsPageController::class)->name('claims.form');
 
@@ -186,7 +233,9 @@ Route::controller(ConfiguratorPageController::class)->prefix('configurador')->gr
     Route::get('/quiz', 'quiz')->name('configurador.quiz');
     Route::get('/munecas', 'dolls')->name('configurador.dolls');
     Route::get('/cart', 'cart')->name('cart.view');
-    Route::post('/cart/buy-now', [App\Http\Controllers\CartController::class, 'buyNow'])->name('cart.buy-now');
+    Route::post('/cart/buy-now', [App\Http\Controllers\CartController::class, 'buyNow'])
+        ->middleware('throttle:cart')
+        ->name('cart.buy-now');
 });
 
 Route::get('/doll_config_test', [ConfiguratorPageController::class, 'dollConfigTest'])
