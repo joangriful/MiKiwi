@@ -2,7 +2,6 @@ import HomeLogoLink from '@/Components/HomeLogoLink/HomeLogoLink';
 import styles from './AppLayout.module.css';
 
 const PAGES_WITH_FALLBACK_NAVBAR = new Set([
-    'Admin/ComponentsManager',
     'Profile/Index',
 ]);
 
