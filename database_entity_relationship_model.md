@@ -2,38 +2,40 @@
 
 ```mermaid
 flowchart TB
-    USER[User]
-    ADDRESS[Address]
-    NEWSLETTER_SUBSCRIBER[Newsletter_Subscriber]
-    CART[Cart]
-    CART_ITEM[Cart_Item]
-    CHAT_SESSION[Chat_Session]
-    CHAT_MESSAGE[Chat_Message]
-    REVIEW[Review]
-    CLAIM[Claim]
-    CLAIM_ATTACHMENT[Claim_Attachment]
-    PAYMENT_METHOD[Payment_Method]
-    PAYMENT[Payment]
+    USER[user]
+    ADDRESS[address]
+    NEWSLETTER_SUBSCRIBER[newsletter_subscriber]
+    CART[cart]
+    CART_ITEM[cart_item]
+    CHAT_SESSION[chat_session]
+    CHAT_MESSAGE[chat_message]
+    CLAIM[claim]
+    CLAIM_ATTACHMENT[claim_attachment]
 
-    CATEGORY[Category]
-    PRODUCT[Product]
-    PRODUCT_IMAGE[Product_Image]
-    DOLL_ACCESSORY[Doll_Accessory]
-    COLLECTION[Collection]
+    CATEGORY[category]
+    COLLECTION[collection]
+    PRODUCT[product]
+    PRODUCT_IMAGE[product_image]
+    PRODUCT_IMAGE_ZONE[product_image_zone]
+    PRODUCT_ACCESSORY[product_accessory]
+    REVIEW[review]
+    COLLECTION_PRODUCT[collection_product]
 
-    ORDER[Order]
-    ORDER_ITEM[Order_Item]
-    COUPON[Coupon]
-    SHIPMENT[Shipment]
-    PICKUP_POINT[Pickup_Point]
+    ORDER[order]
+    ORDER_ITEM[order_item]
+    COUPON[coupon]
+    PAYMENT_METHOD[payment_method]
+    PAYMENT[payment]
+    SHIPMENT[shipment]
+    PICKUP_POINT[pickup_point]
 
-    DOLL_SECTION[Doll_Section]
-    IMAGE_HOME[Image_Home]
-    KNOW_YOU_SECTION[Know_You_Section]
-    BLOG_POST[Blog_Post]
+    DOLL_SECTION[doll_section]
+    IMAGE_HOME[image_home]
+    KNOW_YOU_SECTION[know_you_section]
+    BLOG_POST[blog_post]
 
-    DOLL_SETTING[Doll_Setting]
-    DOLL_PART_POSITION[Doll_Part_Position]
+    DOLL_SETTING[doll_setting]
+    DOLL_PART_POSITION[doll_part_position]
 
     USER -->|"1 : N"| HAS_ADDRESS{tiene}
     HAS_ADDRESS --> ADDRESS
@@ -68,8 +70,8 @@ flowchart TB
     USER -->|"1 : N"| HAS_CLAIM{tiene}
     HAS_CLAIM --> CLAIM
 
-    CATEGORY -->|"1 : N"| ORGANIZES{es padre de}
-    ORGANIZES --> CATEGORY
+    PRODUCT -->|"1 : N"| IS_RELATED_TO_CLAIM{se relaciona con}
+    IS_RELATED_TO_CLAIM --> CLAIM
 
     CATEGORY -->|"1 : N"| CLASSIFIES{clasifica}
     CLASSIFIES --> PRODUCT
@@ -77,8 +79,11 @@ flowchart TB
     PRODUCT -->|"1 : N"| HAS_PRODUCT_IMAGE{tiene}
     HAS_PRODUCT_IMAGE --> PRODUCT_IMAGE
 
+    PRODUCT_IMAGE -->|"1 : N"| HAS_IMAGE_ZONE{tiene}
+    HAS_IMAGE_ZONE --> PRODUCT_IMAGE_ZONE
+
     PRODUCT -->|"1 : N"| HAS_ACCESSORY{tiene}
-    HAS_ACCESSORY --> DOLL_ACCESSORY
+    HAS_ACCESSORY --> PRODUCT_ACCESSORY
 
     ORDER -->|"1 : N"| CONTAINS{contiene}
     CONTAINS --> ORDER_ITEM
@@ -116,14 +121,17 @@ flowchart TB
     CLAIM -->|"1 : N"| INCLUDES_ATTACHMENT{incluye}
     INCLUDES_ATTACHMENT --> CLAIM_ATTACHMENT
 
-    COLLECTION -->|"N : N"| GROUPS{agrupa}
-    GROUPS --> PRODUCT
+    COLLECTION -->|"1 : N"| GROUPS{agrupa}
+    GROUPS --> COLLECTION_PRODUCT
 
-    DOLL_SECTION -->|"1 : N"| DISPLAYS_HOME_IMAGE{muestra}
-    DISPLAYS_HOME_IMAGE --> IMAGE_HOME
+    PRODUCT -->|"1 : N"| BELONGS_TO_COLLECTION{pertenece a}
+    BELONGS_TO_COLLECTION --> COLLECTION_PRODUCT
 
-    IMAGE_HOME -->|"1 : N"| INCLUDES_KNOW_YOU_SECTION{incluye}
-    INCLUDES_KNOW_YOU_SECTION --> KNOW_YOU_SECTION
+    IMAGE_HOME -->|"1 : N"| IS_USED_IN_DOLL_SECTION{se usa en}
+    IS_USED_IN_DOLL_SECTION --> DOLL_SECTION
+
+    IMAGE_HOME -->|"1 : N"| IS_USED_IN_KNOW_YOU_SECTION{se usa en}
+    IS_USED_IN_KNOW_YOU_SECTION --> KNOW_YOU_SECTION
 
     PICKUP_POINT -->|"1 : N"| IS_USED_FOR{se usa para}
     IS_USED_FOR --> SHIPMENT
