@@ -17,21 +17,21 @@ flowchart TB
     PRODUCT[product]
     PRODUCT_IMAGE[product_image]
     PRODUCT_IMAGE_ZONE[product_image_zone]
-    PRODUCT_ACCESSORY[product_accessory]
+    DOLL_PRODUCT_ACCESSORY[doll_product_accessory]
     REVIEW[review]
     COLLECTION_PRODUCT[collection_product]
 
     ORDER[order]
     ORDER_ITEM[order_item]
+    ORDER_ITEM_ACCESSORY[order_item_accessory]
     COUPON[coupon]
     PAYMENT_METHOD[payment_method]
     PAYMENT[payment]
     SHIPMENT[shipment]
     PICKUP_POINT[pickup_point]
 
-    DOLL_SECTION[doll_section]
+    HOME_SECTION_IMAGE[home_section_image]
     IMAGE_HOME[image_home]
-    KNOW_YOU_SECTION[know_you_section]
     BLOG_POST[blog_post]
 
     DOLL_SETTING[doll_setting]
@@ -82,17 +82,26 @@ flowchart TB
     PRODUCT_IMAGE -->|"1 : N"| HAS_IMAGE_ZONE{tiene}
     HAS_IMAGE_ZONE --> PRODUCT_IMAGE_ZONE
 
-    PRODUCT -->|"1 : N"| HAS_ACCESSORY{tiene}
-    HAS_ACCESSORY --> PRODUCT_ACCESSORY
+    PRODUCT -->|"1 : N"| ACTS_AS_DOLL{actúa como doll}
+    ACTS_AS_DOLL --> DOLL_PRODUCT_ACCESSORY
+
+    PRODUCT -->|"1 : N"| ACTS_AS_ACCESSORY{actúa como accesorio}
+    ACTS_AS_ACCESSORY --> DOLL_PRODUCT_ACCESSORY
 
     ORDER -->|"1 : N"| CONTAINS{contiene}
     CONTAINS --> ORDER_ITEM
+
+    ORDER_ITEM -->|"1 : N"| INCLUDES_ACCESSORY{incluye}
+    INCLUDES_ACCESSORY --> ORDER_ITEM_ACCESSORY
 
     COUPON -->|"1 : N"| APPLIES_TO{se aplica a}
     APPLIES_TO --> ORDER
 
     PRODUCT -->|"1 : N"| APPEARS_IN{aparece en}
     APPEARS_IN --> ORDER_ITEM
+
+    PRODUCT -->|"1 : N"| IS_SELECTED_AS_ACCESSORY{se selecciona como accesorio}
+    IS_SELECTED_AS_ACCESSORY --> ORDER_ITEM_ACCESSORY
 
     PRODUCT -->|"1 : N"| RECEIVES{recibe}
     RECEIVES --> REVIEW
@@ -127,11 +136,8 @@ flowchart TB
     PRODUCT -->|"1 : N"| BELONGS_TO_COLLECTION{pertenece a}
     BELONGS_TO_COLLECTION --> COLLECTION_PRODUCT
 
-    IMAGE_HOME -->|"1 : N"| IS_USED_IN_DOLL_SECTION{se usa en}
-    IS_USED_IN_DOLL_SECTION --> DOLL_SECTION
-
-    IMAGE_HOME -->|"1 : N"| IS_USED_IN_KNOW_YOU_SECTION{se usa en}
-    IS_USED_IN_KNOW_YOU_SECTION --> KNOW_YOU_SECTION
+    IMAGE_HOME -->|"1 : N"| IS_ASSIGNED_TO_HOME_SECTION{se asigna a}
+    IS_ASSIGNED_TO_HOME_SECTION --> HOME_SECTION_IMAGE
 
     PICKUP_POINT -->|"1 : N"| IS_USED_FOR{se usa para}
     IS_USED_FOR --> SHIPMENT
@@ -143,3 +149,10 @@ Este archivo es el modelo entidad-relación conceptual:
 - cardinalidades
 
 Sin columnas, sin IDs y sin claves foráneas.
+
+Nota sobre `doll_product_accessory`:
+- No es una tabla de productos nueva; es una tabla intermedia.
+- `product` participa dos veces con roles distintos:
+- como `doll`: el producto principal de tipo muñeca
+- como `accessory`: el producto accesorio compatible
+- Sirve para expresar qué accesorios pueden usarse con qué dolls.

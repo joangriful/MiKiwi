@@ -1,6 +1,14 @@
 # MiKiwi Relational Model
 
+Modelo relacional completo en un solo diagrama.
+
+Convenciones: `PK` = Primary Key, `FK` = Foreign Key, `UK` = Unique Key.
+
 ```mermaid
+---
+config:
+  theme: neutral
+---
 erDiagram
     user {
         uuid id PK
@@ -14,9 +22,7 @@ erDiagram
         boolean is_active
         datetime email_verified_at
         string profile_photo_url
-        string profile_photo_public_id
         string banner_url
-        string banner_public_id
         string stripe_customer_id
         string quiz_result_category
         string remember_token
@@ -204,9 +210,9 @@ erDiagram
         datetime updated_at
     }
 
-    product_accessory {
+    doll_product_accessory {
         uuid id PK
-        uuid parent_product_id FK
+        uuid doll_product_id FK
         uuid accessory_product_id FK
         boolean is_mandatory
         string group_name
@@ -243,11 +249,22 @@ erDiagram
         uuid id PK
         uuid order_id FK
         uuid product_id FK
-        uuid parent_order_item_id FK
         string product_name_snapshot
         string sku_snapshot
         integer quantity
         decimal unit_price
+        datetime created_at
+        datetime updated_at
+    }
+
+    order_item_accessory {
+        uuid id PK
+        uuid order_item_id FK
+        uuid product_id FK
+        string product_name_snapshot
+        string sku_snapshot
+        decimal unit_price
+        integer quantity
         datetime created_at
         datetime updated_at
     }
@@ -299,25 +316,12 @@ erDiagram
         datetime updated_at
     }
 
-    doll_section {
+    home_section_image {
         uuid id PK
         uuid image_home_id FK
-        string name
-        string title
-        text description
+        string section_key
         integer sort_order
         boolean is_active
-        datetime created_at
-        datetime updated_at
-    }
-
-    know_you_section {
-        uuid id PK
-        uuid image_home_id FK
-        string title
-        string subtitle
-        text content
-        integer sort_order
         datetime created_at
         datetime updated_at
     }
@@ -366,6 +370,8 @@ erDiagram
     coupon ||--o{ order : applies_to
     order ||--o{ order_item : contains
     product ||--o{ order_item : appears_in
+    order_item ||--o{ order_item_accessory : includes
+    product ||--o{ order_item_accessory : selected_as_accessory
     order ||--|| shipment : has
     pickup_point ||--o{ shipment : used_for
 
@@ -388,12 +394,11 @@ erDiagram
     category ||--o{ product : classifies
     product ||--o{ product_image : has
     product_image ||--o{ product_image_zone : has
-    product ||--o{ product_accessory : parent_of
-    product ||--o{ product_accessory : accessory_of
+    product ||--o{ doll_product_accessory : doll_of
+    product ||--o{ doll_product_accessory : accessory_of
 
     collection ||--o{ collection_product : groups
     product ||--o{ collection_product : belongs_to
 
-    image_home ||--o{ doll_section : used_in
-    image_home ||--o{ know_you_section : used_in
+    image_home ||--o{ home_section_image : assigned_to
 ```
