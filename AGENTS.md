@@ -31,6 +31,7 @@ Para cualquier tarea que toque base de datos, migraciones, modelos Eloquent, rel
 8. Al rehacer la base de datos, primero se define el esquema final según esos archivos y después se adapta el backend para respetarlo.
 9. Estado transitorio actual: las migraciones y partes del backend pueden estar a medio camino de la migración al nuevo esquema. Mientras exista esa transición, deben revisarse para entender el impacto del cambio, pero no deben tomarse como fuente de verdad estructural si contradicen los dos modelos `.md`.
 10. Incluso después de rehacer las migraciones, si en algún momento aparece una discrepancia entre las migraciones del repo y `database_relational_model.md` o `database_entity_relationship_model.md`, la IA debe tomar los archivos `.md` como referencia principal y tratar la discrepancia como desalineación a corregir.
+11. Excepción física documentada por nombres reservados SQL/PostgreSQL: aunque el modelo relacional use `user` y `order` como nombres conceptuales, las tablas físicas deben llamarse `users` y `orders`. Esta excepción no debe considerarse una contradicción del modelo, sino una adaptación técnica obligatoria para evitar conflictos con palabras reservadas.
 
 ## Stack Vigente
 
