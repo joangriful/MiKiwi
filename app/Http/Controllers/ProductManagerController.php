@@ -22,18 +22,17 @@ class ProductManagerController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'sku' => 'nullable|string|unique:products,sku',
-            'category_id' => 'nullable|uuid|exists:categories,id',
+            'sku' => 'nullable|string|unique:product,sku',
+            'category_id' => 'required|uuid|exists:category,id',
             'description' => 'nullable|string',
             'base_price' => 'required|numeric|min:0',
             'stock_quantity' => 'nullable|integer|min:0',
             'product_type' => ['required', Rule::in(ProductType::values())],
             'is_adult_only' => 'boolean',
             'is_active' => 'boolean',
+            'is_promoted' => 'sometimes|boolean',
             'images' => 'nullable|array',
             'images.*' => 'string',
-            'image_url' => 'nullable|string',
-            'hover_image_url' => 'nullable|string',
         ]);
 
         try {
@@ -52,19 +51,17 @@ class ProductManagerController extends Controller
     {
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
-            'sku' => 'sometimes|string|unique:products,sku,'.$product->getKey(),
-            'category_id' => 'nullable|uuid|exists:categories,id',
+            'sku' => 'sometimes|string|unique:product,sku,'.$product->getKey(),
+            'category_id' => 'sometimes|uuid|exists:category,id',
             'description' => 'nullable|string',
             'base_price' => 'sometimes|numeric|min:0',
             'stock_quantity' => 'nullable|integer|min:0',
             'product_type' => ['sometimes', Rule::in(ProductType::values())],
             'is_adult_only' => 'boolean',
             'is_active' => 'boolean',
-            'is_featured' => 'sometimes|boolean',
+            'is_promoted' => 'sometimes|boolean',
             'images' => 'nullable|array',
             'images.*' => 'string',
-            'image_url' => 'nullable|string',
-            'hover_image_url' => 'nullable|string',
         ]);
 
         try {

@@ -19,12 +19,9 @@ use Inertia\Response;
 
 class CatalogProductController extends Controller
 {
-    protected $productService;
-
-    public function __construct(ProductService $productService)
-    {
-        $this->productService = $productService;
-    }
+    public function __construct(
+        private readonly ProductService $productService,
+    ) {}
 
     /**
      * Mostrar detalles de un producto
@@ -41,7 +38,7 @@ class CatalogProductController extends Controller
             $relatedProducts = Product::where('category_id', $product->category_id)
                 ->where('id', '!=', $product->id)
                 ->where('is_active', true)
-                ->with('category') // Eager load category
+                ->with(['category', 'images'])
                 ->inRandomOrder()
                 ->take(4)
                 ->get();
@@ -79,7 +76,7 @@ class CatalogProductController extends Controller
      */
     private function applyCatalogFilters(Builder $query, Request $request): void
     {
-        // Filtrar por categoría (ID o Slug, Incluyendo subcategorías de forma recursiva)
+        // Filtrar por categoría (ID o slug)
         if ($request->has('category')) {
             $categoryParam = $request->query('category');
 
@@ -94,16 +91,13 @@ class CatalogProductController extends Controller
             $category = $categoryQuery->first();
 
             if ($category) {
-                // Special case: "parejas" collection shows all non-BDSM products
                 if ($category->slug === 'parejas') {
-                    // Exclude BDSM category and all its descendants
                     $bdsmCategory = Category::query()->where('slug', 'bdsm-y-fetiche')->first();
                     if ($bdsmCategory) {
                         $bdsmIds = $this->getCategoryAndDescendants($bdsmCategory);
                         $query->whereNotIn('category_id', $bdsmIds);
                     }
                 } else {
-                    // Normal filtering: get all descendants of the category
                     $categoryIds = $this->getCategoryAndDescendants($category);
                     $query->whereIn('category_id', $categoryIds);
                 }
@@ -140,9 +134,9 @@ class CatalogProductController extends Controller
             CaseInsensitiveSearch::contains($query, 'name', $request->string('search')->toString());
         }
 
-        // Filtrar por productos destacados (Top Ventas)
+        // Filtrar por productos destacados
         if ($request->boolean('featured')) {
-            $query->where('is_featured', true);
+            $query->where('is_promoted', true);
         }
     }
 
@@ -174,7 +168,7 @@ class CatalogProductController extends Controller
      */
     private function paginatedPublicProducts(Builder $query, Request $request): LengthAwarePaginator
     {
-        $products = $query->with('category')->paginate(12)->withQueryString();
+        $products = $query->with(['category', 'images'])->paginate(12)->withQueryString();
         $products->through(fn (Product $product): array => ProductResource::make($product)->resolve($request));
 
         return $products;
@@ -185,20 +179,8 @@ class CatalogProductController extends Controller
      */
     private function catalogCategories(): Collection
     {
-        // Obtener categorías con sus hijos para el sidebar
-        $categories = Category::root()
+        $categories = Category::query()
             ->where('is_active', true)
-            ->with([
-                'children' => function ($q) {
-                    $q->where('is_active', true)
-                        ->withCount([
-                            'products' => function ($query) {
-                                $query->where('is_active', true)->where('stock_quantity', '>', 0);
-                            },
-                        ])
-                        ->orderBy('name');
-                },
-            ])
             ->withCount([
                 'products' => function ($query) {
                     $query->where('is_active', true)->where('stock_quantity', '>', 0);
@@ -207,32 +189,20 @@ class CatalogProductController extends Controller
             ->orderBy('name')
             ->get();
 
-        // Calcular el total de productos de la categoría principal sumando también los de sus subcategorías
         $categories->each(function ($category) {
-            $childrenCount = $category->children->sum('products_count');
-            $category->total_products_count = $category->products_count + $childrenCount;
+            $category->total_products_count = $category->products_count;
         });
 
         return $categories;
     }
 
     /**
-     * Get a category and all its descendants (children, grandchildren, etc.) recursively
+     * Get category filter scope IDs.
      *
      * @return SupportCollection<int, string>
      */
     private function getCategoryAndDescendants(Category $category): SupportCollection
     {
-        $ids = collect([$category->id]);
-
-        // Get all children recursively
-        $children = Category::query()->where('parent_id', $category->id)->get();
-
-        /** @var Category $child */
-        foreach ($children as $child) {
-            $ids = $ids->merge($this->getCategoryAndDescendants($child));
-        }
-
-        return $ids;
+        return collect([$category->id]);
     }
 }

@@ -30,7 +30,7 @@ class CategoryController extends Controller
 
             return Inertia::render('Catalog/Products', [
                 'products' => $categoryData['products'],
-                'categories' => \App\Models\Category::root()->where('is_active', true)->with('children')->get(), // Consistent with Products index
+                'categories' => $this->categoryService->getNavigationCategories(),
                 'category' => $categoryData['category'],
                 'filters' => ['category' => $category->id],
                 'pageTitle' => $category->name.' - MiKiwi',

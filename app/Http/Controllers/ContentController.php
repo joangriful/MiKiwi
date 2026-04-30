@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain\HeroImages\Services\HeroImageManagementService;
-use App\Models\HeroImage;
+use App\Models\ImageHome;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -36,7 +36,7 @@ class ContentController extends Controller
         }
     }
 
-    public function deleteHeroImage(HeroImage $heroImage)
+    public function deleteHeroImage(ImageHome $heroImage)
     {
         try {
             $this->heroImageManagementService->deleteImage($heroImage);

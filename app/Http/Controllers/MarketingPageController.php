@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\HeroImage;
+use App\Models\ImageHome;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -25,7 +25,7 @@ class MarketingPageController extends Controller
 
     public function sustainability(): Response
     {
-        $heroImages = HeroImage::where('type', 'sustainability')
+        $heroImages = ImageHome::query()->where('type', 'sustainability')
             ->orderBy('created_at', 'desc')
             ->get();
 
