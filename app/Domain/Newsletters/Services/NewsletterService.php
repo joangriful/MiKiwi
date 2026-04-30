@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Domain\Newsletters\Services;
 
 use App\Models\NewsletterSubscriber;
+use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class NewsletterService
 {
@@ -17,9 +19,20 @@ class NewsletterService
             : 'Esperamos que disfrutes de nuestros consejos especializados para el cuidado y placer de tu pene.';
 
         try {
-            NewsletterSubscriber::updateOrCreate(
+            $user = User::query()->firstOrCreate(
                 ['email' => $email],
-                ['subscribed_at' => now()]
+                [
+                    'name' => $this->resolveUserName($email),
+                    'password' => Str::random(40),
+                ]
+            );
+
+            NewsletterSubscriber::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'email' => $email,
+                    'subscribed_at' => now(),
+                ]
             );
 
             $htmlContent = $this->getEmailTemplate($genderMsg);
@@ -45,6 +58,13 @@ class NewsletterService
             Log::error('Newsletter Error: '.$e->getMessage());
             return '¡Gracias! Te hemos anotado en nuestra lista.';
         }
+    }
+
+    private function resolveUserName(string $email): string
+    {
+        $candidate = trim(Str::before($email, '@'));
+
+        return $candidate !== '' ? $candidate : 'newsletter-user';
     }
 
     private function getEmailTemplate(string $genderMsg): string
