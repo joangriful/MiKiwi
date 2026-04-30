@@ -16,10 +16,10 @@ class StoreCartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_slug' => 'required|string|exists:products,slug',
+            'product_slug' => 'required|string|exists:product,slug',
             'quantity' => 'required|integer|min:1|max:99',
             'accessories' => 'nullable|array',
-            'accessories.*' => 'string|exists:products,slug',
+            'accessories.*' => 'string|exists:product,slug',
         ];
     }
 
