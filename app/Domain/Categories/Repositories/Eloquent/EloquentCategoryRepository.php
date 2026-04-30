@@ -50,9 +50,9 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
     }
 
     /**
-     * Obtener categorías raíz (sin padre)
+     * Obtener categorías activas para navegación
      */
-    public function getRootCategories(): Collection
+    public function getNavigationCategories(): Collection
     {
         return Category::active()
             ->orderBy('name')
@@ -77,14 +77,6 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
     }
 
     /**
-     * Obtener subcategorías de una categoría
-     */
-    public function getChildCategories(string $categoryId): Collection
-    {
-        return new Collection;
-    }
-
-    /**
      * Obtener productos de una categoría (paginados)
      */
     public function getCategoryProductsPaginated(string $categoryId, int $perPage = 12): ?LengthAwarePaginator
@@ -103,7 +95,7 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
             ->paginate($perPage);
     }
 
-    public function getDescendantIds(Category $category): Collection
+    public function getFilterCategoryIds(Category $category): Collection
     {
         return new Collection([$category->id]);
     }

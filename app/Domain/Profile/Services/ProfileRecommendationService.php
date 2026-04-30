@@ -77,7 +77,7 @@ class ProfileRecommendationService
             return $this->getFallbackRecommendations($limit);
         }
 
-        $categoryIds = $this->categoryService->getDescendantIds($collection)->all();
+        $categoryIds = $this->categoryService->getFilterCategoryIds($collection)->all();
         Log::info('Category IDs to search:', ['ids' => $categoryIds]);
 
         $products = $this->productService->getRecommendedProductsByCategoryIds($categoryIds, $limit);

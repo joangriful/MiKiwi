@@ -25,11 +25,11 @@ class CategoryService
     }
 
     /**
-     * Obtener categorías raíz para navegación
+     * Obtener categorías para navegación
      */
     public function getNavigationCategories(): Collection
     {
-        return $this->categoryRepository->getRootCategories();
+        return $this->categoryRepository->getNavigationCategories();
     }
 
     public function getAdminAssignableCategories(): Collection
@@ -51,13 +51,11 @@ class CategoryService
         // Obtener productos paginados de la categoría
         $products = $this->categoryRepository->getCategoryProductsPaginated((string) $category->id, 12);
 
-        // Obtener subcategorías si existen
-        $subcategories = $this->categoryRepository->getChildCategories((string) $category->id);
-
         return [
             'category' => $category,
             'products' => $products,
-            'subcategories' => $subcategories,
+            // El modelo actual de categorías es plano; se mantiene la clave por compatibilidad.
+            'subcategories' => new Collection,
             'breadcrumbs' => $this->buildBreadcrumbs($category),
         ];
     }
@@ -67,9 +65,9 @@ class CategoryService
         return $this->categoryRepository->findBySlug($slug);
     }
 
-    public function getDescendantIds(Category $category): Collection
+    public function getFilterCategoryIds(Category $category): Collection
     {
-        return $this->categoryRepository->getDescendantIds($category);
+        return $this->categoryRepository->getFilterCategoryIds($category);
     }
 
     /**

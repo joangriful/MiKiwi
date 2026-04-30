@@ -23,21 +23,20 @@ interface CategoryRepositoryInterface
     public function getAllActiveWithProducts(): Collection;
 
     /**
-     * Obtener categorías raíz (sin padre)
+     * Obtener categorías activas para navegación
      */
-    public function getRootCategories(): Collection;
+    public function getNavigationCategories(): Collection;
 
     public function getAdminRootCategories(): Collection;
-
-    /**
-     * Obtener subcategorías de una categoría
-     */
-    public function getChildCategories(string $categoryId): Collection;
 
     /**
      * Obtener productos de una categoría (paginados)
      */
     public function getCategoryProductsPaginated(string $categoryId, int $perPage = 12): ?LengthAwarePaginator;
 
-    public function getDescendantIds(Category $category): Collection;
+    /**
+     * Obtener IDs aplicables al filtrado de una categoría.
+     * En el modelo actual no jerárquico, solo devuelve el ID de la categoría.
+     */
+    public function getFilterCategoryIds(Category $category): Collection;
 }
