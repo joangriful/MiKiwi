@@ -7,6 +7,7 @@ namespace App\Domain\Addresses\Repositories\Eloquent;
 use App\Models\Address;
 use App\Domain\Addresses\Repositories\Interfaces\UserAddressRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class EloquentUserAddressRepository implements UserAddressRepositoryInterface
@@ -78,7 +79,7 @@ class EloquentUserAddressRepository implements UserAddressRepositoryInterface
      */
     public function setAsDefault(string $addressId, string $userId): void
     {
-        \Illuminate\Support\Facades\DB::transaction(function () use ($addressId, $userId) {
+        DB::transaction(function () use ($addressId, $userId) {
             // Quitar predeterminada de todas las direcciones del usuario
             Address::where('user_id', $userId)
                 ->update(['is_default' => false]);

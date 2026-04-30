@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Schema;
 
 class EloquentHeroImageRepository implements HeroImageRepositoryInterface
 {
+    private const TABLE = 'image_home';
+
+    /**
+     * @var array<string, bool>
+     */
+    private array $columnExistenceCache = [];
+
     public function getAllOrdered(): Collection
     {
         return $this->applyOrdering(ImageHome::query())->get();
@@ -95,6 +102,10 @@ class EloquentHeroImageRepository implements HeroImageRepositoryInterface
 
     private function hasColumn(string $column): bool
     {
-        return Schema::hasColumn('image_home', $column);
+        if (array_key_exists($column, $this->columnExistenceCache)) {
+            return $this->columnExistenceCache[$column];
+        }
+
+        return $this->columnExistenceCache[$column] = Schema::hasColumn(self::TABLE, $column);
     }
 }
