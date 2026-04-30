@@ -5,25 +5,25 @@ declare(strict_types=1);
 namespace App\Domain\Orders\Actions;
 
 use App\Domain\Carts\Services\CartService;
+use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Events\OrderCreated;
 use App\Exceptions\CartEmptyException;
 use App\Exceptions\InsufficientStockException;
+use App\Models\Address;
 use App\Models\Order;
-use App\Models\OrderItem;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class CreateOrder
 {
-    protected CartService $cartService;
-
-    public function __construct(CartService $cartService)
-    {
-        $this->cartService = $cartService;
-    }
+    public function __construct(
+        private readonly CartService $cartService,
+        private readonly OrderRepositoryInterface $orderRepository,
+    ) {}
 
     public function execute(array $data): Order
     {
@@ -47,32 +47,38 @@ class CreateOrder
         }
 
         return DB::transaction(function () use ($data, $cart, $isBuyNow) {
-            $shippingAddress = $this->shippingAddressWithMetadata($data);
+            $userId = (string) ($data['user_id'] ?? Auth::id());
+            $shippingAddress = $this->resolveAddress($userId, $data['shipping_address'], 'shipping');
+            $billingAddress = $this->resolveAddress($userId, $data['billing_address'] ?? $data['shipping_address'], 'billing');
 
-            $order = Order::create([
-                'user_id' => $data['user_id'] ?? Auth::id(),
+            $orderItems = [];
+            foreach ($cart['items'] as $item) {
+                $product = $item['product'];
+                $orderItems[] = [
+                    'product_id' => $product->id,
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $product->base_price,
+                    'product_name_snapshot' => $product->name,
+                    'sku_snapshot' => $product->sku ?? 'SKU-GENERICO',
+                ];
+            }
+
+            $order = $this->orderRepository->create([
+                'user_id' => $userId,
+                'shipping_address_id' => $shippingAddress->id,
+                'billing_address_id' => $billingAddress->id,
+                'coupon_id' => $data['coupon_id'] ?? null,
                 'order_number' => $this->generateOrderNumber(),
                 'status' => OrderStatus::Pending->value,
                 'total_amount' => $cart['total'],
                 'payment_status' => $data['payment_status'] ?? PaymentStatus::Pending->value,
                 'payment_method' => $data['payment_method'],
-                'shipping_address_snapshot' => $shippingAddress,
-                'billing_address_snapshot' => $data['billing_address'] ?? $shippingAddress,
                 'notes' => $data['notes'] ?? null,
+                'items' => $orderItems,
             ]);
 
             foreach ($cart['items'] as $item) {
                 $product = $item['product'];
-
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $product->id,
-                    'product_name_snapshot' => $product->name,
-                    'sku_snapshot' => $product->sku ?? 'SKU-GENERICO',
-                    'quantity' => $item['quantity'],
-                    'unit_price' => $product->base_price,
-                ]);
-
                 $product->decrement('stock_quantity', $item['quantity']);
             }
 
@@ -94,18 +100,33 @@ class CreateOrder
     }
 
     /**
-     * @param  array<string, mixed>  $data
-     * @return array<string, mixed>
+     * @param  array<string, mixed>  $addressData
      */
-    private function shippingAddressWithMetadata(array $data): array
+    private function resolveAddress(string $userId, array $addressData, string $alias): Address
     {
-        $shippingAddress = $data['shipping_address'];
-        $shippingAddress['metadata'] = [
-            'payment_id' => $data['payment_intent_id'] ?? null,
-            'pickup_point_id' => $data['pickup_point_id'] ?? null,
-            'processed_at' => now()->toDateTimeString(),
-        ];
+        if (isset($addressData['id']) && is_string($addressData['id'])) {
+            $existingAddress = Address::query()
+                ->where('id', $addressData['id'])
+                ->where('user_id', $userId)
+                ->first();
 
-        return $shippingAddress;
+            if ($existingAddress) {
+                return $existingAddress;
+            }
+        }
+
+        $user = User::query()->findOrFail($userId);
+
+        return Address::query()->create([
+            'user_id' => $user->id,
+            'alias' => $addressData['alias'] ?? $alias,
+            'full_name' => $addressData['full_name'] ?? $user->name,
+            'phone' => $addressData['phone'] ?? null,
+            'street_address' => $addressData['street_address'] ?? '',
+            'city' => $addressData['city'] ?? '',
+            'postal_code' => $addressData['postal_code'] ?? '',
+            'country' => $addressData['country'] ?? 'ES',
+            'is_default' => false,
+        ]);
     }
 }
