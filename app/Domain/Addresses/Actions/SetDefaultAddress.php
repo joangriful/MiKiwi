@@ -8,12 +8,9 @@ use App\Domain\Addresses\Repositories\Interfaces\UserAddressRepositoryInterface;
 
 class SetDefaultAddress
 {
-    protected UserAddressRepositoryInterface $repository;
-
-    public function __construct(UserAddressRepositoryInterface $repository)
-    {
-        $this->repository = $repository;
-    }
+    public function __construct(
+        private readonly UserAddressRepositoryInterface $repository,
+    ) {}
 
     public function execute(string $addressId, string $userId): void
     {

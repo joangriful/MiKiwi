@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Newsletters\Services;
 
-use App\Models\Subscriber;
+use App\Models\NewsletterSubscriber;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -17,9 +17,9 @@ class NewsletterService
             : 'Esperamos que disfrutes de nuestros consejos especializados para el cuidado y placer de tu pene.';
 
         try {
-            Subscriber::updateOrCreate(
+            NewsletterSubscriber::updateOrCreate(
                 ['email' => $email],
-                ['gender' => $gender]
+                ['subscribed_at' => now()]
             );
 
             $htmlContent = $this->getEmailTemplate($genderMsg);
