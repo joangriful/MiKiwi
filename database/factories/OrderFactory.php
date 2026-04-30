@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\Address;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Models\Order;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * Factory for creating Order test instances.
  *
- * This factory generates realistic order data with Spanish address snapshots,
+ * This factory generates realistic order data with relational addresses,
  * unique order numbers, and various order states for comprehensive testing.
  *
  * @extends Factory<Order>
@@ -32,12 +33,13 @@ class OrderFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
+            'shipping_address_id' => fn (array $attributes) => $this->createAddressForUser((string) $attributes['user_id'], 'shipping')->getKey(),
+            'billing_address_id' => fn (array $attributes) => $this->createAddressForUser((string) $attributes['user_id'], 'billing')->getKey(),
             'order_number' => $this->generateOrderNumber(),
             'status' => OrderStatus::Pending->value,
             'payment_status' => PaymentStatus::Pending->value,
             'total_amount' => $this->faker->randomFloat(2, 20.00, 500.00),
-            'shipping_address_snapshot' => $this->generateAddressSnapshot(),
-            'billing_address_snapshot' => $this->generateAddressSnapshot(),
+            'payment_method' => 'stripe',
         ];
     }
 
@@ -53,23 +55,21 @@ class OrderFactory extends Factory
     }
 
     /**
-     * Generate a realistic Spanish address snapshot.
-     *
-     * Creates immutable address data for historical order records.
-     * All data uses Spanish formatting conventions.
-     *
-     * @return array<string, string>
+     * Create a realistic Spanish address record for a given user.
      */
-    private function generateAddressSnapshot(): array
+    private function createAddressForUser(string $userId, string $alias): Address
     {
-        return [
+        return Address::query()->create([
+            'user_id' => $userId,
+            'alias' => $alias,
             'full_name' => $this->faker->name(),
             'phone' => $this->faker->regexify('(\+34\s)?[6-9]\d{2}\s?\d{3}\s?\d{3}'),
             'street_address' => $this->faker->streetAddress(),
             'city' => $this->faker->city(),
             'postal_code' => $this->faker->regexify('[0-5]\d{4}'),
             'country' => 'España',
-        ];
+            'is_default' => false,
+        ]);
     }
 
     /**

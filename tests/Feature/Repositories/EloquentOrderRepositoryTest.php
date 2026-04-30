@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Repositories;
 
+use App\Models\Address;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\User;
 use App\Domain\Orders\Repositories\Eloquent\EloquentOrderRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -25,22 +27,42 @@ class EloquentOrderRepositoryTest extends TestCase
     public function test_can_create_order_with_items(): void
     {
         $user = User::factory()->create();
+        $shippingAddress = Address::query()->create([
+            'user_id' => $user->getKey(),
+            'alias' => 'shipping',
+            'full_name' => $user->name,
+            'phone' => null,
+            'street_address' => '123 Test St',
+            'city' => 'Test City',
+            'postal_code' => '28001',
+            'country' => 'España',
+            'is_default' => false,
+        ]);
+        $billingAddress = Address::query()->create([
+            'user_id' => $user->getKey(),
+            'alias' => 'billing',
+            'full_name' => $user->name,
+            'phone' => null,
+            'street_address' => '123 Test St',
+            'city' => 'Test City',
+            'postal_code' => '28001',
+            'country' => 'España',
+            'is_default' => false,
+        ]);
 
         $data = [
             'user_id' => $user->id,
+            'shipping_address_id' => $shippingAddress->getKey(),
+            'billing_address_id' => $billingAddress->getKey(),
             'order_number' => 'ORD-123',
             'status' => 'pending',
             'total_amount' => 100.00,
-            'shipping_address_snapshot' => [
-                'street' => '123 Test St',
-                'city' => 'Test City',
-                'country' => 'Test Country',
-            ],
+            'payment_method' => 'stripe',
             'items' => [
             ],
         ];
 
-        $product = \App\Models\Product::factory()->create();
+        $product = Product::factory()->create();
 
         $data['items'][0] = [
             'product_id' => $product->id,
@@ -55,6 +77,7 @@ class EloquentOrderRepositoryTest extends TestCase
         $this->assertDatabaseHas('orders', ['order_number' => 'ORD-123']);
         $this->assertCount(1, $order->items);
         $this->assertEquals($product->id, $order->items->first()->product_id);
+        $this->assertSame($shippingAddress->getKey(), $order->shipping_address_id);
     }
 
     public function test_can_find_by_order_number(): void

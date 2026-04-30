@@ -107,10 +107,10 @@ class SeederTest extends TestCase
             // Verificar que tiene usuario
             $this->assertNotNull($order->user);
 
-            // Verificar snapshot de dirección
-            $this->assertIsArray($order->shipping_address_snapshot);
-            $this->assertArrayHasKey('country', $order->shipping_address_snapshot);
-            $this->assertEquals('España', $order->shipping_address_snapshot['country']);
+            // Verificar direcciones relacionales
+            $order->load('shippingAddress');
+            $this->assertNotNull($order->shippingAddress);
+            $this->assertEquals('España', $order->shippingAddress->country);
         }
     }
 

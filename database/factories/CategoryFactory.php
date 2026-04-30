@@ -17,28 +17,25 @@ class CategoryFactory extends Factory
             'name' => ucfirst($name),
             'slug' => Str::slug($name),
             'is_active' => true,
-            'parent_id' => null, // Por defecto raíz, lo cambiaremos en el Seeder
         ];
     }
 
     /**
-     * Indicate that the category is a root category (no parent).
+     * Indicate that the category is a root category.
+     * Categories are flat in the current schema, so this is a no-op alias.
      */
     public function root(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'parent_id' => null,
-        ]);
+        return $this->state(fn (array $attributes) => []);
     }
 
     /**
-     * Indicate that the category is a child category (has parent).
+     * Indicate that the category is a child category.
+     * Categories are flat in the current schema, so this is a no-op alias.
      */
     public function child(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'parent_id' => \App\Models\Category::factory(),
-        ]);
+        return $this->state(fn (array $attributes) => []);
     }
 
     /**
