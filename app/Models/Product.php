@@ -25,7 +25,6 @@ class Product extends Model
         'base_price',
         'is_active',
         'is_promoted',
-        'is_featured',
         'stock_quantity',
         'product_type',
         'is_adult_only',
@@ -121,16 +120,6 @@ class Product extends Model
     public function claims(): HasMany
     {
         return $this->hasMany(Claim::class);
-    }
-
-    public function getIsFeaturedAttribute(): bool
-    {
-        return (bool) ($this->attributes['is_promoted'] ?? false);
-    }
-
-    public function setIsFeaturedAttribute(bool $value): void
-    {
-        $this->attributes['is_promoted'] = $value;
     }
 
     /**

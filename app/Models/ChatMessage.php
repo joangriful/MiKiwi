@@ -15,7 +15,6 @@ class ChatMessage extends Model
 
     protected $fillable = [
         'chat_session_id',
-        'session_id',
         'message_body',
         'sender_type',
         'is_read',
@@ -42,23 +41,8 @@ class ChatMessage extends Model
         return $query->where('chat_session_id', $chatSessionId);
     }
 
-    public function getSessionIdAttribute(): ?string
-    {
-        return $this->attributes['chat_session_id'] ?? null;
-    }
-
-    public function setSessionIdAttribute(?string $value): void
-    {
-        $this->attributes['chat_session_id'] = $value;
-    }
-
     public function chatSession(): BelongsTo
     {
         return $this->belongsTo(ChatSession::class, 'chat_session_id');
-    }
-
-    public function session(): BelongsTo
-    {
-        return $this->chatSession();
     }
 }
