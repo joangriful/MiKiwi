@@ -16,9 +16,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
         return Product::active()
             ->where('slug', $slug)
             ->with([
-                'category' => function ($q) {
-                    $q->with('parent');
-                },
+                'category',
                 'accessories',
                 'reviews' => fn ($query) => $query->approved()->latest(),
             ])
@@ -54,7 +52,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
         return Product::active()
             ->inStock()
             ->with('category:id,name,slug')
-            ->where('is_featured', true)
+            ->where('is_promoted', true)
             ->orderBy('created_at', 'desc')
             ->get();
     }
@@ -75,7 +73,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
         return Product::active()
             ->inStock()
             ->with('category:id,name,slug')
-            ->where('is_featured', true)
+            ->where('is_promoted', true)
             ->inRandomOrder()
             ->limit($limit)
             ->get();

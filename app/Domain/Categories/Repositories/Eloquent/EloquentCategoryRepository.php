@@ -30,7 +30,7 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
             ->where('slug', $slug)
             ->with(['products' => function ($query) {
                 $query->active()->inStock();
-            }, 'children'])
+            }])
             ->first();
     }
 
@@ -52,23 +52,14 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
     public function getRootCategories(): Collection
     {
         return Category::active()
-            ->root()
-            ->with('children')
+            ->orderBy('name')
             ->get();
     }
 
     public function getAdminRootCategories(): Collection
     {
         $categories = Category::active()
-            ->whereNull('parent_id')
-            ->with([
-                'children' => function ($query) {
-                    $query->where('is_active', true)
-                        ->orderBy('name')
-                        ->select(['id', 'parent_id', 'name', 'slug', 'is_active']);
-                },
-            ])
-            ->get(['id', 'parent_id', 'name', 'slug', 'is_active']);
+            ->get(['id', 'name', 'slug', 'is_active']);
 
         $preferredCategories = $categories
             ->whereIn('slug', self::ADMIN_ROOT_CATEGORY_SLUGS)
@@ -87,9 +78,7 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
      */
     public function getChildCategories(string $categoryId): Collection
     {
-        $category = Category::find($categoryId);
-
-        return $category ? $category->children()->active()->get() : new Collection;
+        return new Collection;
     }
 
     /**
@@ -113,13 +102,6 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
 
     public function getDescendantIds(Category $category): Collection
     {
-        $ids = collect([$category->id]);
-        $children = Category::where('parent_id', $category->id)->get();
-
-        foreach ($children as $child) {
-            $ids = $ids->merge($this->getDescendantIds($child));
-        }
-
-        return $ids;
+        return new Collection([$category->id]);
     }
 }
