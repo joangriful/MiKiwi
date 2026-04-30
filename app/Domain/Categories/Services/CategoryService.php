@@ -1,24 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Categories\Services;
 
 use App\Domain\Categories\Repositories\Interfaces\CategoryRepositoryInterface;
 use App\Models\Category;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class CategoryService
 {
-    protected $categoryRepository;
-
-    public function __construct(CategoryRepositoryInterface $categoryRepository)
-    {
-        $this->categoryRepository = $categoryRepository;
-    }
+    public function __construct(
+        private readonly CategoryRepositoryInterface $categoryRepository,
+    ) {}
 
     /**
      * Obtener todas las categorías activas con productos
      */
-    public function getAllCategoriesWithProducts()
+    public function getAllCategoriesWithProducts(): Collection
     {
         return $this->categoryRepository->getAllActiveWithProducts();
     }
@@ -26,12 +27,12 @@ class CategoryService
     /**
      * Obtener categorías raíz para navegación
      */
-    public function getNavigationCategories()
+    public function getNavigationCategories(): Collection
     {
         return $this->categoryRepository->getRootCategories();
     }
 
-    public function getAdminAssignableCategories()
+    public function getAdminAssignableCategories(): Collection
     {
         return $this->categoryRepository->getAdminRootCategories();
     }
@@ -48,10 +49,10 @@ class CategoryService
         }
 
         // Obtener productos paginados de la categoría
-        $products = $this->categoryRepository->getCategoryProductsPaginated($category->id, 12);
+        $products = $this->categoryRepository->getCategoryProductsPaginated((string) $category->id, 12);
 
         // Obtener subcategorías si existen
-        $subcategories = $this->categoryRepository->getChildCategories($category->id);
+        $subcategories = $this->categoryRepository->getChildCategories((string) $category->id);
 
         return [
             'category' => $category,
@@ -66,7 +67,7 @@ class CategoryService
         return $this->categoryRepository->findBySlug($slug);
     }
 
-    public function getDescendantIds(Category $category)
+    public function getDescendantIds(Category $category): Collection
     {
         return $this->categoryRepository->getDescendantIds($category);
     }
@@ -74,20 +75,12 @@ class CategoryService
     /**
      * Construir breadcrumbs para navegación
      */
-    protected function buildBreadcrumbs($category): array
+    protected function buildBreadcrumbs(Category $category): array
     {
-        $breadcrumbs = [];
-        $current = $category;
-
-        while ($current) {
-            array_unshift($breadcrumbs, [
-                'name' => $current->name,
-                'slug' => $current->slug,
-                'url' => route('categories.show', $current->slug),
-            ]);
-            $current = $current->parent;
-        }
-
-        return $breadcrumbs;
+        return [[
+            'name' => $category->name,
+            'slug' => $category->slug,
+            'url' => route('categories.show', $category->slug),
+        ]];
     }
 }

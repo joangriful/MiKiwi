@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Home\Services;
 
 use App\Domain\Products\Services\ProductService;
 use App\Domain\HeroImages\Repositories\Interfaces\HeroImageRepositoryInterface;
+use App\Models\HomeSectionImage;
+use Illuminate\Database\Eloquent\Collection;
 
 class HomePageService
 {
@@ -22,12 +26,12 @@ class HomePageService
         ];
     }
 
-    private function getCollectionImages()
+    private function getCollectionImages(): Collection
     {
-        $homeCollectionImageModel = 'App\\Models\\HomeCollectionImage';
-
-        return class_exists($homeCollectionImageModel)
-            ? $homeCollectionImageModel::all()
-            : collect();
+        return HomeSectionImage::query()
+            ->with('imageHome')
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
     }
 }

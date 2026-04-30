@@ -19,12 +19,13 @@ class CartPageService
     {
         $cart = $this->cartService->getCart();
         $isBuyNow = $preferBuyNow && $this->cartService->hasBuyNowItem();
+        $displayCart = $isBuyNow ? $this->cartService->getBuyNowItem() : $cart;
 
         return [
-            'cart' => $isBuyNow ? $this->cartService->getBuyNowItem() : $cart,
+            'cart' => $displayCart,
             'isBuyNow' => $isBuyNow,
             'popularProducts' => $this->productService->getCartPopularProducts(),
-            'coupon' => $this->couponService->refreshSessionCoupon($cart['total']),
+            'coupon' => $this->couponService->refreshSessionCoupon((float) ($displayCart['total'] ?? 0)),
         ];
     }
 }

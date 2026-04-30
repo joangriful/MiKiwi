@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Admin\Services;
 
 use App\Domain\Categories\Services\CategoryService;
@@ -7,6 +9,8 @@ use App\Domain\Dolls\Services\DollSettingsService;
 use App\Domain\HeroImages\Repositories\Interfaces\HeroImageRepositoryInterface;
 use App\Domain\Media\Services\CloudinaryService;
 use App\Domain\Products\Services\ProductService;
+use App\Models\HomeSectionImage;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 
 class ComponentsManagerPageService
@@ -35,7 +39,7 @@ class ComponentsManagerPageService
         ];
     }
 
-    private function getCachedViews()
+    private function getCachedViews(): array
     {
         $cacheDuration = app()->environment('local') ? 5 : 3600;
 
@@ -44,12 +48,11 @@ class ComponentsManagerPageService
         });
     }
 
-    private function getCollectionImages()
+    private function getCollectionImages(): Collection
     {
-        $homeCollectionImageModel = 'App\\Models\\HomeCollectionImage';
-
-        return class_exists($homeCollectionImageModel)
-            ? $homeCollectionImageModel::all()
-            : collect();
+        return HomeSectionImage::query()
+            ->with('imageHome')
+            ->orderBy('sort_order')
+            ->get();
     }
 }
