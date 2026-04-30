@@ -26,6 +26,14 @@ class EloquentHeroImageRepository implements HeroImageRepositoryInterface
             ->get();
     }
 
+    public function getActiveImagesBySection(string $sectionKey): Collection
+    {
+        return $this->baseSectionedQuery()
+            ->where('home_section_image.is_active', true)
+            ->where('home_section_image.section_key', $sectionKey)
+            ->get();
+    }
+
     public function createFromCloudinary(array $cloudinaryData, array $attributes = []): ImageHome
     {
         return DB::transaction(function () use ($cloudinaryData, $attributes) {
