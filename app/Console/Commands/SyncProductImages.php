@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Domain\Media\Services\CloudinaryService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
@@ -89,9 +90,18 @@ class SyncProductImages extends Command
                     return strcmp($a, $b);
                 });
 
-                $product->image_url = $matchedImages[0];
-                $product->images = $matchedImages;
-                $product->save();
+                ProductImage::query()->where('product_id', $product->getKey())->delete();
+
+                foreach (array_values($matchedImages) as $index => $imageUrl) {
+                    ProductImage::query()->create([
+                        'product_id' => $product->getKey(),
+                        'public_id' => (string) Str::uuid(),
+                        'image_url' => $imageUrl,
+                        'alt_text' => $product->name,
+                        'sort_order' => $index,
+                    ]);
+                }
+
                 $syncedCount++;
             }
 

@@ -5,8 +5,10 @@ namespace Database\Seeders;
 use App\Enums\ProductType;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * ProductSeeder - Crea productos realistas del catálogo MiKiwi
@@ -58,12 +60,12 @@ class ProductSeeder extends Seeder
                 'product_type' => ProductType::Configurable->value,
                 'is_active' => true,
                 'is_adult_only' => true,
-                'images' => ['https://placehold.co/800x800/EEE/333?text=Muñeca+Elsa+1'],
             ]
         );
+        $this->syncProductImages($elsa, ['https://placehold.co/800x800/EEE/333?text=Muñeca+Elsa+1']);
 
         // Muñeca Anna
-        Product::updateOrCreate(
+        $anna = Product::updateOrCreate(
             ['sku' => 'DOLL-ANNA-001'],
             [
                 'category_id' => $catMunecasBasicas->getKey(),
@@ -75,12 +77,12 @@ class ProductSeeder extends Seeder
                 'product_type' => ProductType::Simple->value,
                 'is_active' => true,
                 'is_adult_only' => true,
-                'images' => ['https://placehold.co/800x800/EEE/333?text=Muñeca+Anna'],
             ]
         );
+        $this->syncProductImages($anna, ['https://placehold.co/800x800/EEE/333?text=Muñeca+Anna']);
 
         // Lubricante Agua
-        Product::updateOrCreate(
+        $lube = Product::updateOrCreate(
             ['sku' => 'LUBE-WAT-100'],
             [
                 'category_id' => $catLubricantesAgua->getKey(),
@@ -92,9 +94,9 @@ class ProductSeeder extends Seeder
                 'product_type' => ProductType::Simple->value,
                 'is_active' => true,
                 'is_adult_only' => true,
-                'images' => ['https://placehold.co/800x800/EEE/333?text=Lubricante+Agua'],
             ]
         );
+        $this->syncProductImages($lube, ['https://placehold.co/800x800/EEE/333?text=Lubricante+Agua']);
 
         // Componentes (Ojos y Pelucas)
         $ojosAzules = Product::updateOrCreate(
@@ -109,9 +111,9 @@ class ProductSeeder extends Seeder
                 'product_type' => ProductType::Component->value,
                 'is_active' => true,
                 'is_adult_only' => true,
-                'images' => ['https://placehold.co/800x800/EEE/333?text=Ojos+Azules'],
             ]
         );
+        $this->syncProductImages($ojosAzules, ['https://placehold.co/800x800/EEE/333?text=Ojos+Azules']);
 
         $ojosMarrones = Product::updateOrCreate(
             ['sku' => 'COMP-EYE-BRW'],
@@ -125,9 +127,9 @@ class ProductSeeder extends Seeder
                 'product_type' => ProductType::Component->value,
                 'is_active' => true,
                 'is_adult_only' => true,
-                'images' => ['https://placehold.co/800x800/EEE/333?text=Ojos+Marrones'],
             ]
         );
+        $this->syncProductImages($ojosMarrones, ['https://placehold.co/800x800/EEE/333?text=Ojos+Marrones']);
 
         $pelucaRubia = Product::updateOrCreate(
             ['sku' => 'COMP-HAIR-BLND'],
@@ -141,9 +143,9 @@ class ProductSeeder extends Seeder
                 'product_type' => ProductType::Component->value,
                 'is_active' => true,
                 'is_adult_only' => true,
-                'images' => ['https://placehold.co/800x800/EEE/333?text=Peluca+Rubia'],
             ]
         );
+        $this->syncProductImages($pelucaRubia, ['https://placehold.co/800x800/EEE/333?text=Peluca+Rubia']);
 
         $pelucaNegra = Product::updateOrCreate(
             ['sku' => 'COMP-HAIR-BLK'],
@@ -157,9 +159,9 @@ class ProductSeeder extends Seeder
                 'product_type' => ProductType::Component->value,
                 'is_active' => true,
                 'is_adult_only' => true,
-                'images' => ['https://placehold.co/800x800/EEE/333?text=Peluca+Negra'],
             ]
         );
+        $this->syncProductImages($pelucaNegra, ['https://placehold.co/800x800/EEE/333?text=Peluca+Negra']);
 
         // ========================================
         // 3. RELACIONES DE ACCESORIOS
@@ -167,12 +169,12 @@ class ProductSeeder extends Seeder
 
         $this->command->info('📍 Configurando accesorios para productos...');
 
-        DB::table('product_accessories')->upsert([
-            ['parent_product_id' => $elsa->getKey(), 'accessory_product_id' => $ojosAzules->getKey(), 'is_mandatory' => false, 'group_name' => 'Ojos', 'created_at' => now(), 'updated_at' => now()],
-            ['parent_product_id' => $elsa->getKey(), 'accessory_product_id' => $ojosMarrones->getKey(), 'is_mandatory' => false, 'group_name' => 'Ojos', 'created_at' => now(), 'updated_at' => now()],
-            ['parent_product_id' => $elsa->getKey(), 'accessory_product_id' => $pelucaRubia->getKey(), 'is_mandatory' => false, 'group_name' => 'Cabello', 'created_at' => now(), 'updated_at' => now()],
-            ['parent_product_id' => $elsa->getKey(), 'accessory_product_id' => $pelucaNegra->getKey(), 'is_mandatory' => false, 'group_name' => 'Cabello', 'created_at' => now(), 'updated_at' => now()],
-        ], ['parent_product_id', 'accessory_product_id'], ['group_name', 'updated_at']);
+        DB::table('doll_product_accessory')->upsert([
+            ['doll_product_id' => $elsa->getKey(), 'accessory_product_id' => $ojosAzules->getKey(), 'is_mandatory' => false, 'group_name' => 'Ojos', 'created_at' => now(), 'updated_at' => now()],
+            ['doll_product_id' => $elsa->getKey(), 'accessory_product_id' => $ojosMarrones->getKey(), 'is_mandatory' => false, 'group_name' => 'Ojos', 'created_at' => now(), 'updated_at' => now()],
+            ['doll_product_id' => $elsa->getKey(), 'accessory_product_id' => $pelucaRubia->getKey(), 'is_mandatory' => false, 'group_name' => 'Cabello', 'created_at' => now(), 'updated_at' => now()],
+            ['doll_product_id' => $elsa->getKey(), 'accessory_product_id' => $pelucaNegra->getKey(), 'is_mandatory' => false, 'group_name' => 'Cabello', 'created_at' => now(), 'updated_at' => now()],
+        ], ['doll_product_id', 'accessory_product_id'], ['group_name', 'updated_at']);
 
         // ========================================
         // 4. PRODUCTOS GENERADOS CON FAKER
@@ -187,7 +189,7 @@ class ProductSeeder extends Seeder
             foreach (range(1, 7) as $index) {
                 $category = $categories->get(($index - 1) % $categories->count());
 
-                Product::updateOrCreate(
+                $demoProduct = Product::updateOrCreate(
                     ['sku' => sprintf('DEMO-PROD-%03d', $index)],
                     [
                         'category_id' => $category->getKey(),
@@ -199,12 +201,30 @@ class ProductSeeder extends Seeder
                         'product_type' => ProductType::Simple->value,
                         'is_active' => true,
                         'is_adult_only' => true,
-                        'images' => [sprintf('https://placehold.co/800x800/EEE/333?text=Demo+%02d', $index)],
                     ]
                 );
+                $this->syncProductImages($demoProduct, [sprintf('https://placehold.co/800x800/EEE/333?text=Demo+%02d', $index)]);
             }
         }
 
         $this->command->info('✅ ProductSeeder completado con éxito.');
+    }
+
+    /**
+     * @param  array<int, string>  $imageUrls
+     */
+    private function syncProductImages(Product $product, array $imageUrls): void
+    {
+        ProductImage::query()->where('product_id', $product->getKey())->delete();
+
+        foreach (array_values($imageUrls) as $index => $imageUrl) {
+            ProductImage::query()->create([
+                'product_id' => $product->getKey(),
+                'public_id' => (string) Str::uuid(),
+                'image_url' => $imageUrl,
+                'alt_text' => $product->getAttribute('name'),
+                'sort_order' => $index,
+            ]);
+        }
     }
 }

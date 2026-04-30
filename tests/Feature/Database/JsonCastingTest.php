@@ -9,8 +9,10 @@ use App\Models\Address;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class JsonCastingTest extends TestCase
@@ -20,19 +22,29 @@ class JsonCastingTest extends TestCase
     public function test_product_images_are_persisted_and_read_as_array(): void
     {
         $category = Category::factory()->create();
+        $product = Product::factory()->create([
+            'category_id' => $category->getKey(),
+        ]);
         $images = [
             'https://example.test/front.png',
             'https://example.test/back.png',
         ];
 
-        $product = Product::factory()->create([
-            'category_id' => $category->getKey(),
-            'images' => $images,
-        ]);
+        ProductImage::query()->where('product_id', $product->getKey())->delete();
 
-        $product->refresh();
+        foreach ($images as $index => $imageUrl) {
+            ProductImage::query()->create([
+                'product_id' => $product->getKey(),
+                'public_id' => (string) Str::uuid(),
+                'image_url' => $imageUrl,
+                'alt_text' => $product->name,
+                'sort_order' => $index,
+            ]);
+        }
 
-        $this->assertSame($images, $product->images);
+        $product->load('images');
+
+        $this->assertSame($images, $product->images->sortBy('sort_order')->pluck('image_url')->values()->all());
     }
 
     public function test_order_addresses_are_persisted_and_loaded_through_relations(): void

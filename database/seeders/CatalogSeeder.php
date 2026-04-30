@@ -5,8 +5,10 @@ namespace Database\Seeders;
 use App\Enums\ProductType;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CatalogSeeder extends Seeder
 {
@@ -18,7 +20,7 @@ class CatalogSeeder extends Seeder
         $catComponents = Category::updateOrCreate(['slug' => 'components'], ['name' => 'Componentes', 'is_active' => true]);
 
         // 2. TU PRODUCTO SIMPLE (Lubricante)
-        Product::updateOrCreate(
+        $lube = Product::updateOrCreate(
             ['sku' => 'LUBE-001'],
             [
                 'category_id' => $catToys->getKey(),
@@ -28,9 +30,9 @@ class CatalogSeeder extends Seeder
                 'stock_quantity' => 50,
                 'product_type' => ProductType::Simple->value,
                 'is_active' => true,
-                'images' => ['https://placehold.co/400?text=Lube'],
             ]
         );
+        $this->syncProductImages($lube, ['https://placehold.co/400?text=Lube']);
 
         // 3. TU MUÑECA CONFIGURABLE (Elsa)
         $elsa = Product::updateOrCreate(
@@ -43,9 +45,9 @@ class CatalogSeeder extends Seeder
                 'stock_quantity' => 10,
                 'product_type' => ProductType::Configurable->value,
                 'is_active' => true,
-                'images' => ['https://placehold.co/400?text=Elsa'],
             ]
         );
+        $this->syncProductImages($elsa, ['https://placehold.co/400?text=Elsa']);
 
         // 4. NUEVO: CREAR COMPONENTES (Para probar el configurador)
         $ojosAzules = Product::updateOrCreate(
@@ -84,10 +86,10 @@ class CatalogSeeder extends Seeder
         // Opción B: Inserción manual en la tabla pivote (si no has definido la relación aún)
         else {
             // Asegúrate que la tabla se llame 'product_accessories' o la que hayas definido
-            DB::table('product_accessories')->upsert([
-                ['parent_product_id' => $elsa->getKey(), 'accessory_product_id' => $ojosAzules->getKey(), 'created_at' => now(), 'updated_at' => now()],
-                ['parent_product_id' => $elsa->getKey(), 'accessory_product_id' => $pelucaRubia->getKey(), 'created_at' => now(), 'updated_at' => now()],
-            ], ['parent_product_id', 'accessory_product_id'], ['updated_at']);
+            DB::table('doll_product_accessory')->upsert([
+                ['doll_product_id' => $elsa->getKey(), 'accessory_product_id' => $ojosAzules->getKey(), 'created_at' => now(), 'updated_at' => now()],
+                ['doll_product_id' => $elsa->getKey(), 'accessory_product_id' => $pelucaRubia->getKey(), 'created_at' => now(), 'updated_at' => now()],
+            ], ['doll_product_id', 'accessory_product_id'], ['updated_at']);
         }
 
         // 6. RELLENO MASIVO (Para probar paginación y "Productos Relacionados")
@@ -106,6 +108,24 @@ class CatalogSeeder extends Seeder
                     'is_adult_only' => true,
                 ]
             );
+        }
+    }
+
+    /**
+     * @param  array<int, string>  $imageUrls
+     */
+    private function syncProductImages(Product $product, array $imageUrls): void
+    {
+        ProductImage::query()->where('product_id', $product->getKey())->delete();
+
+        foreach (array_values($imageUrls) as $index => $imageUrl) {
+            ProductImage::query()->create([
+                'product_id' => $product->getKey(),
+                'public_id' => (string) Str::uuid(),
+                'image_url' => $imageUrl,
+                'alt_text' => $product->getAttribute('name'),
+                'sort_order' => $index,
+            ]);
         }
     }
 }
