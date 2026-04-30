@@ -6,40 +6,34 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class OrderItem extends Model
+class OrderItemAccessory extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'order_item';
+    protected $table = 'order_item_accessory';
 
     protected $fillable = [
-        'order_id',
+        'order_item_id',
         'product_id',
         'product_name_snapshot',
         'sku_snapshot',
-        'quantity',
         'unit_price',
+        'quantity',
     ];
 
     protected $casts = [
-        'quantity' => 'integer',
         'unit_price' => 'decimal:2',
+        'quantity' => 'integer',
     ];
 
-    public function order(): BelongsTo
+    public function orderItem(): BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(OrderItem::class);
     }
 
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
-    }
-
-    public function accessories(): HasMany
-    {
-        return $this->hasMany(OrderItemAccessory::class);
     }
 }

@@ -5,12 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ChatMessage extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $table = 'chat_message';
+
     protected $fillable = [
+        'chat_session_id',
         'session_id',
         'message_body',
         'sender_type',
@@ -30,21 +34,31 @@ class ChatMessage extends Model
      * Scope a query to only include messages for a specific session.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $sessionId
+     * @param  string  $chatSessionId
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeBySession($query, $sessionId)
+    public function scopeBySession($query, $chatSessionId)
     {
-        return $query->where('session_id', $sessionId);
+        return $query->where('chat_session_id', $chatSessionId);
     }
 
-    /**
-     * Get the chat session that owns the message.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function session()
+    public function getSessionIdAttribute(): ?string
     {
-        return $this->belongsTo(ChatSession::class, 'session_id');
+        return $this->attributes['chat_session_id'] ?? null;
+    }
+
+    public function setSessionIdAttribute(?string $value): void
+    {
+        $this->attributes['chat_session_id'] = $value;
+    }
+
+    public function chatSession(): BelongsTo
+    {
+        return $this->belongsTo(ChatSession::class, 'chat_session_id');
+    }
+
+    public function session(): BelongsTo
+    {
+        return $this->chatSession();
     }
 }

@@ -7,24 +7,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class NewsletterSubscriber extends Model
+class ProductImageZone extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'newsletter_subscriber';
+    protected $table = 'product_image_zone';
 
     protected $fillable = [
-        'user_id',
-        'email',
-        'subscribed_at',
+        'product_image_id',
+        'zone_type',
     ];
 
-    protected $casts = [
-        'subscribed_at' => 'datetime',
-    ];
-
-    public function user(): BelongsTo
+    public function productImage(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(ProductImage::class);
     }
 }

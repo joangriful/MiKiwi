@@ -8,25 +8,26 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class OrderItem extends Model
+class Claim extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'order_item';
+    protected $table = 'claim';
 
     protected $fillable = [
+        'user_id',
         'order_id',
         'product_id',
-        'product_name_snapshot',
-        'sku_snapshot',
-        'quantity',
-        'unit_price',
+        'type',
+        'status',
+        'subject',
+        'description',
     ];
 
-    protected $casts = [
-        'quantity' => 'integer',
-        'unit_price' => 'decimal:2',
-    ];
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function order(): BelongsTo
     {
@@ -38,8 +39,8 @@ class OrderItem extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function accessories(): HasMany
+    public function attachments(): HasMany
     {
-        return $this->hasMany(OrderItemAccessory::class);
+        return $this->hasMany(ClaimAttachment::class);
     }
 }

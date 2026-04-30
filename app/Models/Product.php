@@ -5,35 +5,38 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, SoftDeletes;
+
+    protected $table = 'product';
 
     protected $fillable = [
         'category_id',
         'name',
         'slug',
         'sku',
-        'is_active',
-        'is_featured',
         'description',
         'base_price',
+        'is_active',
+        'is_promoted',
+        'is_featured',
         'stock_quantity',
         'product_type',
         'is_adult_only',
-        'image_url',
-        'hover_image_url',
-        'images',
     ];
 
     protected $casts = [
-        'images' => 'array', // Importante para que el JSON funcione
         'base_price' => 'decimal:2',
-        'is_adult_only' => 'boolean',
         'is_active' => 'boolean',
-        'is_featured' => 'boolean',
+        'is_promoted' => 'boolean',
         'stock_quantity' => 'integer',
+        'is_adult_only' => 'boolean',
     ];
 
     public function scopeActive($query)
@@ -51,51 +54,83 @@ class Product extends Model
         return $query->where('is_adult_only', false);
     }
 
-    /**
-     * Get the category that owns the product.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    /**
-     * Get the accessories for this product.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function accessories()
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    public function collections(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Collection::class,
+            'collection_product',
+            'product_id',
+            'collection_id'
+        )->withTimestamps();
+    }
+
+    public function accessories(): BelongsToMany
     {
         return $this->belongsToMany(
             Product::class,
-            'product_accessories',
-            'parent_product_id',
+            'doll_product_accessory',
+            'doll_product_id',
             'accessory_product_id'
         )
             ->withPivot(['is_mandatory', 'group_name'])
             ->withTimestamps();
     }
 
-    /**
-     * Get the reviews for the product.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function reviews()
+    public function dolls(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Product::class,
+            'doll_product_accessory',
+            'accessory_product_id',
+            'doll_product_id'
+        )
+            ->withPivot(['is_mandatory', 'group_name'])
+            ->withTimestamps();
+    }
+
+    public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
     }
 
-    /**
-     * Get the order items for the product.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function orderItems()
+    public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function orderItemAccessories(): HasMany
+    {
+        return $this->hasMany(OrderItemAccessory::class);
+    }
+
+    public function cartItems(): HasMany
+    {
+        return $this->hasMany(CartItem::class);
+    }
+
+    public function claims(): HasMany
+    {
+        return $this->hasMany(Claim::class);
+    }
+
+    public function getIsFeaturedAttribute(): bool
+    {
+        return (bool) ($this->attributes['is_promoted'] ?? false);
+    }
+
+    public function setIsFeaturedAttribute(bool $value): void
+    {
+        $this->attributes['is_promoted'] = $value;
     }
 
     /**
@@ -103,7 +138,7 @@ class Product extends Model
      *
      * @return string
      */
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }

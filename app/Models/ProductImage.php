@@ -8,38 +8,31 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class OrderItem extends Model
+class ProductImage extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'order_item';
+    protected $table = 'product_image';
 
     protected $fillable = [
-        'order_id',
         'product_id',
-        'product_name_snapshot',
-        'sku_snapshot',
-        'quantity',
-        'unit_price',
+        'public_id',
+        'image_url',
+        'alt_text',
+        'sort_order',
     ];
 
     protected $casts = [
-        'quantity' => 'integer',
-        'unit_price' => 'decimal:2',
+        'sort_order' => 'integer',
     ];
-
-    public function order(): BelongsTo
-    {
-        return $this->belongsTo(Order::class);
-    }
 
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function accessories(): HasMany
+    public function zones(): HasMany
     {
-        return $this->hasMany(OrderItemAccessory::class);
+        return $this->hasMany(ProductImageZone::class);
     }
 }

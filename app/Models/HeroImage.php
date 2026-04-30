@@ -2,15 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class HeroImage extends Model
+class HeroImage extends ImageHome
 {
-    protected $fillable = [
-        'public_id',
-        'url',
-        'width',
-        'height',
-        'type',
-    ];
 }

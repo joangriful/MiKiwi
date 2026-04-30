@@ -7,24 +7,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class NewsletterSubscriber extends Model
+class ClaimAttachment extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'newsletter_subscriber';
+    protected $table = 'claim_attachment';
 
     protected $fillable = [
-        'user_id',
-        'email',
-        'subscribed_at',
+        'claim_id',
+        'file_name',
+        'file_url',
+        'mime_type',
     ];
 
-    protected $casts = [
-        'subscribed_at' => 'datetime',
-    ];
-
-    public function user(): BelongsTo
+    public function claim(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Claim::class);
     }
 }

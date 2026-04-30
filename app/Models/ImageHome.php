@@ -7,26 +7,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class PickupPoint extends Model
+class ImageHome extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'pickup_point';
+    protected $table = 'image_home';
 
     protected $fillable = [
-        'name',
-        'address',
-        'city',
-        'postal_code',
-        'is_active',
+        'public_id',
+        'url',
+        'type',
+        'width',
+        'height',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
+        'width' => 'integer',
+        'height' => 'integer',
     ];
 
-    public function shipments(): HasMany
+    public function homeSectionImages(): HasMany
     {
-        return $this->hasMany(Shipment::class);
+        return $this->hasMany(HomeSectionImage::class);
     }
 }
