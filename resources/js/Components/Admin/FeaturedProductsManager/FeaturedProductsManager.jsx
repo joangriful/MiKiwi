@@ -5,8 +5,9 @@ import { filterProductsBySearchTerm } from '@/Utils/productSearch';
 import styles from './FeaturedProductsManager.module.css';
 
 function ProductRow({ product, isLoading, onToggleFeatured }) {
-    const rowClassName = `${styles.productRow} ${product.is_featured ? styles.productRowFeatured : ''}`;
-    const starIconClassName = `${styles.statusIcon} ${product.is_featured ? styles.statusIconFeatured : styles.statusIconInactive}`;
+    const isPromoted = !!product.is_promoted;
+    const rowClassName = `${styles.productRow} ${isPromoted ? styles.productRowFeatured : ''}`;
+    const starIconClassName = `${styles.statusIcon} ${isPromoted ? styles.statusIconFeatured : styles.statusIconInactive}`;
 
     return (
         <tr
@@ -33,7 +34,7 @@ function ProductRow({ product, isLoading, onToggleFeatured }) {
                     <span className={`material-symbols-outlined ${styles.loadingIcon}`}>refresh</span>
                 ) : (
                     <span className={`material-symbols-outlined ${starIconClassName}`}>
-                        {product.is_featured ? 'star' : 'star_border'}
+                        {isPromoted ? 'star' : 'star_border'}
                     </span>
                 )}
             </td>
@@ -56,18 +57,19 @@ export default function FeaturedProductsManager({ products = [] }) {
     const [loadingId, setLoadingId] = useState(null);
 
     const allProducts = filterProductsBySearchTerm(products, searchTerm);
-    const featuredProducts = products.filter((product) => product.is_featured);
+    const featuredProducts = products.filter((product) => product.is_promoted);
 
     const toggleFeatured = (product) => {
+        const isPromoted = !!product.is_promoted;
         setLoadingId(product.id);
         router.post(route('products.update', product.id), {
             _method: 'put',
-            is_featured: !product.is_featured,
+            is_promoted: !isPromoted,
         }, {
             preserveScroll: true,
             preserveState: true,
             onSuccess: () => {
-                toast.success(product.is_featured ? 'Producto eliminado de destacados' : 'Producto añadido a destacados');
+                toast.success(isPromoted ? 'Producto eliminado de destacados' : 'Producto añadido a destacados');
                 setLoadingId(null);
             },
             onError: () => {

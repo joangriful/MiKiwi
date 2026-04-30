@@ -23,6 +23,7 @@ function getHoverToggleClassName(stylesObject, isHover) {
 
 export default function UploadProduct({ categories = [], initialData = null, onCancel }) {
     const isEdit = !!initialData;
+    const isFlatCategoryModel = categories.every((category) => !category.parent_id && !Array.isArray(category.children));
 
     const [formData, setFormData] = useState({
         name: '',
@@ -37,11 +38,11 @@ export default function UploadProduct({ categories = [], initialData = null, onC
     });
 
     // ─── Categoría en cascada ──────────────────────────────────────────────────
-    const parentCategories = categories.filter((category) => !category.parent_id);
+    const parentCategories = isFlatCategoryModel ? categories : categories.filter((category) => !category.parent_id);
     const [selectedParentId, setSelectedParentId] = useState('');
     const [selectedSubId, setSelectedSubId] = useState('');
 
-    const subCategories = selectedParentId
+    const subCategories = !isFlatCategoryModel && selectedParentId
         ? (categories.find(c => String(c.id) === String(selectedParentId))?.children || [])
         : [];
 
@@ -110,7 +111,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
             if (initialData.category_id) {
                 const existingCat = categories.find(c => String(c.id) === String(initialData.category_id));
                 if (existingCat) {
-                    if (existingCat.parent_id) {
+                    if (!isFlatCategoryModel && existingCat.parent_id) {
                         setSelectedParentId(String(existingCat.parent_id));
                         setSelectedSubId(String(existingCat.id));
                     } else {
@@ -121,8 +122,12 @@ export default function UploadProduct({ categories = [], initialData = null, onC
             }
 
             if (Array.isArray(initialData.images)) {
-                setGalleryImages(initialData.images);
-                setMainImage(initialData.image_url || initialData.images[0] || '');
+                const normalizedImages = initialData.images
+                    .map((image) => typeof image === 'string' ? image : image?.url)
+                    .filter(Boolean);
+
+                setGalleryImages(normalizedImages);
+                setMainImage(initialData.image_url || normalizedImages[0] || '');
             } else if (initialData.image_url) {
                 setMainImage(initialData.image_url);
                 setGalleryImages([initialData.image_url]);
@@ -198,9 +203,9 @@ export default function UploadProduct({ categories = [], initialData = null, onC
     };
 
     useEffect(() => {
-        const targetId = selectedSubId || selectedParentId || '';
+        const targetId = isFlatCategoryModel ? selectedParentId : (selectedSubId || selectedParentId || '');
         setFormData(prev => ({ ...prev, category_id: targetId }));
-    }, [selectedParentId, selectedSubId]);
+    }, [isFlatCategoryModel, selectedParentId, selectedSubId]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -516,11 +521,13 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                                 onChange={(e) => { setSelectedParentId(e.target.value); setSelectedSubId(''); }}
                                 className={styles.selectInput}
                             >
-                                <option value="">— Seleccionar Padre —</option>
+                                <option value="">
+                                    {isFlatCategoryModel ? '— Seleccionar Categoría —' : '— Seleccionar Padre —'}
+                                </option>
                                 {parentCategories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
                             </select>
 
-                            {subCategories.length > 0 && (
+                            {!isFlatCategoryModel && subCategories.length > 0 && (
                                 <select
                                     value={selectedSubId}
                                     onChange={(e) => setSelectedSubId(e.target.value)}

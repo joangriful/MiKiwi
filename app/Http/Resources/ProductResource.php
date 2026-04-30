@@ -21,6 +21,7 @@ class ProductResource extends JsonResource
         $images = $product->images->sortBy('sort_order');
 
         $firstImage = $images->first();
+        $hoverImage = $images->skip(1)->first();
 
         return [
             'id' => $product->id,
@@ -30,6 +31,7 @@ class ProductResource extends JsonResource
             'description' => $product->description,
             'base_price' => $product->base_price,
             'image_url' => $firstImage?->image_url,
+            'hover_image_url' => $hoverImage?->image_url,
             'images' => $images
                 ->map(fn (ProductImage $image): array => [
                     'id' => $image->id,
