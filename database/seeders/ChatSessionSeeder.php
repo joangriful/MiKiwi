@@ -55,7 +55,7 @@ class ChatSessionSeeder extends Seeder
                     $messageBody = $this->getRealisticMessage($isCustomer, $j);
 
                     ChatMessage::updateOrCreate([
-                        'session_id' => $session->getKey(),
+                        'chat_session_id' => $session->getKey(),
                         'message_body' => $messageBody,
                     ], [
                         'sender_type' => $isCustomer ? ChatSenderType::Customer->value : ChatSenderType::Agent->value,
