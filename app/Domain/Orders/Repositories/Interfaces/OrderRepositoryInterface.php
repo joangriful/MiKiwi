@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Orders\Repositories\Interfaces;
 
 use App\Models\Order;

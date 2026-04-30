@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Categories\Repositories\Interfaces;
 
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface CategoryRepositoryInterface
 {
@@ -34,7 +37,7 @@ interface CategoryRepositoryInterface
     /**
      * Obtener productos de una categoría (paginados)
      */
-    public function getCategoryProductsPaginated(string $categoryId, int $perPage = 12);
+    public function getCategoryProductsPaginated(string $categoryId, int $perPage = 12): ?LengthAwarePaginator;
 
     public function getDescendantIds(Category $category): Collection;
 }

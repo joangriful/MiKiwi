@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Categories\Repositories\Eloquent;
 
-use App\Models\Category;
 use App\Domain\Categories\Repositories\Interfaces\CategoryRepositoryInterface;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class EloquentCategoryRepository implements CategoryRepositoryInterface
 {
@@ -84,9 +87,9 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
     /**
      * Obtener productos de una categoría (paginados)
      */
-    public function getCategoryProductsPaginated(string $categoryId, int $perPage = 12)
+    public function getCategoryProductsPaginated(string $categoryId, int $perPage = 12): ?LengthAwarePaginator
     {
-        $category = Category::find($categoryId);
+        $category = Category::query()->find($categoryId);
 
         if (! $category) {
             return null;
