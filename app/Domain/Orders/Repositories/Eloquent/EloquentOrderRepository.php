@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Orders\Repositories\Eloquent;
 
 use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
@@ -12,6 +14,16 @@ use Illuminate\Support\Facades\DB;
 
 class EloquentOrderRepository implements OrderRepositoryInterface
 {
+    private const ORDER_RELATIONS = [
+        'items.product',
+        'user',
+        'shippingAddress',
+        'billingAddress',
+        'coupon',
+        'shipment',
+        'payments',
+    ];
+
     /**
      * Crear un nuevo pedido
      */
@@ -54,8 +66,9 @@ class EloquentOrderRepository implements OrderRepositoryInterface
      */
     public function findByOrderNumber(string $orderNumber): ?Order
     {
-        return Order::where('order_number', $orderNumber)
-            ->with(['items.product', 'user', 'shippingAddress', 'billingAddress', 'coupon', 'shipment', 'payments'])
+        return Order::query()
+            ->where('order_number', $orderNumber)
+            ->with(self::ORDER_RELATIONS)
             ->first();
     }
 
@@ -64,8 +77,9 @@ class EloquentOrderRepository implements OrderRepositoryInterface
      */
     public function getUserOrders(string $userId, int $perPage = 10): LengthAwarePaginator
     {
-        return Order::where('user_id', $userId)
-            ->with(['items.product', 'shippingAddress', 'billingAddress', 'coupon', 'shipment', 'payments'])
+        return Order::query()
+            ->where('user_id', $userId)
+            ->with(self::ORDER_RELATIONS)
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
     }
@@ -89,8 +103,8 @@ class EloquentOrderRepository implements OrderRepositoryInterface
      */
     public function findWithItems(string $orderId): ?Order
     {
-        return Order::with(['items.product', 'user'])
-            ->with(['shippingAddress', 'billingAddress', 'coupon', 'shipment', 'payments'])
+        return Order::query()
+            ->with(self::ORDER_RELATIONS)
             ->find($orderId);
     }
 
@@ -99,7 +113,8 @@ class EloquentOrderRepository implements OrderRepositoryInterface
      */
     public function getRecentOrders(int $limit = 10): Collection
     {
-        return Order::with(['items.product', 'user', 'shippingAddress', 'billingAddress', 'coupon', 'shipment', 'payments'])
+        return Order::query()
+            ->with(self::ORDER_RELATIONS)
             ->orderBy('created_at', 'desc')
             ->limit($limit)
             ->get();
@@ -107,8 +122,9 @@ class EloquentOrderRepository implements OrderRepositoryInterface
 
     public function getLatestUserOrders(string $userId): Collection
     {
-        return Order::where('user_id', $userId)
-            ->with(['items.product', 'shippingAddress', 'billingAddress', 'coupon', 'shipment', 'payments'])
+        return Order::query()
+            ->where('user_id', $userId)
+            ->with(self::ORDER_RELATIONS)
             ->orderBy('created_at', 'desc')
             ->get();
     }

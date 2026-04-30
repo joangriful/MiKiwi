@@ -6,14 +6,31 @@ namespace App\Domain\Products\Repositories\Eloquent;
 
 use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class EloquentProductRepository implements ProductRepositoryInterface
 {
+    /**
+     * @return Builder<Product>
+     */
+    private function activeProductsQuery(): Builder
+    {
+        return Product::query()->active();
+    }
+
+    /**
+     * @return Builder<Product>
+     */
+    private function activeInStockProductsQuery(): Builder
+    {
+        return $this->activeProductsQuery()->inStock();
+    }
+
     public function getActiveBySlug(string $slug): ?Product
     {
-        return Product::active()
+        return $this->activeProductsQuery()
             ->where('slug', $slug)
             ->with([
                 'category',
@@ -25,7 +42,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
     public function getActiveBySlugs(array $slugs): Collection
     {
-        return Product::active()
+        return $this->activeProductsQuery()
             ->whereIn('slug', $slugs)
             ->with(['category', 'accessories'])
             ->get();
@@ -40,8 +57,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
     public function getAllActivePaginated(int $perPage = 12): LengthAwarePaginator
     {
-        return Product::active()
-            ->inStock()
+        return $this->activeInStockProductsQuery()
             ->with('category')
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
@@ -49,8 +65,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
     public function getFeaturedActive(): Collection
     {
-        return Product::active()
-            ->inStock()
+        return $this->activeInStockProductsQuery()
             ->with('category:id,name,slug')
             ->where('is_promoted', true)
             ->orderBy('created_at', 'desc')
@@ -59,8 +74,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
     public function getRandomActiveInStockByCategoryIds(array $categoryIds, int $limit = 4): Collection
     {
-        return Product::active()
-            ->inStock()
+        return $this->activeInStockProductsQuery()
             ->with('category:id,name,slug')
             ->whereIn('category_id', $categoryIds)
             ->inRandomOrder()
@@ -70,8 +84,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
     public function getRandomFeaturedActive(int $limit = 4): Collection
     {
-        return Product::active()
-            ->inStock()
+        return $this->activeInStockProductsQuery()
             ->with('category:id,name,slug')
             ->where('is_promoted', true)
             ->inRandomOrder()
@@ -81,8 +94,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
     public function getLatestActiveInStock(int $limit = 4): Collection
     {
-        return Product::active()
-            ->inStock()
+        return $this->activeInStockProductsQuery()
             ->with('category:id,name,slug')
             ->latest()
             ->limit($limit)
@@ -91,7 +103,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
     public function getCartPopularProducts(int $limit = 8): Collection
     {
-        return Product::active()
+        return $this->activeProductsQuery()
             ->whereIn('product_type', [
                 \App\Enums\ProductType::Configurable->value,
                 \App\Enums\ProductType::Simple->value,
