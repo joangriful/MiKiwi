@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Services;
 
+use App\Models\Address;
 use App\Models\User;
-use App\Models\UserAddress;
 use App\Domain\Addresses\Services\UserAddressService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -55,7 +55,7 @@ class UserAddressServiceTest extends TestCase
 
     public function test_can_update_address(): void
     {
-        $address = UserAddress::factory()->create([
+        $address = Address::factory()->create([
             'user_id' => $this->user->id,
             'full_name' => 'Old Name',
         ]);
@@ -71,7 +71,7 @@ class UserAddressServiceTest extends TestCase
     public function test_cannot_update_other_users_address(): void
     {
         $otherUser = User::factory()->create();
-        $address = UserAddress::factory()->create([
+        $address = Address::factory()->create([
             'user_id' => $otherUser->id,
         ]);
 
@@ -84,20 +84,20 @@ class UserAddressServiceTest extends TestCase
 
     public function test_can_delete_address(): void
     {
-        $address = UserAddress::factory()->create([
+        $address = Address::factory()->create([
             'user_id' => $this->user->id,
         ]);
 
         $result = $this->addressService->deleteAddress($address->id, $this->user->id);
 
         $this->assertTrue($result);
-        $this->assertDatabaseMissing('user_addresses', ['id' => $address->id]);
+        $this->assertDatabaseMissing('address', ['id' => $address->id]);
     }
 
     public function test_cannot_delete_other_users_address(): void
     {
         $otherUser = User::factory()->create();
-        $address = UserAddress::factory()->create([
+        $address = Address::factory()->create([
             'user_id' => $otherUser->id,
         ]);
 
@@ -108,7 +108,7 @@ class UserAddressServiceTest extends TestCase
 
     public function test_can_get_default_address(): void
     {
-        UserAddress::factory()->create([
+        Address::factory()->create([
             'user_id' => $this->user->id,
             'is_default' => true,
         ]);
@@ -121,7 +121,7 @@ class UserAddressServiceTest extends TestCase
 
     public function test_can_count_user_addresses(): void
     {
-        UserAddress::factory()->count(3)->create([
+        Address::factory()->count(3)->create([
             'user_id' => $this->user->id,
         ]);
 

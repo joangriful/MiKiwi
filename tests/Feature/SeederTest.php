@@ -42,25 +42,19 @@ class SeederTest extends TestCase
     }
 
     /**
-     * Test que las categorías se crean con jerarquía correcta.
+     * Test que las categorías se crean en el modelo plano correcto.
      */
     public function test_categories_are_seeded_correctly(): void
     {
         $this->seed(DatabaseSeeder::class);
 
-        // Verificar categorías raíz
-        $this->assertDatabaseHas('categories', ['slug' => 'estimulacion-externa']);
-        $this->assertDatabaseHas('categories', ['slug' => 'estimulacion-interna']);
+        $this->assertDatabaseHas('category', ['slug' => 'estimulacion-externa']);
+        $this->assertDatabaseHas('category', ['slug' => 'estimulacion-interna']);
+        $this->assertDatabaseHas('category', ['slug' => 'ondas-de-presion']);
 
-        // Verificar subcategorías y relación padre
         $externa = Category::where('slug', 'estimulacion-externa')->first();
         $this->assertNotNull($externa);
-
-        $this->assertDatabaseHas('categories', [
-            'slug' => 'ondas-de-presion',
-            'parent_id' => $externa->id,
-        ]);
-        $this->assertGreaterThan(0, $externa->children()->count());
+        $this->assertDatabaseMissing('category', ['slug' => 'para-ella']);
     }
 
     /**
@@ -75,11 +69,8 @@ class SeederTest extends TestCase
         $this->assertNotNull($elsa);
         $this->assertEquals('configurable', $elsa->product_type);
 
-        // Verificar que tiene accesorios (ojos, pelucas) a través de tabla pivote
-        // Nota: Asumiendo que la relación se llama 'accessories' en el modelo Product
-        // Si no existe la relación en el modelo, verificamos en base de datos directamente
-        $this->assertDatabaseHas('product_accessories', [
-            'parent_product_id' => $elsa->id,
+        $this->assertDatabaseHas('doll_product_accessory', [
+            'doll_product_id' => $elsa->id,
         ]);
 
         // Verificar cantidad de productos
@@ -150,7 +141,7 @@ class SeederTest extends TestCase
         return [
             'categories' => Category::count(),
             'products' => Product::count(),
-            'product_accessories' => \DB::table('product_accessories')->count(),
+            'doll_product_accessory' => \DB::table('doll_product_accessory')->count(),
             'orders' => Order::count(),
             'order_items' => OrderItem::count(),
             'reviews' => Review::count(),

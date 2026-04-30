@@ -21,16 +21,17 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CategorySeeder::class,
             NewCategorySeeder::class,
+            CollectionCategoriesSeeder::class,
         ]);
         
         // --- VALIDACIÓN CRÍTICA ---
         // Forzamos a Laravel a refrescar la lectura de categorías creadas justo arriba
         $categoriesExist = Category::exists();
 
-        if (!$categoriesExist) {
+        if (! $categoriesExist) {
             $this->command->error("❌ ERROR: CategorySeeder terminó pero la tabla sigue vacía.");
-            $this->command->info("Reintentando contar por DB directa: " . DB::table('categories')->count());
-            return; 
+            $this->command->info('Reintentando contar por DB directa: '.DB::table('category')->count());
+            return;
         }
         $this->command->info("✅ Categorías detectadas correctamente.");
         $this->command->newLine();

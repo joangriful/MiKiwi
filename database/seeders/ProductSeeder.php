@@ -170,10 +170,10 @@ class ProductSeeder extends Seeder
         $this->command->info('📍 Configurando accesorios para productos...');
 
         DB::table('doll_product_accessory')->upsert([
-            ['doll_product_id' => $elsa->getKey(), 'accessory_product_id' => $ojosAzules->getKey(), 'is_mandatory' => false, 'group_name' => 'Ojos', 'created_at' => now(), 'updated_at' => now()],
-            ['doll_product_id' => $elsa->getKey(), 'accessory_product_id' => $ojosMarrones->getKey(), 'is_mandatory' => false, 'group_name' => 'Ojos', 'created_at' => now(), 'updated_at' => now()],
-            ['doll_product_id' => $elsa->getKey(), 'accessory_product_id' => $pelucaRubia->getKey(), 'is_mandatory' => false, 'group_name' => 'Cabello', 'created_at' => now(), 'updated_at' => now()],
-            ['doll_product_id' => $elsa->getKey(), 'accessory_product_id' => $pelucaNegra->getKey(), 'is_mandatory' => false, 'group_name' => 'Cabello', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => (string) Str::uuid(), 'doll_product_id' => $elsa->getKey(), 'accessory_product_id' => $ojosAzules->getKey(), 'is_mandatory' => false, 'group_name' => 'Ojos', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => (string) Str::uuid(), 'doll_product_id' => $elsa->getKey(), 'accessory_product_id' => $ojosMarrones->getKey(), 'is_mandatory' => false, 'group_name' => 'Ojos', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => (string) Str::uuid(), 'doll_product_id' => $elsa->getKey(), 'accessory_product_id' => $pelucaRubia->getKey(), 'is_mandatory' => false, 'group_name' => 'Cabello', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => (string) Str::uuid(), 'doll_product_id' => $elsa->getKey(), 'accessory_product_id' => $pelucaNegra->getKey(), 'is_mandatory' => false, 'group_name' => 'Cabello', 'created_at' => now(), 'updated_at' => now()],
         ], ['doll_product_id', 'accessory_product_id'], ['group_name', 'updated_at']);
 
         // ========================================

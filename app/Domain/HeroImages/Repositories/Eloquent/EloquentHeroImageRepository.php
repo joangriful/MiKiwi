@@ -102,13 +102,13 @@ class EloquentHeroImageRepository implements HeroImageRepositoryInterface
     private function baseSectionedQuery()
     {
         return ImageHome::query()
-            ->select('image_home.*')
+            ->select('image_home.*', 'home_section_image.sort_order as section_sort_order')
             ->join('home_section_image', 'home_section_image.image_home_id', '=', 'image_home.id')
             ->with(['homeSectionImages' => function ($query) {
                 $query->orderBy('sort_order');
             }])
             ->distinct()
-            ->orderBy('home_section_image.sort_order', 'asc')
+            ->orderBy('section_sort_order', 'asc')
             ->orderBy('image_home.created_at', 'desc');
     }
 

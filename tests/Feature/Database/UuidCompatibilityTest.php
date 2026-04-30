@@ -10,7 +10,7 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
-use App\Models\UserAddress;
+use App\Models\Address;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -29,7 +29,7 @@ class UuidCompatibilityTest extends TestCase
         $review = $this->createReview($user, $product);
         $chatSession = $this->createChatSession($user);
         $chatMessage = $this->createChatMessage($chatSession);
-        $address = $this->createUserAddress($user);
+        $address = $this->createAddress($user);
 
         foreach ([$user, $product, $order, $review, $chatSession, $address] as $model) {
             $this->assertTrue(Str::isUuid($model->getKey()), $model::class.' should have a UUID primary key.');
@@ -46,7 +46,7 @@ class UuidCompatibilityTest extends TestCase
         $this->assertSame($userId, (string) $review->getAttribute('user_id'));
         $this->assertSame($productId, (string) $review->getAttribute('product_id'));
         $this->assertSame($userId, (string) $chatSession->getAttribute('user_id'));
-        $this->assertSame($chatSessionId, (string) $chatMessage->getAttribute('session_id'));
+        $this->assertSame($chatSessionId, (string) $chatMessage->getAttribute('chat_session_id'));
         $this->assertSame($userId, (string) $address->getAttribute('user_id'));
     }
 
@@ -89,21 +89,21 @@ class UuidCompatibilityTest extends TestCase
     {
         return [
             ['users', 'id'],
-            ['products', 'id'],
+            ['product', 'id'],
             ['orders', 'id'],
             ['orders', 'user_id'],
-            ['order_items', 'id'],
-            ['order_items', 'order_id'],
-            ['order_items', 'product_id'],
-            ['reviews', 'id'],
-            ['reviews', 'user_id'],
-            ['reviews', 'product_id'],
-            ['chat_sessions', 'id'],
-            ['chat_sessions', 'user_id'],
-            ['chat_messages', 'id'],
-            ['chat_messages', 'session_id'],
-            ['user_addresses', 'id'],
-            ['user_addresses', 'user_id'],
+            ['order_item', 'id'],
+            ['order_item', 'order_id'],
+            ['order_item', 'product_id'],
+            ['review', 'id'],
+            ['review', 'user_id'],
+            ['review', 'product_id'],
+            ['chat_session', 'id'],
+            ['chat_session', 'user_id'],
+            ['chat_message', 'id'],
+            ['chat_message', 'chat_session_id'],
+            ['address', 'id'],
+            ['address', 'user_id'],
         ];
     }
 
@@ -171,10 +171,10 @@ class UuidCompatibilityTest extends TestCase
         return $chatMessage;
     }
 
-    private function createUserAddress(User $user): UserAddress
+    private function createAddress(User $user): Address
     {
-        $address = UserAddress::factory()->for($user)->create();
-        $this->assertInstanceOf(UserAddress::class, $address);
+        $address = Address::factory()->for($user)->create();
+        $this->assertInstanceOf(Address::class, $address);
 
         return $address;
     }

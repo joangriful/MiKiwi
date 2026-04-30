@@ -14,8 +14,11 @@ use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Domain\Addresses\Repositories\Eloquent\EloquentUserAddressRepository;
 use App\Domain\Addresses\Repositories\Interfaces\UserAddressRepositoryInterface;
 use App\Domain\HeroImages\Repositories\Interfaces\HeroImageRepositoryInterface;
+use App\Models\Address;
+use App\Policies\UserAddressPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -62,6 +65,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
         Vite::prefetch(concurrency: 3);
+        Gate::policy(Address::class, UserAddressPolicy::class);
 
         RateLimiter::for('auth-sensitive', function (Request $request): Limit {
             return Limit::perMinute(5)->by($this->authSensitiveKey($request));
