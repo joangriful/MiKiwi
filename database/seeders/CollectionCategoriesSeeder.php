@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
+use App\Models\Collection;
 use Illuminate\Database\Seeder;
 
 class CollectionCategoriesSeeder extends Seeder
@@ -33,17 +33,16 @@ class CollectionCategoriesSeeder extends Seeder
         ];
 
         foreach ($collections as $data) {
-            Category::updateOrCreate(
+            Collection::updateOrCreate(
                 ['slug' => $data['slug']],
                 [
                     'name' => $data['name'],
                     'description' => $data['description'],
                     'is_active' => true,
-                    'parent_id' => null,
                 ]
             );
         }
 
-        $this->command->info('✅ CollectionCategoriesSeeder: 4 colecciones creadas (para-ella, para-el, parejas, experiencias)');
+        $this->command->info('✅ CollectionCategoriesSeeder: 4 colecciones creadas en collection (para-ella, para-el, parejas, experiencias)');
     }
 }
