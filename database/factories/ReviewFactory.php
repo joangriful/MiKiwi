@@ -71,16 +71,6 @@ class ReviewFactory extends Factory
     }
 
     /**
-     * Indicate that the review has no comment (only rating).
-     */
-    public function withoutComment(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'comment' => null,
-        ]);
-    }
-
-    /**
      * Indicate that the review has a specific rating.
      */
     public function withRating(int $rating): static
