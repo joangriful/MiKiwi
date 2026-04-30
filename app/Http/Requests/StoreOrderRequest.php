@@ -6,6 +6,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class StoreOrderRequest extends FormRequest
 {
@@ -24,11 +25,33 @@ class StoreOrderRequest extends FormRequest
     {
         return [
             'shipping_address' => 'required|array',
-            'shipping_address.id' => 'nullable|uuid|exists:address,id',
-            'shipping_address.street_address' => 'required_without:shipping_address.id|string|max:255',
-            'shipping_address.city' => 'required_without:shipping_address.id|string|max:100',
-            'shipping_address.postal_code' => 'required_without:shipping_address.id|string|max:20',
-            'shipping_address.country' => 'required_without:shipping_address.id|string|max:100',
+            'shipping_address.id' => [
+                'nullable',
+                'uuid',
+                Rule::exists('address', 'id')->where(
+                    fn ($query) => $query->where('user_id', Auth::id())
+                ),
+            ],
+            'shipping_address.street_address' => [
+                Rule::requiredIf(fn (): bool => ! $this->filled('shipping_address.id')),
+                'string',
+                'max:255',
+            ],
+            'shipping_address.city' => [
+                Rule::requiredIf(fn (): bool => ! $this->filled('shipping_address.id')),
+                'string',
+                'max:100',
+            ],
+            'shipping_address.postal_code' => [
+                Rule::requiredIf(fn (): bool => ! $this->filled('shipping_address.id')),
+                'string',
+                'max:20',
+            ],
+            'shipping_address.country' => [
+                Rule::requiredIf(fn (): bool => ! $this->filled('shipping_address.id')),
+                'string',
+                'max:100',
+            ],
             'shipping_address.full_name' => 'nullable|string|max:255',
             'shipping_address.phone' => 'nullable|string|max:30',
             'payment_method' => 'required|string|in:stripe,cash,pickup',
@@ -36,11 +59,33 @@ class StoreOrderRequest extends FormRequest
             'pickup_point_id' => 'nullable|uuid|exists:pickup_point,id',
             'notes' => 'nullable|string|max:1000',
             'billing_address' => 'nullable|array',
-            'billing_address.id' => 'nullable|uuid|exists:address,id',
-            'billing_address.street_address' => 'required_without:billing_address.id|string|max:255',
-            'billing_address.city' => 'required_without:billing_address.id|string|max:100',
-            'billing_address.postal_code' => 'required_without:billing_address.id|string|max:20',
-            'billing_address.country' => 'required_without:billing_address.id|string|max:100',
+            'billing_address.id' => [
+                'nullable',
+                'uuid',
+                Rule::exists('address', 'id')->where(
+                    fn ($query) => $query->where('user_id', Auth::id())
+                ),
+            ],
+            'billing_address.street_address' => [
+                Rule::requiredIf(fn (): bool => is_array($this->input('billing_address')) && ! $this->filled('billing_address.id')),
+                'string',
+                'max:255',
+            ],
+            'billing_address.city' => [
+                Rule::requiredIf(fn (): bool => is_array($this->input('billing_address')) && ! $this->filled('billing_address.id')),
+                'string',
+                'max:100',
+            ],
+            'billing_address.postal_code' => [
+                Rule::requiredIf(fn (): bool => is_array($this->input('billing_address')) && ! $this->filled('billing_address.id')),
+                'string',
+                'max:20',
+            ],
+            'billing_address.country' => [
+                Rule::requiredIf(fn (): bool => is_array($this->input('billing_address')) && ! $this->filled('billing_address.id')),
+                'string',
+                'max:100',
+            ],
             'billing_address.full_name' => 'nullable|string|max:255',
             'billing_address.phone' => 'nullable|string|max:30',
         ];

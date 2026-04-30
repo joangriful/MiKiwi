@@ -10,6 +10,7 @@ use App\Enums\PaymentStatus;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\PickupPoint;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -37,6 +38,13 @@ class OrderControllerTest extends TestCase
     public function test_store_creates_order_from_cart_and_clears_cart(): void
     {
         $user = User::factory()->create();
+        $pickupPoint = PickupPoint::query()->create([
+            'name' => 'Punto Centro',
+            'address' => 'Calle Mayor 1',
+            'city' => 'Madrid',
+            'postal_code' => '28013',
+            'is_active' => true,
+        ]);
         $product = Product::factory()->create([
             'is_active' => true,
             'stock_quantity' => 10,
@@ -48,7 +56,7 @@ class OrderControllerTest extends TestCase
 
         $this->post(route('orders.store'), $this->validOrderPayload([
             'payment_intent_id' => 'pi_pending',
-            'pickup_point_id' => 'mock-pickup-1',
+            'pickup_point_id' => $pickupPoint->getKey(),
         ]))
             ->assertRedirect(route('orders.success'))
             ->assertSessionHas('success', '¡Pedido realizado con éxito!');
