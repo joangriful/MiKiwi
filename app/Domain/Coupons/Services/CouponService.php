@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Coupons\Services;
 
+use App\Domain\Coupons\Actions\CalculateCouponDiscount;
+use App\Domain\Coupons\Actions\ValidateCoupon;
 use App\Exceptions\InvalidCouponException;
 use App\Models\Coupon;
 use Illuminate\Support\Facades\Session;
@@ -11,6 +13,11 @@ use Illuminate\Support\Facades\Session;
 class CouponService
 {
     private const SESSION_KEY = 'coupon';
+
+    public function __construct(
+        private readonly ValidateCoupon $validateCoupon,
+        private readonly CalculateCouponDiscount $calculateCouponDiscount,
+    ) {}
 
     public function findByCode(string $code): ?Coupon
     {
@@ -21,12 +28,12 @@ class CouponService
 
     public function isValid(Coupon $coupon): bool
     {
-        return $coupon->isValid();
+        return $this->validateCoupon->execute($coupon);
     }
 
     public function calculateDiscount(Coupon $coupon, float $total): float
     {
-        return $coupon->calculateDiscount($total);
+        return $this->calculateCouponDiscount->execute($coupon, $total);
     }
 
     public function applyCoupon(string $code, float $cartTotal): array

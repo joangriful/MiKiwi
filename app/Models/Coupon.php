@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\CouponType;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -31,27 +30,5 @@ class Coupon extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class, 'coupon_id');
-    }
-
-    public function isValid(): bool
-    {
-        if (! $this->is_active) {
-            return false;
-        }
-
-        if ($this->expires_at && $this->expires_at->isPast()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function calculateDiscount(float $subtotal): float
-    {
-        if ($this->type === CouponType::Percent->value) {
-            return ($subtotal * $this->value) / 100;
-        }
-
-        return min($this->value, $subtotal);
     }
 }
