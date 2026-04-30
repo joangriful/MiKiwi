@@ -38,7 +38,7 @@ class ProductManagerService
                 'product_type' => $validated['product_type'],
                 'is_adult_only' => $validated['is_adult_only'] ?? true,
                 'is_active' => $validated['is_active'] ?? true,
-                'is_promoted' => $validated['is_promoted'] ?? ($validated['is_featured'] ?? false),
+                'is_promoted' => $validated['is_promoted'] ?? false,
             ]);
 
             $this->syncProductImages($product, $validated['images'] ?? []);
@@ -53,12 +53,12 @@ class ProductManagerService
             $validated['slug'] = $this->generateUniqueSlug($validated['name'], $product->id);
         }
 
-        $isPromoted = $validated['is_promoted'] ?? ($validated['is_featured'] ?? null);
+        $isPromoted = $validated['is_promoted'] ?? null;
         if ($isPromoted !== null) {
             $validated['is_promoted'] = (bool) $isPromoted;
         }
 
-        unset($validated['is_featured'], $validated['image_url'], $validated['hover_image_url']);
+        unset($validated['image_url'], $validated['hover_image_url']);
 
         DB::transaction(function () use ($product, $validated): void {
             $product->update(Arr::except($validated, ['images']));

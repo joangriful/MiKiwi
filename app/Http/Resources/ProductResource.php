@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Resources;
 
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,18 +18,32 @@ class ProductResource extends JsonResource
     {
         /** @var Product $product */
         $product = $this->resource;
+        $images = $product->images->sortBy('sort_order');
+
+        $firstImage = $images->first();
 
         return [
+            'id' => $product->id,
             'name' => $product->name,
             'slug' => $product->slug,
+            'sku' => $product->sku,
             'description' => $product->description,
             'base_price' => $product->base_price,
-            'image_url' => $product->image_url,
-            'hover_image_url' => $product->hover_image_url,
-            'images' => $product->images,
+            'image_url' => $firstImage?->image_url,
+            'images' => $images
+                ->map(fn (ProductImage $image): array => [
+                    'id' => $image->id,
+                    'url' => $image->image_url,
+                    'alt' => $image->alt_text,
+                    'sort_order' => $image->sort_order,
+                ])
+                ->values()
+                ->all(),
             'product_type' => $product->product_type,
+            'is_promoted' => (bool) $product->is_promoted,
             'category' => $this->whenLoaded('category', function () use ($product): array {
                 return [
+                    'id' => $product->category?->id,
                     'name' => $product->category?->name,
                     'slug' => $product->category?->slug,
                 ];
