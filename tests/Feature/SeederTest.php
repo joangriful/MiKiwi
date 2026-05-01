@@ -14,6 +14,7 @@ use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\ProductionDatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class SeederTest extends TestCase
@@ -148,7 +149,10 @@ class SeederTest extends TestCase
 
         $this->assertGreaterThan(0, Category::count());
         $this->assertGreaterThan(0, PickupPoint::count());
-        $this->assertSame(0, User::count());
+        $this->assertDatabaseHas('users', [
+            'email' => 'admin@kinky-toys.com',
+            'role' => 'admin',
+        ]);
         $this->assertSame(0, Product::count());
         $this->assertSame(0, Order::count());
         $this->assertSame(0, Review::count());
@@ -161,7 +165,7 @@ class SeederTest extends TestCase
         return [
             'categories' => Category::count(),
             'products' => Product::count(),
-            'doll_product_accessory' => \DB::table('doll_product_accessory')->count(),
+            'doll_product_accessory' => DB::table('doll_product_accessory')->count(),
             'orders' => Order::count(),
             'order_items' => OrderItem::count(),
             'reviews' => Review::count(),

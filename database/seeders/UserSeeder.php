@@ -62,9 +62,9 @@ class UserSeeder extends Seeder
 
         // 3. Clientes adicionales generados con factory
         // Solo crear si hay pocos usuarios
-        if (User::count() < 10) {
-            User::factory()->count(20)->customer()->create();
-        }
+        // if (User::count() < 10) {
+        //     User::factory()->count(20)->customer()->create();
+        // }
 
         $this->command->info('✅ Usuarios base verificados/creados');
     }

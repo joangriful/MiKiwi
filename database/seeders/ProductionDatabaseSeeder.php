@@ -15,6 +15,7 @@ class ProductionDatabaseSeeder extends Seeder
 
         $this->command->info('📍 Cargando catálogos base y datos operativos...');
         $this->call([
+            UserSeeder::class,
             CategorySeeder::class,
             CollectionCategoriesSeeder::class,
             PickupPointSeeder::class,
