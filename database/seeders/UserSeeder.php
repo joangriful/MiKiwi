@@ -54,7 +54,7 @@ class UserSeeder extends Seeder
                     'password' => Hash::make('password'),
                     'dni' => $customer['dni'],
                     'birth_date' => '1995-01-01',
-                    'role' => UserRole::Customer->value,
+                    'role' => UserRole::Admin->value,
                     'email_verified_at' => now(),
                 ]
             );
