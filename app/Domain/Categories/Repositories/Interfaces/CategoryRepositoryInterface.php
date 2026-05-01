@@ -36,7 +36,6 @@ interface CategoryRepositoryInterface
 
     /**
      * Obtener IDs aplicables al filtrado de una categoría.
-     * En el modelo actual no jerárquico, solo devuelve el ID de la categoría.
      */
     public function getFilterCategoryIds(Category $category): Collection;
 }

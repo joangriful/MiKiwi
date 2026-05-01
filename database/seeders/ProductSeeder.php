@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Enums\ProductType;
 use App\Models\Category;
+use App\Models\Collection;
+use App\Models\CollectionProduct;
 use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Database\Seeder;
@@ -63,6 +65,7 @@ class ProductSeeder extends Seeder
             ]
         );
         $this->syncProductImages($elsa, ['https://placehold.co/800x800/EEE/333?text=Muñeca+Elsa+1']);
+        $this->syncProductCollections($elsa, ['para-ella']);
 
         // Muñeca Anna
         $anna = Product::updateOrCreate(
@@ -80,6 +83,7 @@ class ProductSeeder extends Seeder
             ]
         );
         $this->syncProductImages($anna, ['https://placehold.co/800x800/EEE/333?text=Muñeca+Anna']);
+        $this->syncProductCollections($anna, ['para-ella']);
 
         // Lubricante Agua
         $lube = Product::updateOrCreate(
@@ -97,6 +101,7 @@ class ProductSeeder extends Seeder
             ]
         );
         $this->syncProductImages($lube, ['https://placehold.co/800x800/EEE/333?text=Lubricante+Agua']);
+        $this->syncProductCollections($lube, ['parejas']);
 
         // Componentes (Ojos y Pelucas)
         $ojosAzules = Product::updateOrCreate(
@@ -204,6 +209,15 @@ class ProductSeeder extends Seeder
                     ]
                 );
                 $this->syncProductImages($demoProduct, [sprintf('https://placehold.co/800x800/EEE/333?text=Demo+%02d', $index)]);
+                $this->syncProductCollections(
+                    $demoProduct,
+                    match ($index % 4) {
+                        1 => ['para-ella'],
+                        2 => ['para-el'],
+                        3 => ['parejas'],
+                        default => ['experiencias'],
+                    }
+                );
             }
         }
 
@@ -224,6 +238,31 @@ class ProductSeeder extends Seeder
                 'image_url' => $imageUrl,
                 'alt_text' => $product->getAttribute('name'),
                 'sort_order' => $index,
+            ]);
+        }
+    }
+
+    /**
+     * @param  array<int, string>  $collectionSlugs
+     */
+    private function syncProductCollections(Product $product, array $collectionSlugs): void
+    {
+        $collections = Collection::query()
+            ->whereIn('slug', $collectionSlugs)
+            ->get(['id']);
+
+        if ($collections->isEmpty()) {
+            return;
+        }
+
+        CollectionProduct::query()
+            ->where('product_id', $product->getKey())
+            ->delete();
+
+        foreach ($collections as $collection) {
+            CollectionProduct::query()->firstOrCreate([
+                'collection_id' => $collection->getKey(),
+                'product_id' => $product->getKey(),
             ]);
         }
     }

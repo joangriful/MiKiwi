@@ -22,6 +22,8 @@ interface ProductRepositoryInterface
 
     public function getRandomActiveInStockByCategoryIds(array $categoryIds, int $limit = 4): Collection;
 
+    public function getRandomActiveInStockByCollectionSlug(string $collectionSlug, int $limit = 4): Collection;
+
     public function getRandomFeaturedActive(int $limit = 4): Collection;
 
     public function getLatestActiveInStock(int $limit = 4): Collection;

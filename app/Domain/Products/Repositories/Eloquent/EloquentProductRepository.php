@@ -83,6 +83,19 @@ class EloquentProductRepository implements ProductRepositoryInterface
             ->get();
     }
 
+    public function getRandomActiveInStockByCollectionSlug(string $collectionSlug, int $limit = 4): Collection
+    {
+        return $this->activeInStockProductsQuery()
+            ->with(['category:id,name,slug', 'images'])
+            ->whereHas('collections', function (Builder $query) use ($collectionSlug): void {
+                $query->where('collection.slug', $collectionSlug)
+                    ->where('collection.is_active', true);
+            })
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+    }
+
     public function getRandomFeaturedActive(int $limit = 4): Collection
     {
         return $this->activeInStockProductsQuery()

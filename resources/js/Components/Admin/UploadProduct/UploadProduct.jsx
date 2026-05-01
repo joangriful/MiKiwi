@@ -23,7 +23,7 @@ function getHoverToggleClassName(stylesObject, isHover) {
 
 export default function UploadProduct({ categories = [], initialData = null, onCancel }) {
     const isEdit = !!initialData;
-    const isFlatCategoryModel = categories.every((category) => !category.parent_id && !Array.isArray(category.children));
+    const isFlatCategoryModel = categories.every((category) => !category.parent_id && (!Array.isArray(category.children) || category.children.length === 0));
 
     const [formData, setFormData] = useState({
         name: '',

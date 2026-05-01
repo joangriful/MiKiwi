@@ -43,7 +43,7 @@ class SeederTest extends TestCase
     }
 
     /**
-     * Test que las categorías se crean en el modelo plano correcto.
+     * Test que las categorías se crean con jerarquía padre-hija correcta.
      */
     public function test_categories_are_seeded_correctly(): void
     {
@@ -55,6 +55,11 @@ class SeederTest extends TestCase
 
         $externa = Category::where('slug', 'estimulacion-externa')->first();
         $this->assertNotNull($externa);
+        $this->assertNull($externa->parent_id);
+        $this->assertDatabaseHas('category', [
+            'slug' => 'ondas-de-presion',
+            'parent_id' => $externa->getKey(),
+        ]);
         $this->assertDatabaseMissing('category', ['slug' => 'para-ella']);
     }
 

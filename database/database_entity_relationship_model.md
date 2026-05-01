@@ -80,6 +80,9 @@ flowchart TB
     CATEGORY -->|"1 : N"| CLASSIFIES{clasifica}
     CLASSIFIES --> PRODUCT
 
+    CATEGORY -->|"1 : N"| CONTAINS_CATEGORY{contiene}
+    CONTAINS_CATEGORY --> CATEGORY
+
     PRODUCT -->|"1 : N"| HAS_PRODUCT_IMAGE{tiene}
     HAS_PRODUCT_IMAGE --> PRODUCT_IMAGE
 

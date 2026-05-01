@@ -161,6 +161,7 @@ erDiagram
 
     category {
         uuid id PK
+        uuid parent_id FK
         string name
         string slug UK
         text description
@@ -398,6 +399,7 @@ erDiagram
     payment_method ||--o{ payment : used_by
     order ||--o{ payment : receives
 
+    category ||--o{ category : contains
     category ||--o{ product : classifies
     product ||--o{ product_image : has
     product_image ||--o{ product_image_zone : has

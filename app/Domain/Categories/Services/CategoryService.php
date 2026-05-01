@@ -8,7 +8,6 @@ use App\Domain\Categories\Repositories\Interfaces\CategoryRepositoryInterface;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class CategoryService
 {
@@ -54,8 +53,7 @@ class CategoryService
         return [
             'category' => $category,
             'products' => $products,
-            // El modelo actual de categorías es plano; se mantiene la clave por compatibilidad.
-            'subcategories' => new Collection,
+            'subcategories' => $category->children,
             'breadcrumbs' => $this->buildBreadcrumbs($category),
         ];
     }
@@ -75,10 +73,27 @@ class CategoryService
      */
     protected function buildBreadcrumbs(Category $category): array
     {
-        return [[
-            'name' => $category->name,
-            'slug' => $category->slug,
-            'url' => route('categories.show', $category->slug),
-        ]];
+        $category->loadMissing('parent');
+
+        if (! $category->parent) {
+            return [[
+                'name' => $category->name,
+                'slug' => $category->slug,
+                'url' => route('categories.show', $category->slug),
+            ]];
+        }
+
+        return [
+            [
+                'name' => $category->parent->name,
+                'slug' => $category->parent->slug,
+                'url' => route('categories.show', $category->parent->slug),
+            ],
+            [
+                'name' => $category->name,
+                'slug' => $category->slug,
+                'url' => route('categories.show', $category->slug),
+            ],
+        ];
     }
 }

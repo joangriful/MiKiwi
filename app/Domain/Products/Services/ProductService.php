@@ -30,6 +30,11 @@ class ProductService
         return $this->productRepository->getRandomActiveInStockByCategoryIds($categoryIds, $limit);
     }
 
+    public function getRecommendedProductsByCollectionSlug(string $collectionSlug, int $limit = 4): Collection
+    {
+        return $this->productRepository->getRandomActiveInStockByCollectionSlug($collectionSlug, $limit);
+    }
+
     public function getRandomFeaturedProducts(int $limit = 4): Collection
     {
         return $this->productRepository->getRandomFeaturedActive($limit);

@@ -55,7 +55,7 @@ class CatalogPageService
         return [
             'products' => $this->paginateProducts($query, $request),
             'categories' => $this->getCatalogCategories(),
-            'filters' => $request->only(['category', 'min_price', 'max_price', 'sort', 'search', 'featured']),
+            'filters' => $request->only(['category', 'subCategory', 'min_price', 'max_price', 'sort', 'search', 'featured']),
         ];
     }
 
@@ -67,25 +67,40 @@ class CatalogPageService
             throw new ModelNotFoundException('Categoría no encontrada o inactiva.');
         }
 
+        $parentCategory = $category->parent;
+
         return [
             'category' => $category,
             'products' => $this->categoryService->getCategoryDetails($slug)['products'],
             'categories' => $this->categoryService->getNavigationCategories(),
-            'filters' => ['category' => $category->id],
+            'filters' => [
+                'category' => $parentCategory?->getKey() ?? $category->getKey(),
+                'subCategory' => $parentCategory ? $category->getKey() : null,
+            ],
             'pageTitle' => $category->name.' - MiKiwi',
         ];
     }
 
     /**
-     * @param Builder<Product> $query
+     * @param  Builder<Product>  $query
      */
     private function applyFilters(Builder $query, Request $request): void
     {
+        if ($request->filled('subCategory')) {
+            $subCategory = $this->resolveCategory($request->string('subCategory')->toString());
+
+            if ($subCategory) {
+                $query->where('category_id', $subCategory->getKey());
+
+                return;
+            }
+        }
+
         if ($request->filled('category')) {
             $category = $this->resolveCategory($request->string('category')->toString());
 
             if ($category) {
-                $query->where('category_id', $category->getKey());
+                $query->whereIn('category_id', $this->categoryService->getFilterCategoryIds($category)->all());
             }
         }
 
@@ -107,7 +122,7 @@ class CatalogPageService
     }
 
     /**
-     * @param Builder<Product> $query
+     * @param  Builder<Product>  $query
      */
     private function applySort(Builder $query, Request $request): void
     {
@@ -120,7 +135,7 @@ class CatalogPageService
     }
 
     /**
-     * @param Builder<Product> $query
+     * @param  Builder<Product>  $query
      */
     private function paginateProducts(Builder $query, Request $request): LengthAwarePaginator
     {
@@ -135,19 +150,7 @@ class CatalogPageService
      */
     private function getCatalogCategories(): Collection
     {
-        $categories = Category::query()
-            ->active()
-            ->withCount([
-                'products' => fn ($query) => $query->active()->inStock(),
-            ])
-            ->orderBy('name')
-            ->get();
-
-        $categories->each(function (Category $category): void {
-            $category->total_products_count = $category->products_count;
-        });
-
-        return $categories;
+        return $this->categoryService->getNavigationCategories();
     }
 
     private function resolveCategory(string $categoryParam): ?Category

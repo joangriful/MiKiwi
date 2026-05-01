@@ -2,6 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Enums\ProductType;
+use App\Models\Category;
+use App\Models\Collection;
+use App\Models\CollectionProduct;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -19,6 +24,61 @@ class ProfileTest extends TestCase
             ->get('/profile');
 
         $response->assertOk();
+    }
+
+    public function test_profile_page_returns_quiz_recommendations_from_collection_matches(): void
+    {
+        $user = User::factory()->create([
+            'quiz_result_category' => 'Lubricantes',
+        ]);
+
+        $category = Category::factory()->create([
+            'name' => 'Lubricantes',
+            'slug' => 'lubricantes',
+            'is_active' => true,
+        ]);
+
+        $collection = Collection::query()->create([
+            'name' => 'Parejas',
+            'slug' => 'parejas',
+            'description' => 'Productos para disfrutar en pareja',
+            'is_active' => true,
+        ]);
+
+        $recommendedProduct = Product::factory()->create([
+            'category_id' => $category->getKey(),
+            'name' => 'Lubricante Recomendado',
+            'slug' => 'lubricante-recomendado',
+            'sku' => 'TEST-LUBE-001',
+            'is_active' => true,
+            'stock_quantity' => 12,
+            'product_type' => ProductType::Simple->value,
+        ]);
+
+        CollectionProduct::query()->create([
+            'collection_id' => $collection->getKey(),
+            'product_id' => $recommendedProduct->getKey(),
+        ]);
+
+        Product::factory()->create([
+            'category_id' => $category->getKey(),
+            'name' => 'Producto Destacado Fallback',
+            'slug' => 'producto-destacado-fallback',
+            'sku' => 'TEST-FALLBACK-001',
+            'is_active' => true,
+            'is_promoted' => true,
+            'stock_quantity' => 8,
+            'product_type' => ProductType::Simple->value,
+        ]);
+
+        $this->actingAs($user)
+            ->get('/perfil')
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Profile/Profile')
+                ->has('recommendedProducts', 1)
+                ->where('recommendedProducts.0.slug', $recommendedProduct->slug)
+            );
     }
 
     public function test_profile_information_can_be_updated(): void
