@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('dni', 20)->nullable()->unique();
             $table->date('birth_date')->nullable();
             $table->string('password');
-            $table->string('role', 50)->default('user');
+            $table->string('role', 50)->default('customer');
             $table->boolean('is_active')->default(true);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('profile_photo_url')->nullable();

@@ -2,28 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\UserRole;
+use App\Domain\Admin\Services\AdminUserService;
 use App\Models\User;
 
 class UserController extends Controller
 {
+    public function __construct(
+        private readonly AdminUserService $adminUserService,
+    ) {}
+
     public function index()
     {
         $this->authorize('viewAny', User::class);
 
-        $users = User::all(['id', 'name', 'email', 'username', 'role', 'created_at']);
-
-        return response()->json($users);
+        return response()->json($this->adminUserService->getIndexUsers());
     }
 
     public function toggleAdmin(User $user)
     {
-        $this->authorize('toggleAdmin', $user);  // ← Protección activa
-
-        $newRole = $user->role === UserRole::Admin->value
-            ? UserRole::Customer->value
-            : UserRole::Admin->value;
-        $user->update(['role' => $newRole]);
+        $this->authorize('toggleAdmin', $user);
+        $this->adminUserService->toggleAdminRole($user);
 
         return back()->with('success', 'Rol actualizado');
     }
