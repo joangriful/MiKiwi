@@ -34,6 +34,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
             ->where('slug', $slug)
             ->with([
                 'category',
+                'images',
                 'accessories',
                 'reviews' => fn ($query) => $query->approved()->latest(),
             ])
@@ -44,7 +45,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     {
         return $this->activeProductsQuery()
             ->whereIn('slug', $slugs)
-            ->with(['category', 'accessories'])
+            ->with(['category', 'images', 'accessories'])
             ->get();
     }
 
@@ -58,7 +59,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     public function getAllActivePaginated(int $perPage = 12): LengthAwarePaginator
     {
         return $this->activeInStockProductsQuery()
-            ->with('category')
+            ->with(['category', 'images'])
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
     }
@@ -66,7 +67,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     public function getFeaturedActive(): Collection
     {
         return $this->activeInStockProductsQuery()
-            ->with('category:id,name,slug')
+            ->with(['category:id,name,slug', 'images'])
             ->where('is_promoted', true)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -75,7 +76,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     public function getRandomActiveInStockByCategoryIds(array $categoryIds, int $limit = 4): Collection
     {
         return $this->activeInStockProductsQuery()
-            ->with('category:id,name,slug')
+            ->with(['category:id,name,slug', 'images'])
             ->whereIn('category_id', $categoryIds)
             ->inRandomOrder()
             ->limit($limit)
@@ -85,7 +86,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     public function getRandomFeaturedActive(int $limit = 4): Collection
     {
         return $this->activeInStockProductsQuery()
-            ->with('category:id,name,slug')
+            ->with(['category:id,name,slug', 'images'])
             ->where('is_promoted', true)
             ->inRandomOrder()
             ->limit($limit)
@@ -95,7 +96,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     public function getLatestActiveInStock(int $limit = 4): Collection
     {
         return $this->activeInStockProductsQuery()
-            ->with('category:id,name,slug')
+            ->with(['category:id,name,slug', 'images'])
             ->latest()
             ->limit($limit)
             ->get();
@@ -104,6 +105,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     public function getCartPopularProducts(int $limit = 8): Collection
     {
         return $this->activeProductsQuery()
+            ->with('images')
             ->whereIn('product_type', [
                 \App\Enums\ProductType::Configurable->value,
                 \App\Enums\ProductType::Simple->value,
@@ -114,7 +116,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
     public function getAllForAdmin(): Collection
     {
-        return Product::with('category:id,name')
+        return Product::with(['category:id,name', 'images'])
             ->orderBy('created_at', 'desc')
             ->get();
     }
