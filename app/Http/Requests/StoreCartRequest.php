@@ -5,34 +5,24 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class StoreCartRequest extends FormRequest
 {
-    /**
-     * Determina si el usuario está autorizado
-     */
     public function authorize(): bool
     {
-        return Auth::check();
+        return true;
     }
 
-    /**
-     * Reglas de validación para agregar al carrito
-     */
     public function rules(): array
     {
         return [
-            'product_slug' => 'required|string|exists:products,slug',
+            'product_slug' => 'required|string|exists:product,slug',
             'quantity' => 'required|integer|min:1|max:99',
             'accessories' => 'nullable|array',
-            'accessories.*' => 'string|exists:products,slug',
+            'accessories.*' => 'string|exists:product,slug',
         ];
     }
 
-    /**
-     * Mensajes de error en español
-     */
     public function messages(): array
     {
         return [
@@ -47,9 +37,6 @@ class StoreCartRequest extends FormRequest
         ];
     }
 
-    /**
-     * Atributos personalizados
-     */
     public function attributes(): array
     {
         return [

@@ -6,6 +6,7 @@ import CartStep from "@/Components/Checkout/CartStep/CartStep";
 import InfoStep from "@/Components/Checkout/InfoStep/InfoStep";
 import PaymentStep from "@/Components/Checkout/PaymentStep/PaymentStep";
 import ShippingStep from "@/Components/Checkout/ShippingStep/ShippingStep";
+import { normalizeApiError, normalizeInertiaErrors, normalizeStripeError } from "@/Utils/httpError";
 import styles from "./CheckoutStepRenderer.module.css";
 
 export default function CheckoutStepRenderer({
@@ -21,13 +22,20 @@ export default function CheckoutStepRenderer({
     const stripe = useStripe();
     const elements = useElements();
     const [isInternalProcessing, setIsInternalProcessing] = useState(false);
+    const [paymentError, setPaymentError] = useState(null);
 
     const handleSubmitOrder = async () => {
         if (!stripe) {
-            console.error("Stripe not loaded");
+            setPaymentError({
+                title: "Pago seguro no disponible",
+                message: "Todavía estamos preparando el pago seguro. Espera un momento y vuelve a intentarlo.",
+                code: "stripe_not_ready",
+                fieldErrors: null,
+            });
             return;
         }
 
+        setPaymentError(null);
         setIsInternalProcessing(true);
 
         try {
@@ -41,7 +49,11 @@ export default function CheckoutStepRenderer({
             );
 
             if (result.error) {
-                alert(result.error.message);
+                setPaymentError(normalizeStripeError(result.error, {
+                    title: "No pudimos validar el pago",
+                    message: "No pudimos validar la información de tu tarjeta. Revisa los datos e inténtalo de nuevo.",
+                    code: "checkout_payment_failed",
+                }));
                 setIsInternalProcessing(false);
                 return;
             }
@@ -49,20 +61,23 @@ export default function CheckoutStepRenderer({
             if (result.paymentIntent.status === "succeeded") {
                 router.post(route("orders.store"), buildOrderPayload(form.data, result.paymentIntent.id), {
                     onFinish: () => setIsInternalProcessing(false),
+                    onSuccess: () => setPaymentError(null),
                     onError: (errors) => {
-                        console.error("Order store errors:", errors);
-                        alert(
-                            "Hubo un error al guardar tu pedido. Contacta con soporte con tu referencia de pago: " +
-                                result.paymentIntent.id,
-                        );
+                        setPaymentError(normalizeInertiaErrors(errors, {
+                            title: "No pudimos finalizar tu pedido",
+                            message: `No pudimos guardar tu pedido. Si el cargo se ha realizado, contacta con soporte con la referencia ${result.paymentIntent.id}.`,
+                            code: "order_creation_failed",
+                        }));
                         setIsInternalProcessing(false);
                     },
                 });
             }
         } catch (error) {
-            console.error("Order submission error:", error);
-            const message = error?.response?.data?.message || error.message || "Error desconocido";
-            alert(`Hubo un error al procesar tu pedido: ${message}`);
+            setPaymentError(normalizeApiError(error, {
+                title: "No pudimos procesar el pago",
+                message: "No pudimos procesar tu pedido. Revisa los datos e inténtalo de nuevo.",
+                code: "checkout_payment_failed",
+            }));
             setIsInternalProcessing(false);
         }
     };
@@ -96,6 +111,8 @@ export default function CheckoutStepRenderer({
                     onSubmit={handleSubmitOrder}
                     onBack={prevStep}
                     processing={form.processing || isInternalProcessing}
+                    submitError={paymentError}
+                    onClearSubmitError={() => setPaymentError(null)}
                 />
             ) : null}
         </div>

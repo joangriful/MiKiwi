@@ -2,17 +2,29 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { buildFileTree, flattenTree, parseColorsFromCss } from '@/Components/Admin/utils/managerUtils';
 import cssContent from '@/../css/global.css?raw';
 
+const EXCLUDED_COMPONENT_PATHS = new Set([
+    '/resources/js/Components/Configurator/Mannequin3DViewer/components/MannequinScene3D.jsx',
+]);
+
+const EXCLUDED_RAW_COMPONENT_PATHS = new Set([
+    ...EXCLUDED_COMPONENT_PATHS,
+    '/resources/js/Components/Configurator/DollScene3D/DollScene3D.jsx',
+]);
+
+const filterImportMap = (importsMap, excludedPaths) => Object.fromEntries(
+    Object.entries(importsMap).filter(([path]) => !excludedPaths.has(path))
+);
+
 // Imports
-const componentImports = import.meta.glob([
-    '/resources/js/Components/**/*.jsx',
-    '!/resources/js/Components/Configurator/Mannequin3DViewer/components/MannequinScene3D.jsx',
-], { eager: true });
-const pageImports = import.meta.glob('/resources/js/Pages/**/*.jsx', { eager: true });
-const componentRawStart = import.meta.glob([
-    '/resources/js/Components/**/*.jsx',
-    '!/resources/js/Components/Configurator/Mannequin3DViewer/components/MannequinScene3D.jsx',
-    '!/resources/js/Components/Configurator/DollScene3D/DollScene3D.jsx',
-], { query: '?raw', import: 'default' });
+const componentImports = filterImportMap(
+    import.meta.glob('/resources/js/Components/**/*.jsx'),
+    EXCLUDED_COMPONENT_PATHS
+);
+const pageImports = import.meta.glob('/resources/js/Pages/**/*.jsx');
+const componentRawStart = filterImportMap(
+    import.meta.glob('/resources/js/Components/**/*.jsx', { query: '?raw', import: 'default' }),
+    EXCLUDED_RAW_COMPONENT_PATHS
+);
 const pageRawStart = import.meta.glob('/resources/js/Pages/**/*.jsx', { query: '?raw', import: 'default' });
 const DYNAMIC_COLORS = parseColorsFromCss(cssContent);
 
@@ -218,4 +230,8 @@ export const useComponentsManager = () => {
     };
 };
 
-const toLazyModule = (module) => Promise.resolve({ default: module.default });
+const toLazyModule = async (moduleLoader) => {
+    const module = await moduleLoader();
+
+    return { default: module.default };
+};

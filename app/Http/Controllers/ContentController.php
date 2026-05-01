@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain\HeroImages\Services\HeroImageManagementService;
-use App\Models\HeroImage;
+use App\Models\ImageHome;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -32,11 +32,11 @@ class ContentController extends Controller
         } catch (\Exception $e) {
             Log::error('Error uploading hero images: '.$e->getMessage());
 
-            return back()->withErrors(['error' => 'Error al subir las imágenes']);
+            return back()->withErrors(['error' => 'No pudimos subir las imágenes ahora mismo. Inténtalo de nuevo en unos minutos.']);
         }
     }
 
-    public function deleteHeroImage(HeroImage $heroImage)
+    public function deleteHeroImage(ImageHome $heroImage)
     {
         try {
             $this->heroImageManagementService->deleteImage($heroImage);
@@ -45,7 +45,7 @@ class ContentController extends Controller
         } catch (\Exception $e) {
             Log::error('Error deleting hero image: '.$e->getMessage());
 
-            return back()->withErrors(['error' => 'Error al eliminar la imagen']);
+            return back()->withErrors(['error' => 'No pudimos eliminar la imagen. Inténtalo de nuevo en unos minutos.']);
         }
     }
 }

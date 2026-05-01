@@ -33,7 +33,12 @@ class PaymentMethodControllerTest extends TestCase
 
         $response
             ->assertForbidden()
-            ->assertJson(['error' => 'Unauthorized payment method access.']);
+            ->assertJsonStructure(['success', 'code', 'message'])
+            ->assertJson([
+                'success' => false,
+                'code' => 'payment_method_delete_forbidden',
+                'message' => 'No pudimos eliminar esta tarjeta porque no está disponible para tu cuenta.',
+            ]);
     }
 
     public function test_user_can_detach_their_own_payment_method(): void

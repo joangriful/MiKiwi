@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\InteractsWithApiErrors;
 use App\Domain\Media\Services\CloudinaryService;
 use App\Domain\Profile\Services\ProfilePageService;
 use App\Http\Requests\ProfileUpdateRequest;
@@ -9,12 +10,15 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    use InteractsWithApiErrors;
+
     protected $cloudinaryService;
 
     public function __construct(
@@ -110,11 +114,13 @@ class ProfileController extends Controller
                 'profile_photo_url' => $cloudinaryResponse['secure_url'],
             ]);
         } catch (\Exception $e) {
-            \Log::error('Profile image upload failed: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al subir la imagen. Por favor, inténtalo de nuevo.'
-            ], 500);
+            Log::error('Profile image upload failed: '.$e->getMessage());
+
+            return $this->apiError(
+                'profile_image_upload_failed',
+                'No pudimos actualizar tu foto de perfil. Inténtalo de nuevo en unos minutos.',
+                500
+            );
         }
     }
 
@@ -152,11 +158,13 @@ class ProfileController extends Controller
                 'banner_url' => $cloudinaryResponse['secure_url'],
             ]);
         } catch (\Exception $e) {
-            \Log::error('Banner upload failed: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al subir el banner. Por favor, inténtalo de nuevo.'
-            ], 500);
+            Log::error('Banner upload failed: '.$e->getMessage());
+
+            return $this->apiError(
+                'profile_banner_upload_failed',
+                'No pudimos actualizar tu banner. Inténtalo de nuevo en unos minutos.',
+                500
+            );
         }
     }
 
@@ -180,11 +188,13 @@ class ProfileController extends Controller
                 'message' => 'Resultado guardado correctamente.'
             ]);
         } catch (\Exception $e) {
-            \Log::error('Quiz result save failed: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al guardar el resultado.'
-            ], 500);
+            Log::error('Quiz result save failed: ' . $e->getMessage());
+
+            return $this->apiError(
+                'quiz_result_save_failed',
+                'No pudimos guardar tu resultado del quiz. Inténtalo de nuevo en unos minutos.',
+                500
+            );
         }
     }
 }

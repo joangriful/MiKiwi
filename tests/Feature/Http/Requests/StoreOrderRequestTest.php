@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Requests;
 
 use App\Http\Requests\StoreOrderRequest;
+use App\Models\Address;
+use App\Models\PickupPoint;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
@@ -63,7 +65,34 @@ class StoreOrderRequestTest extends TestCase
         $this->assertFalse($validator->fails());
     }
 
-    public function test_accepts_external_pickup_point_identifier(): void
+    public function test_accepts_valid_pickup_point_identifier(): void
+    {
+        $request = new StoreOrderRequest;
+        $pickupPoint = PickupPoint::query()->create([
+            'name' => 'Punto Centro',
+            'address' => 'Calle Mayor 1',
+            'city' => 'Madrid',
+            'postal_code' => '28013',
+            'is_active' => true,
+        ]);
+
+        $data = [
+            'shipping_address' => [
+                'street_address' => 'Test Street 123',
+                'city' => 'Test City',
+                'postal_code' => '12345',
+                'country' => 'Spain',
+            ],
+            'payment_method' => 'pickup',
+            'pickup_point_id' => $pickupPoint->getKey(),
+        ];
+
+        $validator = Validator::make($data, $request->rules());
+
+        $this->assertFalse($validator->fails());
+    }
+
+    public function test_accepts_missing_billing_address(): void
     {
         $request = new StoreOrderRequest;
 
@@ -74,13 +103,45 @@ class StoreOrderRequestTest extends TestCase
                 'postal_code' => '12345',
                 'country' => 'Spain',
             ],
-            'payment_method' => 'pickup',
-            'pickup_point_id' => 'mock-pickup-point-123',
+            'payment_method' => 'stripe',
         ];
 
         $validator = Validator::make($data, $request->rules());
 
         $this->assertFalse($validator->fails());
+        $this->assertArrayNotHasKey('billing_address.street_address', $validator->errors()->messages());
+    }
+
+    public function test_rejects_shipping_address_id_from_another_user(): void
+    {
+        $request = new StoreOrderRequest;
+        $owner = User::factory()->create();
+        $intruder = User::factory()->create();
+        $address = Address::query()->create([
+            'user_id' => $owner->getKey(),
+            'alias' => 'shipping',
+            'full_name' => 'Owner User',
+            'phone' => '600123123',
+            'street_address' => 'Owner Street 1',
+            'city' => 'Madrid',
+            'postal_code' => '28013',
+            'country' => 'Spain',
+            'is_default' => false,
+        ]);
+
+        $this->actingAs($intruder);
+
+        $data = [
+            'shipping_address' => [
+                'id' => $address->getKey(),
+            ],
+            'payment_method' => 'stripe',
+        ];
+
+        $validator = Validator::make($data, $request->rules());
+
+        $this->assertTrue($validator->fails());
+        $this->assertArrayHasKey('shipping_address.id', $validator->errors()->messages());
     }
 
     public function test_validates_payment_method_enum(): void

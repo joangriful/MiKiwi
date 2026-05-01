@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Addresses\Services\UserAddressService;
 use App\Http\Requests\StoreAddressRequest;
 use App\Http\Requests\UpdateAddressRequest;
-use App\Models\UserAddress;
+use App\Models\Address;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class UserAddressController extends Controller
 {
+    public function __construct(
+        private readonly UserAddressService $userAddressService,
+    ) {}
+
     public function index()
     {
-        $addresses = UserAddress::where('user_id', Auth::id())
-            ->orderByDesc('is_default')
-            ->get();
+        $addresses = $this->userAddressService->getUserAddresses((string) Auth::id());
 
         return Inertia::render('Profile/Index', [
             'addresses' => $addresses,
@@ -24,47 +26,37 @@ class UserAddressController extends Controller
 
     public function store(StoreAddressRequest $request)
     {
-        $data = $request->validated();
-
-        DB::transaction(function () use ($data): void {
-            if (! empty($data['is_default'])) {
-                UserAddress::where('user_id', Auth::id())
-                    ->update(['is_default' => false]);
-            }
-
-            UserAddress::create([
-                ...$data,
-                'user_id' => Auth::id(),
-            ]);
-        });
+        $this->userAddressService->createAddress((string) Auth::id(), $request->validated());
 
         return back()->with('success', 'Dirección guardada correctamente');
     }
 
-    public function update(UpdateAddressRequest $request, UserAddress $address)
+    public function update(UpdateAddressRequest $request, Address $address)
     {
         $this->authorize('update', $address);
 
-        $data = $request->validated();
+        $updated = $this->userAddressService->updateAddress(
+            (string) $address->getKey(),
+            (string) Auth::id(),
+            $request->validated()
+        );
 
-        DB::transaction(function () use ($address, $data): void {
-            if (! empty($data['is_default'])) {
-                UserAddress::where('user_id', Auth::id())
-                    ->where('id', '!=', $address->getKey())
-                    ->update(['is_default' => false]);
-            }
-
-            $address->update($data);
-        });
+        if (! $updated) {
+            return back()->withErrors(['error' => 'No se pudo actualizar la dirección.']);
+        }
 
         return back()->with('success', 'Dirección actualizada');
     }
 
-    public function destroy(UserAddress $address)
+    public function destroy(Address $address)
     {
         $this->authorize('delete', $address);
 
-        $address->delete();
+        $deleted = $this->userAddressService->deleteAddress((string) $address->getKey(), (string) Auth::id());
+
+        if (! $deleted) {
+            return response()->json(['message' => 'No se pudo eliminar la dirección'], 422);
+        }
 
         return response()->json(['message' => 'Dirección eliminada']);
     }

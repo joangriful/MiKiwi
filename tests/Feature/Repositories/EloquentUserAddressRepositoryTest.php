@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Repositories;
 
+use App\Models\Address;
 use App\Models\User;
-use App\Models\UserAddress;
 use App\Domain\Addresses\Repositories\Eloquent\EloquentUserAddressRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -27,7 +27,7 @@ class EloquentUserAddressRepositoryTest extends TestCase
 
     public function test_can_get_user_addresses(): void
     {
-        UserAddress::factory()->count(3)->create(['user_id' => $this->user->id]);
+        Address::factory()->count(3)->create(['user_id' => $this->user->id]);
 
         $addresses = $this->repository->getUserAddresses($this->user->id);
 
@@ -36,11 +36,11 @@ class EloquentUserAddressRepositoryTest extends TestCase
 
     public function test_addresses_are_ordered_by_default_first(): void
     {
-        UserAddress::factory()->create([
+        Address::factory()->create([
             'user_id' => $this->user->id,
             'is_default' => false,
         ]);
-        UserAddress::factory()->create([
+        Address::factory()->create([
             'user_id' => $this->user->id,
             'is_default' => true,
         ]);
@@ -52,7 +52,7 @@ class EloquentUserAddressRepositoryTest extends TestCase
 
     public function test_can_find_by_id(): void
     {
-        $address = UserAddress::factory()->create(['user_id' => $this->user->id]);
+        $address = Address::factory()->create(['user_id' => $this->user->id]);
 
         $found = $this->repository->findById($address->id);
 
@@ -79,7 +79,7 @@ class EloquentUserAddressRepositoryTest extends TestCase
         ]);
 
         $this->assertNotNull($address);
-        $this->assertDatabaseHas('user_addresses', [
+        $this->assertDatabaseHas('address', [
             'id' => $address->id,
             'full_name' => 'John Doe',
         ]);
@@ -87,7 +87,7 @@ class EloquentUserAddressRepositoryTest extends TestCase
 
     public function test_can_update_address(): void
     {
-        $address = UserAddress::factory()->create([
+        $address = Address::factory()->create([
             'user_id' => $this->user->id,
             'full_name' => 'Old Name',
         ]);
@@ -111,12 +111,12 @@ class EloquentUserAddressRepositoryTest extends TestCase
 
     public function test_can_delete_address(): void
     {
-        $address = UserAddress::factory()->create(['user_id' => $this->user->id]);
+        $address = Address::factory()->create(['user_id' => $this->user->id]);
 
         $result = $this->repository->delete($address->id);
 
         $this->assertTrue($result);
-        $this->assertDatabaseMissing('user_addresses', ['id' => $address->id]);
+        $this->assertDatabaseMissing('address', ['id' => $address->id]);
     }
 
     public function test_returns_false_when_deleting_nonexistent_address(): void
@@ -128,11 +128,11 @@ class EloquentUserAddressRepositoryTest extends TestCase
 
     public function test_can_set_as_default(): void
     {
-        $address1 = UserAddress::factory()->create([
+        $address1 = Address::factory()->create([
             'user_id' => $this->user->id,
             'is_default' => true,
         ]);
-        $address2 = UserAddress::factory()->create([
+        $address2 = Address::factory()->create([
             'user_id' => $this->user->id,
             'is_default' => false,
         ]);
@@ -148,7 +148,7 @@ class EloquentUserAddressRepositoryTest extends TestCase
 
     public function test_can_get_default_address(): void
     {
-        UserAddress::factory()->create([
+        Address::factory()->create([
             'user_id' => $this->user->id,
             'is_default' => true,
         ]);
@@ -161,7 +161,7 @@ class EloquentUserAddressRepositoryTest extends TestCase
 
     public function test_can_count_user_addresses(): void
     {
-        UserAddress::factory()->count(3)->create(['user_id' => $this->user->id]);
+        Address::factory()->count(3)->create(['user_id' => $this->user->id]);
 
         $count = $this->repository->countUserAddresses($this->user->id);
 

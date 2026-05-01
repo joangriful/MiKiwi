@@ -6,10 +6,14 @@ use App\Enums\ChatSessionStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ChatSession extends Model
 {
     use HasFactory, HasUuids;
+
+    protected $table = 'chat_session';
 
     protected $fillable = [
         'user_id',
@@ -31,22 +35,12 @@ class ChatSession extends Model
         return $query->where('status', 'closed');
     }
 
-    /**
-     * Get the messages for the chat session.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function messages()
+    public function messages(): HasMany
     {
-        return $this->hasMany(ChatMessage::class, 'session_id');
+        return $this->hasMany(ChatMessage::class, 'chat_session_id');
     }
 
-    /**
-     * Get the user that owns the chat session.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

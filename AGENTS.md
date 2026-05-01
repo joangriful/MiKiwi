@@ -12,9 +12,26 @@ La IA debe actuar como apoyo técnico senior y tutor: resolver la tarea, explica
 
 1. Seguir este archivo antes que cualquier documentación antigua.
 2. Si una regla histórica habla de `resources/js/Features`, `resources/js/Components/Common`, CSS plano local o MySQL/Railway como setup principal, tratarla como obsoleta salvo que el usuario pida revisar historia.
-3. Mantener compatibilidad con el código real del repo. Antes de refactorizar, leer los archivos afectados.
-4. No revertir cambios ajenos. Si el árbol está sucio, trabajar con los cambios existentes.
-5. No introducir soluciones rápidas que aumenten deuda estructural cuando existe una convención clara.
+3. Mantener compatibilidad con el código real del repo en frontend, backend y flujos activos, excepto cuando una parte del código o de la base de datos esté en proceso de alineación explícita con una nueva fuente de verdad.
+4. En tareas de base de datos, migraciones o persistencia, leer siempre los archivos afectados antes de refactorizar, pero no asumir que la implementación actual es la referencia correcta si contradice `database/database_relational_model.md` o `database/database_entity_relationship_model.md`.
+5. No revertir cambios ajenos. Si el árbol está sucio, trabajar con los cambios existentes.
+6. No introducir soluciones rápidas que aumenten deuda estructural cuando existe una convención clara.
+
+## Fuente De Verdad Para Base De Datos
+
+Para cualquier tarea que toque base de datos, migraciones, modelos Eloquent, relaciones, seeders, factories, validaciones, repositorios, services, actions o tests relacionados con persistencia:
+
+1. `database/database_relational_model.md` y `database/database_entity_relationship_model.md` son la fuente de verdad funcional y estructural de la base de datos.
+2. El nombre final de tablas, columnas, claves, relaciones y cardinalidades debe alinearse con lo definido en esos dos archivos.
+3. Cualquier esquema, migración, SQL, modelo, servicio, seeder, test o documentación que contradiga esos dos archivos debe tratarse como `legacy`.
+4. Si hay conflicto entre el backend actual y esos dos archivos, la dirección correcta es adaptar el backend al nuevo modelo de base de datos, no preservar el esquema legacy por inercia.
+5. Antes de crear o modificar migraciones, hay que contrastar el cambio contra ambos archivos para evitar introducir nombres o relaciones heredadas del esquema antiguo.
+6. Si una IA detecta diferencias entre el código actual y esos dos modelos, debe asumir que la discrepancia es una tarea de alineación pendiente salvo que el usuario indique explícitamente lo contrario.
+7. No se deben tomar como referencia estructural principal migraciones históricas, SQL antiguos, diagramas previos ni nombres legacy si contradicen `database/database_relational_model.md` o `database/database_entity_relationship_model.md`.
+8. Al rehacer la base de datos, primero se define el esquema final según esos archivos y después se adapta el backend para respetarlo.
+9. Estado transitorio actual: las migraciones y partes del backend pueden estar a medio camino de la migración al nuevo esquema. Mientras exista esa transición, deben revisarse para entender el impacto del cambio, pero no deben tomarse como fuente de verdad estructural si contradicen los dos modelos `.md`.
+10. Incluso después de rehacer las migraciones, si en algún momento aparece una discrepancia entre las migraciones del repo y `database/database_relational_model.md` o `database/database_entity_relationship_model.md`, la IA debe tomar los archivos `.md` como referencia principal y tratar la discrepancia como desalineación a corregir.
+11. Excepción física documentada por nombres reservados SQL/PostgreSQL: aunque el modelo relacional use `user` y `order` como nombres conceptuales, las tablas físicas deben llamarse `users` y `orders`. Esta excepción no debe considerarse una contradicción del modelo, sino una adaptación técnica obligatoria para evitar conflictos con palabras reservadas.
 
 ## Stack Vigente
 

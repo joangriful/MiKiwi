@@ -37,7 +37,7 @@ export default function ProfileSidebar({ activeTab, setActiveTab }) {
                     maskImage: `url('/assets/icons/${item.icon}')`,
                     WebkitMaskImage: `url('/assets/icons/${item.icon}')`,
                 }}
-            ></span>
+            />
         );
     };
 

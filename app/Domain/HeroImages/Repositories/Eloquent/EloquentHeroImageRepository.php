@@ -5,48 +5,61 @@ declare(strict_types=1);
 namespace App\Domain\HeroImages\Repositories\Eloquent;
 
 use App\Domain\HeroImages\Repositories\Interfaces\HeroImageRepositoryInterface;
-use App\Models\HeroImage;
+use App\Models\HomeSectionImage;
+use App\Models\ImageHome;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class EloquentHeroImageRepository implements HeroImageRepositoryInterface
 {
+    private const DEFAULT_SECTION_KEY = 'hero';
+
     public function getAllOrdered(): Collection
     {
-        return $this->applyOrdering(HeroImage::query())->get();
+        return $this->baseSectionedQuery()->get();
     }
 
     public function getActiveImages(): Collection
     {
-        $query = HeroImage::query();
-
-        if ($this->hasColumn('is_active')) {
-            $query->where('is_active', true);
-        }
-
-        return $this->applyOrdering($query)->get();
+        return $this->baseSectionedQuery()
+            ->where('home_section_image.is_active', true)
+            ->get();
     }
 
-    public function createFromCloudinary(array $cloudinaryData, array $attributes = []): HeroImage
+    public function getActiveImagesBySection(string $sectionKey): Collection
     {
-        $payload = array_merge([
-            'public_id' => $cloudinaryData['public_id'],
-            'url' => $cloudinaryData['secure_url'],
-            'width' => $cloudinaryData['width'] ?? null,
-            'height' => $cloudinaryData['height'] ?? null,
-        ], $attributes);
+        return $this->baseSectionedQuery()
+            ->where('home_section_image.is_active', true)
+            ->where('home_section_image.section_key', $sectionKey)
+            ->get();
+    }
 
-        if ($this->hasColumn('is_active')) {
-            $payload['is_active'] = $payload['is_active'] ?? true;
-        }
+    public function createFromCloudinary(array $cloudinaryData, array $attributes = []): ImageHome
+    {
+        return DB::transaction(function () use ($cloudinaryData, $attributes) {
+            $payload = array_merge([
+                'public_id' => $cloudinaryData['public_id'],
+                'url' => $cloudinaryData['secure_url'],
+                'width' => $cloudinaryData['width'] ?? null,
+                'height' => $cloudinaryData['height'] ?? null,
+            ], $attributes);
 
-        return HeroImage::create($payload);
+            $image = ImageHome::create($payload);
+
+            HomeSectionImage::create([
+                'image_home_id' => $image->id,
+                'section_key' => $this->resolveSectionKey($attributes),
+                'sort_order' => $this->resolveNextSortOrder($attributes),
+                'is_active' => (bool) ($attributes['is_active'] ?? true),
+            ]);
+
+            return $image->load('homeSectionImages');
+        });
     }
 
     public function delete(string $id): bool
     {
-        $image = HeroImage::find($id);
+        $image = ImageHome::find($id);
 
         if (! $image) {
             return false;
@@ -55,46 +68,63 @@ class EloquentHeroImageRepository implements HeroImageRepositoryInterface
         return $image->delete();
     }
 
-    public function findById(string $id): ?HeroImage
+    public function findById(string $id): ?ImageHome
     {
-        return HeroImage::find($id);
+        return ImageHome::query()
+            ->with('homeSectionImages')
+            ->find($id);
     }
 
     public function updateOrder(array $orderedIds): void
     {
-        if (! $this->hasColumn('order')) {
-            return;
-        }
-
         foreach ($orderedIds as $index => $id) {
-            HeroImage::where('id', $id)->update(['order' => $index]);
+            HomeSectionImage::query()
+                ->where('image_home_id', $id)
+                ->update(['sort_order' => $index]);
         }
     }
 
-    public function setActive(string $id, bool $active): ?HeroImage
+    public function setActive(string $id, bool $active): ?ImageHome
     {
         $image = $this->findById($id);
 
-        if (! $image || ! $this->hasColumn('is_active')) {
+        if (! $image) {
             return null;
         }
 
-        $image->update(['is_active' => $active]);
+        HomeSectionImage::query()
+            ->where('image_home_id', $id)
+            ->update(['is_active' => $active]);
 
         return $image->fresh();
     }
 
-    private function applyOrdering(Builder $query): Builder
+    private function baseSectionedQuery()
     {
-        if ($this->hasColumn('order')) {
-            $query->orderBy('order', 'asc');
-        }
-
-        return $query->orderBy('created_at', 'desc');
+        return ImageHome::query()
+            ->select('image_home.*', 'home_section_image.sort_order as section_sort_order')
+            ->join('home_section_image', 'home_section_image.image_home_id', '=', 'image_home.id')
+            ->with(['homeSectionImages' => function ($query) {
+                $query->orderBy('sort_order');
+            }])
+            ->distinct()
+            ->orderBy('section_sort_order', 'asc')
+            ->orderBy('image_home.created_at', 'desc');
     }
 
-    private function hasColumn(string $column): bool
+    private function resolveSectionKey(array $attributes): string
     {
-        return Schema::hasColumn('hero_images', $column);
+        return (string) ($attributes['section_key'] ?? $attributes['type'] ?? self::DEFAULT_SECTION_KEY);
+    }
+
+    private function resolveNextSortOrder(array $attributes): int
+    {
+        $sectionKey = $this->resolveSectionKey($attributes);
+
+        $currentMax = HomeSectionImage::query()
+            ->where('section_key', $sectionKey)
+            ->max('sort_order');
+
+        return $currentMax === null ? 0 : ((int) $currentMax + 1);
     }
 }

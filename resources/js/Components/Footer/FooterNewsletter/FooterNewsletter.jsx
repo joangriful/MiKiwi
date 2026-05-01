@@ -1,11 +1,18 @@
 import { useForm } from '@inertiajs/react';
 import { toast } from 'react-toastify';
+import { normalizeInertiaErrors } from '@/Utils/httpError';
 import styles from './FooterNewsletter.module.css';
 
 export default function FooterNewsletter() {
     const { data, setData, post, processing, reset, errors } = useForm({
         email: '',
         gender: 'pene', // Default or could be blank, but controller expects it for the message
+    });
+
+    const newsletterError = normalizeInertiaErrors(errors, {
+        title: 'No pudimos completar la suscripción',
+        message: 'No pudimos completar tu suscripción en este momento. Inténtalo de nuevo en unos minutos.',
+        code: 'newsletter_subscription_failed',
     });
 
     const handleSubmit = (e) => {
@@ -17,9 +24,7 @@ export default function FooterNewsletter() {
                 toast.success('¡Gracias por suscribirte!');
                 reset();
             },
-            onError: (err) => {
-                toast.error(err.newsletter || 'Error al procesar la suscripción');
-            }
+            onError: () => {}
         });
     };
 
@@ -51,8 +56,8 @@ export default function FooterNewsletter() {
                     {processing ? 'Enviando...' : 'Suscribirse'}
                 </button>
             </form>
-            {errors.email ? (
-                <p className={styles.error}>{errors.email}</p>
+            {newsletterError.fieldErrors ? (
+                <p className={styles.error}>{newsletterError.message}</p>
             ) : null}
         </div>
     );

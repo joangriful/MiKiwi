@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\HeroImages\Repositories\Interfaces;
 
-use App\Models\HeroImage;
+use App\Models\ImageHome;
 use Illuminate\Database\Eloquent\Collection;
 
 interface HeroImageRepositoryInterface
@@ -20,9 +20,14 @@ interface HeroImageRepositoryInterface
     public function getActiveImages(): Collection;
 
     /**
+     * Obtener imágenes activas de una sección concreta.
+     */
+    public function getActiveImagesBySection(string $sectionKey): Collection;
+
+    /**
      * Crear nueva imagen desde respuesta de Cloudinary
      */
-    public function createFromCloudinary(array $cloudinaryData, array $attributes = []): HeroImage;
+    public function createFromCloudinary(array $cloudinaryData, array $attributes = []): ImageHome;
 
     /**
      * Eliminar imagen por ID
@@ -32,7 +37,7 @@ interface HeroImageRepositoryInterface
     /**
      * Obtener imagen por ID
      */
-    public function findById(string $id): ?HeroImage;
+    public function findById(string $id): ?ImageHome;
 
     /**
      * Actualizar orden de las imágenes
@@ -42,5 +47,5 @@ interface HeroImageRepositoryInterface
     /**
      * Establecer imagen como activa/inactiva
      */
-    public function setActive(string $id, bool $active): ?HeroImage;
+    public function setActive(string $id, bool $active): ?ImageHome;
 }

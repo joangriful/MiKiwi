@@ -5298,7 +5298,7 @@ database/
     └── .env.example        # Variables de entorno
 ```
 
-> El archivo `BBDD.sql` original está **DEPRECATED**.
+> El archivo `docs/legacy/db/BBDD.sql` original está **DEPRECATED**.
 
 ---
 

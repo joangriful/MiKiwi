@@ -37,9 +37,11 @@ php artisan migrate
 
 ### Opcion B: SQL manual en Supabase
 
+Solo como referencia historica. No es la fuente de verdad actual del proyecto.
+
 Si quieres crear el esquema manualmente desde Supabase:
 
-1. Abre `docs/db/BBDD.sql`
+1. Abre `docs/legacy/db/BBDD.sql`
 2. Copia el contenido
 3. Ve a `Supabase -> SQL Editor`
 4. Ejecuta el script
@@ -57,7 +59,8 @@ No mezcles el SQL manual con `php artisan migrate:fresh` sobre una base comparti
 
 Regla practica:
 - si el equipo trabaja con Laravel, usa `php artisan migrate`
-- si necesitas una base limpia en Supabase, usa `docs/db/BBDD.sql` sobre una base vacia
+- si necesitas contexto historico del SQL manual, revisa `docs/legacy/db/BBDD.sql`
+- la fuente de verdad estructural actual esta en `database/database_relational_model.md` y `database/database_entity_relationship_model.md`
 
 ## 4. Problemas comunes
 

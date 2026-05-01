@@ -5,12 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $fillable = ['parent_id', 'name', 'slug', 'is_active', 'description'];
+    protected $table = 'category';
+
+    protected $fillable = [
+        'parent_id',
+        'name',
+        'slug',
+        'description',
+        'is_active',
+    ];
 
     protected $casts = [
         'is_active' => 'boolean',
@@ -26,42 +36,25 @@ class Category extends Model
         return $query->whereNull('parent_id');
     }
 
-    /**
-     * Get the products in this category.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function products()
+    public function products(): HasMany
     {
         return $this->hasMany(Product::class);
     }
 
-    /**
-     * Get the parent category.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');
     }
 
-    /**
-     * Get the child categories.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function children()
+    public function children(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id');
     }
 
     /**
      * Get the route key for the model.
-     *
-     * @return string
      */
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }

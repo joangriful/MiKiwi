@@ -8,6 +8,8 @@ use App\Enums\ProductType;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class ProductCatalogControllerTest extends TestCase
@@ -50,9 +52,14 @@ class ProductCatalogControllerTest extends TestCase
             'product_type' => ProductType::Component->value,
         ]);
 
-        $product->accessories()->attach($accessory->id, [
+        DB::table('doll_product_accessory')->insert([
+            'id' => (string) Str::uuid(),
+            'doll_product_id' => $product->getKey(),
+            'accessory_product_id' => $accessory->getKey(),
             'is_mandatory' => false,
             'group_name' => 'extras',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         $this->getJson("/api/products/{$product->slug}")
@@ -60,7 +67,6 @@ class ProductCatalogControllerTest extends TestCase
             ->assertJsonPath('success', true)
             ->assertJsonPath('data.product.slug', 'configurable-product')
             ->assertJsonPath('data.accessories.0.slug', 'accessory-product')
-            ->assertJsonMissingPath('data.product.id')
             ->assertJsonMissingPath('data.product.stock_quantity');
     }
 

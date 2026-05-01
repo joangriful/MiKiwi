@@ -7,6 +7,7 @@ export default function ImageEditorModal({
     onClose,
     aspectRatio = 1,
     onSave,
+    onError,
     type = 'profile',
     existingImageUrl = null,
 }) {
@@ -28,13 +29,13 @@ export default function ImageEditorModal({
         }
 
         if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
-            alert('Por favor selecciona una imagen JPEG o PNG');
+            onError(`Selecciona una imagen en formato JPG o PNG para tu ${type === 'banner' ? 'banner' : 'foto de perfil'}.`);
             return;
         }
 
         const maxSize = type === 'banner' ? 10 * 1024 * 1024 : 5 * 1024 * 1024;
         if (file.size > maxSize) {
-            alert(`La imagen debe ser menor a ${type === 'banner' ? '10MB' : '5MB'}`);
+            onError(`La imagen es demasiado grande. El tamaño máximo para tu ${type === 'banner' ? 'banner' : 'foto de perfil'} es de ${type === 'banner' ? '10 MB' : '5 MB'}.`);
             return;
         }
 
@@ -124,8 +125,8 @@ export default function ImageEditorModal({
             const croppedBlob = await getCroppedImg(imageUrl, croppedAreaPixels, rotation);
             onSave(croppedBlob);
             handleClose();
-        } catch (error) {
-            console.error('Error cropping image:', error);
+        } catch {
+            onError(`No pudimos procesar la ${type === 'banner' ? 'imagen del banner' : 'foto de perfil'}. Prueba con otra imagen o vuelve a intentarlo.`);
         } finally {
             setSaving(false);
         }
@@ -157,13 +158,14 @@ export default function ImageEditorModal({
 
                 {!imageUrl ? (
                     <div className={styles.emptyArea}>
-                        <div
+                        <label
+                            htmlFor="file-input-editor"
+                            aria-label="Seleccionar imagen"
                             onDragEnter={handleDrag}
                             onDragLeave={handleDrag}
                             onDragOver={handleDrag}
                             onDrop={handleDrop}
                             className={`${styles.dropZone} ${dragActive ? styles.dropZoneActive : styles.dropZoneIdle}`}
-                            onClick={() => document.getElementById('file-input-editor').click()}
                         >
                             <div className={styles.dropZoneContent}>
                                 <span className={`${styles.materialIconHero} ${styles.dropZoneIcon}`}>
@@ -184,12 +186,13 @@ export default function ImageEditorModal({
                             </div>
                             <input
                                 id="file-input-editor"
+                                aria-label="Seleccionar imagen"
                                 type="file"
                                 onChange={handleFileInput}
                                 accept="image/jpeg,image/jpg,image/png"
                                 className={styles.hiddenInput}
                             />
-                        </div>
+                        </label>
                     </div>
                 ) : (
                     <>
@@ -211,11 +214,13 @@ export default function ImageEditorModal({
 
                         <div className={styles.controlsPanel}>
                             <div className={styles.controlGroup}>
-                                <label className={styles.controlLabel}>
+                                <label htmlFor="image-editor-zoom" className={styles.controlLabel}>
                                     <span className={styles.materialIcon}>zoom_in</span>
                                     Zoom: {zoom.toFixed(1)}x
                                 </label>
                                 <input
+                                    id="image-editor-zoom"
+                                    aria-label="Zoom de imagen"
                                     type="range"
                                     min={1}
                                     max={3}
@@ -227,10 +232,10 @@ export default function ImageEditorModal({
                             </div>
 
                             <div className={styles.controlGroup}>
-                                <label className={styles.controlLabel}>
+                                <span className={styles.controlLabel}>
                                     <span className={styles.materialIcon}>rotate_right</span>
                                     Rotación: {rotation}°
-                                </label>
+                                </span>
                                 <div className={styles.rotationActions}>
                                     <button type="button" onClick={() => setRotation((value) => value - 90)} className={styles.secondaryAction}>
                                         <span className={styles.materialIcon}>rotate_left</span>

@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature\Services;
 
 use App\Domain\Newsletters\Services\NewsletterService;
-use App\Models\Subscriber;
+use App\Models\NewsletterSubscriber;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -26,10 +27,10 @@ class NewsletterServiceTest extends TestCase
 
         $this->assertSame('¡Gracias por suscribirte! Datos guardados correctamente.', $message);
         $this->assertSame('¡Gracias por suscribirte! Datos guardados correctamente.', $updatedMessage);
-        $this->assertSame(1, Subscriber::query()->where('email', 'subscriber@example.com')->count());
-        $this->assertDatabaseHas('subscribers', [
+        $this->assertSame(1, User::query()->where('email', 'subscriber@example.com')->count());
+        $this->assertSame(1, NewsletterSubscriber::query()->where('email', 'subscriber@example.com')->count());
+        $this->assertDatabaseHas('newsletter_subscriber', [
             'email' => 'subscriber@example.com',
-            'gender' => 'pene',
         ]);
 
         Http::assertNothingSent();

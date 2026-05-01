@@ -160,13 +160,13 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
                                     <button
                                         type="button"
                                         key={sub.id}
-                                        onClick={() => updateLocalFilter({ subCategory: localFilters.subCategory === sub.name ? null : sub.name })}
-                                        className={`${styles.subCategoryButton} ${localFilters.subCategory === sub.name ? styles.subCategoryButtonActive : styles.subCategoryButtonInactive}`}
-                                        aria-pressed={localFilters.subCategory === sub.name}
+                                        onClick={() => updateLocalFilter({ subCategory: String(localFilters.subCategory) === String(sub.id) ? null : sub.id })}
+                                        className={`${styles.subCategoryButton} ${String(localFilters.subCategory) === String(sub.id) ? styles.subCategoryButtonActive : styles.subCategoryButtonInactive}`}
+                                        aria-pressed={String(localFilters.subCategory) === String(sub.id)}
                                         aria-label={`Filtrar por subcategoría ${sub.name}`}
                                     >
                                         <span>{sub.name}</span>
-                                        <span className={`${styles.subCategoryCount} ${localFilters.subCategory === sub.name ? styles.subCategoryCountActive : styles.subCategoryCountInactive}`}>
+                                        <span className={`${styles.subCategoryCount} ${String(localFilters.subCategory) === String(sub.id) ? styles.subCategoryCountActive : styles.subCategoryCountInactive}`}>
                                             {sub.products_count || 0}
                                         </span>
                                     </button>

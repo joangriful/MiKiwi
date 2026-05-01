@@ -1,11 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Products\Services;
 
 use App\Domain\Media\Services\CloudinaryService;
 use App\Models\Product;
+use App\Models\ProductImage;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 class ProductManagerService
 {
@@ -16,21 +22,29 @@ class ProductManagerService
 
     public function createProduct(array $validated): Product
     {
-        return Product::create([
-            'name' => $validated['name'],
-            'slug' => $this->generateUniqueSlug($validated['name']),
-            'sku' => $validated['sku'] ?? null,
-            'category_id' => $validated['category_id'] ?? null,
-            'description' => $validated['description'] ?? null,
-            'base_price' => $validated['base_price'],
-            'stock_quantity' => $validated['stock_quantity'] ?? null,
-            'product_type' => $validated['product_type'],
-            'is_adult_only' => $validated['is_adult_only'] ?? true,
-            'is_active' => $validated['is_active'] ?? true,
-            'image_url' => $validated['image_url'] ?? null,
-            'hover_image_url' => $validated['hover_image_url'] ?? null,
-            'images' => ! empty($validated['images']) ? $validated['images'] : null,
-        ]);
+        if (! isset($validated['category_id'])) {
+            throw new InvalidArgumentException('category_id is required for product creation.');
+        }
+
+        return DB::transaction(function () use ($validated) {
+            $product = Product::query()->create([
+                'name' => $validated['name'],
+                'slug' => $this->generateUniqueSlug($validated['name']),
+                'sku' => $validated['sku'] ?? Str::upper(Str::random(10)),
+                'category_id' => $validated['category_id'],
+                'description' => $validated['description'] ?? null,
+                'base_price' => $validated['base_price'],
+                'stock_quantity' => $validated['stock_quantity'] ?? 0,
+                'product_type' => $validated['product_type'],
+                'is_adult_only' => $validated['is_adult_only'] ?? true,
+                'is_active' => $validated['is_active'] ?? true,
+                'is_promoted' => $validated['is_promoted'] ?? false,
+            ]);
+
+            $this->syncProductImages($product, $validated['images'] ?? []);
+
+            return $product->fresh(['images']);
+        });
     }
 
     public function updateProduct(Product $product, array $validated): Product
@@ -39,13 +53,22 @@ class ProductManagerService
             $validated['slug'] = $this->generateUniqueSlug($validated['name'], $product->id);
         }
 
-        if (array_key_exists('images', $validated) && empty($validated['images'])) {
-            $validated['images'] = null;
+        $isPromoted = $validated['is_promoted'] ?? null;
+        if ($isPromoted !== null) {
+            $validated['is_promoted'] = (bool) $isPromoted;
         }
 
-        $product->update($validated);
+        unset($validated['image_url'], $validated['hover_image_url']);
 
-        return $product->fresh();
+        DB::transaction(function () use ($product, $validated): void {
+            $product->update(Arr::except($validated, ['images']));
+
+            if (array_key_exists('images', $validated)) {
+                $this->syncProductImages($product, (array) $validated['images']);
+            }
+        });
+
+        return $product->fresh(['images']);
     }
 
     public function deleteProduct(Product $product): void
@@ -187,5 +210,27 @@ class ProductManagerService
         $path = preg_replace('/^\/.*\/upload\/(v\d+\/)?/', '', $parsed);
 
         return trim(str_replace('\\', '/', dirname($path)), '/');
+    }
+
+    /**
+     * @param  array<int, string>  $imageUrls
+     */
+    private function syncProductImages(Product $product, array $imageUrls): void
+    {
+        ProductImage::query()->where('product_id', $product->id)->delete();
+
+        foreach (array_values($imageUrls) as $index => $imageUrl) {
+            if (! is_string($imageUrl) || trim($imageUrl) === '') {
+                continue;
+            }
+
+            ProductImage::query()->create([
+                'product_id' => $product->id,
+                'public_id' => Str::uuid()->toString(),
+                'image_url' => $imageUrl,
+                'alt_text' => $product->name,
+                'sort_order' => $index,
+            ]);
+        }
     }
 }

@@ -3,8 +3,10 @@
 namespace App\Domain\Payments\Services;
 
 use Illuminate\Support\Facades\Config;
+use Stripe\Customer;
 use Stripe\PaymentIntent;
 use Stripe\PaymentMethod;
+use Stripe\SetupIntent;
 use Stripe\Stripe;
 
 class StripeService
@@ -48,17 +50,17 @@ class StripeService
      * @param  \App\Models\User  $user
      * @return \Stripe\Customer
      */
-    public function getOrCreateCustomer($user)
+    public function getOrCreateCustomer($user): Customer
     {
         if ($user->stripe_customer_id) {
             try {
-                return \Stripe\Customer::retrieve($user->stripe_customer_id);
+                return Customer::retrieve($user->stripe_customer_id);
             } catch (\Exception $e) {
                 // If retrieval fails (e.g. deleted in dashboard), create new
             }
         }
 
-        $customer = \Stripe\Customer::create([
+        $customer = Customer::create([
             'email' => $user->email,
             'name' => $user->name,
             'metadata' => [
@@ -69,6 +71,21 @@ class StripeService
         $user->update(['stripe_customer_id' => $customer->id]);
 
         return $customer;
+    }
+
+    /**
+     * Create a SetupIntent for adding a new card to a user account.
+     *
+     * @param  \App\Models\User  $user
+     */
+    public function createSetupIntentForUser($user): SetupIntent
+    {
+        $customer = $this->getOrCreateCustomer($user);
+
+        return SetupIntent::create([
+            'customer' => $customer->id,
+            'payment_method_types' => ['card'],
+        ]);
     }
 
     /**

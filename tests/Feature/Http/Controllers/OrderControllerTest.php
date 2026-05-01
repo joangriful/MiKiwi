@@ -7,8 +7,10 @@ namespace Tests\Feature\Http\Controllers;
 use App\Domain\Carts\Services\CartService;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
+use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\PickupPoint;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,9 +20,31 @@ class OrderControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_create_payment_intent_returns_structured_error_when_cart_is_empty(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->postJson(route('payment-intent.create'))
+            ->assertStatus(422)
+            ->assertJsonStructure(['success', 'code', 'message'])
+            ->assertJson([
+                'success' => false,
+                'code' => 'checkout_cart_empty',
+                'message' => 'Tu carrito está vacío. Añade al menos un producto antes de continuar con el pago.',
+            ]);
+    }
+
     public function test_store_creates_order_from_cart_and_clears_cart(): void
     {
         $user = User::factory()->create();
+        $pickupPoint = PickupPoint::query()->create([
+            'name' => 'Punto Centro',
+            'address' => 'Calle Mayor 1',
+            'city' => 'Madrid',
+            'postal_code' => '28013',
+            'is_active' => true,
+        ]);
         $product = Product::factory()->create([
             'is_active' => true,
             'stock_quantity' => 10,
@@ -32,19 +56,22 @@ class OrderControllerTest extends TestCase
 
         $this->post(route('orders.store'), $this->validOrderPayload([
             'payment_intent_id' => 'pi_pending',
-            'pickup_point_id' => 'mock-pickup-1',
+            'pickup_point_id' => $pickupPoint->getKey(),
         ]))
             ->assertRedirect(route('orders.success'))
             ->assertSessionHas('success', '¡Pedido realizado con éxito!');
 
         $order = Order::query()->firstOrFail();
+        $order->load(['shippingAddress', 'billingAddress']);
 
         $this->assertSame($user->id, $order->user_id);
         $this->assertSame(OrderStatus::Pending->value, $order->status);
         $this->assertSame(PaymentStatus::Pending->value, $order->payment_status);
         $this->assertEquals(100, $order->total_amount);
-        $this->assertSame('pi_pending', $order->shipping_address_snapshot['metadata']['payment_id']);
-        $this->assertSame('mock-pickup-1', $order->shipping_address_snapshot['metadata']['pickup_point_id']);
+        $this->assertNotNull($order->shippingAddress);
+        $this->assertSame('Test Street 123', $order->shippingAddress?->street_address);
+        $this->assertNotNull($order->billingAddress);
+        $this->assertSame('Test City', $order->billingAddress?->city);
         $this->assertCount(1, $order->items);
         $this->assertSame(8, $product->refresh()->stock_quantity);
         $this->assertSame([], session('shopping_cart', []));
@@ -127,6 +154,8 @@ class OrderControllerTest extends TestCase
     {
         return array_merge([
             'shipping_address' => [
+                'full_name' => 'Test User',
+                'phone' => '600123123',
                 'street_address' => 'Test Street 123',
                 'city' => 'Test City',
                 'postal_code' => '12345',

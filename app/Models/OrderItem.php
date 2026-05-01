@@ -5,10 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class OrderItem extends Model
 {
     use HasFactory, HasUuids;
+
+    protected $table = 'order_item';
 
     protected $fillable = [
         'order_id',
@@ -24,23 +28,18 @@ class OrderItem extends Model
         'unit_price' => 'decimal:2',
     ];
 
-    /**
-     * Get the order that owns the order item.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function order()
+    public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
 
-    /**
-     * Get the product associated with the order item.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function accessories(): HasMany
+    {
+        return $this->hasMany(OrderItemAccessory::class);
     }
 }

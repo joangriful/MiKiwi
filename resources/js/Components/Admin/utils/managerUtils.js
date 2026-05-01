@@ -2,11 +2,34 @@
 // --- Tree Helpers ---
 export const buildFileTree = (paths) => {
     const tree = { name: 'root', isFolder: true, children: {}, path: '' };
+
     paths.forEach(pathObj => {
+        if (!pathObj?.name || !pathObj?.path) {
+            return;
+        }
+
         const parts = pathObj.name.split('/').filter(p => p !== '.' && p !== '');
+
+        if (parts.length === 0) {
+            return;
+        }
+
         let current = tree;
-        parts.forEach((part, index) => {
+        let hasConflict = false;
+
+        for (const [index, part] of parts.entries()) {
+            if (!current?.children) {
+                hasConflict = true;
+                break;
+            }
+
             const isFile = index === parts.length - 1;
+
+            if (current.children[part] && current.children[part].isFolder !== !isFile) {
+                hasConflict = true;
+                break;
+            }
+
             if (!current.children[part]) {
                 // Assign a path to folders as well, using fullPathComponents
                 const folderPath = parts.slice(0, index + 1).join('/');
@@ -18,9 +41,15 @@ export const buildFileTree = (paths) => {
                     fullPathComponents: parts.slice(0, index + 1),
                 };
             }
+
             current = current.children[part];
-        });
+        }
+
+        if (hasConflict) {
+            console.warn('Skipped conflicting manager tree path', pathObj);
+        }
     });
+
     return tree;
 };
 

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Domain\Newsletters\Services\NewsletterService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class NewsletterController extends Controller
 {
@@ -18,7 +19,7 @@ class NewsletterController extends Controller
     public function subscribe(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email'
+            'email' => 'required|email',
         ], [
             'email.required' => 'El campo de correo electrónico es obligatorio.',
             'email.email' => 'Introduce una dirección de correo válida.',
@@ -30,8 +31,16 @@ class NewsletterController extends Controller
             ]);
         }
 
-        $message = $this->newsletterService->subscribe($request->email, $request->gender);
+        try {
+            $message = $this->newsletterService->subscribe($request->email, $request->gender);
 
-        return back()->with('success', $message);
+            return back()->with('success', $message);
+        } catch (\Throwable $exception) {
+            Log::error('Newsletter subscription failed: '.$exception->getMessage());
+
+            return back()->withErrors([
+                'newsletter' => 'No pudimos completar tu suscripción ahora mismo. Inténtalo de nuevo en unos minutos.',
+            ]);
+        }
     }
 }

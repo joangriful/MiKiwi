@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useForm } from '@inertiajs/react';
 import { toast } from 'react-toastify';
 import MarketingPageLayout from '@/Components/Marketing/MarketingPageLayout/MarketingPageLayout';
+import { normalizeInertiaErrors } from '@/Utils/httpError';
 import styles from './Contact.module.css';
 
 export default function Contact() {
@@ -16,6 +17,12 @@ export default function Contact() {
         email: '',
         gender: '',
         terms: false,
+    });
+
+    const newsletterError = normalizeInertiaErrors(newsletterForm.errors, {
+        title: 'No pudimos completar la suscripción',
+        message: 'No pudimos completar tu suscripción en este momento. Inténtalo de nuevo en unos minutos.',
+        code: 'newsletter_subscription_failed',
     });
 
     const submitContact = (event) => {
@@ -51,9 +58,7 @@ export default function Contact() {
                 toast.success('¡Gracias por suscribirte!');
                 newsletterForm.reset();
             },
-            onError: (errors) => {
-                toast.error(errors.newsletter || 'Hubo un error al suscribirte.');
-            },
+            onError: () => {},
         });
     };
 
@@ -120,6 +125,10 @@ export default function Contact() {
                             value={newsletterForm.data.email}
                             onChange={(event) => newsletterForm.setData('email', event.target.value)}
                         />
+
+                        {newsletterError.fieldErrors ? (
+                            <p className={styles.errorText}>{newsletterError.message}</p>
+                        ) : null}
 
                         <label className={styles.checkbox}>
                             <input

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature\Actions;
 
 use App\Domain\Addresses\Actions\SetDefaultAddress;
+use App\Models\Address;
 use App\Models\User;
-use App\Models\UserAddress;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,12 +18,12 @@ class SetDefaultAddressTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $address1 = UserAddress::factory()->create([
+        $address1 = Address::factory()->create([
             'user_id' => $user->id,
             'is_default' => true,
         ]);
 
-        $address2 = UserAddress::factory()->create([
+        $address2 = Address::factory()->create([
             'user_id' => $user->id,
             'is_default' => false,
         ]);

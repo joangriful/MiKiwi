@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -14,15 +15,16 @@ class CategoryFactory extends Factory
         $name = $this->faker->unique()->word; // Ej: "Vibradores"
 
         return [
+            'parent_id' => null,
             'name' => ucfirst($name),
             'slug' => Str::slug($name),
             'is_active' => true,
-            'parent_id' => null, // Por defecto raíz, lo cambiaremos en el Seeder
         ];
     }
 
     /**
-     * Indicate that the category is a root category (no parent).
+     * Indicate that the category is a root category.
+     * Categories are flat in the current schema, so this is a no-op alias.
      */
     public function root(): static
     {
@@ -32,12 +34,12 @@ class CategoryFactory extends Factory
     }
 
     /**
-     * Indicate that the category is a child category (has parent).
+     * Indicate that the category is a child category.
      */
-    public function child(): static
+    public function child(?Category $parent = null): static
     {
         return $this->state(fn (array $attributes) => [
-            'parent_id' => \App\Models\Category::factory(),
+            'parent_id' => ($parent ?? Category::factory()->root()->create())->getKey(),
         ]);
     }
 

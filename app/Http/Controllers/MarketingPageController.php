@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\HeroImage;
+use App\Domain\Marketing\Services\MarketingPageService;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class MarketingPageController extends Controller
 {
+    public function __construct(
+        private readonly MarketingPageService $marketingPageService,
+    ) {
+    }
+
     public function privacyPolicy(): Response
     {
         return $this->render('Marketing/PrivacyPolicy');
@@ -25,13 +30,10 @@ class MarketingPageController extends Controller
 
     public function sustainability(): Response
     {
-        $heroImages = HeroImage::where('type', 'sustainability')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return $this->render('Marketing/Sustainability', [
-            'heroImages' => $heroImages,
-        ]);
+        return $this->render(
+            'Marketing/Sustainability',
+            $this->marketingPageService->getSustainabilityPageData()
+        );
     }
 
     public function ourKiwis(): Response

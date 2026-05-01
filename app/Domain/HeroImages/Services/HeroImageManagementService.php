@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\HeroImages\Services;
 
 use App\Domain\HeroImages\Repositories\Interfaces\HeroImageRepositoryInterface;
 use App\Domain\Media\Services\CloudinaryService;
-use App\Models\HeroImage;
+use App\Models\ImageHome;
 
 class HeroImageManagementService
 {
@@ -32,7 +34,7 @@ class HeroImageManagementService
         return $uploadedCount;
     }
 
-    public function deleteImage(HeroImage $heroImage): void
+    public function deleteImage(ImageHome $heroImage): void
     {
         $this->cloudinaryService->deleteImage($heroImage->public_id);
         $this->heroImageRepository->delete((string) $heroImage->id);

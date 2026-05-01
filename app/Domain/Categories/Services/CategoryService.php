@@ -1,37 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Categories\Services;
 
 use App\Domain\Categories\Repositories\Interfaces\CategoryRepositoryInterface;
 use App\Models\Category;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CategoryService
 {
-    protected $categoryRepository;
-
-    public function __construct(CategoryRepositoryInterface $categoryRepository)
-    {
-        $this->categoryRepository = $categoryRepository;
-    }
+    public function __construct(
+        private readonly CategoryRepositoryInterface $categoryRepository,
+    ) {}
 
     /**
      * Obtener todas las categorías activas con productos
      */
-    public function getAllCategoriesWithProducts()
+    public function getAllCategoriesWithProducts(): Collection
     {
         return $this->categoryRepository->getAllActiveWithProducts();
     }
 
     /**
-     * Obtener categorías raíz para navegación
+     * Obtener categorías para navegación
      */
-    public function getNavigationCategories()
+    public function getNavigationCategories(): Collection
     {
-        return $this->categoryRepository->getRootCategories();
+        return $this->categoryRepository->getNavigationCategories();
     }
 
-    public function getAdminAssignableCategories()
+    public function getAdminAssignableCategories(): Collection
     {
         return $this->categoryRepository->getAdminRootCategories();
     }
@@ -48,15 +48,12 @@ class CategoryService
         }
 
         // Obtener productos paginados de la categoría
-        $products = $this->categoryRepository->getCategoryProductsPaginated($category->id, 12);
-
-        // Obtener subcategorías si existen
-        $subcategories = $this->categoryRepository->getChildCategories($category->id);
+        $products = $this->categoryRepository->getCategoryProductsPaginated((string) $category->id, 12);
 
         return [
             'category' => $category,
             'products' => $products,
-            'subcategories' => $subcategories,
+            'subcategories' => $category->children,
             'breadcrumbs' => $this->buildBreadcrumbs($category),
         ];
     }
@@ -66,28 +63,37 @@ class CategoryService
         return $this->categoryRepository->findBySlug($slug);
     }
 
-    public function getDescendantIds(Category $category)
+    public function getFilterCategoryIds(Category $category): Collection
     {
-        return $this->categoryRepository->getDescendantIds($category);
+        return $this->categoryRepository->getFilterCategoryIds($category);
     }
 
     /**
      * Construir breadcrumbs para navegación
      */
-    protected function buildBreadcrumbs($category): array
+    protected function buildBreadcrumbs(Category $category): array
     {
-        $breadcrumbs = [];
-        $current = $category;
+        $category->loadMissing('parent');
 
-        while ($current) {
-            array_unshift($breadcrumbs, [
-                'name' => $current->name,
-                'slug' => $current->slug,
-                'url' => route('categories.show', $current->slug),
-            ]);
-            $current = $current->parent;
+        if (! $category->parent) {
+            return [[
+                'name' => $category->name,
+                'slug' => $category->slug,
+                'url' => route('categories.show', $category->slug),
+            ]];
         }
 
-        return $breadcrumbs;
+        return [
+            [
+                'name' => $category->parent->name,
+                'slug' => $category->parent->slug,
+                'url' => route('categories.show', $category->parent->slug),
+            ],
+            [
+                'name' => $category->name,
+                'slug' => $category->slug,
+                'url' => route('categories.show', $category->slug),
+            ],
+        ];
     }
 }

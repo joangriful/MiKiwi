@@ -5,11 +5,11 @@ namespace Database\Seeders;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Enums\UserRole;
+use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
-use App\Models\UserAddress;
 use Illuminate\Database\Seeder;
 
 /**
@@ -52,7 +52,17 @@ class OrderSeeder extends Seeder
                 // Asegurar que el cliente tenga dirección
                 $address = $customer->addresses()->first();
                 if (! $address) {
-                    $address = UserAddress::factory()->for($customer)->default()->create();
+                    $address = Address::query()->create([
+                        'user_id' => $customer->getKey(),
+                        'alias' => 'shipping',
+                        'full_name' => $customer->getAttribute('name'),
+                        'phone' => null,
+                        'street_address' => 'Calle Principal 1',
+                        'city' => 'Madrid',
+                        'postal_code' => '28001',
+                        'country' => 'España',
+                        'is_default' => true,
+                    ]);
                 }
 
                 // Determinar estado de la orden con distribución realista
@@ -63,25 +73,12 @@ class OrderSeeder extends Seeder
                     'order_number' => $orderNumber,
                 ], [
                     'user_id' => $customer->getKey(),
+                    'shipping_address_id' => $address->getKey(),
+                    'billing_address_id' => $address->getKey(),
                     'status' => $statusData['status'],
                     'payment_status' => $statusData['payment_status'],
                     'total_amount' => 0,
-                    'shipping_address_snapshot' => [
-                        'full_name' => $address->getAttribute('full_name'),
-                        'phone' => $address->getAttribute('phone'),
-                        'street_address' => $address->getAttribute('street_address'),
-                        'city' => $address->getAttribute('city'),
-                        'postal_code' => $address->getAttribute('postal_code'),
-                        'country' => $address->getAttribute('country'),
-                    ],
-                    'billing_address_snapshot' => [
-                        'full_name' => $address->getAttribute('full_name'),
-                        'phone' => $address->getAttribute('phone'),
-                        'street_address' => $address->getAttribute('street_address'),
-                        'city' => $address->getAttribute('city'),
-                        'postal_code' => $address->getAttribute('postal_code'),
-                        'country' => $address->getAttribute('country'),
-                    ],
+                    'payment_method' => 'stripe',
                 ]);
 
                 $total = 0;

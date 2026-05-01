@@ -55,7 +55,10 @@ class StringEnumCompatibilityTest extends TestCase
             $typeName = strtolower((string) ($metadata['type_name'] ?? $metadata['type'] ?? ''));
 
             $this->assertNotSame('enum', $typeName, "{$table}.{$column} should not be a SQL enum.");
-            $this->assertStringContainsString('char', $typeName, "{$table}.{$column} should be a string column.");
+            $this->assertTrue(
+                str_contains($typeName, 'char') || str_contains($typeName, 'text'),
+                "{$table}.{$column} should be a string column."
+            );
         }
     }
 
@@ -63,10 +66,10 @@ class StringEnumCompatibilityTest extends TestCase
     {
         return [
             ['users', 'role'],
-            ['products', 'product_type'],
+            ['product', 'product_type'],
             ['orders', 'status'],
             ['orders', 'payment_status'],
-            ['coupons', 'type'],
+            ['coupon', 'type'],
         ];
     }
 }

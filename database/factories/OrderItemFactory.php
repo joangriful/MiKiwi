@@ -93,18 +93,4 @@ class OrderItemFactory extends Factory
         ]);
     }
 
-    /**
-     * Create an order item for a deleted product.
-     *
-     * Simulates historical orders where the product no longer exists.
-     * The snapshots preserve the product information.
-     */
-    public function deletedProduct(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'product_id' => null,
-            'product_name_snapshot' => 'Producto eliminado - '.$this->faker->words(3, true),
-            'sku_snapshot' => strtoupper($this->faker->bothify('DEL-####-???')),
-        ]);
-    }
 }

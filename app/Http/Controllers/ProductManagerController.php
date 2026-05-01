@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\InteractsWithApiErrors;
 use App\Domain\Products\Services\ProductManagerService;
 use App\Enums\ProductType;
 use App\Models\Product;
@@ -11,6 +12,8 @@ use Illuminate\Validation\Rule;
 
 class ProductManagerController extends Controller
 {
+    use InteractsWithApiErrors;
+
     public function __construct(
         private readonly ProductManagerService $productManagerService,
     ) {}
@@ -19,18 +22,17 @@ class ProductManagerController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'sku' => 'nullable|string|unique:products,sku',
-            'category_id' => 'nullable|uuid|exists:categories,id',
+            'sku' => 'nullable|string|unique:product,sku',
+            'category_id' => 'required|uuid|exists:category,id',
             'description' => 'nullable|string',
             'base_price' => 'required|numeric|min:0',
             'stock_quantity' => 'nullable|integer|min:0',
             'product_type' => ['required', Rule::in(ProductType::values())],
             'is_adult_only' => 'boolean',
             'is_active' => 'boolean',
+            'is_promoted' => 'sometimes|boolean',
             'images' => 'nullable|array',
             'images.*' => 'string',
-            'image_url' => 'nullable|string',
-            'hover_image_url' => 'nullable|string',
         ]);
 
         try {
@@ -41,7 +43,7 @@ class ProductManagerController extends Controller
         } catch (\Exception $e) {
             Log::error('Error uploading product: '.$e->getMessage());
 
-            return redirect()->back()->with('error', 'Error al crear el producto: '.$e->getMessage());
+            return redirect()->back()->with('error', 'No pudimos crear el producto. Revisa los datos e inténtalo de nuevo.');
         }
     }
 
@@ -49,19 +51,17 @@ class ProductManagerController extends Controller
     {
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
-            'sku' => 'sometimes|string|unique:products,sku,'.$product->getKey(),
-            'category_id' => 'nullable|uuid|exists:categories,id',
+            'sku' => 'sometimes|string|unique:product,sku,'.$product->getKey(),
+            'category_id' => 'sometimes|uuid|exists:category,id',
             'description' => 'nullable|string',
             'base_price' => 'sometimes|numeric|min:0',
             'stock_quantity' => 'nullable|integer|min:0',
             'product_type' => ['sometimes', Rule::in(ProductType::values())],
             'is_adult_only' => 'boolean',
             'is_active' => 'boolean',
-            'is_featured' => 'sometimes|boolean',
+            'is_promoted' => 'sometimes|boolean',
             'images' => 'nullable|array',
             'images.*' => 'string',
-            'image_url' => 'nullable|string',
-            'hover_image_url' => 'nullable|string',
         ]);
 
         try {
@@ -150,7 +150,11 @@ class ProductManagerController extends Controller
         } catch (\Exception $e) {
             Log::error('Error en uploadImagesTemp: '.$e->getMessage());
 
-            return response()->json(['success' => false, 'error' => 'Error subiendo imágenes al servidor: '.$e->getMessage()], 500);
+            return $this->apiError(
+                'product_temp_images_upload_failed',
+                'No pudimos subir las imágenes ahora mismo. Inténtalo de nuevo en unos minutos.',
+                500
+            );
         }
     }
 }

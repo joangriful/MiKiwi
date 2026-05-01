@@ -1,16 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Categories\Repositories\Eloquent;
 
-use App\Models\Category;
 use App\Domain\Categories\Repositories\Interfaces\CategoryRepositoryInterface;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class EloquentCategoryRepository implements CategoryRepositoryInterface
 {
+    private const ADMIN_ROOT_CATEGORY_SLUGS = [
+        'estimulacion-externa',
+        'estimulacion-interna',
+        'pene-y-testiculos',
+        'estimulacion-anal',
+        'bdsm-y-fetiche',
+        'cosmetica-y-cuidado',
+    ];
+
     public function findBySlug(string $slug): ?Category
     {
-        return Category::where('slug', $slug)->first();
+        return Category::query()
+            ->with(['parent', 'children'])
+            ->where('slug', $slug)
+            ->first();
     }
 
     /**
@@ -20,9 +35,11 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
     {
         return Category::active()
             ->where('slug', $slug)
-            ->with(['products' => function ($query) {
-                $query->active()->inStock();
-            }, 'children'])
+            ->with([
+                'parent',
+                'children' => fn ($query) => $query->active()->orderBy('name'),
+                'products' => fn ($query) => $query->active()->inStock(),
+            ])
             ->first();
     }
 
@@ -32,73 +49,96 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
     public function getAllActiveWithProducts(): Collection
     {
         return Category::active()
-            ->with(['products' => function ($query) {
-                $query->active()->inStock()->limit(8);
-            }])
+            ->root()
+            ->with([
+                'products' => fn ($query) => $query->active()->inStock()->limit(8),
+                'children' => fn ($query) => $query->active()->orderBy('name')->with([
+                    'products' => fn ($childProducts) => $childProducts->active()->inStock()->limit(8),
+                ]),
+            ])
+            ->orderBy('name')
             ->get();
     }
 
     /**
-     * Obtener categorías raíz (sin padre)
+     * Obtener categorías activas para navegación
      */
-    public function getRootCategories(): Collection
+    public function getNavigationCategories(): Collection
     {
         return Category::active()
             ->root()
-            ->with('children')
-            ->get();
+            ->with([
+                'children' => fn ($query) => $query->active()
+                    ->withCount([
+                        'products' => fn ($products) => $products->active()->inStock(),
+                    ])
+                    ->orderBy('name'),
+            ])
+            ->withCount([
+                'products' => fn ($query) => $query->active()->inStock(),
+            ])
+            ->orderBy('name')
+            ->get()
+            ->each(function (Category $category): void {
+                $childrenCount = $category->children->sum('products_count');
+                $category->setAttribute('total_products_count', $category->products_count + $childrenCount);
+            });
     }
 
     public function getAdminRootCategories(): Collection
     {
-        return Category::whereNull('parent_id')
+        $categories = Category::active()
+            ->root()
             ->with([
-                'children' => function ($query) {
-                    $query->orderBy('name')->select(['id', 'parent_id', 'name']);
-                },
+                'children' => fn ($query) => $query->active()
+                    ->orderBy('name')
+                    ->select(['id', 'parent_id', 'name', 'slug', 'is_active']),
             ])
-            ->orderBy('name')
-            ->get(['id', 'parent_id', 'name']);
-    }
+            ->get(['id', 'parent_id', 'name', 'slug', 'is_active']);
 
-    /**
-     * Obtener subcategorías de una categoría
-     */
-    public function getChildCategories(string $categoryId): Collection
-    {
-        $category = Category::find($categoryId);
+        $preferredCategories = $categories
+            ->whereIn('slug', self::ADMIN_ROOT_CATEGORY_SLUGS)
+            ->sortBy(fn (Category $category) => array_search($category->slug, self::ADMIN_ROOT_CATEGORY_SLUGS, true))
+            ->values();
 
-        return $category ? $category->children()->active()->get() : new Collection;
+        if ($preferredCategories->isNotEmpty()) {
+            return new Collection($preferredCategories->all());
+        }
+
+        return $categories->sortBy('name')->values();
     }
 
     /**
      * Obtener productos de una categoría (paginados)
      */
-    public function getCategoryProductsPaginated(string $categoryId, int $perPage = 12)
+    public function getCategoryProductsPaginated(string $categoryId, int $perPage = 12): ?LengthAwarePaginator
     {
-        $category = Category::find($categoryId);
+        $category = Category::query()
+            ->with('children:id,parent_id')
+            ->find($categoryId);
 
         if (! $category) {
             return null;
         }
 
-        return $category->products()
+        $categoryIds = $this->getFilterCategoryIds($category)->all();
+
+        return \App\Models\Product::query()
             ->active()
+            ->whereIn('category_id', $categoryIds)
             ->inStock()
             ->with('category')
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
     }
 
-    public function getDescendantIds(Category $category): Collection
+    public function getFilterCategoryIds(Category $category): Collection
     {
-        $ids = collect([$category->id]);
-        $children = Category::where('parent_id', $category->id)->get();
+        $category->loadMissing('children:id,parent_id');
 
-        foreach ($children as $child) {
-            $ids = $ids->merge($this->getDescendantIds($child));
-        }
-
-        return $ids;
+        return new Collection([
+            $category->id,
+            ...$category->children->pluck('id')->all(),
+        ]);
     }
 }

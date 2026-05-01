@@ -3,6 +3,7 @@ import { usePage, router, Link } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import ImageEditorModal from '@/Components/Profile/ImageEditorModal/ImageEditorModal';
+import { normalizeApiError } from '@/Utils/httpError';
 import styles from './ProfileTab.module.css';
 
 export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
@@ -58,11 +59,14 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                 toast.success('✓ Foto de perfil actualizada correctamente');
                 router.reload({ only: ['auth'] });
             } else {
-                toast.error(response.data.message || 'Error al subir la imagen');
+                toast.error(normalizeApiError({ response: { data: response.data } }).message);
             }
         } catch (error) {
-            console.error('Upload error:', error);
-            toast.error(error.response?.data?.message || 'Error al subir la imagen. Por favor, inténtalo de nuevo.');
+            toast.error(normalizeApiError(error, {
+                title: 'No pudimos actualizar la foto',
+                message: 'No pudimos actualizar tu foto de perfil. Inténtalo de nuevo en unos minutos.',
+                code: 'profile_image_upload_failed',
+            }).message);
         } finally {
             setUploadingProfile(false);
         }
@@ -83,11 +87,14 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                 toast.success('✓ Banner actualizado correctamente');
                 router.reload({ only: ['auth'] });
             } else {
-                toast.error(response.data.message || 'Error al subir el banner');
+                toast.error(normalizeApiError({ response: { data: response.data } }).message);
             }
         } catch (error) {
-            console.error('Upload error:', error);
-            toast.error(error.response?.data?.message || 'Error al subir el banner. Por favor, inténtalo de nuevo.');
+            toast.error(normalizeApiError(error, {
+                title: 'No pudimos actualizar el banner',
+                message: 'No pudimos actualizar tu banner. Inténtalo de nuevo en unos minutos.',
+                code: 'profile_banner_upload_failed',
+            }).message);
         } finally {
             setUploadingBanner(false);
         }
@@ -100,6 +107,7 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                 onClose={() => setEditorOpen(false)}
                 aspectRatio={editingType === 'profile' ? 1 : 16 / 4}
                 onSave={handleEditorSave}
+                onError={(message) => toast.error(message)}
                 type={editingType}
                 existingImageUrl={existingImage}
             />
@@ -114,7 +122,7 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                             backgroundPosition: 'center',
                         } : {}}
                     >
-                        {!currentBannerImage && <div className={styles.bannerPattern}></div>}
+                        {!currentBannerImage && <div className={styles.bannerPattern} />}
                     </div>
 
                     <div className={styles.bannerOverlay}>
@@ -166,7 +174,7 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                                     </div>
                                 )}
 
-                                {!uploadingProfile && <div className={styles.statusDot}></div>}
+                                {!uploadingProfile && <div className={styles.statusDot} />}
                             </div>
 
                             <div className={styles.identityText}>
@@ -222,12 +230,14 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                                             )}
                                         </>
                                     ) : (
-                                        <div className={styles.productPlaceholder}></div>
+                                        <div className={styles.productPlaceholder} />
                                     )}
 
                                     <button
+                                        type="button"
                                         onClick={(event) => event.preventDefault()}
                                         className={styles.favoriteButton}
+                                        aria-label={`Añadir ${product.name} a favoritos`}
                                     >
                                         <div
                                             className={styles.favoriteIcon}
@@ -235,7 +245,7 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                                                 maskImage: `url('/assets/icons/MdiCardsHeartOutline.svg')`,
                                                 WebkitMaskImage: `url('/assets/icons/MdiCardsHeartOutline.svg')`,
                                             }}
-                                        ></div>
+                                        />
                                     </button>
                                 </div>
 
@@ -246,7 +256,7 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                                             {new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(product.base_price)}
                                         </span>
                                     </div>
-                                    <div className={styles.productDivider}></div>
+                                    <div className={styles.productDivider} />
                                     <p className={styles.productDescription}>
                                         {product.description || 'Ingeniería sensorial premium'}
                                     </p>

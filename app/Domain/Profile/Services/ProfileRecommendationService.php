@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Profile\Services;
 
-use App\Domain\Categories\Services\CategoryService;
 use App\Domain\Products\Services\ProductService;
 use App\Models\User;
 use Illuminate\Support\Collection;
@@ -20,6 +21,7 @@ class ProfileRecommendationService
         'Dildos' => 'para-ella',
         'Vibradores Internos' => 'para-ella',
         'Arneses y Strapless' => 'para-ella',
+        'Salud Íntima' => 'para-ella',
         'Bienestar Íntimo' => 'para-ella',
         'Masturbadores' => 'para-el',
         'Anillos Vibradores' => 'para-el',
@@ -43,10 +45,8 @@ class ProfileRecommendationService
     ];
 
     public function __construct(
-        private readonly CategoryService $categoryService,
         private readonly ProductService $productService,
-    ) {
-    }
+    ) {}
 
     public function getRecommendationsForUser(?User $user, int $limit = 4): Collection
     {
@@ -67,18 +67,7 @@ class ProfileRecommendationService
 
         Log::info('Collection slug to search:', ['slug' => $collectionSlug]);
 
-        $collection = $this->categoryService->findBySlug($collectionSlug);
-
-        if (! $collection) {
-            Log::info('Collection not found:', ['slug' => $collectionSlug]);
-
-            return $this->getFallbackRecommendations($limit);
-        }
-
-        $categoryIds = $this->categoryService->getDescendantIds($collection)->all();
-        Log::info('Category IDs to search:', ['ids' => $categoryIds]);
-
-        $products = $this->productService->getRecommendedProductsByCategoryIds($categoryIds, $limit);
+        $products = $this->productService->getRecommendedProductsByCollectionSlug($collectionSlug, $limit);
 
         if ($products->isNotEmpty()) {
             Log::info('Found products via collection:', ['count' => $products->count()]);
@@ -86,7 +75,7 @@ class ProfileRecommendationService
             return $products;
         }
 
-        Log::info('No products found for collection categories');
+        Log::info('No products found for collection');
 
         return $this->getFallbackRecommendations($limit);
     }

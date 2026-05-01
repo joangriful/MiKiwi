@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers;
 
-use App\Models\Subscriber;
+use App\Domain\Newsletters\Services\NewsletterService;
+use App\Models\NewsletterSubscriber;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -26,9 +28,12 @@ class NewsletterControllerTest extends TestCase
             ->assertRedirect('/')
             ->assertSessionHas('success', '¡Gracias por suscribirte! Datos guardados correctamente.');
 
-        $this->assertDatabaseHas('subscribers', [
+        $this->assertDatabaseHas('users', [
             'email' => 'guest@example.com',
-            'gender' => 'vulva',
+        ]);
+
+        $this->assertDatabaseHas('newsletter_subscriber', [
+            'email' => 'guest@example.com',
         ]);
     }
 
@@ -41,6 +46,29 @@ class NewsletterControllerTest extends TestCase
             ->assertRedirect('/')
             ->assertSessionHasErrors(['newsletter']);
 
-        $this->assertSame(0, Subscriber::query()->count());
+        $this->assertSame(0, User::query()->count());
+        $this->assertSame(0, NewsletterSubscriber::query()->count());
+    }
+
+    public function test_newsletter_service_failure_returns_human_error_message(): void
+    {
+        $service = $this->createMock(NewsletterService::class);
+        $service->method('subscribe')
+            ->willThrowException(new \RuntimeException('Resend API timeout with internal token data'));
+
+        $this->app->instance(NewsletterService::class, $service);
+
+        $this->from('/')
+            ->post(route('newsletter.subscribe'), [
+                'email' => 'guest@example.com',
+                'gender' => 'vulva',
+            ])
+            ->assertRedirect('/')
+            ->assertSessionHasErrors([
+                'newsletter' => 'No pudimos completar tu suscripción ahora mismo. Inténtalo de nuevo en unos minutos.',
+            ]);
+
+        $this->assertSame(0, User::query()->count());
+        $this->assertSame(0, NewsletterSubscriber::query()->count());
     }
 }

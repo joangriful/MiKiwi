@@ -16,14 +16,20 @@ class CategoryControllerTest extends TestCase
 
     public function test_active_category_page_returns_only_active_in_stock_products(): void
     {
-        $category = Category::factory()->create([
+        $category = Category::factory()->root()->create([
             'name' => 'Pleasure',
             'slug' => 'pleasure',
             'is_active' => true,
         ]);
 
+        $subCategory = Category::factory()->child($category)->create([
+            'name' => 'External Pleasure',
+            'slug' => 'external-pleasure',
+            'is_active' => true,
+        ]);
+
         $visibleProduct = Product::factory()->create([
-            'category_id' => $category->id,
+            'category_id' => $subCategory->id,
             'slug' => 'visible-product',
             'is_active' => true,
             'stock_quantity' => 10,
@@ -31,7 +37,7 @@ class CategoryControllerTest extends TestCase
         ]);
 
         Product::factory()->create([
-            'category_id' => $category->id,
+            'category_id' => $subCategory->id,
             'slug' => 'inactive-product',
             'is_active' => false,
             'stock_quantity' => 10,
@@ -39,7 +45,7 @@ class CategoryControllerTest extends TestCase
         ]);
 
         Product::factory()->create([
-            'category_id' => $category->id,
+            'category_id' => $subCategory->id,
             'slug' => 'out-of-stock-product',
             'is_active' => true,
             'stock_quantity' => 0,
@@ -53,6 +59,7 @@ class CategoryControllerTest extends TestCase
                 ->where('category.slug', 'pleasure')
                 ->where('products.data.0.slug', $visibleProduct->slug)
                 ->has('products.data', 1)
+                ->has('categories.0.children', 1)
                 ->where('pageTitle', 'Pleasure - MiKiwi')
             );
     }

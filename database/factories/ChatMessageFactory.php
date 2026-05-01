@@ -29,8 +29,8 @@ class ChatMessageFactory extends Factory
     public function definition(): array
     {
         return [
-            'session_id' => ChatSession::factory(),
-            'sender_type' => ChatSenderType::Customer,
+            'chat_session_id' => ChatSession::factory(),
+            'sender_type' => ChatSenderType::Customer->value,
             'message_body' => $this->faker->paragraph(2),
             'is_read' => false,
         ];
@@ -42,7 +42,7 @@ class ChatMessageFactory extends Factory
     public function fromCustomer(): static
     {
         return $this->state(fn (array $attributes) => [
-            'sender_type' => ChatSenderType::Customer,
+            'sender_type' => ChatSenderType::Customer->value,
         ]);
     }
 
@@ -52,7 +52,7 @@ class ChatMessageFactory extends Factory
     public function fromAgent(): static
     {
         return $this->state(fn (array $attributes) => [
-            'sender_type' => ChatSenderType::Agent,
+            'sender_type' => ChatSenderType::Agent->value,
         ]);
     }
 
@@ -82,7 +82,7 @@ class ChatMessageFactory extends Factory
     public function forSession(ChatSession $session): static
     {
         return $this->state(fn (array $attributes) => [
-            'session_id' => $session->id,
+            'chat_session_id' => $session->id,
         ]);
     }
 }

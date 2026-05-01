@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers;
 
-use App\Models\HeroImage;
+use App\Models\HomeSectionImage;
+use App\Models\ImageHome;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -43,20 +44,32 @@ class PageRenderingTest extends TestCase
 
     public function test_sustainability_page_only_passes_sustainability_hero_images(): void
     {
-        $visibleHero = HeroImage::query()->create([
+        $visibleHero = ImageHome::query()->create([
             'public_id' => 'sustainability/hero',
             'url' => 'https://example.com/sustainability.jpg',
             'width' => 1200,
             'height' => 800,
             'type' => 'sustainability',
         ]);
+        HomeSectionImage::query()->create([
+            'image_home_id' => $visibleHero->getKey(),
+            'section_key' => 'sustainability',
+            'sort_order' => 0,
+            'is_active' => true,
+        ]);
 
-        HeroImage::query()->create([
+        $hiddenHero = ImageHome::query()->create([
             'public_id' => 'home/hero',
             'url' => 'https://example.com/home.jpg',
             'width' => 1200,
             'height' => 800,
             'type' => 'home',
+        ]);
+        HomeSectionImage::query()->create([
+            'image_home_id' => $hiddenHero->getKey(),
+            'section_key' => 'home',
+            'sort_order' => 0,
+            'is_active' => true,
         ]);
 
         $this->get(route('sustainability'))

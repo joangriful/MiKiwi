@@ -29,7 +29,7 @@ class PostgresFlowCompatibilityTest extends TestCase
         ]);
 
         $this->assertTrue(Str::isUuid($review->getKey()));
-        $this->assertDatabaseHas('reviews', [
+        $this->assertDatabaseHas('review', [
             'id' => $review->getKey(),
             'user_id' => $user->getKey(),
             'product_id' => $product->getKey(),

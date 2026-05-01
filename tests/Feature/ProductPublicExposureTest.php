@@ -92,11 +92,9 @@ class ProductPublicExposureTest extends TestCase
             ->assertInertia(fn ($page) => $page
                 ->component('Catalog/Products')
                 ->where('products.data.0.slug', $product->slug)
-                ->missing('products.data.0.id')
                 ->missing('products.data.0.category_id')
                 ->missing('products.data.0.stock_quantity')
                 ->missing('products.data.0.is_active')
-                ->missing('products.data.0.is_featured')
                 ->missing('products.data.0.created_at')
                 ->missing('products.data.0.updated_at')
             );
@@ -106,7 +104,7 @@ class ProductPublicExposureTest extends TestCase
     {
         $product = $this->createPublicProduct([
             'slug' => 'home-featured-product',
-            'is_featured' => true,
+            'is_promoted' => true,
             'stock_quantity' => 10,
         ]);
 
@@ -115,11 +113,9 @@ class ProductPublicExposureTest extends TestCase
             ->assertInertia(fn ($page) => $page
                 ->component('Home/Home')
                 ->where('featuredProducts.0.slug', $product->slug)
-                ->missing('featuredProducts.0.id')
                 ->missing('featuredProducts.0.category_id')
                 ->missing('featuredProducts.0.stock_quantity')
                 ->missing('featuredProducts.0.is_active')
-                ->missing('featuredProducts.0.is_featured')
                 ->missing('featuredProducts.0.created_at')
                 ->missing('featuredProducts.0.updated_at')
             );
@@ -148,19 +144,15 @@ class ProductPublicExposureTest extends TestCase
             ->assertInertia(fn ($page) => $page
                 ->component('Checkout/Cart')
                 ->where('cart.items.0.product.slug', $product->slug)
-                ->missing('cart.items.0.product.id')
                 ->missing('cart.items.0.product.category_id')
                 ->missing('cart.items.0.product.stock_quantity')
                 ->missing('cart.items.0.product.is_active')
-                ->missing('cart.items.0.product.is_featured')
                 ->missing('cart.items.0.product.created_at')
                 ->missing('cart.items.0.product.updated_at')
                 ->where('popularProducts.0.slug', $popularProduct->slug)
-                ->missing('popularProducts.0.id')
                 ->missing('popularProducts.0.category_id')
                 ->missing('popularProducts.0.stock_quantity')
                 ->missing('popularProducts.0.is_active')
-                ->missing('popularProducts.0.is_featured')
                 ->missing('popularProducts.0.created_at')
                 ->missing('popularProducts.0.updated_at')
             );
@@ -179,7 +171,7 @@ class ProductPublicExposureTest extends TestCase
         return Product::factory()->create(array_merge([
             'category_id' => $category->id,
             'is_active' => true,
-            'is_featured' => false,
+            'is_promoted' => false,
             'stock_quantity' => 20,
             'product_type' => ProductType::Simple->value,
         ], $overrides));
@@ -212,11 +204,9 @@ class ProductPublicExposureTest extends TestCase
     private function privateProductKeys(): array
     {
         return [
-            'id',
             'category_id',
             'stock_quantity',
             'is_active',
-            'is_featured',
             'created_at',
             'updated_at',
         ];

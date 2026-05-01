@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Addresses\Repositories\Eloquent;
 
-use App\Models\UserAddress;
+use App\Models\Address;
 use App\Domain\Addresses\Repositories\Interfaces\UserAddressRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class EloquentUserAddressRepository implements UserAddressRepositoryInterface
@@ -16,7 +17,7 @@ class EloquentUserAddressRepository implements UserAddressRepositoryInterface
      */
     public function getUserAddresses(string $userId): Collection
     {
-        return UserAddress::where('user_id', $userId)
+        return Address::where('user_id', $userId)
             ->orderByDesc('is_default')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -25,27 +26,27 @@ class EloquentUserAddressRepository implements UserAddressRepositoryInterface
     /**
      * Buscar dirección por ID
      */
-    public function findById(string $id): ?UserAddress
+    public function findById(string $id): ?Address
     {
         if (! Str::isUuid($id)) {
             return null;
         }
 
-        return UserAddress::find($id);
+        return Address::find($id);
     }
 
     /**
      * Crear nueva dirección
      */
-    public function create(array $data): UserAddress
+    public function create(array $data): Address
     {
-        return UserAddress::create($data);
+        return Address::create($data);
     }
 
     /**
      * Actualizar dirección existente
      */
-    public function update(string $id, array $data): ?UserAddress
+    public function update(string $id, array $data): ?Address
     {
         $address = $this->findById($id);
 
@@ -78,13 +79,13 @@ class EloquentUserAddressRepository implements UserAddressRepositoryInterface
      */
     public function setAsDefault(string $addressId, string $userId): void
     {
-        \Illuminate\Support\Facades\DB::transaction(function () use ($addressId, $userId) {
+        DB::transaction(function () use ($addressId, $userId) {
             // Quitar predeterminada de todas las direcciones del usuario
-            UserAddress::where('user_id', $userId)
+            Address::where('user_id', $userId)
                 ->update(['is_default' => false]);
 
             // Marcar la dirección seleccionada como predeterminada
-            UserAddress::where('id', $addressId)
+            Address::where('id', $addressId)
                 ->where('user_id', $userId)
                 ->update(['is_default' => true]);
         });
@@ -93,9 +94,9 @@ class EloquentUserAddressRepository implements UserAddressRepositoryInterface
     /**
      * Obtener dirección predeterminada del usuario
      */
-    public function getDefaultAddress(string $userId): ?UserAddress
+    public function getDefaultAddress(string $userId): ?Address
     {
-        return UserAddress::where('user_id', $userId)
+        return Address::where('user_id', $userId)
             ->where('is_default', true)
             ->first();
     }
@@ -105,6 +106,6 @@ class EloquentUserAddressRepository implements UserAddressRepositoryInterface
      */
     public function countUserAddresses(string $userId): int
     {
-        return UserAddress::where('user_id', $userId)->count();
+        return Address::where('user_id', $userId)->count();
     }
 }

@@ -12,7 +12,9 @@ use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
+use Database\Seeders\ProductionDatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class SeederTest extends TestCase
@@ -42,25 +44,24 @@ class SeederTest extends TestCase
     }
 
     /**
-     * Test que las categorías se crean con jerarquía correcta.
+     * Test que las categorías se crean con jerarquía padre-hija correcta.
      */
     public function test_categories_are_seeded_correctly(): void
     {
         $this->seed(DatabaseSeeder::class);
 
-        // Verificar categorías raíz
-        $this->assertDatabaseHas('categories', ['slug' => 'estimulacion-externa']);
-        $this->assertDatabaseHas('categories', ['slug' => 'estimulacion-interna']);
+        $this->assertDatabaseHas('category', ['slug' => 'estimulacion-externa']);
+        $this->assertDatabaseHas('category', ['slug' => 'estimulacion-interna']);
+        $this->assertDatabaseHas('category', ['slug' => 'ondas-de-presion']);
 
-        // Verificar subcategorías y relación padre
         $externa = Category::where('slug', 'estimulacion-externa')->first();
         $this->assertNotNull($externa);
-
-        $this->assertDatabaseHas('categories', [
+        $this->assertNull($externa->parent_id);
+        $this->assertDatabaseHas('category', [
             'slug' => 'ondas-de-presion',
-            'parent_id' => $externa->id,
+            'parent_id' => $externa->getKey(),
         ]);
-        $this->assertGreaterThan(0, $externa->children()->count());
+        $this->assertDatabaseMissing('category', ['slug' => 'para-ella']);
     }
 
     /**
@@ -75,11 +76,8 @@ class SeederTest extends TestCase
         $this->assertNotNull($elsa);
         $this->assertEquals('configurable', $elsa->product_type);
 
-        // Verificar que tiene accesorios (ojos, pelucas) a través de tabla pivote
-        // Nota: Asumiendo que la relación se llama 'accessories' en el modelo Product
-        // Si no existe la relación en el modelo, verificamos en base de datos directamente
-        $this->assertDatabaseHas('product_accessories', [
-            'parent_product_id' => $elsa->id,
+        $this->assertDatabaseHas('doll_product_accessory', [
+            'doll_product_id' => $elsa->id,
         ]);
 
         // Verificar cantidad de productos
@@ -107,10 +105,10 @@ class SeederTest extends TestCase
             // Verificar que tiene usuario
             $this->assertNotNull($order->user);
 
-            // Verificar snapshot de dirección
-            $this->assertIsArray($order->shipping_address_snapshot);
-            $this->assertArrayHasKey('country', $order->shipping_address_snapshot);
-            $this->assertEquals('España', $order->shipping_address_snapshot['country']);
+            // Verificar direcciones relacionales
+            $order->load('shippingAddress');
+            $this->assertNotNull($order->shippingAddress);
+            $this->assertEquals('España', $order->shippingAddress->country);
         }
     }
 
@@ -145,12 +143,29 @@ class SeederTest extends TestCase
         $this->assertSame($firstRunCounts, $this->criticalSeederCounts());
     }
 
+    public function test_production_database_seeder_excludes_demo_data(): void
+    {
+        $this->seed(ProductionDatabaseSeeder::class);
+
+        $this->assertGreaterThan(0, Category::count());
+        $this->assertGreaterThan(0, PickupPoint::count());
+        $this->assertDatabaseHas('users', [
+            'email' => 'admin@kinky-toys.com',
+            'role' => 'admin',
+        ]);
+        $this->assertSame(0, Product::count());
+        $this->assertSame(0, Order::count());
+        $this->assertSame(0, Review::count());
+        $this->assertSame(0, ChatSession::count());
+        $this->assertSame(0, ChatMessage::count());
+    }
+
     private function criticalSeederCounts(): array
     {
         return [
             'categories' => Category::count(),
             'products' => Product::count(),
-            'product_accessories' => \DB::table('product_accessories')->count(),
+            'doll_product_accessory' => DB::table('doll_product_accessory')->count(),
             'orders' => Order::count(),
             'order_items' => OrderItem::count(),
             'reviews' => Review::count(),

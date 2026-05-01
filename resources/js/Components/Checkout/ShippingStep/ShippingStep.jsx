@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import { normalizeApiError } from "@/Utils/httpError";
 import styles from "./ShippingStep.module.css";
 
 const SHIPPING_METHODS = [
@@ -27,9 +28,11 @@ export default function ShippingStep({ data, setData, onNext, onBack }) {
     const [pickupPoints, setPickupPoints] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchCity, setSearchCity] = useState("");
+    const [pickupPointsError, setPickupPointsError] = useState(null);
 
     const fetchPickupPoints = useCallback(async (query = "") => {
         setLoading(true);
+        setPickupPointsError(null);
 
         try {
             const isPostalCode = /^\d{4,5}$/.test(query.trim());
@@ -41,7 +44,12 @@ export default function ShippingStep({ data, setData, onNext, onBack }) {
 
             setPickupPoints(response.data);
         } catch (error) {
-            console.error("Error fetching pickup points:", error);
+            setPickupPoints([]);
+            setPickupPointsError(normalizeApiError(error, {
+                title: "No pudimos cargar los puntos de recogida",
+                message: "No pudimos cargar los puntos de recogida disponibles. Prueba con otra búsqueda o inténtalo de nuevo en unos minutos.",
+                code: "pickup_points_load_failed",
+            }));
         } finally {
             setLoading(false);
         }
@@ -131,6 +139,19 @@ export default function ShippingStep({ data, setData, onNext, onBack }) {
                                         </div>
                                     ) : (
                                         <div className={styles.pickupList}>
+                                            {pickupPointsError ? (
+                                                <div className={styles.errorBanner}>
+                                                    <svg className={styles.iconSm} fill="currentColor" viewBox="0 0 20 20">
+                                                        <path
+                                                            fillRule="evenodd"
+                                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                                            clipRule="evenodd"
+                                                        />
+                                                    </svg>
+                                                    <span className={styles.errorBannerText}>{pickupPointsError.message}</span>
+                                                </div>
+                                            ) : null}
+
                                             {pickupPoints.length > 0 ? (
                                                 pickupPoints.map((point) => {
                                                     const isPointSelected = data.pickup_point_id === point.id;

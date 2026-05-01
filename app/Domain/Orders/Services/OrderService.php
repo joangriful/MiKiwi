@@ -6,53 +6,42 @@ namespace App\Domain\Orders\Services;
 
 use App\Domain\Carts\Services\CartService;
 use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
-use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
+use App\Models\Address;
+use App\Models\User;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Exceptions\CartEmptyException;
 use App\Exceptions\InvalidOrderException;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class OrderService
 {
-    protected OrderRepositoryInterface $orderRepository;
-
-    protected ProductRepositoryInterface $productRepository;
-
-    protected CartService $cartService;
-
     public function __construct(
-        OrderRepositoryInterface $orderRepository,
-        ProductRepositoryInterface $productRepository,
-        CartService $cartService
-    ) {
-        $this->orderRepository = $orderRepository;
-        $this->productRepository = $productRepository;
-        $this->cartService = $cartService;
-    }
+        private readonly OrderRepositoryInterface $orderRepository,
+        private readonly CartService $cartService,
+    ) {}
 
     /**
      * Crear pedido desde el carrito
      */
     public function createOrderFromCart(string $userId, array $shippingAddress, ?array $billingAddress = null, string $paymentMethod = 'pending'): array
     {
-        // Validar que el carrito tenga productos
         $cart = $this->cartService->getCart();
 
         if (empty($cart['items'])) {
             throw new CartEmptyException('checkout');
         }
 
-        // Validar stock de todos los productos
         $stockValidation = $this->cartService->validateCartStock();
         if (! $stockValidation['valid']) {
             throw new \RuntimeException('Error de stock: '.implode(', ', $stockValidation['errors']));
         }
 
-        // Generar número de pedido único
         $orderNumber = $this->generateOrderNumber();
 
-        // Preparar items del pedido
         $orderItems = [];
         $totalAmount = 0;
 
@@ -72,25 +61,25 @@ class OrderService
             $totalAmount += $subtotal;
         }
 
-        // Crear el pedido
+        $shippingAddressRecord = $this->resolveAddressRecord($userId, $shippingAddress, 'shipping');
+        $billingAddressRecord = $this->resolveAddressRecord($userId, $billingAddress ?? $shippingAddress, 'billing');
+
         $order = $this->orderRepository->create([
             'user_id' => $userId,
+            'shipping_address_id' => $shippingAddressRecord->id,
+            'billing_address_id' => $billingAddressRecord->id,
             'order_number' => $orderNumber,
             'status' => OrderStatus::Pending->value,
             'total_amount' => $totalAmount,
             'payment_status' => PaymentStatus::Pending->value,
             'payment_method' => $paymentMethod,
-            'shipping_address_snapshot' => $shippingAddress,
-            'billing_address_snapshot' => $billingAddress ?? $shippingAddress,
             'items' => $orderItems,
         ]);
 
-        // Reducir stock de productos
         foreach ($cart['items'] as $item) {
             $item['product']->decrement('stock_quantity', $item['quantity']);
         }
 
-        // Vaciar el carrito
         $this->cartService->clearCart();
 
         return [
@@ -103,12 +92,12 @@ class OrderService
     /**
      * Obtener pedidos de un usuario
      */
-    public function getUserOrders(string $userId, int $perPage = 10)
+    public function getUserOrders(string $userId, int $perPage = 10): LengthAwarePaginator
     {
         return $this->orderRepository->getUserOrders($userId, $perPage);
     }
 
-    public function getLatestUserOrders(string $userId)
+    public function getLatestUserOrders(string $userId): Collection
     {
         return $this->orderRepository->getLatestUserOrders($userId);
     }
@@ -159,24 +148,41 @@ class OrderService
     /**
      * Calcular total de un pedido (con posibles descuentos futuros)
      */
-    protected function calculateOrderTotal(array $items): float
+    public function getRecentOrders(int $limit = 10): Collection
     {
-        $total = 0;
-
-        foreach ($items as $item) {
-            $total += $item['subtotal'];
-        }
-
-        // Aquí se podrían aplicar descuentos, cupones, etc.
-
-        return $total;
+        return $this->orderRepository->getRecentOrders($limit);
     }
 
     /**
-     * Obtener pedidos recientes (para admin)
+     * @param  array<string, mixed>  $addressData
      */
-    public function getRecentOrders(int $limit = 10)
+    private function resolveAddressRecord(string $userId, array $addressData, string $alias): Address
     {
-        return $this->orderRepository->getRecentOrders($limit);
+        if (isset($addressData['id']) && is_string($addressData['id'])) {
+            $existingAddress = Address::query()
+                ->where('id', $addressData['id'])
+                ->where('user_id', $userId)
+                ->first();
+
+            if ($existingAddress) {
+                return $existingAddress;
+            }
+        }
+
+        $user = User::query()->findOrFail($userId);
+
+        return DB::transaction(function () use ($user, $addressData, $alias) {
+            return Address::query()->create([
+                'user_id' => $user->id,
+                'alias' => $addressData['alias'] ?? $alias,
+                'full_name' => $addressData['full_name'] ?? $user->name,
+                'phone' => $addressData['phone'] ?? null,
+                'street_address' => $addressData['street_address'] ?? '',
+                'city' => $addressData['city'] ?? '',
+                'postal_code' => $addressData['postal_code'] ?? '',
+                'country' => $addressData['country'] ?? 'ES',
+                'is_default' => false,
+            ]);
+        });
     }
 }

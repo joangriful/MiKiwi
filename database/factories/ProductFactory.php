@@ -6,6 +6,8 @@ namespace Database\Factories;
 
 use App\Enums\ProductType;
 use App\Models\Category;
+use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -23,7 +25,9 @@ class ProductFactory extends Factory
             'base_price' => $this->faker->randomFloat(2, 15, 150), // Entre 15€ y 150€
             'stock_quantity' => $this->faker->numberBetween(0, 50),
             'is_active' => true,
-            'images' => $this->generateProductImages($name, rand(1, 5)),
+            'product_type' => ProductType::Simple->value,
+            'is_adult_only' => true,
+            'is_promoted' => false,
 
             // Relacionamos con una categoría existente o creamos una nueva si hace falta
             'category_id' => Category::factory(),
@@ -36,6 +40,25 @@ class ProductFactory extends Factory
             fn ($i) => 'https://placehold.co/800x800/png?text='.urlencode($name)."+$i",
             range(1, $count)
         );
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Product $product): void {
+            if ($product->images()->exists()) {
+                return;
+            }
+
+            foreach ($this->generateProductImages($product->name, random_int(1, 3)) as $index => $imageUrl) {
+                ProductImage::query()->create([
+                    'product_id' => $product->getKey(),
+                    'public_id' => (string) Str::uuid(),
+                    'image_url' => $imageUrl,
+                    'alt_text' => $product->name,
+                    'sort_order' => $index,
+                ]);
+            }
+        });
     }
 
     /**

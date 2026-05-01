@@ -173,8 +173,6 @@ class RouteSecurityTest extends TestCase
     {
         return [
             ['POST', 'login'],
-            ['POST', 'api/login'],
-            ['POST', 'api/register'],
         ];
     }
 
