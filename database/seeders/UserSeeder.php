@@ -37,6 +37,29 @@ class UserSeeder extends Seeder
             ]
         );
 
+        $baseCustomers = [
+            ['email' => 'angel@gmail.com', 'name' => 'Angel', 'dni' => '10000001A'],
+            ['email' => 'joan@gmail.com', 'name' => 'Joan', 'dni' => '10000002B'],
+            ['email' => 'ismael@gmail.com', 'name' => 'Ismael', 'dni' => '10000003C'],
+            ['email' => 'miguel@gmail.com', 'name' => 'Miguel', 'dni' => '10000004D'],
+            ['email' => 'alberto@gmail.com', 'name' => 'Alberto', 'dni' => '10000005E'],
+            ['email' => 'elena@gmail.com', 'name' => 'Elena', 'dni' => '10000006F'],
+        ];
+
+        foreach ($baseCustomers as $customer) {
+            User::firstOrCreate(
+                ['email' => $customer['email']],
+                [
+                    'name' => $customer['name'],
+                    'password' => Hash::make('password'),
+                    'dni' => $customer['dni'],
+                    'birth_date' => '1995-01-01',
+                    'role' => UserRole::Customer->value,
+                    'email_verified_at' => now(),
+                ]
+            );
+        }
+
         // 3. Clientes adicionales generados con factory
         // Solo crear si hay pocos usuarios
         if (User::count() < 10) {

@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
+use Database\Seeders\ProductionDatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -134,6 +135,20 @@ class SeederTest extends TestCase
         $this->seed(DatabaseSeeder::class);
 
         $this->assertSame($firstRunCounts, $this->criticalSeederCounts());
+    }
+
+    public function test_production_database_seeder_excludes_demo_data(): void
+    {
+        $this->seed(ProductionDatabaseSeeder::class);
+
+        $this->assertGreaterThan(0, Category::count());
+        $this->assertGreaterThan(0, PickupPoint::count());
+        $this->assertSame(0, User::count());
+        $this->assertSame(0, Product::count());
+        $this->assertSame(0, Order::count());
+        $this->assertSame(0, Review::count());
+        $this->assertSame(0, ChatSession::count());
+        $this->assertSame(0, ChatMessage::count());
     }
 
     private function criticalSeederCounts(): array
