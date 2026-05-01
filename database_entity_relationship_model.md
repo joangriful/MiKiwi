@@ -5,6 +5,7 @@ flowchart TB
     USER[user]
     ADDRESS[address]
     NEWSLETTER_SUBSCRIBER[newsletter_subscriber]
+    PASSWORD_RESET_TOKEN[password_reset_token]
     CART[cart]
     CART_ITEM[cart_item]
     CHAT_SESSION[chat_session]
@@ -51,6 +52,9 @@ flowchart TB
 
     USER -->|"1 : 1"| SUBSCRIBES_TO{se suscribe a}
     SUBSCRIBES_TO --> NEWSLETTER_SUBSCRIBER
+
+    USER -->|"1 : 0..1"| RESETS_PASSWORD_WITH{restablece contraseña con}
+    RESETS_PASSWORD_WITH --> PASSWORD_RESET_TOKEN
 
     CART -->|"1 : N"| CONTAINS_CART_ITEM{contiene}
     CONTAINS_CART_ITEM --> CART_ITEM
@@ -156,3 +160,8 @@ Nota sobre `doll_product_accessory`:
 - como `doll`: el producto principal de tipo muñeca
 - como `accessory`: el producto accesorio compatible
 - Sirve para expresar qué accesorios pueden usarse con qué dolls.
+
+Nota sobre `password_reset_token`:
+- Es una entidad técnica de soporte al flujo de recuperación de contraseña.
+- Se vincula conceptualmente con `user` mediante `email`.
+- No representa historial; solo el token activo más reciente por usuario/email.

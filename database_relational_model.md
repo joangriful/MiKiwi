@@ -55,6 +55,12 @@ erDiagram
         datetime updated_at
     }
 
+    password_reset_token {
+        string email PK
+        string token
+        datetime created_at
+    }
+
     cart {
         uuid id PK
         uuid user_id FK,UK
@@ -360,6 +366,7 @@ erDiagram
 
     user ||--o{ address : has
     user ||--|| newsletter_subscriber : subscribes_to
+    user ||--o| password_reset_token : resets_password_with
     user ||--|| cart : has
     cart ||--o{ cart_item : contains
     product ||--o{ cart_item : appears_in
@@ -402,3 +409,8 @@ erDiagram
 
     image_home ||--o{ home_section_image : assigned_to
 ```
+
+Nota sobre `password_reset_token`:
+- Es una tabla técnica de autenticación de Laravel.
+- Su relación con `user` es lógica por `email` único, no mediante una foreign key física.
+- Un `user` puede tener `0..1` token de reseteo activo al mismo tiempo.
