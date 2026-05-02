@@ -28,3 +28,5 @@ services:
         sync: false
       - key: DB_SSLMODE
         value: require
+      - key: CACHE_STORE
+        value: file

@@ -30,7 +30,21 @@ fi
 export APP_ENV="${APP_ENV:-production}"
 export APP_DEBUG="${APP_DEBUG:-false}"
 export DB_SSLMODE="${DB_SSLMODE:-require}"
+export CACHE_STORE="${CACHE_STORE:-file}"
 export PORT
+
+echo "Startup DB env: DB_CONNECTION=${DB_CONNECTION}, DB_HOST=${DB_HOST}, DB_PORT=${DB_PORT}, DB_DATABASE=${DB_DATABASE}, DB_USERNAME=${DB_USERNAME}" >&2
+if [ -n "${DB_URL:-}" ]; then
+  echo "Startup DB_URL: present" >&2
+else
+  echo "Startup DB_URL: absent" >&2
+fi
+
+if [ -n "${DATABASE_URL:-}" ]; then
+  echo "Startup DATABASE_URL: present" >&2
+else
+  echo "Startup DATABASE_URL: absent" >&2
+fi
 
 mkdir -p \
   /run/php \
