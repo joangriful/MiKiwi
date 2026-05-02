@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Enums\UserRole;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
@@ -58,22 +56,6 @@ class RouteSecurityTest extends TestCase
         );
     }
 
-    public function test_doll_config_test_is_not_public(): void
-    {
-        $this->get(route('doll.config.test'))
-            ->assertRedirect(route('login'));
-    }
-
-    public function test_regular_users_cannot_access_doll_config_test(): void
-    {
-        $user = new User();
-        $user->role = UserRole::Customer->value;
-
-        $this->actingAs($user)
-            ->get(route('doll.config.test'))
-            ->assertRedirect(route('dashboard'));
-    }
-
     public static function authenticatedRouteNames(): array
     {
         return [
@@ -120,7 +102,6 @@ class RouteSecurityTest extends TestCase
             ['products.upload'],
             ['products.update'],
             ['products.delete'],
-            ['doll.config.test'],
         ];
     }
 

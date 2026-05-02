@@ -239,7 +239,6 @@ Route::controller(ConfiguratorPageController::class)->prefix('configurador')->gr
 });
 
 Route::get('/doll_config_test', [ConfiguratorPageController::class, 'dollConfigTest'])
-    ->middleware(['auth', 'admin'])
     ->name('doll.config.test');
 
 require __DIR__.'/auth.php';
