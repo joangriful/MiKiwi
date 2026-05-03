@@ -10,25 +10,19 @@ class ProductionDatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->command->info('🌱 Iniciando seeding de producción MiKiwi...');
-        $this->command->newLine();
-
-        $this->command->info('📍 Cargando catálogos base y datos operativos...');
         $this->call([
             UserSeeder::class,
             CategorySeeder::class,
             CollectionCategoriesSeeder::class,
+            ProductSeeder::class,
             PickupPointSeeder::class,
         ]);
 
         if (! Category::exists()) {
-            $this->command->error('❌ ERROR: CategorySeeder terminó pero la tabla sigue vacía.');
+            $this->command->error('CategorySeeder termino pero la tabla sigue vacia.');
             $this->command->info('Reintentando contar por DB directa: '.DB::table('category')->count());
 
             return;
         }
-
-        $this->command->newLine();
-        $this->command->info('✅ Seeding de producción completado.');
     }
 }
