@@ -5,10 +5,15 @@ import ProductInfo from '../ProductInfo/ProductInfo';
 import styles from './ProductShowcase.module.css';
 
 export default function ProductShowcase({ product }) {
+    // Normalize gallery items from the API to plain URLs before rendering.
+    const galleryImages = Array.isArray(product?.images)
+        ? product.images.map((image) => image?.url).filter(Boolean)
+        : [];
+
     // Combine main image with additional images array and remove duplicates
     const images = [
         product?.image_url,
-        ...(Array.isArray(product?.images) ? product.images : [])
+        ...galleryImages
     ].filter((img, index, self) => img && self.indexOf(img) === index);
 
     // Fallback if no images are found
