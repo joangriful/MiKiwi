@@ -41,6 +41,10 @@ class EventServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Event::listen(CommandStarting::class, static function (CommandStarting $event): void {
+            if (app()->runningUnitTests() || app()->environment('testing')) {
+                return;
+            }
+
             if (in_array($event->command, self::BLOCKED_COMMANDS, true)) {
                 throw new RuntimeException(
                     "El comando '{$event->command}' esta bloqueado para proteger la base de datos."

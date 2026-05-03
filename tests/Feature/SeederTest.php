@@ -71,18 +71,18 @@ class SeederTest extends TestCase
     {
         $this->seed(DatabaseSeeder::class);
 
-        // Verificar producto específico
-        $elsa = Product::where('slug', 'muneca-elsa-premium')->first();
-        $this->assertNotNull($elsa);
-        $this->assertEquals('configurable', $elsa->product_type);
+        $this->assertGreaterThan(0, Product::count());
 
-        $this->assertDatabaseHas('doll_product_accessory', [
-            'doll_product_id' => $elsa->id,
-        ]);
+        $product = Product::query()
+            ->with(['images', 'collections'])
+            ->where('slug', 'satisfyer-pro')
+            ->first();
 
-        // Verificar cantidad de productos
-        // 11 manuales + 7 generados = 18 productos mínimo
-        $this->assertGreaterThanOrEqual(14, Product::count());
+        $this->assertNotNull($product);
+        $this->assertCount(5, $product->images);
+        $this->assertGreaterThanOrEqual(1, $product->collections->count());
+
+        $this->assertSame(0, DB::table('doll_product_accessory')->count());
     }
 
     /**

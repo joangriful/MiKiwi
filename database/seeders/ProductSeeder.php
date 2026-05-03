@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Enums\ProductType;
-use App\Models\Category;
 use App\Models\Collection;
 use App\Models\CollectionProduct;
 use App\Models\Product;
@@ -18,20 +17,24 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        $category = Category::query()
-            ->where('slug', 'vibradores-externos')
-            ->first() ?? Category::query()->first();
+        foreach (self::productDefinitions() as $definition) {
+            $product = $this->upsertProduct($definition);
 
-        if (! $category) {
-            $this->command->error('No hay categorias en la base de datos. Abortando ProductSeeder.');
-
-            return;
+            $this->syncProductImages($product, $definition['images'] ?? []);
+            $this->syncProductCollections($product, $definition['collections'] ?? []);
         }
 
-        $product = Product::updateOrCreate(
-            ['sku' => 'SAT-PRO-001'],
+        $this->command->info('ProductSeeder completado con catalogo demo declarativo.');
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public static function productDefinitions(): array
+    {
+        return [
             [
-                'category_id' => $category->getKey(),
+                'sku' => 'SAT-PRO-001',
                 'name' => 'Satisfyer Pro',
                 'slug' => 'satisfyer-pro',
                 'description' => 'Succionador de clitoris de Satisfyer',
@@ -41,19 +44,81 @@ class ProductSeeder extends Seeder
                 'is_active' => true,
                 'is_promoted' => false,
                 'is_adult_only' => true,
+                'category_slug' => 'vibradores-externos',
+                'images' => [
+                    'https://res.cloudinary.com/dquwonjie/image/upload/v1770982520/1_jkapuq.webp',
+                    'https://res.cloudinary.com/dquwonjie/image/upload/v1771229829/3_ztpwsg.webp',
+                    'https://res.cloudinary.com/dquwonjie/image/upload/v1771229829/2_rqoq4k.webp',
+                    'https://res.cloudinary.com/dquwonjie/image/upload/v1771229830/5_vcog9t.webp',
+                    'https://res.cloudinary.com/dquwonjie/image/upload/v1771229829/4_znbgsq.webp',
+                ],
+                'collections' => ['para-ella'],
+            ],
+            [
+                'sku' => 'MINI-DIVA-001',
+                'name' => 'Mini Diva',
+                'slug' => 'mini-diva',
+                'description' => 'Vibrador clitorial',
+                'base_price' => 20.99,
+                'stock_quantity' => 50,
+                'product_type' => ProductType::Simple->value,
+                'is_active' => true,
+                'is_promoted' => false,
+                'is_adult_only' => true,
+                'category_slug' => 'vibradores-externos',
+                'images' => [
+                    'https://res.cloudinary.com/dquwonjie/image/upload/v1771230111/2_ah5dpa.webp',
+                    'https://res.cloudinary.com/dquwonjie/image/upload/v1771230107/2.2_hv0gck.webp',
+                    'https://res.cloudinary.com/dquwonjie/image/upload/v1771230107/2.3_ohpxxk.webp',
+                    'https://res.cloudinary.com/dquwonjie/image/upload/v1771230107/2.1_kc3dez.webp',
+                    'https://res.cloudinary.com/dquwonjie/image/upload/v1771230112/3_rfbm1j.webp',
+                    'https://res.cloudinary.com/dquwonjie/image/upload/v1771230106/1_lyr2gd.webp',
+                ],
+                'collections' => ['para-ella'],
+            ],
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $definition
+     */
+    private function upsertProduct(array $definition): Product
+    {
+        return Product::updateOrCreate(
+            ['sku' => $definition['sku']],
+            [
+                'category_id' => $this->resolveCategoryId($definition['category_slug']),
+                'name' => $definition['name'],
+                'slug' => $definition['slug'],
+                'description' => $definition['description'] ?? null,
+                'base_price' => $definition['base_price'],
+                'stock_quantity' => $definition['stock_quantity'],
+                'product_type' => $definition['product_type'],
+                'is_active' => $definition['is_active'] ?? true,
+                'is_promoted' => $definition['is_promoted'] ?? false,
+                'is_adult_only' => $definition['is_adult_only'] ?? true,
             ]
         );
+    }
 
-        $this->syncProductImages($product, [
-            'https://res.cloudinary.com/dquwonjie/image/upload/v1770982520/1_jkapuq.webp',
-            'https://res.cloudinary.com/dquwonjie/image/upload/v1771229829/3_ztpwsg.webp',
-            'https://res.cloudinary.com/dquwonjie/image/upload/v1771229829/2_rqoq4k.webp',
-            'https://res.cloudinary.com/dquwonjie/image/upload/v1771229830/5_vcog9t.webp',
-            'https://res.cloudinary.com/dquwonjie/image/upload/v1771229829/4_znbgsq.webp',
-        ]);
-        $this->syncProductCollections($product, ['para-ella']);
+    private function resolveCategoryId(string $categorySlug): string
+    {
+        $categoryId = \App\Models\Category::query()
+            ->where('slug', $categorySlug)
+            ->value('id');
 
-        $this->command->info('ProductSeeder completado con un unico producto real.');
+        if ($categoryId) {
+            return $categoryId;
+        }
+
+        $fallbackCategoryId = \App\Models\Category::query()->value('id');
+
+        if ($fallbackCategoryId) {
+            return $fallbackCategoryId;
+        }
+
+        $this->command->error('No hay categorias en la base de datos. Abortando ProductSeeder.');
+        abort(1, 'No categories found for ProductSeeder.');
     }
 
     /**
