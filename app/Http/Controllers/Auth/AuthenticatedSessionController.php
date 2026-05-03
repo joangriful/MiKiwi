@@ -36,7 +36,7 @@ class AuthenticatedSessionController extends Controller
 
         // Check if user has quiz data in the request (from frontend localStorage)
         if ($request->has('quiz_result_category')) {
-            $user = auth()->user();
+            $user = $request->user();
             if ($user) {
                 $user->update([
                     'quiz_result_category' => $request->input('quiz_result_category')
@@ -44,7 +44,7 @@ class AuthenticatedSessionController extends Controller
             }
         }
 
-        return redirect()->intended(route('perfil.view', absolute: false));
+        return redirect()->route('home');
     }
 
     /**

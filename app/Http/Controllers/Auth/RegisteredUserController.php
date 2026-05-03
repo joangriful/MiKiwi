@@ -53,6 +53,6 @@ class RegisteredUserController extends Controller
             ]);
         }
 
-        return redirect(route('perfil.view', absolute: false));
+        return redirect()->route('home');
     }
 }
