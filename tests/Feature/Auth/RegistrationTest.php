@@ -26,6 +26,6 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('perfil.view', absolute: false));
+        $response->assertRedirect(route('home', absolute: false));
     }
 }
