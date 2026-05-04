@@ -18,11 +18,21 @@ export default function useLenisScroll() {
 
         rafId = requestAnimationFrame(raf);
 
+        const handleScrollLock = (e) => {
+            if (e.detail.locked) {
+                lenis.stop();
+            } else {
+                lenis.start();
+            }
+        };
+
+        window.addEventListener('mw:scroll-lock', handleScrollLock);
+
         return () => {
             if (rafId !== null) {
                 cancelAnimationFrame(rafId);
             }
-
+            window.removeEventListener('mw:scroll-lock', handleScrollLock);
             lenis.destroy();
         };
     }, []);

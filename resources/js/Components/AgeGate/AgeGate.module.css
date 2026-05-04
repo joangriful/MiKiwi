@@ -1,0 +1,191 @@
+/* ─── Overlay ─────────────────────────────────────────────────────────── */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    animation: fadeIn 0.25s ease both;
+}
+
+/* ─── Card ────────────────────────────────────────────────────────────── */
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 420px;
+    padding: 2.5rem 2rem;
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    animation: fadeInScale 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    text-align: center;
+}
+
+/* ─── Logo ────────────────────────────────────────────────────────────── */
+
+.logoWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    color: var(--color-primary);
+}
+
+.logo {
+    width: 100%;
+    height: 100%;
+}
+
+/* ─── Typography ──────────────────────────────────────────────────────── */
+
+.brand {
+    font-family: var(--font-head);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin: 0;
+}
+
+.title {
+    font-family: var(--font-head);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-main);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.subtitle {
+    font-family: var(--font-body);
+    font-size: 0.925rem;
+    color: var(--color-text-soft);
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* ─── Actions ─────────────────────────────────────────────────────────── */
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.btnAccept {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--premium-gradient);
+    color: var(--color-white);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 14px rgba(153, 184, 73, 0.35);
+}
+
+.btnAccept:hover {
+    background: var(--premium-gradient-hover);
+    box-shadow: 0 6px 20px rgba(153, 184, 73, 0.45);
+    transform: translateY(-1px);
+}
+
+.btnAccept:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(153, 184, 73, 0.3);
+}
+
+.btnDeny {
+    width: 100%;
+    padding: 0.625rem 1rem;
+    border: none;
+    background: transparent;
+    color: var(--color-text-muted-ui);
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.btnDeny:hover {
+    color: var(--color-text-soft);
+}
+
+/* ─── Legal ───────────────────────────────────────────────────────────── */
+
+.legal {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    color: var(--color-text-subtle);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.legalLink {
+    color: var(--color-text-muted-ui);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.2s ease;
+}
+
+.legalLink:hover {
+    color: var(--color-primary);
+}
+
+/* ─── Animations ──────────────────────────────────────────────────────── */
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.94) translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ─── Responsive ──────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+    .card {
+        padding: 2rem 1.25rem;
+        gap: 0.875rem;
+    }
+
+    .title {
+        font-size: 1.25rem;
+    }
+
+    .btnAccept {
+        padding: 0.8rem 1.25rem;
+    }
+}

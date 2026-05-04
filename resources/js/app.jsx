@@ -34,7 +34,7 @@ createInertiaApp({
 
         root.render(
             <AppErrorBoundary>
-                <AppLayout page={props.initialPage.component}>
+                <AppLayout page={props.initialPage.component} auth={props.initialPage.props?.auth}>
                     <App {...props} />
                 </AppLayout>
             </AppErrorBoundary>

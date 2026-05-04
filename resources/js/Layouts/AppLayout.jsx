@@ -1,15 +1,18 @@
 import HomeLogoLink from '@/Components/HomeLogoLink/HomeLogoLink';
+import AgeGate from '@/Components/AgeGate/AgeGate';
 import styles from './AppLayout.module.css';
 
 const PAGES_WITH_FALLBACK_NAVBAR = new Set([
     'Profile/Index',
 ]);
 
-export default function AppLayout({ children, page }) {
+export default function AppLayout({ children, page, auth }) {
     const hasFallbackNavbar = PAGES_WITH_FALLBACK_NAVBAR.has(page);
+    const isLoggedIn = Boolean(auth?.user);
 
     return (
         <div className={styles.root}>
+            <AgeGate isLoggedIn={isLoggedIn} />
             {hasFallbackNavbar ? (
                 <nav className={styles.nav} aria-label="Navegacion principal">
                     <HomeLogoLink
