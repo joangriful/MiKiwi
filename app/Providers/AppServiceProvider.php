@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Domain\Addresses\Repositories\Eloquent\EloquentUserAddressRepository;
+use App\Domain\Addresses\Repositories\Interfaces\UserAddressRepositoryInterface;
 use App\Domain\Categories\Repositories\Eloquent\EloquentCategoryRepository;
 use App\Domain\Categories\Repositories\Interfaces\CategoryRepositoryInterface;
 use App\Domain\HeroImages\Repositories\Eloquent\EloquentHeroImageRepository;
+use App\Domain\HeroImages\Repositories\Interfaces\HeroImageRepositoryInterface;
 use App\Domain\Orders\Repositories\Eloquent\EloquentOrderRepository;
 use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Domain\Products\Repositories\Eloquent\EloquentProductRepository;
 use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
-use App\Domain\Addresses\Repositories\Eloquent\EloquentUserAddressRepository;
-use App\Domain\Addresses\Repositories\Interfaces\UserAddressRepositoryInterface;
-use App\Domain\HeroImages\Repositories\Interfaces\HeroImageRepositoryInterface;
 use App\Models\Address;
 use App\Policies\UserAddressPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -22,9 +22,9 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -66,7 +66,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        if ($this->app->environment('production')) {
+        if ($this->shouldForceHttps()) {
             URL::forceScheme('https');
         }
 
@@ -139,5 +139,15 @@ class AppServiceProvider extends ServiceProvider
         }
 
         return 'ip:'.$request->ip();
+    }
+
+    private function shouldForceHttps(): bool
+    {
+        if ((bool) config('app.force_https')) {
+            return true;
+        }
+
+        return $this->app->environment('production')
+            && filled(env('RENDER_EXTERNAL_URL'));
     }
 }
