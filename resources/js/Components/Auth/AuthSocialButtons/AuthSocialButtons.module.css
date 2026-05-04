@@ -3,3 +3,12 @@
     height: 1.25rem;
     flex-shrink: 0;
 }
+
+.singleProviderGrid {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.singleProviderGrid :global(.mk-auth-btn-social) {
+    justify-self: center;
+    width: min(100%, 20rem);
+}
