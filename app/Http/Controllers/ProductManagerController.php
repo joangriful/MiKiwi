@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Concerns\InteractsWithApiErrors;
 use App\Domain\Products\Services\ProductManagerService;
 use App\Enums\ProductType;
+use App\Http\Controllers\Concerns\InteractsWithApiErrors;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -31,8 +31,11 @@ class ProductManagerController extends Controller
             'is_adult_only' => 'boolean',
             'is_active' => 'boolean',
             'is_promoted' => 'sometimes|boolean',
-            'images' => 'nullable|array',
-            'images.*' => 'string',
+            'images' => 'nullable',
+            'images.*' => 'nullable',
+            'images.*.url' => 'nullable|string',
+            'images.*.image_url' => 'nullable|string',
+            'images.*.secure_url' => 'nullable|string',
         ]);
 
         try {
@@ -60,8 +63,11 @@ class ProductManagerController extends Controller
             'is_adult_only' => 'boolean',
             'is_active' => 'boolean',
             'is_promoted' => 'sometimes|boolean',
-            'images' => 'nullable|array',
-            'images.*' => 'string',
+            'images' => 'nullable',
+            'images.*' => 'nullable',
+            'images.*.url' => 'nullable|string',
+            'images.*.image_url' => 'nullable|string',
+            'images.*.secure_url' => 'nullable|string',
         ]);
 
         try {

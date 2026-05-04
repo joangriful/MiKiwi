@@ -319,9 +319,13 @@
 }
 
 .galleryImageWrapper {
+    display: block;
+    width: 100%;
+    padding: 0;
     aspect-ratio: 1 / 1;
     cursor: pointer;
     background: var(--color-surface-disabled);
+    border: 0;
 }
 
 .galleryImage {

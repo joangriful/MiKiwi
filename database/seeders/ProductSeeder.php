@@ -2,13 +2,16 @@
 
 namespace Database\Seeders;
 
+use App\Domain\Products\Support\ProductImageUrlNormalizer;
 use App\Enums\ProductType;
+use App\Models\Category;
 use App\Models\Collection;
 use App\Models\CollectionProduct;
 use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 class ProductSeeder extends Seeder
 {
@@ -103,7 +106,7 @@ class ProductSeeder extends Seeder
 
     private function resolveCategoryId(string $categorySlug): string
     {
-        $categoryId = \App\Models\Category::query()
+        $categoryId = Category::query()
             ->where('slug', $categorySlug)
             ->value('id');
 
@@ -111,24 +114,22 @@ class ProductSeeder extends Seeder
             return $categoryId;
         }
 
-        $fallbackCategoryId = \App\Models\Category::query()->value('id');
+        $fallbackCategoryId = Category::query()->value('id');
 
         if ($fallbackCategoryId) {
             return $fallbackCategoryId;
         }
 
-        $this->command->error('No hay categorias en la base de datos. Abortando ProductSeeder.');
-        abort(1, 'No categories found for ProductSeeder.');
+        $this->command?->error('No hay categorias en la base de datos. Abortando ProductSeeder.');
+
+        throw new RuntimeException('No categories found for ProductSeeder.');
     }
 
-    /**
-     * @param  array<int, string>  $imageUrls
-     */
-    private function syncProductImages(Product $product, array $imageUrls): void
+    private function syncProductImages(Product $product, mixed $imagePayload): void
     {
         ProductImage::query()->where('product_id', $product->getKey())->delete();
 
-        foreach (array_values($imageUrls) as $index => $imageUrl) {
+        foreach (ProductImageUrlNormalizer::normalize($imagePayload) as $index => $imageUrl) {
             ProductImage::query()->create([
                 'product_id' => $product->getKey(),
                 'public_id' => (string) Str::uuid(),

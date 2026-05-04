@@ -13,8 +13,10 @@ use App\Models\Review;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\ProductionDatabaseSeeder;
+use Database\Seeders\ProductSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use ReflectionClass;
 use Tests\TestCase;
 
 class SeederTest extends TestCase
@@ -83,6 +85,45 @@ class SeederTest extends TestCase
         $this->assertGreaterThanOrEqual(1, $product->collections->count());
 
         $this->assertSame(0, DB::table('doll_product_accessory')->count());
+    }
+
+    public function test_product_seeder_accepts_single_and_structured_image_payloads(): void
+    {
+        $category = Category::factory()->create();
+        $product = Product::factory()->create([
+            'category_id' => $category->getKey(),
+        ]);
+
+        $seeder = new ProductSeeder;
+        $method = (new ReflectionClass($seeder))->getMethod('syncProductImages');
+        $method->setAccessible(true);
+
+        $method->invoke($seeder, $product, 'https://example.test/single.webp');
+        $product->load('images');
+
+        $this->assertSame(
+            ['https://example.test/single.webp'],
+            $product->images->sortBy('sort_order')->pluck('image_url')->values()->all()
+        );
+
+        $method->invoke($seeder, $product, [
+            ['url' => 'https://example.test/url.webp'],
+            ['image_url' => 'https://example.test/image-url.webp'],
+            ['secure_url' => 'https://example.test/secure-url.webp'],
+            ' https://example.test/plain.webp ',
+            ['url' => ''],
+        ]);
+        $product->load('images');
+
+        $this->assertSame(
+            [
+                'https://example.test/url.webp',
+                'https://example.test/image-url.webp',
+                'https://example.test/secure-url.webp',
+                'https://example.test/plain.webp',
+            ],
+            $product->images->sortBy('sort_order')->pluck('image_url')->values()->all()
+        );
     }
 
     /**

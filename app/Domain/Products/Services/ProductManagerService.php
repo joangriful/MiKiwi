@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Domain\Products\Services;
 
 use App\Domain\Media\Services\CloudinaryService;
+use App\Domain\Products\Support\ProductImageUrlNormalizer;
 use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -17,8 +17,7 @@ class ProductManagerService
 {
     public function __construct(
         private readonly CloudinaryService $cloudinaryService,
-    ) {
-    }
+    ) {}
 
     public function createProduct(array $validated): Product
     {
@@ -64,7 +63,7 @@ class ProductManagerService
             $product->update(Arr::except($validated, ['images']));
 
             if (array_key_exists('images', $validated)) {
-                $this->syncProductImages($product, (array) $validated['images']);
+                $this->syncProductImages($product, $validated['images']);
             }
         });
 
@@ -212,18 +211,11 @@ class ProductManagerService
         return trim(str_replace('\\', '/', dirname($path)), '/');
     }
 
-    /**
-     * @param  array<int, string>  $imageUrls
-     */
-    private function syncProductImages(Product $product, array $imageUrls): void
+    private function syncProductImages(Product $product, mixed $imagePayload): void
     {
         ProductImage::query()->where('product_id', $product->id)->delete();
 
-        foreach (array_values($imageUrls) as $index => $imageUrl) {
-            if (! is_string($imageUrl) || trim($imageUrl) === '') {
-                continue;
-            }
-
+        foreach (ProductImageUrlNormalizer::normalize($imagePayload) as $index => $imageUrl) {
             ProductImage::query()->create([
                 'product_id' => $product->id,
                 'public_id' => Str::uuid()->toString(),

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { resolveProductImageUrl } from '@/Utils/productImageUrls';
 import ProductImageCarousel from '../ProductImageCarousel/ProductImageCarousel';
 import MainProductImage from '../MainProductImage/MainProductImage';
 import ProductInfo from '../ProductInfo/ProductInfo';
@@ -7,7 +8,7 @@ import styles from './ProductShowcase.module.css';
 export default function ProductShowcase({ product }) {
     // Normalize gallery items from the API to plain URLs before rendering.
     const galleryImages = Array.isArray(product?.images)
-        ? product.images.map((image) => image?.url).filter(Boolean)
+        ? product.images.map(resolveProductImageUrl).filter(Boolean)
         : [];
 
     // Combine main image with additional images array and remove duplicates

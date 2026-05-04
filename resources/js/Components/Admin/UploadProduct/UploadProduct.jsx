@@ -3,6 +3,7 @@ import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { extractImageFiles } from '@/Utils/imageFiles';
+import { resolveProductImageUrl } from '@/Utils/productImageUrls';
 import styles from './UploadProduct.module.css';
 
 function getMethodButtonClassName(stylesObject, uploadMethod, targetMethod) {
@@ -123,11 +124,15 @@ export default function UploadProduct({ categories = [], initialData = null, onC
 
             if (Array.isArray(initialData.images)) {
                 const normalizedImages = initialData.images
-                    .map((image) => typeof image === 'string' ? image : image?.url)
+                    .map(resolveProductImageUrl)
                     .filter(Boolean);
 
                 setGalleryImages(normalizedImages);
                 setMainImage(initialData.image_url || normalizedImages[0] || '');
+            } else if (typeof initialData.images === 'string') {
+                const normalizedImage = resolveProductImageUrl(initialData.images);
+                setMainImage(initialData.image_url || normalizedImage || '');
+                setGalleryImages(normalizedImage ? [normalizedImage] : []);
             } else if (initialData.image_url) {
                 setMainImage(initialData.image_url);
                 setGalleryImages([initialData.image_url]);
@@ -135,7 +140,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
 
             setHoverImage(initialData.hover_image_url || '');
         }
-    }, [initialData, categories]);
+    }, [initialData, categories, isFlatCategoryModel]);
 
     const handleDragEnter = (e) => {
         e.preventDefault(); e.stopPropagation(); setIsDragging(true);
@@ -255,7 +260,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                 },
                 onFinish: () => setUploading(false),
             });
-        } catch (error) {
+        } catch (_error) {
             setUploading(false);
             toast.error('Error al procesar');
         }
@@ -332,7 +337,9 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                     {isUploadingImages && <span className={styles.uploadingStatus}><span className={`material-symbols-outlined ${styles.spinningIcon}`}>refresh</span> Subiendo imágenes...</span>}
 
                     {uploadMethod === 'upload' ? (
-                        <div
+                        <label
+                            htmlFor="product-images-upload"
+                            aria-label="Subir imágenes del producto"
                             onDragEnter={handleDragEnter}
                             onDragOver={handleDragOver}
                             onDragLeave={handleDragLeave}
@@ -345,6 +352,8 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                                 accept="image/*"
                                 onChange={handleFileSelect}
                                 className={styles.dropzoneInput}
+                                id="product-images-upload"
+                                aria-label="Subir imágenes del producto"
                             />
                             <div className={styles.dropzoneContent}>
                                 <span className={`material-symbols-outlined ${styles.dropzoneIcon}`}>cloud_upload</span>
@@ -352,7 +361,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                                     {isDragging ? 'Suelta aquí' : (formData.name ? 'Arrastra imágenes o haz click para subir' : 'Escribe arriba el nombre del producto primero para poder subir fotos')}
                                 </span>
                             </div>
-                        </div>
+                        </label>
                     ) : (
                         <div className={styles.linkPanel}>
                             <p className={styles.linkDescription}>
@@ -360,12 +369,14 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                             </p>
                             <div className={styles.linkControls}>
                                 <input
+                                    id="cloudinary-folder-source"
                                     type="text"
                                     placeholder="Ej: mobiliario-oficina, o URL..."
                                     value={manualLinkFolder}
                                     onChange={(e) => setManualLinkFolder(e.target.value)}
                                     className={styles.linkInput}
                                     onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()}
+                                    aria-label="Carpeta o URL de Cloudinary"
                                 />
                                 <button
                                     type="button"
@@ -387,30 +398,35 @@ export default function UploadProduct({ categories = [], initialData = null, onC
 
                         <div className={styles.manualLinksGrid}>
                             <div className={styles.fieldGroup}>
-                                <label className={styles.compactLabel}>Imagen Principal (URL)</label>
+                                <label htmlFor="product-main-image" className={styles.compactLabel}>Imagen Principal (URL)</label>
                                 <input
+                                    id="product-main-image"
                                     type="text"
                                     value={mainImage}
                                     onChange={(e) => setMainImage(e.target.value)}
                                     placeholder="https://res.cloudinary.com/..."
                                     className={styles.textInput}
+                                    aria-label="Imagen principal del producto"
                                 />
                             </div>
                             <div className={styles.fieldGroup}>
-                                <label className={styles.compactLabel}>Imagen Hover (URL)</label>
+                                <label htmlFor="product-hover-image" className={styles.compactLabel}>Imagen Hover (URL)</label>
                                 <input
+                                    id="product-hover-image"
                                     type="text"
                                     value={hoverImage}
                                     onChange={(e) => setHoverImage(e.target.value)}
                                     placeholder="https://res.cloudinary.com/..."
                                     className={`${styles.textInput} ${styles.textInputPurpleFocus}`}
+                                    aria-label="Imagen hover del producto"
                                 />
                             </div>
                         </div>
 
                         <div className={styles.fieldGroup}>
-                            <label className={styles.compactLabel}>Imágenes del Carrusel (Una por línea o separadas por comas)</label>
+                            <label htmlFor="product-gallery-images" className={styles.compactLabel}>Imágenes del Carrusel (Una por línea o separadas por comas)</label>
                             <textarea
+                                id="product-gallery-images"
                                 value={galleryImages.join('\n')}
                                 onChange={(e) => {
                                     const val = e.target.value;
@@ -420,6 +436,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                                 rows={3}
                                 placeholder="Pega aquí todos los enlaces del carrusel..."
                                 className={`${styles.textInput} ${styles.textArea}`}
+                                aria-label="Imágenes del carrusel del producto"
                             />
                         </div>
                     </div>
@@ -437,9 +454,14 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                                 const isHover = hoverImage === imgUrl;
                                 return (
                                     <div key={idx} className={getGalleryItemClassName(styles, isMain)}>
-                                        <div className={styles.galleryImageWrapper} onClick={() => autoSaveImages(imgUrl, hoverImage)}>
+                                        <button
+                                            type="button"
+                                            className={styles.galleryImageWrapper}
+                                            onClick={() => autoSaveImages(imgUrl, hoverImage)}
+                                            aria-label={`Seleccionar imagen ${idx + 1} como principal`}
+                                        >
                                             <img src={imgUrl} alt={`Product ${idx}`} className={styles.galleryImage} />
-                                        </div>
+                                        </button>
 
                                         <div className={styles.galleryBadges}>
                                             {isMain && <span className={styles.mainBadge}>Principal</span>}
@@ -449,6 +471,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                                         <button
                                             type="button"
                                             className={styles.removeImageButton}
+                                            aria-label={`Eliminar imagen ${idx + 1}`}
                                             onClick={() => {
                                                 setGalleryImages((prev) => prev.filter((value) => value !== imgUrl));
                                                 if (isMain) setMainImage('');
@@ -482,26 +505,30 @@ export default function UploadProduct({ categories = [], initialData = null, onC
 
                 <div className={styles.formGrid}>
                     <div className={styles.fullWidthField}>
-                        <label className={styles.label}>Nombre del Producto *</label>
+                        <label htmlFor="product-name" className={styles.label}>Nombre del Producto *</label>
                         <input
+                            id="product-name"
                             type="text"
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
                             className={styles.textInput}
                             required
+                            aria-label="Nombre del producto"
                         />
                     </div>
 
                     <div className={styles.fieldGroup}>
-                        <label className={styles.label}>SKU</label>
+                        <label htmlFor="product-sku" className={styles.label}>SKU</label>
                         <div className={styles.inlineField}>
                             <input
+                                id="product-sku"
                                 type="text"
                                 name="sku"
                                 value={formData.sku}
                                 onChange={handleChange}
                                 className={styles.textInput}
+                                aria-label="SKU del producto"
                             />
                             <button
                                 type="button"
@@ -514,12 +541,14 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                     </div>
 
                     <div className={styles.fieldGroup}>
-                        <label className={styles.label}>Categoría</label>
+                        <label htmlFor="product-category-parent" className={styles.label}>Categoría</label>
                         <div className={styles.selectGroup}>
                             <select
+                                id="product-category-parent"
                                 value={selectedParentId}
                                 onChange={(e) => { setSelectedParentId(e.target.value); setSelectedSubId(''); }}
                                 className={styles.selectInput}
+                                aria-label="Categoría del producto"
                             >
                                 <option value="">
                                     {isFlatCategoryModel ? '— Seleccionar Categoría —' : '— Seleccionar Padre —'}
@@ -529,6 +558,8 @@ export default function UploadProduct({ categories = [], initialData = null, onC
 
                             {!isFlatCategoryModel && subCategories.length > 0 && (
                                 <select
+                                    id="product-category-child"
+                                    aria-label="Subcategoría"
                                     value={selectedSubId}
                                     onChange={(e) => setSelectedSubId(e.target.value)}
                                     className={`${styles.selectInput} ${styles.selectInputPrimary}`}
@@ -542,20 +573,23 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                 </div>
 
                 <div className={styles.fieldGroup}>
-                    <label className={styles.label}>Descripción</label>
+                    <label htmlFor="product-description" className={styles.label}>Descripción</label>
                     <textarea
+                        id="product-description"
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
                         rows={4}
                         className={`${styles.textInput} ${styles.textArea}`}
+                        aria-label="Descripción del producto"
                     />
                 </div>
 
                 <div className={styles.formGrid}>
                     <div className={styles.fieldGroup}>
-                        <label className={styles.label}>Precio Base (€) *</label>
+                        <label htmlFor="product-base-price" className={styles.label}>Precio Base (€) *</label>
                         <input
+                            id="product-base-price"
                             type="number"
                             name="base_price"
                             value={formData.base_price}
@@ -563,27 +597,30 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                             step="0.01"
                             className={styles.textInput}
                             required
+                            aria-label="Precio base del producto"
                         />
                     </div>
                     <div className={styles.fieldGroup}>
-                        <label className={styles.label}>Stock</label>
+                        <label htmlFor="product-stock-quantity" className={styles.label}>Stock</label>
                         <input
+                            id="product-stock-quantity"
                             type="number"
                             name="stock_quantity"
                             value={formData.stock_quantity}
                             onChange={handleChange}
                             className={styles.textInput}
+                            aria-label="Stock del producto"
                         />
                     </div>
                 </div>
 
                 <div className={styles.checkboxRow}>
-                    <label className={styles.checkboxLabel}>
-                        <input type="checkbox" name="is_adult_only" checked={formData.is_adult_only} onChange={handleChange} className={styles.checkbox} />
+                    <label htmlFor="product-is-adult-only" className={styles.checkboxLabel}>
+                        <input id="product-is-adult-only" type="checkbox" name="is_adult_only" checked={formData.is_adult_only} onChange={handleChange} className={styles.checkbox} aria-label="Producto solo para adultos" />
                         <span className={styles.checkboxText}>Solo adultos</span>
                     </label>
-                    <label className={styles.checkboxLabel}>
-                        <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleChange} className={styles.checkbox} />
+                    <label htmlFor="product-is-active" className={styles.checkboxLabel}>
+                        <input id="product-is-active" type="checkbox" name="is_active" checked={formData.is_active} onChange={handleChange} className={styles.checkbox} aria-label="Producto activo" />
                         <span className={styles.checkboxText}>Producto Activo</span>
                     </label>
                 </div>
