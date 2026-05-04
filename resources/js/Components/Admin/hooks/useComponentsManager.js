@@ -2,12 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { buildFileTree, flattenTree, parseColorsFromCss } from '@/Components/Admin/utils/managerUtils';
 import cssContent from '@/../css/global.css?raw';
 
-const EXCLUDED_COMPONENT_PATHS = new Set([
-    '/resources/js/Components/Configurator/Mannequin3DViewer/components/MannequinScene3D.jsx',
-]);
-
 const EXCLUDED_RAW_COMPONENT_PATHS = new Set([
-    ...EXCLUDED_COMPONENT_PATHS,
     '/resources/js/Components/Configurator/DollScene3D/DollScene3D.jsx',
 ]);
 
@@ -16,16 +11,39 @@ const filterImportMap = (importsMap, excludedPaths) => Object.fromEntries(
 );
 
 // Imports
-const componentImports = filterImportMap(
-    import.meta.glob('/resources/js/Components/**/*.jsx'),
-    EXCLUDED_COMPONENT_PATHS
-);
-const pageImports = import.meta.glob('/resources/js/Pages/**/*.jsx');
+const componentImports = import.meta.glob([
+    '/resources/js/Components/**/*.jsx',
+    '!/resources/js/Components/Admin/**/*.jsx',
+    '!/resources/js/Components/Toast/Toast.jsx',
+    '!/resources/js/Components/Configurator/DollDefaultConfigurator/DollDefaultConfigurator.jsx',
+    '!/resources/js/Components/Configurator/DollPartConfigurator/DollPartConfigurator.jsx',
+    '!/resources/js/Components/Configurator/DollZoomConfigurator/DollZoomConfigurator.jsx',
+    '!/resources/js/Components/Configurator/DollSectionOrderConfigurator/DollSectionOrderConfigurator.jsx',
+    '!/resources/js/Components/Configurator/DollManager/DollManager.jsx',
+    '!/resources/js/Components/Configurator/Mannequin3DViewer/components/MannequinScene3D.jsx',
+]);
+const pageImports = import.meta.glob([
+    '/resources/js/Pages/**/*.jsx',
+    '!/resources/js/Pages/Admin/**/*.jsx',
+]);
 const componentRawStart = filterImportMap(
-    import.meta.glob('/resources/js/Components/**/*.jsx', { query: '?raw', import: 'default' }),
+    import.meta.glob([
+        '/resources/js/Components/**/*.jsx',
+        '!/resources/js/Components/Admin/**/*.jsx',
+        '!/resources/js/Components/Toast/Toast.jsx',
+        '!/resources/js/Components/Configurator/DollDefaultConfigurator/DollDefaultConfigurator.jsx',
+        '!/resources/js/Components/Configurator/DollPartConfigurator/DollPartConfigurator.jsx',
+        '!/resources/js/Components/Configurator/DollZoomConfigurator/DollZoomConfigurator.jsx',
+        '!/resources/js/Components/Configurator/DollSectionOrderConfigurator/DollSectionOrderConfigurator.jsx',
+        '!/resources/js/Components/Configurator/DollManager/DollManager.jsx',
+        '!/resources/js/Components/Configurator/Mannequin3DViewer/components/MannequinScene3D.jsx',
+    ], { query: '?raw', import: 'default' }),
     EXCLUDED_RAW_COMPONENT_PATHS
 );
-const pageRawStart = import.meta.glob('/resources/js/Pages/**/*.jsx', { query: '?raw', import: 'default' });
+const pageRawStart = import.meta.glob([
+    '/resources/js/Pages/**/*.jsx',
+    '!/resources/js/Pages/Admin/**/*.jsx',
+], { query: '?raw', import: 'default' });
 const DYNAMIC_COLORS = parseColorsFromCss(cssContent);
 
 const toRelativePath = (path) => path

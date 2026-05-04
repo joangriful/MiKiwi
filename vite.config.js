@@ -66,9 +66,6 @@ export default defineConfig({
                         return 'headlessui-vendor';
                     }
 
-                    if (normalizedId.includes('lodash')) {
-                        return 'lodash-vendor';
-                    }
                 },
             },
         },
