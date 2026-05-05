@@ -4,14 +4,14 @@ import Header from '@/Components/Header/Header';
 import Footer from '@/Components/Footer/Footer';
 import styles from './Success.module.css';
 
-export default function Success() {
+export default function Success({ orderId }) {
     return (
         <div className={styles.root}>
             <Head title="Pedido Completado - MiKiwi" />
             <Header />
 
             <main className={styles.main}>
-                <CheckoutSuccessPanel />
+                <CheckoutSuccessPanel orderId={orderId} />
             </main>
 
             <Footer />

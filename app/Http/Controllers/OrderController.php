@@ -80,7 +80,9 @@ class OrderController extends Controller
             $validated['is_buy_now'] = $isBuyNow;
             $validated['payment_status'] = $this->resolvePaymentStatus->execute($validated['payment_intent_id'] ?? null);
 
-            $this->createOrder->execute($validated);
+            $order = $this->createOrder->execute($validated);
+            
+            session()->flash('last_order_id', $order->id);
 
             return redirect()->route('orders.success')->with('success', '¡Pedido realizado con éxito!');
         } catch (\Throwable $exception) {
@@ -94,7 +96,9 @@ class OrderController extends Controller
 
     public function success()
     {
-        return Inertia::render('Checkout/Success');
+        return Inertia::render('Checkout/Success', [
+            'orderId' => session('last_order_id'),
+        ]);
     }
 
     public function createPaymentIntent(Request $request)
@@ -118,7 +122,8 @@ class OrderController extends Controller
                 $cartData['total'],
                 'eur',
                 ['order_type' => $isBuyNow ? 'buy_now' : 'standard'],
-                $customer->id
+                $customer->id,
+                $request->boolean('save_card', false)
             );
 
             return response()->json([
@@ -153,5 +158,16 @@ class OrderController extends Controller
         }
 
         return back()->with('success', 'Pedido cancelado correctamente.');
+    }
+
+    public function invoice(Order $order)
+    {
+        $this->authorize('view', $order);
+
+        $order->load(['items.product', 'billingAddress', 'user']);
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.order', compact('order'));
+
+        return $pdf->download('factura-' . $order->order_number . '.pdf');
     }
 }

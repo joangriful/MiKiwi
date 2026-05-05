@@ -39,8 +39,12 @@ export default function CheckoutStepRenderer({
         setIsInternalProcessing(true);
 
         try {
+            const isSavedMethod = !!form.data.selected_payment_method;
+            const isTestToken = form.data.selected_payment_method?.startsWith("tok_");
+
             const { data: intentData } = await axios.post(route("payment-intent.create"), {
                 amount: Math.round(finalTotal * 100) / 100,
+                save_card: !isSavedMethod && !isTestToken,
             });
 
             const result = await stripe.confirmCardPayment(
@@ -149,7 +153,7 @@ function buildConfirmPaymentData(data, elements) {
 function buildOrderPayload(data, paymentIntentId) {
     return {
         payment_intent_id: paymentIntentId,
-        payment_method: data.payment_method || "card",
+        payment_method: data.payment_method || "stripe",
         pickup_point_id: data.pickup_point_id || null,
         shipping_method: data.shipping_method,
         shipping_address: {

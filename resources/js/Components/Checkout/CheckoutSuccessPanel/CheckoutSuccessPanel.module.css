@@ -45,7 +45,8 @@
 }
 
 .primaryAction,
-.secondaryAction {
+.secondaryAction,
+.invoiceAction {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -53,6 +54,25 @@
     border-radius: 1rem;
     font-weight: 900;
     transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    text-decoration: none;
+    gap: 0.5rem;
+}
+
+.invoiceAction {
+    background: var(--color-white);
+    color: var(--color-text-strong);
+    border: 2px solid var(--color-border-default);
+}
+
+.invoiceAction:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    transform: translateY(-0.125rem);
+}
+
+.actionIcon {
+    width: 1.25rem;
+    height: 1.25rem;
 }
 
 .primaryAction {
@@ -80,5 +100,6 @@
 @media (min-width: 640px) {
     .actions {
         flex-direction: row;
+        flex-wrap: wrap;
     }
 }
