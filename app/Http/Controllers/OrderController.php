@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Domain\Carts\Services\CartService;
 use App\Domain\Orders\Actions\CancelOrder;
 use App\Domain\Orders\Actions\CreateOrder;
+use App\Domain\Orders\Actions\GenerateOrderInvoice;
 use App\Domain\Orders\Actions\ResolveOrderPaymentStatus;
 use App\Domain\Orders\Services\OrderService;
 use App\Domain\Payments\Services\StripeService;
@@ -31,6 +32,7 @@ class OrderController extends Controller
         private readonly CancelOrder $cancelOrder,
         private readonly ResolveOrderPaymentStatus $resolvePaymentStatus,
         private readonly OrderService $orderService,
+        private readonly GenerateOrderInvoice $generateOrderInvoice,
     ) {}
 
     public function show(Order $order)
@@ -81,7 +83,7 @@ class OrderController extends Controller
             $validated['payment_status'] = $this->resolvePaymentStatus->execute($validated['payment_intent_id'] ?? null);
 
             $order = $this->createOrder->execute($validated);
-            
+
             session()->flash('last_order_id', $order->id);
 
             return redirect()->route('orders.success')->with('success', '¡Pedido realizado con éxito!');
@@ -164,10 +166,6 @@ class OrderController extends Controller
     {
         $this->authorize('view', $order);
 
-        $order->load(['items.product', 'billingAddress', 'user']);
-
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.order', compact('order'));
-
-        return $pdf->download('factura-' . $order->order_number . '.pdf');
+        return $this->generateOrderInvoice->execute($order);
     }
 }
