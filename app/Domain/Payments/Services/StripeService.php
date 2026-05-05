@@ -38,21 +38,20 @@ class StripeService
 
         if ($customerId) {
             $params['customer'] = $customerId;
-            
+
             // Only save if explicitly requested (usually for new cards)
             if ($saveCard) {
                 $params['setup_future_usage'] = 'off_session';
             }
         }
 
-        return PaymentIntent::create($params);
+        return $this->createStripePaymentIntent($params);
     }
 
     /**
      * Create or retrieve a Stripe Customer
      *
      * @param  \App\Models\User  $user
-     * @return \Stripe\Customer
      */
     public function getOrCreateCustomer($user): Customer
     {
@@ -100,7 +99,7 @@ class StripeService
      */
     public function listPaymentMethods($customerId)
     {
-        $methods = PaymentMethod::all([
+        $methods = $this->allStripePaymentMethods([
             'customer' => $customerId,
             'type' => 'card',
         ]);
@@ -111,7 +110,7 @@ class StripeService
 
         foreach ($methods->data as $method) {
             $fingerprint = $method->card->fingerprint ?? null;
-            
+
             if ($fingerprint && ! in_array($fingerprint, $fingerprints)) {
                 $uniqueMethods[] = $method;
                 $fingerprints[] = $fingerprint;
@@ -159,5 +158,24 @@ class StripeService
     public function getPaymentIntent($id)
     {
         return PaymentIntent::retrieve($id);
+    }
+
+    /**
+     * @param  array<string, mixed>  $params
+     */
+    protected function createStripePaymentIntent(array $params): PaymentIntent
+    {
+        /** @var PaymentIntent $paymentIntent */
+        $paymentIntent = PaymentIntent::create($params);
+
+        return $paymentIntent;
+    }
+
+    /**
+     * @param  array<string, mixed>  $params
+     */
+    protected function allStripePaymentMethods(array $params)
+    {
+        return PaymentMethod::all($params);
     }
 }
