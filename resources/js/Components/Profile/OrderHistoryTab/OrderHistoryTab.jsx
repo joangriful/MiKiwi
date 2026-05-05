@@ -113,6 +113,9 @@ export default function OrderHistoryTab({ orders = [] }) {
                                     <button type="button" onClick={() => setExpandedId(isExpanded ? null : order.id)} className={styles.linkAction}>
                                         {isExpanded ? 'Ocultar detalles' : 'Ver detalles'}
                                     </button>
+                                    <a href={route('orders.invoice', order.id)} target="_blank" rel="noopener noreferrer" className={styles.linkAction}>
+                                        Descargar factura
+                                    </a>
                                     {canCancel && (
                                         <button
                                             type="button"

@@ -93,6 +93,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/{order}', [OrderController::class, 'show'])
         ->name('orders.show');
 
+    // Descargar factura
+    Route::get('/orders/{order}/invoice/factura.pdf', [OrderController::class, 'invoice'])
+        ->name('orders.invoice');
+
     // Cancelar pedido
     Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])
         ->middleware('throttle:checkout-payment')

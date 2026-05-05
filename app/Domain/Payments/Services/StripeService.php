@@ -25,7 +25,7 @@ class StripeService
      * @param  string|null  $customerId  Stripe Customer ID
      * @return PaymentIntent
      */
-    public function createPaymentIntent($amount, $currency = 'eur', $metadata = [], $customerId = null)
+    public function createPaymentIntent($amount, $currency = 'eur', $metadata = [], $customerId = null, $saveCard = false)
     {
         $params = [
             'amount' => $amount * 100, // Stripe uses cents
@@ -38,7 +38,11 @@ class StripeService
 
         if ($customerId) {
             $params['customer'] = $customerId;
-            $params['setup_future_usage'] = 'off_session';
+            
+            // Only save if explicitly requested (usually for new cards)
+            if ($saveCard) {
+                $params['setup_future_usage'] = 'off_session';
+            }
         }
 
         return PaymentIntent::create($params);
@@ -96,10 +100,30 @@ class StripeService
      */
     public function listPaymentMethods($customerId)
     {
-        return PaymentMethod::all([
+        $methods = PaymentMethod::all([
             'customer' => $customerId,
             'type' => 'card',
         ]);
+
+        // Filter duplicates by fingerprint to keep the UI clean
+        $uniqueMethods = [];
+        $fingerprints = [];
+
+        foreach ($methods->data as $method) {
+            $fingerprint = $method->card->fingerprint ?? null;
+            
+            if ($fingerprint && ! in_array($fingerprint, $fingerprints)) {
+                $uniqueMethods[] = $method;
+                $fingerprints[] = $fingerprint;
+            } elseif (! $fingerprint) {
+                // If no fingerprint, keep it just in case
+                $uniqueMethods[] = $method;
+            }
+        }
+
+        $methods->data = $uniqueMethods;
+
+        return $methods;
     }
 
     /**

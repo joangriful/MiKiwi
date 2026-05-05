@@ -128,7 +128,7 @@ function createInitialCheckoutData(cart) {
         country: "España",
         shipping_method: "standard",
         pickup_point_id: null,
-        payment_method: "card",
+        payment_method: "stripe",
         selected_payment_method: null,
         payment_intent_id: null,
         billing_same_as_shipping: true,
