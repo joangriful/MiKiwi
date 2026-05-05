@@ -28,3 +28,11 @@ Thumbs.db
 *.ps
 /doll_parts_ps/
 mikiwi.bat
+
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*.php
+/resources/js/ziggy.js
+*.pdf
+invoice_check.php
