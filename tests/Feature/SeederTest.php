@@ -194,7 +194,7 @@ class SeederTest extends TestCase
             'email' => 'admin@kinky-toys.com',
             'role' => 'admin',
         ]);
-        $this->assertSame(2, Product::count());
+        $this->assertSame(count(ProductSeeder::productDefinitions()), Product::count());
         $this->assertSame(0, Order::count());
         $this->assertSame(0, Review::count());
         $this->assertSame(0, ChatSession::count());
