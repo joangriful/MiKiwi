@@ -268,16 +268,7 @@ class OrderControllerTest extends TestCase
         $this->shouldReceivePdfLoadView()
             ->once()
             ->with('invoices.order', Mockery::on(fn (array $data): bool => $data['order']->is($order)))
-            ->andReturn(new class
-            {
-                public function download(string $filename)
-                {
-                    return response('fake pdf', 200, [
-                        'Content-Type' => 'application/pdf',
-                        'Content-Disposition' => 'attachment; filename="'.$filename.'"',
-                    ]);
-                }
-            });
+            ->andReturn($this->fakePdfDownload());
     }
 
     private function expectPdfLoadViewNever(): void
@@ -294,6 +285,34 @@ class OrderControllerTest extends TestCase
         }
 
         return $facadeClass::shouldReceive('loadView');
+    }
+
+    private function fakePdfDownload(): mixed
+    {
+        $pdfClass = 'Barryvdh\\DomPDF\\PDF';
+
+        if (! class_exists($pdfClass)) {
+            return new class
+            {
+                public function download(string $filename)
+                {
+                    return response('fake pdf', 200, [
+                        'Content-Type' => 'application/pdf',
+                        'Content-Disposition' => 'attachment; filename="'.$filename.'"',
+                    ]);
+                }
+            };
+        }
+
+        $pdf = Mockery::mock($pdfClass);
+        $pdf->shouldReceive('download')
+            ->once()
+            ->andReturnUsing(fn (string $filename) => response('fake pdf', 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="'.$filename.'"',
+            ]));
+
+        return $pdf;
     }
 
     /**
