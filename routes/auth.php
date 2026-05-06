@@ -29,9 +29,11 @@ Route::middleware('guest')->group(function () {
     });
 
     Route::get('auth/google/redirect', [GoogleAuthController::class, 'redirect'])
+        ->middleware('throttle:auth-sensitive')
         ->name('auth.google.redirect');
 
     Route::get('auth/google/callback', [GoogleAuthController::class, 'callback'])
+        ->middleware('throttle:auth-sensitive')
         ->name('auth.google.callback');
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])

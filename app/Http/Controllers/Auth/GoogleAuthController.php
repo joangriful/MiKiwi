@@ -4,52 +4,49 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
+use App\Domain\Auth\Actions\FindOrCreateGoogleUser;
+use App\Domain\Auth\Actions\GoogleAuthEmailMissingException;
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Laravel\Socialite\Contracts\Provider;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\InvalidStateException;
 use Throwable;
 
 class GoogleAuthController extends Controller
 {
+    public function __construct(
+        private readonly FindOrCreateGoogleUser $findOrCreateGoogleUser,
+    ) {}
+
     public function redirect(): RedirectResponse
     {
-        return Socialite::driver('google')->redirect();
+        return $this->googleProvider()->redirect();
     }
 
     public function callback(): RedirectResponse
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
-            $email = $googleUser->getEmail();
-
-            if (! is_string($email) || trim($email) === '') {
-                return redirect()
-                    ->route('login')
-                    ->withErrors([
-                        'email' => 'No pudimos obtener tu correo de Google. Inténtalo con otro método.',
-                    ]);
-            }
-
-            $user = User::query()->where('email', $email)->first();
-
-            if (! $user) {
-                $displayName = $googleUser->getName() ?: $googleUser->getNickname() ?: 'Google User';
-
-                $user = User::query()->create([
-                    'name' => $displayName,
-                    'email' => $email,
-                    'password' => Str::random(64),
-                    'email_verified_at' => now(),
-                ]);
-            }
+            $googleUser = $this->googleProvider()->user();
+            $user = $this->findOrCreateGoogleUser->execute($googleUser);
 
             Auth::login($user);
             request()->session()->regenerate();
 
             return redirect()->route('home');
+        } catch (GoogleAuthEmailMissingException) {
+            return redirect()
+                ->route('login')
+                ->withErrors([
+                    'email' => 'No pudimos obtener tu correo de Google. Inténtalo con otro método.',
+                ]);
+        } catch (InvalidStateException) {
+            return redirect()
+                ->route('login')
+                ->withErrors([
+                    'email' => 'La sesión de Google ha caducado. Inténtalo de nuevo.',
+                ]);
         } catch (Throwable $exception) {
             report($exception);
 
@@ -59,5 +56,12 @@ class GoogleAuthController extends Controller
                     'email' => 'No se pudo iniciar sesión con Google. Inténtalo de nuevo.',
                 ]);
         }
+    }
+
+    private function googleProvider(): Provider
+    {
+        return Socialite::driver('google')
+            ->scopes(['openid', 'profile', 'email'])
+            ->with(['prompt' => 'select_account']);
     }
 }
