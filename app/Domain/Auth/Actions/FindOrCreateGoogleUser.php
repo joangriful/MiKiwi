@@ -42,7 +42,8 @@ class FindOrCreateGoogleUser
 
         $displayName = $googleUser->getName() ?: $googleUser->getNickname() ?: 'Google User';
 
-        return User::query()->create([
+        $user = new User;
+        $user->forceFill([
             'name' => $displayName,
             'email' => $email,
             'password' => Hash::make(Str::random(64)),
@@ -51,6 +52,9 @@ class FindOrCreateGoogleUser
             'email_verified_at' => now(),
             'profile_photo_url' => is_string($avatarUrl) && trim($avatarUrl) !== '' ? $avatarUrl : null,
         ]);
+        $user->save();
+
+        return $user;
     }
 
     private function normalizeEmail(mixed $email): ?string
