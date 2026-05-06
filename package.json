@@ -9,7 +9,7 @@
         "lint:frontend": "eslint \"resources/js/{app.jsx,Hooks/**/*.js,Layouts/AuthenticatedLayout.jsx,Pages/{Auth,Configurator,Profile}/**/*.jsx,Components/{AppErrorBoundary,Auth,Catalog,Checkout,Configurator,Dropdown,Profile}/**/*.{js,jsx}}\"",
         "lint:frontend:full": "eslint \"resources/js/**/*.{js,jsx}\"",
         "test:frontend:unit": "node resources/js/Utils/httpError.test.js",
-        "start": "concurrently \"php artisan serve\" \"npm run dev\""
+        "start": "concurrently \"php artisan serve --host=localhost --port=8001\" \"npm run dev\""
     },
     "devDependencies": {
         "@eslint/js": "^9.39.4",
