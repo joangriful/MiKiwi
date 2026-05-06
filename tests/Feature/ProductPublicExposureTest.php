@@ -86,12 +86,17 @@ class ProductPublicExposureTest extends TestCase
     public function test_catalog_page_does_not_expose_product_internal_fields(): void
     {
         $product = $this->createPublicProduct(['slug' => 'catalog-product']);
+        $this->createPublicProduct([
+            'slug' => 'catalog-configurable-product',
+            'product_type' => ProductType::Configurable->value,
+        ]);
 
         $this->get(route('products.index'))
             ->assertOk()
             ->assertInertia(fn ($page) => $page
                 ->component('Catalog/Products')
                 ->where('products.data.0.slug', $product->slug)
+                ->has('products.data', 1)
                 ->missing('products.data.0.category_id')
                 ->missing('products.data.0.stock_quantity')
                 ->missing('products.data.0.is_active')
@@ -107,12 +112,19 @@ class ProductPublicExposureTest extends TestCase
             'is_promoted' => true,
             'stock_quantity' => 10,
         ]);
+        $this->createPublicProduct([
+            'slug' => 'home-featured-component',
+            'is_promoted' => true,
+            'stock_quantity' => 10,
+            'product_type' => ProductType::Component->value,
+        ]);
 
         $this->get(route('home'))
             ->assertOk()
             ->assertInertia(fn ($page) => $page
                 ->component('Home/Home')
                 ->where('featuredProducts.0.slug', $product->slug)
+                ->has('featuredProducts', 1)
                 ->missing('featuredProducts.0.category_id')
                 ->missing('featuredProducts.0.stock_quantity')
                 ->missing('featuredProducts.0.is_active')
@@ -123,16 +135,26 @@ class ProductPublicExposureTest extends TestCase
 
     public function test_cart_page_does_not_expose_public_product_internal_fields(): void
     {
-        $product = $this->createPublicProduct([
-            'slug' => 'cart-product',
+        $product = $this->createPublicProduct(['slug' => 'cart-product']);
+        $hiddenProduct = $this->createPublicProduct([
+            'slug' => 'cart-component-product',
             'product_type' => ProductType::Component->value,
         ]);
         $popularProduct = $this->createPublicProduct(['slug' => 'popular-cart-product']);
+        $this->createPublicProduct([
+            'slug' => 'popular-configurable-product',
+            'product_type' => ProductType::Configurable->value,
+        ]);
 
         session([
             'shopping_cart' => [
                 $product->id => [
                     'slug' => $product->slug,
+                    'quantity' => 1,
+                    'accessories' => [],
+                ],
+                $hiddenProduct->id => [
+                    'slug' => $hiddenProduct->slug,
                     'quantity' => 1,
                     'accessories' => [],
                 ],
@@ -149,13 +171,20 @@ class ProductPublicExposureTest extends TestCase
                 ->missing('cart.items.0.product.is_active')
                 ->missing('cart.items.0.product.created_at')
                 ->missing('cart.items.0.product.updated_at')
-                ->where('popularProducts.0.slug', $popularProduct->slug)
+                ->has('cart.items', 1)
+                ->where('popularProducts.0.product_type', ProductType::Simple->value)
                 ->missing('popularProducts.0.category_id')
                 ->missing('popularProducts.0.stock_quantity')
                 ->missing('popularProducts.0.is_active')
                 ->missing('popularProducts.0.created_at')
                 ->missing('popularProducts.0.updated_at')
+                ->has('popularProducts', 2)
             );
+
+        $this->assertDatabaseHas('product', [
+            'id' => $popularProduct->id,
+            'product_type' => ProductType::Simple->value,
+        ]);
     }
 
     /**

@@ -36,6 +36,13 @@ class ProductCatalogControllerTest extends TestCase
             'stock_quantity' => 0,
         ]);
 
+        $this->createProduct([
+            'slug' => 'configurable-product',
+            'is_active' => true,
+            'stock_quantity' => 8,
+            'product_type' => ProductType::Configurable->value,
+        ]);
+
         $payload = $this->getJson('/api/products')
             ->assertOk()
             ->json('data');
@@ -82,6 +89,18 @@ class ProductCatalogControllerTest extends TestCase
             ->assertJson(['error' => 'Producto no encontrado']);
 
         $this->getJson('/api/products/inactive-product')
+            ->assertNotFound()
+            ->assertJson(['error' => 'Producto no encontrado']);
+    }
+
+    public function test_product_show_returns_not_found_for_non_simple_product(): void
+    {
+        $product = $this->createProduct([
+            'slug' => 'component-product',
+            'product_type' => ProductType::Component->value,
+        ]);
+
+        $this->getJson("/api/products/{$product->slug}")
             ->assertNotFound()
             ->assertJson(['error' => 'Producto no encontrado']);
     }

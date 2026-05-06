@@ -8,9 +8,12 @@ use App\Domain\Categories\Repositories\Interfaces\CategoryRepositoryInterface;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 
 class EloquentCategoryRepository implements CategoryRepositoryInterface
 {
+    public const NAVIGATION_CATEGORIES_CACHE_KEY = 'catalog.navigation_categories';
+
     private const ADMIN_ROOT_CATEGORY_SLUGS = [
         'estimulacion-externa',
         'estimulacion-interna',
@@ -38,7 +41,7 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
             ->with([
                 'parent',
                 'children' => fn ($query) => $query->active()->orderBy('name'),
-                'products' => fn ($query) => $query->active()->inStock(),
+                'products' => fn ($query) => $query->active()->simple()->inStock(),
             ])
             ->first();
     }
@@ -51,9 +54,9 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
         return Category::active()
             ->root()
             ->with([
-                'products' => fn ($query) => $query->active()->inStock()->limit(8),
+                'products' => fn ($query) => $query->active()->simple()->inStock()->limit(8),
                 'children' => fn ($query) => $query->active()->orderBy('name')->with([
-                    'products' => fn ($childProducts) => $childProducts->active()->inStock()->limit(8),
+                    'products' => fn ($childProducts) => $childProducts->active()->simple()->inStock()->limit(8),
                 ]),
             ])
             ->orderBy('name')
@@ -65,17 +68,30 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
      */
     public function getNavigationCategories(): Collection
     {
+        if (app()->runningUnitTests()) {
+            return $this->buildNavigationCategories();
+        }
+
+        return Cache::remember(
+            self::NAVIGATION_CATEGORIES_CACHE_KEY,
+            now()->addMinutes(30),
+            fn (): Collection => $this->buildNavigationCategories()
+        );
+    }
+
+    private function buildNavigationCategories(): Collection
+    {
         return Category::active()
             ->root()
             ->with([
                 'children' => fn ($query) => $query->active()
                     ->withCount([
-                        'products' => fn ($products) => $products->active()->inStock(),
+                        'products' => fn ($products) => $products->active()->simple()->inStock(),
                     ])
                     ->orderBy('name'),
             ])
             ->withCount([
-                'products' => fn ($query) => $query->active()->inStock(),
+                'products' => fn ($query) => $query->active()->simple()->inStock(),
             ])
             ->orderBy('name')
             ->get()
@@ -125,6 +141,7 @@ class EloquentCategoryRepository implements CategoryRepositoryInterface
 
         return \App\Models\Product::query()
             ->active()
+            ->simple()
             ->whereIn('category_id', $categoryIds)
             ->inStock()
             ->with('category')

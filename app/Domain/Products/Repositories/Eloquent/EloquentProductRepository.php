@@ -17,7 +17,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
      */
     private function activeProductsQuery(): Builder
     {
-        return Product::query()->active();
+        return Product::query()->active()->simple();
     }
 
     /**
@@ -119,10 +119,6 @@ class EloquentProductRepository implements ProductRepositoryInterface
     {
         return $this->activeProductsQuery()
             ->with('images')
-            ->whereIn('product_type', [
-                \App\Enums\ProductType::Configurable->value,
-                \App\Enums\ProductType::Simple->value,
-            ])
             ->limit($limit)
             ->get();
     }

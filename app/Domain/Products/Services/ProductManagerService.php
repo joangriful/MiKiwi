@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Domain\Products\Services;
 
+use App\Domain\Categories\Repositories\Eloquent\EloquentCategoryRepository;
 use App\Domain\Media\Services\CloudinaryService;
 use App\Domain\Products\Support\ProductImageUrlNormalizer;
 use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -41,6 +43,7 @@ class ProductManagerService
             ]);
 
             $this->syncProductImages($product, $validated['images'] ?? []);
+            $this->forgetCatalogCaches();
 
             return $product->fresh(['images']);
         });
@@ -65,6 +68,8 @@ class ProductManagerService
             if (array_key_exists('images', $validated)) {
                 $this->syncProductImages($product, $validated['images']);
             }
+
+            $this->forgetCatalogCaches();
         });
 
         return $product->fresh(['images']);
@@ -73,6 +78,7 @@ class ProductManagerService
     public function deleteProduct(Product $product): void
     {
         $product->delete();
+        $this->forgetCatalogCaches();
     }
 
     public function getProductImageUrls(string $productName): array
@@ -224,5 +230,12 @@ class ProductManagerService
                 'sort_order' => $index,
             ]);
         }
+    }
+
+    private function forgetCatalogCaches(): void
+    {
+        Cache::forget(EloquentCategoryRepository::NAVIGATION_CATEGORIES_CACHE_KEY);
+        Cache::forget(CatalogPageService::ACTIVE_SIMPLE_PRODUCTS_TOTAL_CACHE_KEY);
+        Cache::forever(CatalogPageService::CATALOG_PRODUCTS_VERSION_CACHE_KEY, (string) Str::uuid());
     }
 }

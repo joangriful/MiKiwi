@@ -14,10 +14,15 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class CatalogPageService
 {
+    public const ACTIVE_SIMPLE_PRODUCTS_TOTAL_CACHE_KEY = 'catalog.products.active_simple_total';
+
+    public const CATALOG_PRODUCTS_VERSION_CACHE_KEY = 'catalog.products.version';
+
     public function __construct(
         private readonly ProductService $productService,
         private readonly CategoryService $categoryService,
@@ -30,6 +35,7 @@ class CatalogPageService
 
         $relatedProducts = Product::query()
             ->active()
+            ->simple()
             ->where('category_id', $product->category_id)
             ->whereKeyNot($product->getKey())
             ->with(['category', 'images'])
@@ -47,7 +53,7 @@ class CatalogPageService
 
     public function getCatalogPageData(Request $request): array
     {
-        $query = Product::query()->active();
+        $query = Product::query()->active()->simple();
 
         $this->applyFilters($query, $request);
         $this->applySort($query, $request);
@@ -137,12 +143,97 @@ class CatalogPageService
     /**
      * @param  Builder<Product>  $query
      */
-    private function paginateProducts(Builder $query, Request $request): LengthAwarePaginator
+    private function paginateProducts(Builder $query, Request $request): array|LengthAwarePaginator
     {
-        $products = $query->with(['category', 'images'])->paginate(12)->withQueryString();
+        if ($this->canCacheCatalogProducts($request)) {
+            return Cache::remember(
+                $this->catalogProductsCacheKey($request),
+                now()->addMinutes(30),
+                fn (): array => $this->buildPaginatedProducts($query, $request)->toArray()
+            );
+        }
+
+        return $this->buildPaginatedProducts($query, $request);
+    }
+
+    /**
+     * @param  Builder<Product>  $query
+     */
+    private function buildPaginatedProducts(Builder $query, Request $request): LengthAwarePaginator
+    {
+        $total = $this->resolveCachedTotal($query, $request);
+
+        $products = $query
+            ->select([
+                'id',
+                'name',
+                'slug',
+                'sku',
+                'description',
+                'base_price',
+                'product_type',
+                'is_promoted',
+                'created_at',
+            ])
+            ->with([
+                'images' => fn ($images) => $images
+                    ->select(['id', 'product_id', 'image_url', 'alt_text', 'sort_order'])
+                    ->orderBy('sort_order'),
+            ])
+            ->paginate(12, ['*'], 'page', null, $total)
+            ->withQueryString();
         $products->through(fn (Product $product): array => ProductResource::make($product)->resolve($request));
 
         return $products;
+    }
+
+    /**
+     * @param  Builder<Product>  $query
+     */
+    private function resolveCachedTotal(Builder $query, Request $request): ?int
+    {
+        if ($this->hasTotalChangingFilters($request)) {
+            return null;
+        }
+
+        if (app()->runningUnitTests()) {
+            return (clone $query)->count();
+        }
+
+        return Cache::remember(
+            self::ACTIVE_SIMPLE_PRODUCTS_TOTAL_CACHE_KEY,
+            now()->addMinutes(30),
+            fn (): int => (clone $query)->count()
+        );
+    }
+
+    private function canCacheCatalogProducts(Request $request): bool
+    {
+        return ! app()->runningUnitTests()
+            && ! $this->hasTotalChangingFilters($request);
+    }
+
+    private function catalogProductsCacheKey(Request $request): string
+    {
+        return 'catalog.products.page.'.md5(json_encode([
+            'version' => $this->catalogProductsVersion(),
+            'page' => max(1, $request->integer('page', 1)),
+            'sort' => $request->input('sort', 'newest'),
+        ], JSON_THROW_ON_ERROR));
+    }
+
+    private function catalogProductsVersion(): string
+    {
+        return Cache::rememberForever(
+            self::CATALOG_PRODUCTS_VERSION_CACHE_KEY,
+            fn (): string => (string) Str::uuid()
+        );
+    }
+
+    private function hasTotalChangingFilters(Request $request): bool
+    {
+        return collect(['category', 'subCategory', 'min_price', 'max_price', 'search', 'featured'])
+            ->contains(fn (string $filter): bool => $request->filled($filter) || $request->boolean($filter));
     }
 
     /**

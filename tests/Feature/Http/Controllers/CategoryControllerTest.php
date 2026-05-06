@@ -52,6 +52,14 @@ class CategoryControllerTest extends TestCase
             'product_type' => ProductType::Simple->value,
         ]);
 
+        Product::factory()->create([
+            'category_id' => $subCategory->id,
+            'slug' => 'configurable-product',
+            'is_active' => true,
+            'stock_quantity' => 10,
+            'product_type' => ProductType::Configurable->value,
+        ]);
+
         $this->get(route('categories.show', $category->slug))
             ->assertOk()
             ->assertInertia(fn ($page) => $page
