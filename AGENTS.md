@@ -340,7 +340,7 @@ composer install
 npm install
 composer dev
 npm start
-php artisan serve
+php artisan serve --host=localhost --port=8001
 npm run dev
 npm run build
 composer test

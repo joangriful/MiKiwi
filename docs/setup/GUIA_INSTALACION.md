@@ -83,10 +83,10 @@ npm run start
 ```
 
 Esto ejecutará internamente:
-- `php artisan serve` (Backend)
+- `php artisan serve --host=localhost --port=8001` (Backend)
 - `npm run dev` (Vite / Frontend)
 
-Podrás acceder en: [http://localhost:8000](http://localhost:8000)
+Podrás acceder en: [http://localhost:8001](http://localhost:8001)
 
 ---
 

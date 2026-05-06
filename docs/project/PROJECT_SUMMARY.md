@@ -404,7 +404,7 @@ php artisan migrate --seed # Migrar y sembrar BD
 # Desarrollo
 composer dev             # Stack completo (server + queue + logs + vite)
 npm start               # Server + Vite
-php artisan serve       # Solo backend
+php artisan serve --host=localhost --port=8001 # Solo backend
 npm run dev             # Solo Vite
 
 # Build

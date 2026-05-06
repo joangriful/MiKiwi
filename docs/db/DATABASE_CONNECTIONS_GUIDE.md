@@ -56,7 +56,7 @@ Debe apuntar a la **base remota de Supabase**.
 
 Casos de uso:
 
-- `php artisan serve`
+- `php artisan serve --host=localhost --port=8001`
 - uso normal de la app
 - QA manual contra el entorno real
 - comandos artisan **sin** `--env=testing`
@@ -87,7 +87,7 @@ Y a nivel de comandos:
 - `php artisan test` -> base local de testing
 - `php artisan migrate:status --env=testing` -> base local de testing
 - `php artisan migrate:fresh --env=testing` -> base local de testing
-- `php artisan serve` -> base remota real
+- `php artisan serve --host=localhost --port=8001` -> base remota real
 - `php artisan migrate:status` -> base remota real
 
 Si **no** pasas `--env=testing`, Laravel usa `.env`.
@@ -266,7 +266,7 @@ Usar:
 Comandos:
 
 ```powershell
-php artisan serve
+php artisan serve --host=localhost --port=8001
 npm run dev
 ```
 

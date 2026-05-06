@@ -182,7 +182,7 @@ El `.env` normal debe apuntar a la base remota de Supabase.
 Uso:
 
 ```bash
-php artisan serve
+php artisan serve --host=localhost --port=8001
 npm run dev
 php artisan migrate:status
 ```
@@ -295,7 +295,7 @@ Desarrollo:
 ```bash
 composer dev
 npm start
-php artisan serve
+php artisan serve --host=localhost --port=8001
 npm run dev
 ```
 
