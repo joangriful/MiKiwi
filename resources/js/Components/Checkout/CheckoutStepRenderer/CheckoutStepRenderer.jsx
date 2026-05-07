@@ -15,6 +15,7 @@ export default function CheckoutStepRenderer({
     step,
     nextStep,
     prevStep,
+    isBuyNow,
     form,
     popularProducts,
     finalTotal,
@@ -89,7 +90,7 @@ export default function CheckoutStepRenderer({
     return (
         <div className={styles.root}>
             {step === 1 ? (
-                <CartStep cart={cart} onNext={nextStep} popularProducts={popularProducts} />
+                <CartStep cart={cart} onNext={nextStep} popularProducts={popularProducts} isBuyNow={isBuyNow} />
             ) : null}
 
             {step === 2 ? (

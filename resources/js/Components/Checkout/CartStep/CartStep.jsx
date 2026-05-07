@@ -93,7 +93,7 @@ function EmptyCart({ popularProducts, addToCart }) {
     );
 }
 
-export default function CartStep({ cart, popularProducts = [] }) {
+export default function CartStep({ cart, popularProducts = [], isBuyNow = false }) {
     const { delete: destroy, processing } = useForm();
 
     const addToCart = (product) => {
@@ -126,6 +126,7 @@ export default function CartStep({ cart, popularProducts = [] }) {
     const removeItem = (id) => {
         if (confirm("¿Estás seguro de eliminar este producto?")) {
             destroy(route("cart.remove", id), {
+                data: isBuyNow ? { buy_now: 1 } : {},
                 preserveScroll: true,
             });
         }
@@ -176,8 +177,21 @@ export default function CartStep({ cart, popularProducts = [] }) {
                                     </Link>
 
                                     <p className={styles.itemUnitPrice}>
-                                        PRECIO: {parseFloat(item.product.base_price).toFixed(2)} €
+                                        PRECIO: {parseFloat(item.unit_price ?? item.product.base_price).toFixed(2)} €
                                     </p>
+
+                                    {item.configuration?.entries?.length > 0 ? (
+                                        <ul className={styles.itemMetaList}>
+                                            {item.configuration.entries.map((entry) => (
+                                                <li key={`${item.product_id}-${entry.view}-${entry.category}`} className={styles.itemMetaRow}>
+                                                    <span>{entry.category}</span>
+                                                    <span>
+                                                        {entry.has_special_price ? `+${parseFloat(entry.extra_price).toFixed(2)} €` : 'Incluido'}
+                                                    </span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : null}
 
                                     <button
                                         type="button"
@@ -224,7 +238,7 @@ export default function CartStep({ cart, popularProducts = [] }) {
                                 </div>
 
                                 <div className={styles.itemTotal}>
-                                    {(item.product.base_price * item.quantity).toFixed(2)}
+                                    {parseFloat(item.subtotal ?? ((item.unit_price ?? item.product.base_price) * item.quantity)).toFixed(2)}
                                     <span className={styles.currency}>€</span>
                                 </div>
                             </div>

@@ -46,7 +46,13 @@ export function calculateCheckoutTotals({ cart, shippingMethod, step, coupon }) 
 
 function calculateItemsTotal(items) {
     return items.reduce((sum, item) => {
-        const price = Number.parseFloat(item?.product?.base_price) || 0;
+        const subtotal = Number.parseFloat(item?.subtotal);
+
+        if (Number.isFinite(subtotal)) {
+            return sum + subtotal;
+        }
+
+        const price = Number.parseFloat(item?.unit_price ?? item?.product?.base_price) || 0;
         const quantity = Number.parseInt(item?.quantity, 10) || 0;
 
         return sum + price * quantity;

@@ -155,7 +155,14 @@
 
 .selectorShell {
     flex: 1;
-    overflow: hidden;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.selectorContent {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
 }
 
 .readyView {

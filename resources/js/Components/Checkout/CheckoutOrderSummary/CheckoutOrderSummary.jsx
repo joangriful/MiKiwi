@@ -71,7 +71,7 @@ function SummaryHeader({ isBuyNow }) {
 }
 
 function OrderSummaryItem({ item, onRemoveItem }) {
-    const lineTotal = (Number.parseFloat(item.product.base_price) * item.quantity).toFixed(2);
+    const lineTotal = Number.parseFloat(item.subtotal ?? ((item.unit_price ?? item.product.base_price) * item.quantity)).toFixed(2);
 
     return (
         <div className={styles.item}>
@@ -90,6 +90,17 @@ function OrderSummaryItem({ item, onRemoveItem }) {
                         Quitar
                     </button>
                 </div>
+
+                {item.configuration?.entries?.length > 0 ? (
+                    <div className={styles.itemConfiguration}>
+                        {item.configuration.entries.map((entry) => (
+                            <div key={`${item.product_id}-${entry.view}-${entry.category}`} className={styles.itemConfigurationRow}>
+                                <span>{entry.category}</span>
+                                <span>{entry.has_special_price ? `+${Number.parseFloat(entry.extra_price).toFixed(2)} €` : 'Incluido'}</span>
+                            </div>
+                        ))}
+                    </div>
+                ) : null}
             </div>
 
             <div className={styles.lineTotal}>{lineTotal} €</div>

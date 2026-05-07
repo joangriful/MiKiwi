@@ -140,6 +140,25 @@
     letter-spacing: 0.2em;
 }
 
+.itemMetaList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin: 0.85rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.itemMetaRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--color-text-subtle);
+    font-size: 0.78rem;
+    line-height: 1.35;
+}
+
 .removeButton {
     display: inline-flex;
     align-items: center;

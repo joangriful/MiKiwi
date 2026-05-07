@@ -93,6 +93,7 @@ export default function Cart({
 
     const handleRemoveItem = (itemId) => {
         form.delete(route("cart.remove", itemId), {
+            data: isBuyNow ? { buy_now: 1 } : {},
             preserveScroll: true,
         });
     };
@@ -112,6 +113,7 @@ export default function Cart({
                             step={step}
                             nextStep={nextStep}
                             prevStep={prevStep}
+                            isBuyNow={isBuyNow}
                             form={form}
                             popularProducts={popularProducts}
                             finalTotal={totals.finalTotal}

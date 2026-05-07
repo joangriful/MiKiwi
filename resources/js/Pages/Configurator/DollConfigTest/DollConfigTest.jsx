@@ -2,8 +2,20 @@ import React, { useState, useEffect, useMemo, useRef, Suspense, useCallback } fr
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
 import ConfiguratorLayout from '@/Layouts/ConfiguratorLayout';
+import DollSelectionSummary from '@/Components/Configurator/DollSelectionSummary/DollSelectionSummary';
 import { use3DPreload } from '@/Components/Configurator/hooks/use3DPreload';
 import { loadMannequin3DViewer } from '@/Components/Configurator/utils/lazyLoaders';
+import {
+    buildConfigurationPayload,
+    calculateConfigurationTotal,
+    ensurePreselectedSelections,
+    filterHiddenPartsFromSelections,
+    filterHiddenPartsFromViews,
+    getCategoryLabel,
+    getConfigurationEntries,
+    getMissingRequiredCategories,
+    getPartExtraPrice,
+} from '@/Components/Configurator/utils/dollCustomization';
 import LoadingScreen from '@/Components/Configurator/Common/LoadingScreen';
 import PreviewArea from '@/Components/Configurator/PreviewArea/PreviewArea';
 import PartSelector from '@/Components/Configurator/PartSelector/PartSelector';
@@ -14,12 +26,14 @@ import styles from './DollConfigTest.module.css';
 
 // Pre-load the 3D viewer chunk
 const Mannequin3DViewer = React.lazy(loadMannequin3DViewer);
+const DEFAULT_DOLL_BASE_PRICE = 2000;
 
-export default function DollConfigTest({ views, defaultSettings, partPositions: initialPartPositions }) {
+export default function DollConfigTest({ views, defaultSettings, partPositions: initialPartPositions, dollProduct, configuratorRules }) {
     // 1. Shared Logic & Network Pre-fetching (Only fetches files to cache, no CPU parsing)
     const { handle2DReady } = use3DPreload(views, defaultSettings);
 
     // 2. State
+    const sanitizedViews = useMemo(() => filterHiddenPartsFromViews(views || {}), [views]);
     const [activeTab, setActiveTab] = useState('customize');
     const [allSelections, setAllSelections] = useState({ front: {}, back: {} });
     const [currentView, setCurrentView] = useState('front');
@@ -27,6 +41,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
     const [viewportInfo, setViewportInfo] = useState(null);
     const [partPositions, setPartPositions] = useState(initialPartPositions || {});
     const [topSectionHeight, setTopSectionHeight] = useState(65);
+    const [isSubmittingPurchase, setIsSubmittingPurchase] = useState(false);
     
     // Activity Tracker to prevent UI Jank
     const [canStartBackgroundWarming, setCanStartBackgroundWarming] = useState(false);
@@ -61,8 +76,9 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
 
     useEffect(() => {
         const defaults = defaultSettings?.selections || { front: {}, back: {} };
-        setAllSelections(defaults.front || defaults.back ? defaults : { front: defaults, back: {} });
-    }, [defaultSettings]);
+        const normalizedDefaults = defaults.front || defaults.back ? defaults : { front: defaults, back: {} };
+        setAllSelections(ensurePreselectedSelections(sanitizedViews, filterHiddenPartsFromSelections(normalizedDefaults), configuratorRules));
+    }, [defaultSettings, sanitizedViews, configuratorRules]);
 
     useEffect(() => {
         // Initial timer
@@ -116,19 +132,75 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
         setAllSelections(prev => {
             const next = { ...prev };
             const current = { ...(next[currentView] || {}) };
-            if (!item) delete current[category]; else current[category] = item;
+            const isLockedCategory = configuratorRules?.preselectedCategories?.includes(category);
+
+            if (!item) {
+                if (isLockedCategory) {
+                    return prev;
+                }
+
+                delete current[category];
+            } else {
+                current[category] = item;
+            }
+
             next[currentView] = current;
-            return next;
+            return ensurePreselectedSelections(sanitizedViews, next, configuratorRules);
         });
     };
 
     // 4. Selectors
-    const availableParts = useMemo(() => views?.[currentView] || {}, [views, currentView]);
+    const availableParts = useMemo(() => sanitizedViews?.[currentView] || {}, [sanitizedViews, currentView]);
     const selectedParts = useMemo(() => allSelections[currentView] || {}, [allSelections, currentView]);
     const sectionOrder = useMemo(() => defaultSettings?.sectionOrder || [], [defaultSettings]);
     const defaultZoom = useMemo(() => defaultSettings?.zoom || null, [defaultSettings]);
+    const configurationEntries = useMemo(() => getConfigurationEntries(allSelections, configuratorRules), [allSelections, configuratorRules]);
+    const missingRequiredCategories = useMemo(
+        () => getMissingRequiredCategories(allSelections, configuratorRules).map(getCategoryLabel),
+        [allSelections, configuratorRules],
+    );
+    const baseDollPrice = Number(dollProduct?.base_price ?? DEFAULT_DOLL_BASE_PRICE);
+    const totals = useMemo(
+        () => calculateConfigurationTotal(baseDollPrice, configurationEntries),
+        [baseDollPrice, configurationEntries],
+    );
+    const canPurchase = Boolean(dollProduct?.slug) && missingRequiredCategories.length === 0;
+    const purchaseDisabledReason = !dollProduct?.slug
+        ? 'No hay una muñeca configurable disponible para compra en este momento.'
+        : missingRequiredCategories.length > 0
+            ? 'Completa todas las categorias obligatorias para comprar tu muñeca.'
+            : null;
 
     if (!views || !defaultSettings) return <LoadingScreen />;
+
+    const handleResetSelections = () => {
+        const defaults = defaultSettings?.selections || { front: {}, back: {} };
+        const normalizedDefaults = defaults.front || defaults.back ? defaults : { front: defaults, back: {} };
+        setAllSelections(ensurePreselectedSelections(sanitizedViews, filterHiddenPartsFromSelections(normalizedDefaults), configuratorRules));
+    };
+
+    const handlePurchase = async () => {
+        if (!canPurchase || !dollProduct?.slug) {
+            return;
+        }
+
+        setIsSubmittingPurchase(true);
+
+        try {
+            const payload = {
+                product_slug: dollProduct.slug,
+                quantity: 1,
+                configuration: buildConfigurationPayload(allSelections),
+            };
+
+            const { data } = await axios.post(route('cart.buy-now'), payload);
+
+            window.location.href = data.redirect || route('cart.index', { buy_now: 1 });
+        } catch (error) {
+            console.error('No pudimos preparar la compra de la muñeca:', error);
+            setIsSubmittingPurchase(false);
+        }
+    };
 
     const handleTabChange = (tab) => {
         if (tab === 'ready') {
@@ -242,16 +314,32 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                             </div>
 
                             <div className={styles.selectorShell}>
-                                <PartSelector
-                                    parts={availableParts}
-                                    selectedParts={selectedParts}
-                                    onSelect={handleSelectPart}
-                                    sectionOrder={sectionOrder}
-                                    showImages={true}
-                                    partPositions={partPositions}
-                                    currentView={currentView}
-                                    onSavePosition={handleSavePosition}
-                                />
+                                <div className={styles.selectorContent}>
+                                    <PartSelector
+                                        parts={availableParts}
+                                        selectedParts={selectedParts}
+                                        onSelect={handleSelectPart}
+                                        sectionOrder={sectionOrder}
+                                        showImages={true}
+                                        partPositions={partPositions}
+                                        currentView={currentView}
+                                        onSavePosition={handleSavePosition}
+                                        clearDisabledCategories={configuratorRules?.preselectedCategories || []}
+                                        getItemPrice={(category, item) => getPartExtraPrice(category, item, configuratorRules)}
+                                    />
+                                    <DollSelectionSummary
+                                        dollProduct={dollProduct}
+                                        baseDollPrice={baseDollPrice}
+                                        entries={configurationEntries}
+                                        totals={totals}
+                                        missingCategories={missingRequiredCategories}
+                                        canPurchase={canPurchase}
+                                        purchaseDisabledReason={purchaseDisabledReason}
+                                        onReset={handleResetSelections}
+                                        onPurchase={handlePurchase}
+                                        isSubmitting={isSubmittingPurchase}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </>

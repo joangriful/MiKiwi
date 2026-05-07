@@ -144,6 +144,23 @@
     letter-spacing: 0.12em;
 }
 
+.itemConfiguration {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: 0.75rem;
+}
+
+.itemConfigurationRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    color: var(--color-text-subtle);
+    font-size: 0.72rem;
+    line-height: 1.35;
+}
+
 .removeButton {
     border: 0;
     background: transparent;
