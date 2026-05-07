@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useId, useState } from 'react';
 import Cropper from 'react-easy-crop';
 import styles from './ImageEditorModal.module.css';
 
@@ -11,6 +11,7 @@ export default function ImageEditorModal({
     type = 'profile',
     existingImageUrl = null,
 }) {
+    const fileInputId = useId();
     const [imageUrl, setImageUrl] = useState(existingImageUrl);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
@@ -18,6 +19,22 @@ export default function ImageEditorModal({
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [saving, setSaving] = useState(false);
     const [dragActive, setDragActive] = useState(false);
+    const editorLabel = type === 'banner' ? 'banner' : 'foto de perfil';
+    const maxFileSizeLabel = type === 'banner' ? '10 MB' : '5 MB';
+
+    useEffect(() => {
+        if (!isOpen) {
+            return;
+        }
+
+        setImageUrl(existingImageUrl);
+        setCrop({ x: 0, y: 0 });
+        setZoom(1);
+        setRotation(0);
+        setCroppedAreaPixels(null);
+        setSaving(false);
+        setDragActive(false);
+    }, [existingImageUrl, isOpen, type]);
 
     const onCropComplete = useCallback((_, areaPixels) => {
         setCroppedAreaPixels(areaPixels);
@@ -29,13 +46,13 @@ export default function ImageEditorModal({
         }
 
         if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
-            onError(`Selecciona una imagen en formato JPG o PNG para tu ${type === 'banner' ? 'banner' : 'foto de perfil'}.`);
+            onError(`Selecciona una imagen en formato JPG o PNG para tu ${editorLabel}.`);
             return;
         }
 
         const maxSize = type === 'banner' ? 10 * 1024 * 1024 : 5 * 1024 * 1024;
         if (file.size > maxSize) {
-            onError(`La imagen es demasiado grande. El tamaño máximo para tu ${type === 'banner' ? 'banner' : 'foto de perfil'} es de ${type === 'banner' ? '10 MB' : '5 MB'}.`);
+            onError(`La imagen es demasiado grande. El tamaño máximo para tu ${editorLabel} es de ${maxFileSizeLabel}.`);
             return;
         }
 
@@ -71,6 +88,8 @@ export default function ImageEditorModal({
         if (event.target.files && event.target.files[0]) {
             handleFileSelect(event.target.files[0]);
         }
+
+        event.target.value = '';
     };
 
     const createImage = (url) =>
@@ -152,14 +171,14 @@ export default function ImageEditorModal({
                         {type === 'banner' ? 'Editar Banner' : 'Editar Foto de Perfil'}
                     </h2>
                     <button type="button" onClick={handleClose} className={styles.closeButton} aria-label="Cerrar editor de imagen">
-                        <span className={styles.materialIconLarge}>close</span>
+                        <span className={styles.materialIcon}>close</span>
                     </button>
                 </div>
 
                 {!imageUrl ? (
                     <div className={styles.emptyArea}>
                         <label
-                            htmlFor="file-input-editor"
+                            htmlFor={fileInputId}
                             aria-label="Seleccionar imagen"
                             onDragEnter={handleDrag}
                             onDragLeave={handleDrag}
@@ -181,11 +200,11 @@ export default function ImageEditorModal({
                                 </div>
                                 <div className={styles.dropZoneMeta}>
                                     <p>Formatos soportados: JPEG, JPG, PNG</p>
-                                    <p>Tamaño máximo: {type === 'banner' ? '10MB' : '5MB'}</p>
+                                    <p>Tamaño máximo: {maxFileSizeLabel}</p>
                                 </div>
                             </div>
                             <input
-                                id="file-input-editor"
+                                id={fileInputId}
                                 aria-label="Seleccionar imagen"
                                 type="file"
                                 onChange={handleFileInput}
@@ -237,14 +256,14 @@ export default function ImageEditorModal({
                                     Rotación: {rotation}°
                                 </span>
                                 <div className={styles.rotationActions}>
-                                    <button type="button" onClick={() => setRotation((value) => value - 90)} className={styles.secondaryAction}>
+                                    <button type="button" onClick={() => setRotation((value) => value - 90)} className={styles.ghostAction}>
                                         <span className={styles.materialIcon}>rotate_left</span>
                                         -90°
                                     </button>
-                                    <button type="button" onClick={() => setRotation(0)} className={styles.secondaryAction}>
+                                    <button type="button" onClick={() => setRotation(0)} className={styles.ghostAction}>
                                         Reset
                                     </button>
-                                    <button type="button" onClick={() => setRotation((value) => value + 90)} className={styles.secondaryAction}>
+                                    <button type="button" onClick={() => setRotation((value) => value + 90)} className={styles.ghostAction}>
                                         <span className={styles.materialIcon}>rotate_right</span>
                                         +90°
                                     </button>
@@ -252,10 +271,10 @@ export default function ImageEditorModal({
                             </div>
 
                             <div className={styles.footerActions}>
-                                <button type="button" onClick={() => setImageUrl(null)} className={styles.secondaryAction}>
+                                <button type="button" onClick={() => setImageUrl(null)} className={styles.neutralAction}>
                                     Cambiar Imagen
                                 </button>
-                                <button type="button" onClick={handleClose} disabled={saving} className={styles.secondaryActionGrow}>
+                                <button type="button" onClick={handleClose} disabled={saving} className={styles.cancelAction}>
                                     Cancelar
                                 </button>
                                 <button type="button" onClick={handleSave} disabled={saving} className={styles.primaryAction}>

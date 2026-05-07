@@ -26,7 +26,9 @@ class User extends Authenticatable
         'role',
         'is_active',
         'profile_photo_url',
+        'profile_photo_public_id',
         'banner_url',
+        'banner_public_id',
         'stripe_customer_id',
         'quiz_result_category',
     ];

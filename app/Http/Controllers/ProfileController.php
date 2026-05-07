@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Media\Services\CloudinaryService;
+use App\Domain\Profile\Services\ProfileImageService;
 use App\Domain\Profile\Services\ProfilePageService;
 use App\Http\Controllers\Concerns\InteractsWithApiErrors;
 use App\Http\Requests\ProfileUpdateRequest;
@@ -19,14 +19,10 @@ class ProfileController extends Controller
 {
     use InteractsWithApiErrors;
 
-    protected $cloudinaryService;
-
     public function __construct(
-        CloudinaryService $cloudinaryService,
+        private readonly ProfileImageService $profileImageService,
         private readonly ProfilePageService $profilePageService,
-    ) {
-        $this->cloudinaryService = $cloudinaryService;
-    }
+    ) {}
 
     /**
      * Display the user's profile form.
@@ -91,28 +87,11 @@ class ProfileController extends Controller
         ]);
 
         try {
-            $user = $request->user();
-
-            // Delete old image from Cloudinary if exists
-            if ($user->profile_photo_public_id) {
-                $this->cloudinaryService->deleteImage($user->profile_photo_public_id);
-            }
-
-            // Upload new image to Cloudinary
-            $cloudinaryResponse = $this->cloudinaryService->uploadImage(
-                $request->file('image'),
-                'profile_photos'
-            );
-
-            // Update user record
-            $user->update([
-                'profile_photo_url' => $cloudinaryResponse['secure_url'],
-                'profile_photo_public_id' => $cloudinaryResponse['public_id'],
-            ]);
+            $profilePhotoUrl = $this->profileImageService->replaceProfileImage($request->user(), $request->file('image'));
 
             return response()->json([
                 'success' => true,
-                'profile_photo_url' => $cloudinaryResponse['secure_url'],
+                'profile_photo_url' => $profilePhotoUrl,
             ]);
         } catch (\Exception $e) {
             Log::error('Profile image upload failed: '.$e->getMessage());
@@ -135,28 +114,11 @@ class ProfileController extends Controller
         ]);
 
         try {
-            $user = $request->user();
-
-            // Delete old banner from Cloudinary if exists
-            if ($user->banner_public_id) {
-                $this->cloudinaryService->deleteImage($user->banner_public_id);
-            }
-
-            // Upload new banner to Cloudinary
-            $cloudinaryResponse = $this->cloudinaryService->uploadImage(
-                $request->file('image'),
-                'profile_banners'
-            );
-
-            // Update user record
-            $user->update([
-                'banner_url' => $cloudinaryResponse['secure_url'],
-                'banner_public_id' => $cloudinaryResponse['public_id'],
-            ]);
+            $bannerUrl = $this->profileImageService->replaceBanner($request->user(), $request->file('image'));
 
             return response()->json([
                 'success' => true,
-                'banner_url' => $cloudinaryResponse['secure_url'],
+                'banner_url' => $bannerUrl,
             ]);
         } catch (\Exception $e) {
             Log::error('Banner upload failed: '.$e->getMessage());

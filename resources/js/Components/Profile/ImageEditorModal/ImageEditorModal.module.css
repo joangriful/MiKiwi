@@ -1,5 +1,3 @@
-.root {}
-
 .overlay {
     position: fixed;
     inset: 0;
@@ -7,101 +5,137 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgb(0 0 0 / 90%);
+    padding: 1rem;
+    background: rgb(17 24 39 / 78%);
+    backdrop-filter: blur(10px);
 }
 
 .dialog {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    max-width: 72rem;
-    max-height: 100vh;
-    height: 100%;
-    padding: 2rem;
+    width: min(100%, 68rem);
+    max-height: calc(100vh - 2rem);
+    overflow: hidden;
+    border: 1px solid var(--color-border-default);
+    border-radius: 1.5rem;
+    background: var(--color-white);
+    box-shadow: 0 30px 90px rgb(0 0 0 / 35%);
 }
 
 .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1rem;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--color-border-default);
+    background: var(--color-surface-subtle);
 }
 
 .title {
     margin: 0;
-    color: var(--color-white);
-    font-size: 1.5rem;
-    font-weight: 700;
+    color: var(--color-text-strongest);
+    font-size: 1rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
 }
 
 .closeButton {
-    color: var(--color-white);
-    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--color-border-default);
+    border-radius: 999px;
+    background: var(--color-white);
+    color: var(--color-text-strong);
+    box-shadow: var(--shadow-sm);
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-.closeButton:hover {
-    color: var(--color-border-strong);
+.closeButton:hover,
+.closeButton:focus-visible {
+    border-color: var(--color-danger-border);
+    background: var(--color-danger-bg);
+    color: var(--color-danger);
+    outline: none;
 }
 
 .emptyArea {
     display: flex;
-    flex: 1;
+    min-height: 32rem;
     align-items: center;
     justify-content: center;
+    padding: 2rem;
 }
 
 .dropZone {
-    width: 100%;
-    max-width: 42rem;
-    padding: 4rem;
-    border: 4px dashed;
-    border-radius: 1.5rem;
+    width: min(100%, 42rem);
+    padding: 3rem;
+    border: 2px dashed;
+    border-radius: 1rem;
     cursor: pointer;
-    transition: var(--transition);
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .dropZoneActive {
     border-color: var(--color-primary);
     background: var(--color-primary-soft);
+    box-shadow: 0 0 0 6px var(--color-primary-ring);
 }
 
 .dropZoneIdle {
-    border-color: var(--color-surface-disabled);
-    background: var(--color-surface-subtle-transparent);
+    border-color: var(--color-border-strong);
+    background: var(--color-surface-subtle);
 }
 
-.dropZoneIdle:hover {
-    border-color: var(--color-border-default);
+.dropZoneIdle:hover,
+.dropZoneIdle:focus-within {
+    border-color: var(--color-primary);
+    background: var(--color-white);
+    box-shadow: 0 0 0 6px var(--color-primary-ring);
 }
 
 .dropZoneContent {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1.25rem;
     text-align: center;
 }
 
 .dropZoneIcon {
-    color: var(--color-text-subtle);
+    color: var(--color-primary);
 }
 
 .dropZoneTitle {
     margin: 0 0 0.5rem;
-    color: var(--color-white);
-    font-size: 1.5rem;
-    font-weight: 700;
+    color: var(--color-text-strongest);
+    font-size: 1.25rem;
+    font-weight: 900;
 }
 
 .dropZoneSubtitle {
     margin: 0;
-    color: var(--color-text-subtle);
-    font-size: 1.125rem;
+    color: var(--color-text-soft);
+    font-size: 0.95rem;
+    font-weight: 700;
 }
 
 .dropZoneMeta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1rem;
     color: var(--color-text-muted-ui);
-    font-size: 0.875rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.dropZoneMeta p {
+    margin: 0;
 }
 
 .hiddenInput {
@@ -110,31 +144,34 @@
 
 .cropperArea {
     position: relative;
+    min-height: 28rem;
     flex: 1;
-    margin-bottom: 1rem;
     overflow: hidden;
-    border-radius: 0.75rem;
-    background: #111827;
+    background: var(--color-text-strongest);
 }
 
 .controlsPanel {
-    padding: 1.5rem;
-    border-radius: 0.75rem;
-    background: #1f2937;
+    display: grid;
+    gap: 1.25rem;
+    padding: 1.25rem 1.5rem 1.5rem;
+    border-top: 1px solid var(--color-border-default);
+    background: var(--color-white);
 }
 
-.controlGroup + .controlGroup {
-    margin-top: 1rem;
+.controlGroup {
+    display: grid;
+    gap: 0.75rem;
 }
 
 .controlLabel {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 0.5rem;
-    color: var(--color-white);
-    font-size: 0.875rem;
-    font-weight: 600;
+    color: var(--color-text-strong);
+    font-size: 0.82rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
 }
 
 .slider {
@@ -146,56 +183,95 @@
 
 .rotationActions {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.75rem;
 }
 
-.secondaryAction,
-.secondaryActionGrow,
+.footerActions {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.4fr;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+}
+
+.ghostAction,
+.neutralAction,
+.cancelAction,
 .primaryAction {
     display: inline-flex;
+    min-height: 2.75rem;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
     border-radius: 0.75rem;
-    font-weight: 600;
-    transition: var(--transition);
+    font-size: 0.78rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.secondaryAction,
-.secondaryActionGrow {
+.ghostAction {
+    border: 1px solid var(--color-border-default);
     background: var(--color-surface-subtle);
-    color: var(--color-white);
+    color: var(--color-text-strong);
 }
 
-.secondaryAction:hover,
-.secondaryActionGrow:hover {
-    background: var(--color-surface-disabled);
+.ghostAction:hover,
+.ghostAction:focus-visible {
+    border-color: var(--color-primary-ring-strong);
+    background: var(--color-primary-soft);
+    color: var(--color-primary-dark);
+    outline: none;
 }
 
-.secondaryActionGrow,
+.neutralAction {
+    border: 1px solid var(--color-info-border);
+    background: var(--color-info-soft);
+    color: var(--color-info-strong);
+}
+
+.neutralAction:hover,
+.neutralAction:focus-visible {
+    background: var(--color-info-soft-hover);
+    outline: none;
+}
+
+.cancelAction {
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-white);
+    color: var(--color-text-strong);
+}
+
+.cancelAction:hover,
+.cancelAction:focus-visible {
+    border-color: var(--color-danger-border);
+    background: var(--color-danger-bg);
+    color: var(--color-danger);
+    outline: none;
+}
+
 .primaryAction {
-    flex: 1;
-}
-
-.primaryAction {
+    border: 1px solid var(--color-primary-dark);
     background: var(--color-primary);
     color: var(--color-white);
+    box-shadow: 0 14px 28px var(--color-primary-ring-strong);
 }
 
-.primaryAction:hover {
+.primaryAction:hover,
+.primaryAction:focus-visible {
     background: var(--color-primary-dark);
+    transform: translateY(-1px);
+    outline: none;
 }
 
 .primaryAction:disabled,
-.secondaryActionGrow:disabled {
-    opacity: 0.5;
-}
-
-.footerActions {
-    display: flex;
-    gap: 0.75rem;
-    padding-top: 0.5rem;
+.cancelAction:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+    box-shadow: none;
 }
 
 .materialIcon,
@@ -214,7 +290,7 @@
 }
 
 .materialIconHero {
-    font-size: 5rem;
+    font-size: 4.5rem;
 }
 
 .spin {
@@ -232,16 +308,43 @@
 }
 
 @media (max-width: 767px) {
+    .overlay {
+        padding: 0;
+    }
+
     .dialog {
+        width: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+
+    .header {
+        padding: 1rem;
+    }
+
+    .emptyArea {
+        min-height: 26rem;
         padding: 1rem;
     }
 
     .dropZone {
-        padding: 2rem;
+        padding: 2rem 1rem;
+    }
+
+    .cropperArea {
+        min-height: 24rem;
+    }
+
+    .controlsPanel {
+        padding: 1rem;
     }
 
     .rotationActions,
     .footerActions {
-        flex-direction: column;
+        grid-template-columns: 1fr;
+    }
+
+    .rotationActions {
+        display: grid;
     }
 }

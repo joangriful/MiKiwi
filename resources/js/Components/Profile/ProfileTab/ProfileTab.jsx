@@ -19,29 +19,42 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
     const [uploadingBanner, setUploadingBanner] = useState(false);
     const [currentProfileImage, setCurrentProfileImage] = useState(user.profile_photo_url);
     const [currentBannerImage, setCurrentBannerImage] = useState(user.banner_url);
-    const [editorOpen, setEditorOpen] = useState(false);
-    const [editingType, setEditingType] = useState('profile');
-    const [existingImage, setExistingImage] = useState(null);
+    const [editorState, setEditorState] = useState({
+        isOpen: false,
+        type: 'profile',
+        imageUrl: null,
+    });
 
     const handleEditProfileImage = () => {
-        setEditingType('profile');
-        setExistingImage(currentProfileImage);
-        setEditorOpen(true);
+        setEditorState({
+            isOpen: true,
+            type: 'profile',
+            imageUrl: currentProfileImage,
+        });
     };
 
     const handleEditBanner = () => {
-        setEditingType('banner');
-        setExistingImage(currentBannerImage);
-        setEditorOpen(true);
+        setEditorState({
+            isOpen: true,
+            type: 'banner',
+            imageUrl: currentBannerImage,
+        });
     };
 
     const handleEditorSave = async (croppedBlob) => {
-        if (editingType === 'profile') {
+        if (editorState.type === 'profile') {
             await uploadProfileImage(croppedBlob);
             return;
         }
 
         await uploadBanner(croppedBlob);
+    };
+
+    const handleEditorClose = () => {
+        setEditorState((currentState) => ({
+            ...currentState,
+            isOpen: false,
+        }));
     };
 
     const uploadProfileImage = async (blob) => {
@@ -103,13 +116,13 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
     return (
         <div className={`${styles.root} ${styles.stack}`}>
             <ImageEditorModal
-                isOpen={editorOpen}
-                onClose={() => setEditorOpen(false)}
-                aspectRatio={editingType === 'profile' ? 1 : 16 / 4}
+                isOpen={editorState.isOpen}
+                onClose={handleEditorClose}
+                aspectRatio={editorState.type === 'profile' ? 1 : 16 / 4}
                 onSave={handleEditorSave}
                 onError={(message) => toast.error(message)}
-                type={editingType}
-                existingImageUrl={existingImage}
+                type={editorState.type}
+                existingImageUrl={editorState.imageUrl}
             />
 
             <div className={styles.profileCard}>

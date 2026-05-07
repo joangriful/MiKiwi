@@ -22,7 +22,9 @@ erDiagram
         boolean is_active
         datetime email_verified_at
         string profile_photo_url
+        string profile_photo_public_id
         string banner_url
+        string banner_public_id
         string stripe_customer_id
         string quiz_result_category
         string remember_token
