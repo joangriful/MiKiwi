@@ -58,6 +58,15 @@ export default function Cart({
         }
     }, [hasCartItems]);
 
+    useEffect(() => {
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        window.scrollTo({
+            top: 0,
+            behavior: prefersReducedMotion ? "auto" : "smooth",
+        });
+    }, [step]);
+
     const nextStep = () => {
         if (!hasCartItems) {
             setStep(1);
