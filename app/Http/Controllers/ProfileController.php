@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Concerns\InteractsWithApiErrors;
 use App\Domain\Media\Services\CloudinaryService;
 use App\Domain\Profile\Services\ProfilePageService;
+use App\Http\Controllers\Concerns\InteractsWithApiErrors;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -27,6 +27,7 @@ class ProfileController extends Controller
     ) {
         $this->cloudinaryService = $cloudinaryService;
     }
+
     /**
      * Display the user's profile form.
      */
@@ -40,7 +41,7 @@ class ProfileController extends Controller
 
     public function show(Request $request): Response
     {
-        return Inertia::render('Profile/Profile', $this->profilePageService->getPageData($request->user()));
+        return Inertia::render('Profile/Profile', $this->profilePageService->getPageData($request->user(), $request));
     }
 
     /**
@@ -185,10 +186,10 @@ class ProfileController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Resultado guardado correctamente.'
+                'message' => 'Resultado guardado correctamente.',
             ]);
         } catch (\Exception $e) {
-            Log::error('Quiz result save failed: ' . $e->getMessage());
+            Log::error('Quiz result save failed: '.$e->getMessage());
 
             return $this->apiError(
                 'quiz_result_save_failed',

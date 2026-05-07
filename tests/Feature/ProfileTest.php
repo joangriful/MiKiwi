@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Collection;
 use App\Models\CollectionProduct;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -55,6 +56,24 @@ class ProfileTest extends TestCase
             'product_type' => ProductType::Simple->value,
         ]);
 
+        $recommendedProduct->images()->delete();
+
+        ProductImage::query()->create([
+            'product_id' => $recommendedProduct->getKey(),
+            'public_id' => 'products/lubricante-recomendado/main',
+            'image_url' => 'https://example.test/lubricante-recomendado-main.webp',
+            'alt_text' => 'Lubricante recomendado',
+            'sort_order' => 1,
+        ]);
+
+        ProductImage::query()->create([
+            'product_id' => $recommendedProduct->getKey(),
+            'public_id' => 'products/lubricante-recomendado/hover',
+            'image_url' => 'https://example.test/lubricante-recomendado-hover.webp',
+            'alt_text' => 'Lubricante recomendado hover',
+            'sort_order' => 2,
+        ]);
+
         CollectionProduct::query()->create([
             'collection_id' => $collection->getKey(),
             'product_id' => $recommendedProduct->getKey(),
@@ -78,6 +97,8 @@ class ProfileTest extends TestCase
                 ->component('Profile/Profile')
                 ->has('recommendedProducts', 1)
                 ->where('recommendedProducts.0.slug', $recommendedProduct->slug)
+                ->where('recommendedProducts.0.image_url', 'https://example.test/lubricante-recomendado-main.webp')
+                ->where('recommendedProducts.0.hover_image_url', 'https://example.test/lubricante-recomendado-hover.webp')
             );
     }
 

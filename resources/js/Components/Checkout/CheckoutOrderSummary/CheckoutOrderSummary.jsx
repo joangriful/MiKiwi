@@ -11,6 +11,7 @@ export default function CheckoutOrderSummary({
     onRemoveCoupon,
     onRemoveItem,
     onCheckout,
+    canCheckout,
     isBuyNow,
     step,
     totals,
@@ -40,7 +41,13 @@ export default function CheckoutOrderSummary({
                     onRemoveCoupon={onRemoveCoupon}
                 />
 
-                <TotalsBox coupon={coupon} step={step} totals={totals} onCheckout={onCheckout} />
+                <TotalsBox
+                    coupon={coupon}
+                    step={step}
+                    totals={totals}
+                    onCheckout={onCheckout}
+                    canCheckout={canCheckout}
+                />
             </div>
         </aside>
     );
@@ -138,7 +145,7 @@ function CouponBox({ coupon, couponCode, onCouponCodeChange, onApplyCoupon, onRe
     );
 }
 
-function TotalsBox({ coupon, step, totals, onCheckout }) {
+function TotalsBox({ coupon, step, totals, onCheckout, canCheckout }) {
     return (
         <section className={styles.totalsSection}>
             <SummaryRow label="Subtotal" value={`${totals.subtotal.toFixed(2)} €`} />
@@ -174,7 +181,13 @@ function TotalsBox({ coupon, step, totals, onCheckout }) {
             </div>
 
             {step === 1 ? (
-                <button type="button" onClick={onCheckout} className={styles.checkoutButton}>
+                <button
+                    type="button"
+                    onClick={onCheckout}
+                    className={styles.checkoutButton}
+                    disabled={!canCheckout}
+                    aria-disabled={!canCheckout}
+                >
                     <span>Pagar ahora</span>
                     <svg className={styles.iconMd} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3" />

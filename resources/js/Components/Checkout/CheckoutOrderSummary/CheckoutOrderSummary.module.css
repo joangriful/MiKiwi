@@ -434,6 +434,25 @@
     transform: translateX(0.25rem);
 }
 
+.checkoutButton:disabled,
+.checkoutButton[aria-disabled="true"] {
+    cursor: not-allowed;
+    background: var(--color-border-strong);
+    box-shadow: none;
+    transform: none;
+}
+
+.checkoutButton:disabled:hover,
+.checkoutButton[aria-disabled="true"]:hover {
+    background: var(--color-border-strong);
+    transform: none;
+}
+
+.checkoutButton:disabled:hover .iconMd,
+.checkoutButton[aria-disabled="true"]:hover .iconMd {
+    transform: none;
+}
+
 .iconSm {
     width: 1rem;
     height: 1rem;

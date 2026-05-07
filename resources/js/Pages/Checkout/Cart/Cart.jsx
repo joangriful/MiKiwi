@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Head, useForm } from "@inertiajs/react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
@@ -43,6 +43,7 @@ export default function Cart({
     const [step, setStep] = useState(1);
 
     const form = useForm(createInitialCheckoutData(cart));
+    const hasCartItems = cart.items.length > 0;
 
     const totals = calculateCheckoutTotals({
         cart,
@@ -51,7 +52,21 @@ export default function Cart({
         coupon,
     });
 
-    const nextStep = () => setStep((currentStep) => Math.min(currentStep + 1, 4));
+    useEffect(() => {
+        if (!hasCartItems) {
+            setStep(1);
+        }
+    }, [hasCartItems]);
+
+    const nextStep = () => {
+        if (!hasCartItems) {
+            setStep(1);
+
+            return;
+        }
+
+        setStep((currentStep) => Math.min(currentStep + 1, 4));
+    };
     const prevStep = () => setStep((currentStep) => Math.max(currentStep - 1, 1));
 
     const applyCoupon = () => {
@@ -103,6 +118,7 @@ export default function Cart({
                         onRemoveCoupon={removeCoupon}
                         onRemoveItem={handleRemoveItem}
                         onCheckout={nextStep}
+                        canCheckout={hasCartItems}
                         isBuyNow={isBuyNow}
                         step={step}
                         totals={totals}

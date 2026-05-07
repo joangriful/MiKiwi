@@ -70,6 +70,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
 
         if (typeof window === "undefined") {
             return {
+                hidePostalCode: true,
                 style: {
                     base: {
                         fontSize: "16px",
@@ -89,6 +90,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
         const readVar = (name, fallback) => cssVars.getPropertyValue(name).trim() || fallback;
 
         return {
+            hidePostalCode: true,
             style: {
                 base: {
                     fontSize: "16px",
@@ -166,6 +168,11 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
     const onSubmitClick = (event) => {
         event.preventDefault();
 
+        if (!stripe) {
+            setCardError("El pago seguro todavía se está cargando. Espera unos segundos y vuelve a intentarlo.");
+            return;
+        }
+
         if (paymentOption === "new" && !isCardComplete) {
             setCardError("Por favor, completa los datos de tu tarjeta.");
             return;
@@ -179,9 +186,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
 
     const isSubmitDisabled =
         processing ||
-        isConfirming ||
-        !stripe ||
-        (paymentOption === "new" && !isCardComplete);
+        isConfirming;
 
     const showSavedCards = !isLoadingCards && (savedCards.length > 0 || isAdmin);
 
