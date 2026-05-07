@@ -10,6 +10,16 @@ function cleanPaginationLabel(label) {
         .trim();
 }
 
+function normalizePaginationHref(url) {
+    try {
+        const parsedUrl = new URL(url, window.location.origin);
+
+        return `${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
+    } catch {
+        return url;
+    }
+}
+
 export default function CatalogPagination({ links = [] }) {
     if (!links || links.length <= 3) {
         return null;
@@ -35,7 +45,7 @@ export default function CatalogPagination({ links = [] }) {
                     return (
                         <Link
                             key={`${label}-${index}`}
-                            href={link.url}
+                            href={normalizePaginationHref(link.url)}
                             className={`${styles.item} ${link.active ? styles.itemActive : styles.itemInactive}`}
                         >
                             {label}
