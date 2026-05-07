@@ -2,6 +2,7 @@ import Header from "@/Components/Header/Header";
 import Footer from "@/Components/Footer/Footer";
 import ProfileSidebar from "@/Components/Profile/ProfileSidebar/ProfileSidebar";
 import ProfileTab from "@/Components/Profile/ProfileTab/ProfileTab";
+import FavoritesTab from "@/Components/Profile/FavoritesTab/FavoritesTab";
 import AddressesTab from "@/Components/Profile/AddressesTab/AddressesTab";
 import OrderHistoryTab from "@/Components/Profile/OrderHistoryTab/OrderHistoryTab";
 import EditAccountTab from "@/Components/Profile/EditAccountTab/EditAccountTab";
@@ -12,13 +13,15 @@ import { Head } from '@inertiajs/react';
 import { useState } from "react";
 import styles from "./Profile.module.css";
 
-export default function Profile({ recommendedProducts, orders = [], initialTab = 'profile' }) {
+export default function Profile({ recommendedProducts, favoriteProducts = [], orders = [], initialTab = 'profile' }) {
     const [activeTab, setActiveTab] = useState(initialTab);
 
     const renderTabContent = () => {
         switch (activeTab) {
             case 'profile':
                 return <ProfileTab setActiveTab={setActiveTab} recommendedProducts={recommendedProducts} />;
+            case 'favorites':
+                return <FavoritesTab favoriteProducts={favoriteProducts} />;
             case 'addresses':
                 return <AddressesTab />;
             case 'orders':
@@ -32,7 +35,7 @@ export default function Profile({ recommendedProducts, orders = [], initialTab =
             case 'returns':
                 return <ReturnsTab />;
             default:
-                return <ProfileTab recommendedProducts={recommendedProducts} />;
+                return <ProfileTab setActiveTab={setActiveTab} recommendedProducts={recommendedProducts} />;
         }
     };
 

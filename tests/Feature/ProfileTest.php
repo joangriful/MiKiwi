@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Collection;
 use App\Models\CollectionProduct;
 use App\Models\Product;
+use App\Models\ProductFavorite;
 use App\Models\ProductImage;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -99,6 +100,55 @@ class ProfileTest extends TestCase
                 ->where('recommendedProducts.0.slug', $recommendedProduct->slug)
                 ->where('recommendedProducts.0.image_url', 'https://example.test/lubricante-recomendado-main.webp')
                 ->where('recommendedProducts.0.hover_image_url', 'https://example.test/lubricante-recomendado-hover.webp')
+            );
+    }
+
+    public function test_profile_page_returns_user_favorite_products(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        $category = Category::factory()->create([
+            'name' => 'Favoritos',
+            'slug' => 'favoritos',
+            'is_active' => true,
+        ]);
+
+        /** @var Product $favoriteProduct */
+        $favoriteProduct = Product::factory()->create([
+            'category_id' => $category->getKey(),
+            'name' => 'Producto Favorito',
+            'slug' => 'producto-favorito',
+            'sku' => 'TEST-FAV-001',
+            'is_active' => true,
+            'stock_quantity' => 10,
+            'product_type' => ProductType::Simple->value,
+        ]);
+
+        $favoriteProduct->images()->delete();
+
+        ProductImage::query()->create([
+            'product_id' => $favoriteProduct->getKey(),
+            'public_id' => 'products/producto-favorito/main',
+            'image_url' => 'https://example.test/producto-favorito-main.webp',
+            'alt_text' => 'Producto favorito',
+            'sort_order' => 1,
+        ]);
+
+        ProductFavorite::query()->create([
+            'user_id' => $user->getKey(),
+            'product_id' => $favoriteProduct->getKey(),
+        ]);
+
+        $this->actingAs($user)
+            ->get('/perfil')
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Profile/Profile')
+                ->has('favoriteProducts', 1)
+                ->where('favoriteProducts.0.slug', $favoriteProduct->slug)
+                ->where('favoriteProducts.0.image_url', 'https://example.test/producto-favorito-main.webp')
+                ->where('favoriteProducts.0.is_favorite', true)
             );
     }
 

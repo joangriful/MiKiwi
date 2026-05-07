@@ -5,6 +5,7 @@ import styles from './ProfileSidebar.module.css';
 export default function ProfileSidebar({ activeTab, setActiveTab }) {
     const menuItems = [
         { id: 'profile', label: 'Perfil', icon: 'person', isMaterial: true },
+        { id: 'favorites', label: 'Favoritos', icon: 'favorite', isMaterial: true },
         { id: 'addresses', label: 'Direcciones', icon: 'location_on', isMaterial: true },
         { id: 'orders', label: 'Historial de pedidos', icon: 'pedidos.svg' },
         { id: 'edit-account', label: 'Editar Detalles de la cuenta', icon: 'account_preferences.svg' },

@@ -13,6 +13,7 @@ class ProfilePageService
 {
     public function __construct(
         private readonly ProfileRecommendationService $profileRecommendationService,
+        private readonly ProfileFavoriteService $profileFavoriteService,
         private readonly OrderService $orderService,
     ) {}
 
@@ -22,6 +23,9 @@ class ProfilePageService
 
         return [
             'recommendedProducts' => ProductResource::collection($recommendedProducts)->resolve($request),
+            'favoriteProducts' => $user
+                ? ProductResource::collection($this->profileFavoriteService->getFavoriteProductsForUser($user))->resolve($request)
+                : [],
             'orders' => $user ? $this->orderService->getLatestUserOrders($user->id) : collect(),
         ];
     }
