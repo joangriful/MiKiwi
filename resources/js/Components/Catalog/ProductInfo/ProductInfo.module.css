@@ -135,6 +135,11 @@
     border-color: var(--color-border-default);
 }
 
+.favoriteButton:disabled {
+    cursor: wait;
+    opacity: 0.7;
+}
+
 .favoriteIcon {
     font-size: 2rem;
 }

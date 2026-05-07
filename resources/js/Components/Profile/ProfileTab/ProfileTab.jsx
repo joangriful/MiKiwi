@@ -3,8 +3,35 @@ import { usePage, router, Link } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import ImageEditorModal from '@/Components/Profile/ImageEditorModal/ImageEditorModal';
+import useProductFavorite from '@/Hooks/useProductFavorite';
 import { normalizeApiError } from '@/Utils/httpError';
 import styles from './ProfileTab.module.css';
+
+function RecommendedProductFavoriteButton({ product }) {
+    const { isFavorite, isTogglingFavorite, toggleFavorite } = useProductFavorite(product);
+
+    return (
+        <button
+            type="button"
+            disabled={isTogglingFavorite}
+            onClick={async (event) => {
+                event.preventDefault();
+                await toggleFavorite();
+            }}
+            className={styles.favoriteButton}
+            aria-label={isFavorite ? `Quitar ${product.name} de favoritos` : `Añadir ${product.name} a favoritos`}
+            aria-pressed={isFavorite}
+        >
+            <div
+                className={`${styles.favoriteIcon} ${isFavorite ? styles.favoriteIconActive : ''}`}
+                style={{
+                    maskImage: `url('/assets/icons/${isFavorite ? 'MdiCardsHeart.svg' : 'MdiCardsHeartOutline.svg'}')`,
+                    WebkitMaskImage: `url('/assets/icons/${isFavorite ? 'MdiCardsHeart.svg' : 'MdiCardsHeartOutline.svg'}')`,
+                }}
+            />
+        </button>
+    );
+}
 
 export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
     const { auth } = usePage().props;
@@ -246,20 +273,7 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                                         <div className={styles.productPlaceholder} />
                                     )}
 
-                                    <button
-                                        type="button"
-                                        onClick={(event) => event.preventDefault()}
-                                        className={styles.favoriteButton}
-                                        aria-label={`Añadir ${product.name} a favoritos`}
-                                    >
-                                        <div
-                                            className={styles.favoriteIcon}
-                                            style={{
-                                                maskImage: `url('/assets/icons/MdiCardsHeartOutline.svg')`,
-                                                WebkitMaskImage: `url('/assets/icons/MdiCardsHeartOutline.svg')`,
-                                            }}
-                                        />
-                                    </button>
+                                    <RecommendedProductFavoriteButton product={product} />
                                 </div>
 
                                 <div className={styles.productInfo}>

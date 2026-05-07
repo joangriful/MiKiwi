@@ -1,10 +1,10 @@
-import { useState } from 'react';
 import ProductImagePlaceholder from '../ProductImagePlaceholder/ProductImagePlaceholder';
 import { Link } from '@inertiajs/react';
+import useProductFavorite from '@/Hooks/useProductFavorite';
 import styles from './ProductCard.module.css';
 
 export default function ProductCard({ product }) {
-    const [isLiked, setIsLiked] = useState(false);
+    const { isFavorite, isTogglingFavorite, toggleFavorite } = useProductFavorite(product);
 
     if (!product) return null;
 
@@ -36,21 +36,24 @@ export default function ProductCard({ product }) {
                 {/* Like Button - Minimalist Overlay */}
                 <button
                     type="button"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        setIsLiked(!isLiked);
+                    disabled={isTogglingFavorite}
+                    onClick={async (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        await toggleFavorite();
                     }}
                     className={styles.likeButton}
-                    aria-label={isLiked ? `Quitar ${product.name} de favoritos` : `Añadir ${product.name} a favoritos`}
+                    aria-label={isFavorite ? `Quitar ${product.name} de favoritos` : `Añadir ${product.name} a favoritos`}
+                    aria-pressed={isFavorite}
                 >
                     <div
-                        className={`${styles.likeIcon} ${isLiked ? styles.likeIconActive : styles.likeIconInactive}`}
+                        className={`${styles.likeIcon} ${isFavorite ? styles.likeIconActive : styles.likeIconInactive}`}
                         style={{
-                            maskImage: `url('/assets/icons/${isLiked ? 'MdiCardsHeart.svg' : 'MdiCardsHeartOutline.svg'}')`,
+                            maskImage: `url('/assets/icons/${isFavorite ? 'MdiCardsHeart.svg' : 'MdiCardsHeartOutline.svg'}')`,
                             maskSize: 'contain',
                             maskRepeat: 'no-repeat',
                             maskPosition: 'center',
-                            WebkitMaskImage: `url('/assets/icons/${isLiked ? 'MdiCardsHeart.svg' : 'MdiCardsHeartOutline.svg'}')`,
+                            WebkitMaskImage: `url('/assets/icons/${isFavorite ? 'MdiCardsHeart.svg' : 'MdiCardsHeartOutline.svg'}')`,
                             WebkitMaskSize: 'contain',
                             WebkitMaskRepeat: 'no-repeat',
                             WebkitMaskPosition: 'center',

@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link, router } from "@inertiajs/react";
 import axios from "axios";
+import useProductFavorite from '@/Hooks/useProductFavorite';
 import styles from './ProductInfo.module.css';
 
 export default function ProductInfo({ product }) {
-    const [isFavorite, setIsFavorite] = useState(false);
+    const { isFavorite, isTogglingFavorite, toggleFavorite } = useProductFavorite(product);
     const [quantity, setQuantity] = useState(1);
     const [notification, setNotification] = useState(null); // 'added' | 'error' | null
     const [isLoading, setIsLoading] = useState(false);
@@ -114,8 +115,12 @@ export default function ProductInfo({ product }) {
                     {product?.name || "Kiwi Premium"}
                 </h1>
                 <button
-                    onClick={() => setIsFavorite(!isFavorite)}
+                    type="button"
+                    onClick={toggleFavorite}
+                    disabled={isTogglingFavorite}
                     className={`${styles.favoriteButton} ${isFavorite ? styles.favoriteButtonActive : styles.favoriteButtonInactive}`}
+                    aria-label={isFavorite ? `Quitar ${product?.name} de favoritos` : `Añadir ${product?.name} a favoritos`}
+                    aria-pressed={isFavorite}
                 >
                     <span
                         className={`material-symbols-outlined ${styles.favoriteIcon} ${isFavorite ? styles.favoriteIconFilled : ''}`}

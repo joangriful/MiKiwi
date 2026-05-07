@@ -1,5 +1,3 @@
-.root {}
-
 .stack {
     display: flex;
     flex-direction: column;
@@ -290,6 +288,11 @@
     transition: var(--transition);
 }
 
+.favoriteButton:disabled {
+    cursor: wait;
+    opacity: 0.7;
+}
+
 .productCard:hover .favoriteButton {
     opacity: 1;
 }
@@ -304,6 +307,10 @@
     -webkit-mask-size: contain;
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-position: center;
+}
+
+.favoriteIconActive {
+    background: var(--color-danger-soft);
 }
 
 .productInfo {
