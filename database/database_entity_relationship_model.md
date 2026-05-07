@@ -20,6 +20,7 @@ flowchart TB
     PRODUCT_IMAGE_ZONE[product_image_zone]
     DOLL_PRODUCT_ACCESSORY[doll_product_accessory]
     REVIEW[review]
+    PRODUCT_FAVORITE[product_favorite]
     COLLECTION_PRODUCT[collection_product]
 
     ORDER[order]
@@ -68,6 +69,9 @@ flowchart TB
     USER -->|"1 : N"| WRITES{escribe}
     WRITES --> REVIEW
 
+    USER -->|"1 : N"| MARKS_AS_FAVORITE{marca como favorito}
+    MARKS_AS_FAVORITE --> PRODUCT_FAVORITE
+
     USER -->|"1 : N"| OPENS{abre}
     OPENS --> CHAT_SESSION
 
@@ -112,6 +116,9 @@ flowchart TB
 
     PRODUCT -->|"1 : N"| RECEIVES{recibe}
     RECEIVES --> REVIEW
+
+    PRODUCT -->|"1 : N"| IS_MARKED_AS_FAVORITE{es marcado como favorito}
+    IS_MARKED_AS_FAVORITE --> PRODUCT_FAVORITE
 
     CHAT_SESSION -->|"1 : N"| CONTAINS_MESSAGE{contiene}
     CONTAINS_MESSAGE --> CHAT_MESSAGE
@@ -168,3 +175,8 @@ Nota sobre `password_reset_token`:
 - Es una entidad técnica de soporte al flujo de recuperación de contraseña.
 - Se vincula conceptualmente con `user` mediante `email`.
 - No representa historial; solo el token activo más reciente por usuario/email.
+
+Nota sobre `product_favorite`:
+- Es la entidad intermedia que modela favoritos entre `user` y `product`.
+- Cardinalidad conceptual: un `user` puede marcar `0..N` productos como favoritos, y un `product` puede ser favorito de `0..N` usuarios.
+- La existencia de la relación significa favorito activo; al quitar un favorito se elimina la relación.

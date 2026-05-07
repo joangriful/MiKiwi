@@ -111,6 +111,14 @@ erDiagram
         datetime updated_at
     }
 
+    product_favorite {
+        uuid id PK
+        uuid user_id FK
+        uuid product_id FK
+        datetime created_at
+        datetime updated_at
+    }
+
     claim {
         uuid id PK
         uuid user_id FK
@@ -387,6 +395,8 @@ erDiagram
 
     user ||--o{ review : writes
     product ||--o{ review : receives
+    user ||--o{ product_favorite : marks
+    product ||--o{ product_favorite : is_marked_as_favorite
 
     user ||--o{ chat_session : opens
     chat_session ||--o{ chat_message : contains
@@ -418,3 +428,8 @@ Nota sobre `password_reset_token`:
 - Es una tabla técnica de autenticación de Laravel.
 - Su relación con `user` es lógica por `email` único, no mediante una foreign key física.
 - Un `user` puede tener `0..1` token de reseteo activo al mismo tiempo.
+
+Nota sobre `product_favorite`:
+- Representa la relación many-to-many entre `user` y `product` para favoritos.
+- La combinación `user_id` + `product_id` debe ser única: un usuario no puede marcar el mismo producto como favorito más de una vez.
+- No contiene estado booleano; si existe la fila, el producto es favorito. Si se elimina la fila, deja de serlo.
