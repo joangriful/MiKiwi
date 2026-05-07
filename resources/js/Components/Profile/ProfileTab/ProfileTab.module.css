@@ -114,8 +114,14 @@
     transition: var(--transition);
 }
 
-.avatarWrap:hover .avatarEdit {
+.avatarEdit {
+    opacity: 0;
+}
+
+.avatarWrap:hover .avatarEdit,
+.avatarEdit:focus-visible {
     background: rgb(0 0 0 / 50%);
+    opacity: 1;
 }
 
 .statusDot {
