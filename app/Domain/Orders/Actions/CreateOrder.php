@@ -57,8 +57,8 @@ class CreateOrder
                 $orderItems[] = [
                     'product_id' => $product->id,
                     'quantity' => $item['quantity'],
-                    'unit_price' => $product->base_price,
-                    'product_name_snapshot' => $product->name,
+                    'unit_price' => $item['unit_price'] ?? $product->base_price,
+                    'product_name_snapshot' => ! empty($item['configuration']) ? $product->name.' - Configuracion personalizada' : $product->name,
                     'sku_snapshot' => $product->sku ?? 'SKU-GENERICO',
                 ];
             }

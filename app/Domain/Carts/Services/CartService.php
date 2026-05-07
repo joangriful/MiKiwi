@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Carts\Services;
 
+use App\Domain\Dolls\Services\DollCustomizationService;
 use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Exceptions\InsufficientStockException;
 use App\Exceptions\ProductNotFoundException;
@@ -17,8 +18,10 @@ class CartService
 
     protected string $buyNowSessionKey = 'buy_now_item';
 
-    public function __construct(ProductRepositoryInterface $productRepository)
-    {
+    public function __construct(
+        ProductRepositoryInterface $productRepository,
+        private readonly DollCustomizationService $dollCustomizationService,
+    ) {
         $this->productRepository = $productRepository;
     }
 
@@ -54,12 +57,15 @@ class CartService
             $product = $productsBySlug->get($item['slug']);
 
             if ($product) {
-                $subtotal = $product->base_price * $item['quantity'];
+                $unitPrice = (float) ($item['unit_price'] ?? $product->base_price);
+                $subtotal = (float) ($item['line_subtotal'] ?? ($unitPrice * $item['quantity']));
                 $items[] = [
                     'product_id' => $productId,
                     'product' => $product,
                     'quantity' => $item['quantity'],
+                    'unit_price' => $unitPrice,
                     'accessories' => $item['accessories'] ?? [],
+                    'configuration' => $item['configuration'] ?? null,
                     'subtotal' => $subtotal,
                 ];
                 $total += $subtotal;
@@ -76,7 +82,7 @@ class CartService
     /**
      * Agregar producto al carrito
      */
-    public function addToCart(string $productSlug, int $quantity = 1, array $accessories = []): array
+    public function addToCart(string $productSlug, int $quantity = 1, array $accessories = [], ?array $configuration = null): array
     {
         $product = $this->productRepository->getActiveBySlug($productSlug);
 
@@ -95,10 +101,12 @@ class CartService
         }
 
         $cart = Session::get($this->cartSessionKey, []);
+        $configurationData = $this->resolveConfigurationData($product->base_price, $configuration);
+        $itemKey = $this->buildItemKey((string) $product->id, $configurationData);
 
         // Si el producto ya existe, actualizar cantidad
-        if (isset($cart[$product->id])) {
-            $newQuantity = $cart[$product->id]['quantity'] + $quantity;
+        if (isset($cart[$itemKey])) {
+            $newQuantity = $cart[$itemKey]['quantity'] + $quantity;
 
             // Validar stock total
             if ($product->stock_quantity < $newQuantity) {
@@ -110,13 +118,17 @@ class CartService
                 );
             }
 
-            $cart[$product->id]['quantity'] = $newQuantity;
+            $cart[$itemKey]['quantity'] = $newQuantity;
+            $cart[$itemKey]['line_subtotal'] = round($cart[$itemKey]['unit_price'] * $newQuantity, 2);
         } else {
             // Agregar nuevo producto
-            $cart[$product->id] = [
+            $cart[$itemKey] = [
                 'slug' => $product->slug,
                 'quantity' => $quantity,
                 'accessories' => $accessories,
+                'unit_price' => $configurationData['unit_price'],
+                'line_subtotal' => round($configurationData['unit_price'] * $quantity, 2),
+                'configuration' => $configurationData['configuration'],
             ];
         }
 
@@ -152,6 +164,7 @@ class CartService
         }
 
         $cart[$productId]['quantity'] = $quantity;
+        $cart[$productId]['line_subtotal'] = round(((float) ($cart[$productId]['unit_price'] ?? $product->base_price)) * $quantity, 2);
         Session::put($this->cartSessionKey, $cart);
 
         return $this->getCart();
@@ -217,7 +230,7 @@ class CartService
     /**
      * Establecer el producto para compra directa (Buy Now)
      */
-    public function setBuyNowItem(string $productSlug, int $quantity = 1, array $accessories = []): void
+    public function setBuyNowItem(string $productSlug, int $quantity = 1, array $accessories = [], ?array $configuration = null): void
     {
         $product = $this->productRepository->getActiveBySlug($productSlug);
 
@@ -234,10 +247,15 @@ class CartService
             );
         }
 
+        $configurationData = $this->resolveConfigurationData($product->base_price, $configuration);
+
         Session::put($this->buyNowSessionKey, [
             'slug' => $productSlug,
             'quantity' => $quantity,
             'accessories' => $accessories,
+            'unit_price' => $configurationData['unit_price'],
+            'line_subtotal' => round($configurationData['unit_price'] * $quantity, 2),
+            'configuration' => $configurationData['configuration'],
         ]);
     }
 
@@ -260,14 +278,17 @@ class CartService
             return null;
         }
 
-        $subtotal = $product->base_price * $item['quantity'];
+        $unitPrice = (float) ($item['unit_price'] ?? $product->base_price);
+        $subtotal = (float) ($item['line_subtotal'] ?? ($unitPrice * $item['quantity']));
 
         return [
             'items' => [[
-                'product_id' => $product->id,
+                'product_id' => (string) ($item['item_key'] ?? $product->id),
                 'product' => $product,
                 'quantity' => $item['quantity'],
+                'unit_price' => $unitPrice,
                 'accessories' => $item['accessories'] ?? [],
+                'configuration' => $item['configuration'] ?? null,
                 'subtotal' => $subtotal,
             ]],
             'total' => $subtotal,
@@ -286,5 +307,39 @@ class CartService
     public function hasBuyNowItem(): bool
     {
         return Session::has($this->buyNowSessionKey);
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $configuration
+     * @return array{configuration: array<string, mixed>|null, unit_price: float}
+     */
+    private function resolveConfigurationData(float $basePrice, ?array $configuration): array
+    {
+        if (! is_array($configuration) || empty($configuration)) {
+            return [
+                'configuration' => null,
+                'unit_price' => round($basePrice, 2),
+            ];
+        }
+
+        $this->dollCustomizationService->validateConfiguration($configuration);
+        $normalizedConfiguration = $this->dollCustomizationService->buildCartConfiguration($configuration);
+
+        return [
+            'configuration' => $normalizedConfiguration,
+            'unit_price' => $this->dollCustomizationService->calculateUnitPrice($basePrice, $configuration),
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $configuration
+     */
+    private function buildItemKey(string $productId, ?array $configuration): string
+    {
+        if ($configuration === null) {
+            return $productId;
+        }
+
+        return sprintf('%s:%s', $productId, md5(json_encode($configuration, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: $productId));
     }
 }

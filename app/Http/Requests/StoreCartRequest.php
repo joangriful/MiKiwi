@@ -20,6 +20,9 @@ class StoreCartRequest extends FormRequest
             'quantity' => 'required|integer|min:1|max:99',
             'accessories' => 'nullable|array',
             'accessories.*' => 'string|exists:product,slug',
+            'configuration' => 'nullable|array',
+            'configuration.selected_parts' => 'nullable|array',
+            'configuration.entries' => 'nullable|array',
         ];
     }
 
@@ -34,6 +37,7 @@ class StoreCartRequest extends FormRequest
             'quantity.max' => 'La cantidad máxima es 99.',
             'accessories.array' => 'Los accesorios deben ser una lista.',
             'accessories.*.exists' => 'Uno de los accesorios seleccionados no existe.',
+            'configuration.array' => 'La configuracion de la muñeca debe ser valida.',
         ];
     }
 
@@ -43,6 +47,7 @@ class StoreCartRequest extends FormRequest
             'product_slug' => 'producto',
             'quantity' => 'cantidad',
             'accessories' => 'accesorios',
+            'configuration' => 'configuracion',
         ];
     }
 }

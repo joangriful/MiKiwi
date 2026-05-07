@@ -43,7 +43,8 @@ class CartController extends Controller
             $cart = $this->cartService->addToCart(
                 $validated['product_slug'],
                 $validated['quantity'],
-                $validated['accessories'] ?? []
+                $validated['accessories'] ?? [],
+                $validated['configuration'] ?? null,
             );
 
             if ($request->wantsJson()) {
@@ -103,6 +104,19 @@ class CartController extends Controller
     public function destroy(Request $request, string $id)
     {
         try {
+            if ($request->boolean('buy_now')) {
+                $this->cartService->clearBuyNowItem();
+
+                if ($request->wantsJson()) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Producto eliminado de la compra directa',
+                    ]);
+                }
+
+                return redirect()->route('cart.index')->with('success', 'Producto eliminado de la compra directa');
+            }
+
             $this->cartService->removeFromCart($id);
 
             if ($request->wantsJson()) {
@@ -156,7 +170,8 @@ class CartController extends Controller
             $this->cartService->setBuyNowItem(
                 $validated['product_slug'],
                 $validated['quantity'],
-                $validated['accessories'] ?? []
+                $validated['accessories'] ?? [],
+                $validated['configuration'] ?? null,
             );
 
             if ($request->wantsJson()) {
