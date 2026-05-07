@@ -31,13 +31,28 @@
 }
 
 .contentFrame {
+    position: relative;
     width: 100%;
     height: 100%;
-    padding: 0.25rem;
+    padding: 0;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.priceBadge {
+    position: absolute;
+    top: 0.375rem;
+    left: 0.375rem;
+    z-index: 2;
+    padding: 0.18rem 0.45rem;
+    border-radius: 999px;
+    background: rgb(214 151 200 / 88%);
+    color: var(--color-white);
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
 }
 
 .contentFrameEditable {
@@ -45,6 +60,7 @@
 }
 
 .itemImage {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: contain;

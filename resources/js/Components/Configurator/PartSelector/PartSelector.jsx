@@ -2,7 +2,7 @@ import React, { memo, useEffect, useMemo } from 'react';
 import PartCarousel from '../PartCarousel/PartCarousel';
 import styles from './PartSelector.module.css';
 
-const DEFAULT_ORDER = ['pelo', 'ojos', 'cejas', 'boca', 'nariz', 'orejas', 'manos', 'pies', 'vientre', 'pechos', 'vello', 'ropa', 'head', 'torso', 'armLeft', 'armRight', 'legLeft', 'legRight'];
+const DEFAULT_ORDER = ['cuerpo', 'pelo', 'ojos', 'cejas', 'boca', 'nariz', 'orejas', 'manos', 'pies', 'vientre', 'pechos', 'vagina', 'vello', 'ropa', 'complementos', 'pecas', 'head', 'torso', 'armLeft', 'armRight', 'legLeft', 'legRight'];
 
 function sortParts(parts, sectionOrder) {
     const orderToUse = (sectionOrder && sectionOrder.length > 0) ? sectionOrder : DEFAULT_ORDER;
@@ -22,7 +22,7 @@ function sortParts(parts, sectionOrder) {
     });
 }
 
-const PartSelector = memo(({ parts, selectedParts, onSelect, sectionOrder, selectionLabel, partPositions, currentView, onSavePosition, ...props }) => {
+const PartSelector = memo(({ parts, selectedParts, onSelect, sectionOrder, selectionLabel, partPositions, currentView, onSavePosition, clearDisabledCategories = [], getItemPrice, ...props }) => {
     const [openCategory, setOpenCategory] = React.useState(() => {
         return sortParts(parts, sectionOrder)[0]?.[0] ?? null;
     });
@@ -57,6 +57,8 @@ const PartSelector = memo(({ parts, selectedParts, onSelect, sectionOrder, selec
                         partPositions={partPositions}
                         currentView={currentView}
                         onSavePosition={onSavePosition}
+                        canClear={!clearDisabledCategories.includes(category)}
+                        getItemPrice={getItemPrice}
                         isOpen={openCategory === category}
                         onToggle={() => setOpenCategory(openCategory === category ? null : category)}
                     />

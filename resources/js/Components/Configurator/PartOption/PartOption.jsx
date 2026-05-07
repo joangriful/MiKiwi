@@ -2,6 +2,24 @@ import { useEffect, useRef, useState } from 'react';
 import { usePartOptimization } from '@/Components/Configurator/hooks/usePartOptimization';
 import styles from './PartOption.module.css';
 
+const CATEGORY_PREVIEW_CONFIG = {
+    boca: { scale: 22.45, translateX: 0, translateY: 530 },
+    cejas: { scale: 12.45, translateX: 0, translateY: 340 },
+    complementos: { scale: 6.45, translateX: 0, translateY: 170 },
+    manos: { scale: 2.6, translateX: 0, translateY: -10 },
+    nariz: { scale: 25.45, translateX: 0, translateY: 660 },
+    ojos: { scale: 16.45, translateX: 0, translateY: 440 },
+    orejas: { scale: 3.45, translateX: 0, translateY: 110 },
+    pecas: { scale: 5.55, translateX: 0, translateY: 40 },
+    pechos: { scale: 5.45, translateX: 0, translateY: 50 },
+    pelo: { scale: 4.35, translateX: 0, translateY: 115},
+    pies: { scale: 4.45, translateX: 0, translateY: -200 },
+    ropa: { scale: 2.45, translateX: 0, translateY: 0 },
+    vagina: { scale: 16.45, translateX: 0, translateY: -120 },
+    vello: { scale: 10.45, translateX: 0, translateY: -60 },
+    vientre: { scale: 4.45, translateX: 0, translateY: 30 },
+};
+
 function getClassName(...classNames) {
     return classNames.filter(Boolean).join(' ');
 }
@@ -17,6 +35,7 @@ export default function PartOption({
     partPositions,
     currentView,
     category,
+    extraPrice = 0,
 }) {
     const [isEditing, setIsEditing] = useState(false);
     const [localConfig, setLocalConfig] = useState({ x: 0, y: 0, scale: 1 });
@@ -204,11 +223,15 @@ export default function PartOption({
                     }}
                     aria-label={`Editor de posicion para ${item.id}`}
                 >
+                    {!isOverlay && extraPrice > 0 ? (
+                        <span className={styles.priceBadge}>+{extraPrice} EUR</span>
+                    ) : null}
+
                     <img
                         src={src}
                         alt={item.id}
                         className={styles.itemImage}
-                        style={style}
+                        style={buildImageStyle(style, isOverlay ? null : getThumbnailPreviewStyle(category))}
                         loading="lazy"
                     />
                 </div>
@@ -350,4 +373,33 @@ export default function PartOption({
             ) : null}
         </>
     );
+}
+
+function getThumbnailPreviewStyle(category) {
+    const previewConfig = CATEGORY_PREVIEW_CONFIG[category];
+
+    if (!previewConfig) {
+        return {};
+    }
+
+    return {
+        width: '100%',
+        height: '100%',
+        objectFit: 'contain',
+        objectPosition: 'center center',
+        transformOrigin: 'center center',
+        transform: `translate(${previewConfig.translateX ?? 0}%, ${previewConfig.translateY ?? 0}%) scale(${previewConfig.scale})`,
+    };
+}
+
+function buildImageStyle(baseStyle, previewStyle) {
+    if (!previewStyle) {
+        return baseStyle;
+    }
+
+    return {
+        ...baseStyle,
+        ...previewStyle,
+        transform: [baseStyle?.transform, previewStyle.transform].filter(Boolean).join(' '),
+    };
 }

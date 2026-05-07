@@ -160,6 +160,8 @@ export default function PartCarousel({
     partPositions,
     currentView,
     onSavePosition,
+    canClear = true,
+    getItemPrice,
     isOpen,
     onToggle,
     ...props
@@ -291,9 +293,10 @@ export default function PartCarousel({
                             )}
                             title={`Quitar ${categoryLabel}`}
                             aria-label={`Quitar ${categoryLabel}`}
+                            disabled={!canClear}
                         >
                             <span className={styles.clearIcon}>✕</span>
-                            <span className={styles.clearLabel}>Ninguno</span>
+                            <span className={styles.clearLabel}>{canClear ? 'Ninguno' : 'Fijo'}</span>
                         </button>
 
                         {items.map((item) => (
@@ -316,6 +319,7 @@ export default function PartCarousel({
                                     currentView={currentView}
                                     category={category}
                                     onSavePosition={onSavePosition}
+                                    extraPrice={getItemPrice ? getItemPrice(category, item) : 0}
                                 />
                             </div>
                         ))}
