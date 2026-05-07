@@ -16,6 +16,7 @@ class ProfileControllerTest extends TestCase
 
     public function test_profile_image_replaces_previous_cloudinary_asset(): void
     {
+        /** @var User $user */
         $user = User::factory()->create([
             'profile_photo_url' => 'https://example.test/old-avatar.jpg',
             'profile_photo_public_id' => 'profile_photos/old-avatar',
@@ -33,7 +34,7 @@ class ProfileControllerTest extends TestCase
             ->method('deleteImage')
             ->with('profile_photos/old-avatar');
 
-        $this->app->instance(CloudinaryService::class, $service);
+        $this->instance(CloudinaryService::class, $service);
 
         $response = $this->actingAs($user)->post(route('profile.image.update'), [
             'image' => UploadedFile::fake()->create('avatar.jpg', 128, 'image/jpeg'),
@@ -54,13 +55,14 @@ class ProfileControllerTest extends TestCase
 
     public function test_profile_image_upload_returns_structured_error_without_internal_details(): void
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $service = $this->createMock(CloudinaryService::class);
         $service->method('uploadImage')
             ->willThrowException(new \RuntimeException('Cloudinary profile upload failed with internal asset path'));
 
-        $this->app->instance(CloudinaryService::class, $service);
+        $this->instance(CloudinaryService::class, $service);
 
         $response = $this->actingAs($user)->post(route('profile.image.update'), [
             'image' => UploadedFile::fake()->create('avatar.jpg', 128, 'image/jpeg'),
@@ -83,13 +85,14 @@ class ProfileControllerTest extends TestCase
 
     public function test_banner_upload_returns_structured_error_without_internal_details(): void
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $service = $this->createMock(CloudinaryService::class);
         $service->method('uploadImage')
             ->willThrowException(new \RuntimeException('Cloudinary banner upload failed with internal asset path'));
 
-        $this->app->instance(CloudinaryService::class, $service);
+        $this->instance(CloudinaryService::class, $service);
 
         $response = $this->actingAs($user)->post(route('profile.banner.update'), [
             'image' => UploadedFile::fake()->create('banner.jpg', 128, 'image/jpeg'),
@@ -112,6 +115,7 @@ class ProfileControllerTest extends TestCase
 
     public function test_banner_replaces_previous_cloudinary_asset(): void
     {
+        /** @var User $user */
         $user = User::factory()->create([
             'banner_url' => 'https://example.test/old-banner.jpg',
             'banner_public_id' => 'profile_banners/old-banner',
@@ -129,7 +133,7 @@ class ProfileControllerTest extends TestCase
             ->method('deleteImage')
             ->with('profile_banners/old-banner');
 
-        $this->app->instance(CloudinaryService::class, $service);
+        $this->instance(CloudinaryService::class, $service);
 
         $response = $this->actingAs($user)->post(route('profile.banner.update'), [
             'image' => UploadedFile::fake()->create('banner.jpg', 128, 'image/jpeg'),
@@ -150,6 +154,7 @@ class ProfileControllerTest extends TestCase
 
     public function test_quiz_result_is_saved_for_authenticated_user(): void
     {
+        /** @var User $user */
         $user = User::factory()->create([
             'quiz_result_category' => null,
         ]);
@@ -169,6 +174,7 @@ class ProfileControllerTest extends TestCase
 
     public function test_quiz_result_save_returns_validation_error_for_missing_category(): void
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $this->actingAs($user)
