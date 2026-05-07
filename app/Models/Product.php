@@ -108,6 +108,16 @@ class Product extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function favoritedByUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            'product_favorite',
+            'product_id',
+            'user_id'
+        )->withTimestamps();
+    }
+
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);

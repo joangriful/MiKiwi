@@ -39,6 +39,7 @@ class CatalogPageService
             ->where('category_id', $product->category_id)
             ->whereKeyNot($product->getKey())
             ->with(['category', 'images'])
+            ->when($request->user(), fn (Builder $query) => $this->withFavoriteState($query, $request))
             ->inRandomOrder()
             ->limit(4)
             ->get();
@@ -180,6 +181,7 @@ class CatalogPageService
                     ->select(['id', 'product_id', 'image_url', 'alt_text', 'sort_order'])
                     ->orderBy('sort_order'),
             ])
+            ->when($request->user(), fn (Builder $query) => $this->withFavoriteState($query, $request))
             ->paginate(12, ['*'], 'page', null, $total)
             ->withQueryString();
         $products->through(fn (Product $product): array => ProductResource::make($product)->resolve($request));
@@ -210,7 +212,25 @@ class CatalogPageService
     private function canCacheCatalogProducts(Request $request): bool
     {
         return ! app()->runningUnitTests()
+            && ! $request->user()
             && ! $this->hasTotalChangingFilters($request);
+    }
+
+    /**
+     * @param  Builder<Product>  $query
+     */
+    private function withFavoriteState(Builder $query, Request $request): Builder
+    {
+        /** @var \App\Models\User|null $user */
+        $user = $request->user();
+
+        if (! $user) {
+            return $query;
+        }
+
+        return $query->withExists([
+            'favoritedByUsers as is_favorite' => fn (Builder $favoriteQuery) => $favoriteQuery->whereKey($user->getKey()),
+        ]);
     }
 
     private function catalogProductsCacheKey(Request $request): string

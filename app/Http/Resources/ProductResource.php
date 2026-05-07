@@ -43,6 +43,7 @@ class ProductResource extends JsonResource
                 ->all(),
             'product_type' => $product->product_type,
             'is_promoted' => (bool) $product->is_promoted,
+            'is_favorite' => $this->isFavoriteForRequestUser($request, $product),
             'category' => $this->whenLoaded('category', function () use ($product): array {
                 return [
                     'id' => $product->category?->id,
@@ -52,5 +53,23 @@ class ProductResource extends JsonResource
             }),
             'reviews' => $this->whenLoaded('reviews', fn () => ReviewResource::collection($product->reviews)->resolve($request)),
         ];
+    }
+
+    private function isFavoriteForRequestUser(Request $request, Product $product): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = $request->user();
+
+        if (! $user) {
+            return false;
+        }
+
+        if (array_key_exists('is_favorite', $product->getAttributes())) {
+            return (bool) $product->getAttribute('is_favorite');
+        }
+
+        return $product->favoritedByUsers()
+            ->whereKey($user->getKey())
+            ->exists();
     }
 }

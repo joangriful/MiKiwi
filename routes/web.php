@@ -11,6 +11,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketingPageController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CatalogProductController;
+use App\Http\Controllers\ProductFavoriteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserAddressController;
 use Illuminate\Support\Facades\Route;
@@ -70,6 +71,13 @@ Route::prefix('cart')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
+
+    Route::middleware('throttle:profile-write')->group(function () {
+        Route::post('/productos/{product}/favorito', [ProductFavoriteController::class, 'store'])
+            ->name('products.favorite.store');
+        Route::delete('/productos/{product}/favorito', [ProductFavoriteController::class, 'destroy'])
+            ->name('products.favorite.destroy');
+    });
 
     // Resumen antes de pagar
     Route::get('/checkout', [OrderController::class, 'create'])
