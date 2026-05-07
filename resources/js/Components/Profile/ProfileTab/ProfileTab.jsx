@@ -16,6 +16,7 @@ function RecommendedProductFavoriteButton({ product }) {
             disabled={isTogglingFavorite}
             onClick={async (event) => {
                 event.preventDefault();
+                event.stopPropagation();
                 await toggleFavorite();
             }}
             className={styles.favoriteButton}
@@ -251,43 +252,45 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                     <div className={styles.productsGrid}>
                         {recommendedProducts.map((product) => (
                             <div key={product.id} className={styles.productCard}>
-                                {product.category && (
-                                    <div className={styles.categoryBadge}>
-                                        <span className={styles.categoryText}>{product.category.name}</span>
-                                    </div>
-                                )}
-
-                                <div className={styles.productImageBox}>
-                                    {product.image_url ? (
-                                        <>
-                                            <img src={product.image_url} alt={product.name} className={styles.productImage} />
-                                            {product.hover_image_url && (
-                                                <img
-                                                    src={product.hover_image_url}
-                                                    alt={`${product.name} hover`}
-                                                    className={styles.productHoverImage}
-                                                />
-                                            )}
-                                        </>
-                                    ) : (
-                                        <div className={styles.productPlaceholder} />
+                                <Link href={route('products.show', product.slug)} className={styles.productLink}>
+                                    {product.category && (
+                                        <div className={styles.categoryBadge}>
+                                            <span className={styles.categoryText}>{product.category.name}</span>
+                                        </div>
                                     )}
 
-                                    <RecommendedProductFavoriteButton product={product} />
-                                </div>
-
-                                <div className={styles.productInfo}>
-                                    <div className={styles.productHeading}>
-                                        <h4 className={styles.productName}>{product.name}</h4>
-                                        <span className={styles.productPrice}>
-                                            {new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(product.base_price)}
-                                        </span>
+                                    <div className={styles.productImageBox}>
+                                        {product.image_url ? (
+                                            <>
+                                                <img src={product.image_url} alt={product.name} className={styles.productImage} />
+                                                {product.hover_image_url && (
+                                                    <img
+                                                        src={product.hover_image_url}
+                                                        alt={`${product.name} hover`}
+                                                        className={styles.productHoverImage}
+                                                    />
+                                                )}
+                                            </>
+                                        ) : (
+                                            <div className={styles.productPlaceholder} />
+                                        )}
                                     </div>
-                                    <div className={styles.productDivider} />
-                                    <p className={styles.productDescription}>
-                                        {product.description || 'Ingeniería sensorial premium'}
-                                    </p>
-                                </div>
+
+                                    <div className={styles.productInfo}>
+                                        <div className={styles.productHeading}>
+                                            <h4 className={styles.productName}>{product.name}</h4>
+                                            <span className={styles.productPrice}>
+                                                {new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(product.base_price)}
+                                            </span>
+                                        </div>
+                                        <div className={styles.productDivider} />
+                                        <p className={styles.productDescription}>
+                                            {product.description || 'Ingeniería sensorial premium'}
+                                        </p>
+                                    </div>
+                                </Link>
+
+                                <RecommendedProductFavoriteButton product={product} />
                             </div>
                         ))}
                     </div>
