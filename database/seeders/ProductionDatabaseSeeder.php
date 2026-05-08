@@ -15,6 +15,7 @@ class ProductionDatabaseSeeder extends Seeder
             CategorySeeder::class,
             CollectionCategoriesSeeder::class,
             ProductSeeder::class,
+            PrefabDollSeeder::class,
             PickupPointSeeder::class,
         ]);
 
