@@ -72,18 +72,30 @@ function SummaryHeader({ isBuyNow }) {
 
 function OrderSummaryItem({ item, onRemoveItem }) {
     const lineTotal = Number.parseFloat(item.subtotal ?? ((item.unit_price ?? item.product.base_price) * item.quantity)).toFixed(2);
+    const isConfigurable = item.product?.product_type === "configurable";
 
     return (
         <div className={styles.item}>
-            <Link href={route("products.show", item.product.slug)} className={styles.imageLink}>
-                <img src={getProductImage(item.product)} alt={item.product.name} className={styles.image} />
-                <span className={styles.quantity}>{item.quantity}</span>
-            </Link>
+            {isConfigurable ? (
+                <div className={styles.imageLink}>
+                    <img src={getProductImage(item.product)} alt={item.product.name} className={styles.image} />
+                    <span className={styles.quantity}>{item.quantity}</span>
+                </div>
+            ) : (
+                <Link href={route("products.show", item.product.slug)} className={styles.imageLink}>
+                    <img src={getProductImage(item.product)} alt={item.product.name} className={styles.image} />
+                    <span className={styles.quantity}>{item.quantity}</span>
+                </Link>
+            )}
 
             <div className={styles.itemInfo}>
-                <Link href={route("products.show", item.product.slug)} className={styles.itemName}>
-                    {item.product.name}
-                </Link>
+                {isConfigurable ? (
+                    <span className={styles.itemName}>{item.product.name}</span>
+                ) : (
+                    <Link href={route("products.show", item.product.slug)} className={styles.itemName}>
+                        {item.product.name}
+                    </Link>
+                )}
                 <div className={styles.itemMeta}>
                     <p>REF: {item.product.sku || "N/A"}</p>
                     <button type="button" onClick={() => onRemoveItem(item.product_id)} className={styles.removeButton}>

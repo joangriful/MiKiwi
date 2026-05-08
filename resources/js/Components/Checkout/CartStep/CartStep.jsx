@@ -97,6 +97,10 @@ export default function CartStep({ cart, popularProducts = [], isBuyNow = false 
     const { delete: destroy, processing } = useForm();
 
     const addToCart = (product) => {
+        if (Number(product?.stock_quantity ?? 0) <= 0) {
+            return;
+        }
+
         router.post(
             route("cart.add"),
             {
@@ -154,27 +158,46 @@ export default function CartStep({ cart, popularProducts = [], isBuyNow = false 
 
             <div className={styles.itemsWrapper}>
                 <ul className={styles.itemsList}>
-                    {cart.items.map((item) => (
+                    {cart.items.map((item) => {
+                        const isConfigurable = item.product?.product_type === "configurable";
+
+                        return (
                         <li key={item.product_id} className={styles.itemRow}>
                             <div className={styles.itemContent}>
-                                <Link
-                                    href={route("products.show", item.product.slug)}
-                                    className={styles.itemImageLink}
-                                >
-                                    <img
-                                        src={getProductImage(item.product)}
-                                        alt={item.product.name}
-                                        className={styles.itemImage}
-                                    />
-                                </Link>
-
-                                <div className={styles.itemInfo}>
+                                {isConfigurable ? (
+                                    <div className={styles.itemImageLink}>
+                                        <img
+                                            src={getProductImage(item.product)}
+                                            alt={item.product.name}
+                                            className={styles.itemImage}
+                                        />
+                                    </div>
+                                ) : (
                                     <Link
                                         href={route("products.show", item.product.slug)}
-                                        className={styles.itemName}
+                                        className={styles.itemImageLink}
                                     >
-                                        {item.product.name}
+                                        <img
+                                            src={getProductImage(item.product)}
+                                            alt={item.product.name}
+                                            className={styles.itemImage}
+                                        />
                                     </Link>
+                                )}
+
+                                <div className={styles.itemInfo}>
+                                    {isConfigurable ? (
+                                        <span className={styles.itemName}>
+                                            {item.product.name}
+                                        </span>
+                                    ) : (
+                                        <Link
+                                            href={route("products.show", item.product.slug)}
+                                            className={styles.itemName}
+                                        >
+                                            {item.product.name}
+                                        </Link>
+                                    )}
 
                                     <p className={styles.itemUnitPrice}>
                                         PRECIO: {parseFloat(item.unit_price ?? item.product.base_price).toFixed(2)} €
@@ -243,7 +266,7 @@ export default function CartStep({ cart, popularProducts = [], isBuyNow = false 
                                 </div>
                             </div>
                         </li>
-                    ))}
+                    );})}
                 </ul>
             </div>
 
