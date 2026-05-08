@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Carts\Services;
 
+use App\Enums\ProductType;
 use App\Domain\Dolls\Services\DollCustomizationService;
 use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Exceptions\InsufficientStockException;
 use App\Exceptions\ProductNotFoundException;
+use App\Models\Product;
 use Illuminate\Support\Facades\Session;
 
 class CartService
@@ -84,7 +86,7 @@ class CartService
      */
     public function addToCart(string $productSlug, int $quantity = 1, array $accessories = [], ?array $configuration = null): array
     {
-        $product = $this->productRepository->getActiveBySlug($productSlug);
+        $product = $this->resolvePurchasableProduct($productSlug, $configuration);
 
         if (! $product) {
             throw new ProductNotFoundException($productSlug);
@@ -101,8 +103,8 @@ class CartService
         }
 
         $cart = Session::get($this->cartSessionKey, []);
-        $configurationData = $this->resolveConfigurationData($product->base_price, $configuration);
-        $itemKey = $this->buildItemKey((string) $product->id, $configurationData);
+        $configurationData = $this->resolveConfigurationData((float) $product->base_price, $configuration);
+        $itemKey = $this->buildItemKey((string) $product->id, $configurationData['configuration']);
 
         // Si el producto ya existe, actualizar cantidad
         if (isset($cart[$itemKey])) {
@@ -153,7 +155,7 @@ class CartService
         }
 
         // Validar stock
-        $product = $this->productRepository->getActiveBySlug($cart[$productId]['slug']);
+        $product = $this->productRepository->getActiveInStockBySlug($cart[$productId]['slug']);
         if ($product && $product->stock_quantity < $quantity) {
             throw new InsufficientStockException(
                 productName: $product->name,
@@ -212,7 +214,7 @@ class CartService
         $errors = [];
 
         foreach ($cart as $productId => $item) {
-            $product = $this->productRepository->getActiveBySlug($item['slug']);
+            $product = $this->productRepository->getActiveInStockBySlug($item['slug']);
 
             if (! $product) {
                 $errors[] = "Producto {$item['slug']} ya no está disponible.";
@@ -232,7 +234,7 @@ class CartService
      */
     public function setBuyNowItem(string $productSlug, int $quantity = 1, array $accessories = [], ?array $configuration = null): void
     {
-        $product = $this->productRepository->getActiveBySlug($productSlug);
+        $product = $this->resolvePurchasableProduct($productSlug, $configuration);
 
         if (! $product) {
             throw new ProductNotFoundException($productSlug);
@@ -247,7 +249,7 @@ class CartService
             );
         }
 
-        $configurationData = $this->resolveConfigurationData($product->base_price, $configuration);
+        $configurationData = $this->resolveConfigurationData((float) $product->base_price, $configuration);
 
         Session::put($this->buyNowSessionKey, [
             'slug' => $productSlug,
@@ -270,7 +272,7 @@ class CartService
             return null;
         }
 
-        $product = $this->productRepository->getActiveBySlug($item['slug']);
+        $product = $this->productRepository->getActiveInStockBySlug($item['slug']);
 
         if (! $product) {
             $this->clearBuyNowItem();
@@ -329,6 +331,27 @@ class CartService
             'configuration' => $normalizedConfiguration,
             'unit_price' => $this->dollCustomizationService->calculateUnitPrice($basePrice, $configuration),
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $configuration
+     */
+    private function resolvePurchasableProduct(string $productSlug, ?array $configuration): ?Product
+    {
+        $product = $this->productRepository->getActiveInStockBySlug($productSlug);
+
+        if (! $product) {
+            return null;
+        }
+
+        if (
+            $product->product_type === ProductType::Configurable->value
+            && (! is_array($configuration) || empty($configuration))
+        ) {
+            throw new \InvalidArgumentException('La muñeca configurable requiere una configuración válida.');
+        }
+
+        return $product;
     }
 
     /**

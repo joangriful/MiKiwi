@@ -12,6 +12,7 @@ export default function ProductInfo({ product }) {
 
     const parentCategory = product?.category?.parent;
     const currentCategory = product?.category;
+    const isOutOfStock = Number(product?.stock_quantity ?? 0) <= 0;
 
     const showNotification = (type) => {
         setNotification(type);
@@ -19,7 +20,7 @@ export default function ProductInfo({ product }) {
     };
 
     const handleAddToCart = async () => {
-        if (!product?.slug) return;
+        if (!product?.slug || isOutOfStock) return;
         setIsLoading(true);
         try {
             await axios.post(route("cart.add"), {
@@ -39,7 +40,7 @@ export default function ProductInfo({ product }) {
     };
 
     const handleBuyNow = async () => {
-        if (!product?.slug) return;
+        if (!product?.slug || isOutOfStock) return;
         setIsLoading(true);
         try {
             const { data: responseData } = await axios.post(route("cart.buy-now"), {
@@ -184,24 +185,24 @@ export default function ProductInfo({ product }) {
 
                 <button
                     onClick={handleAddToCart}
-                    disabled={isLoading}
+                    disabled={isLoading || isOutOfStock}
                     className={styles.addToCartButton}
                 >
                     <span className={`material-symbols-outlined ${styles.actionIcon}`}>
                         shopping_cart
                     </span>
-                    Añadir al carrito
+                    {isOutOfStock ? 'Sin stock' : 'Añadir al carrito'}
                 </button>
 
                 <button
                     onClick={handleBuyNow}
-                    disabled={isLoading}
+                    disabled={isLoading || isOutOfStock}
                     className={styles.buyNowButton}
                 >
                     <span className={`material-symbols-outlined ${styles.actionIcon}`}>
                         bolt
                     </span>
-                    Comprar ahora
+                    {isOutOfStock ? 'Sin stock' : 'Comprar ahora'}
                 </button>
             </div>
         </div>

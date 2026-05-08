@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Products\Repositories\Eloquent;
 
 use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
+use App\Enums\ProductType;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -41,9 +42,33 @@ class EloquentProductRepository implements ProductRepositoryInterface
             ->first();
     }
 
+    public function getActiveInStockBySlug(string $slug): ?Product
+    {
+        return Product::query()
+            ->active()
+            ->inStock()
+            ->whereIn('product_type', [
+                ProductType::Simple->value,
+                ProductType::Configurable->value,
+            ])
+            ->where('slug', $slug)
+            ->with([
+                'category',
+                'images',
+                'accessories',
+                'reviews' => fn ($query) => $query->approved()->latest(),
+            ])
+            ->first();
+    }
+
     public function getActiveBySlugs(array $slugs): Collection
     {
-        return $this->activeProductsQuery()
+        return Product::query()
+            ->active()
+            ->whereIn('product_type', [
+                ProductType::Simple->value,
+                ProductType::Configurable->value,
+            ])
             ->whereIn('slug', $slugs)
             ->with(['category', 'images', 'accessories'])
             ->get();
@@ -117,7 +142,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
     public function getCartPopularProducts(int $limit = 8): Collection
     {
-        return $this->activeProductsQuery()
+        return $this->activeInStockProductsQuery()
             ->with('images')
             ->limit($limit)
             ->get();

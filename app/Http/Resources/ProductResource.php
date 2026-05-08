@@ -30,6 +30,8 @@ class ProductResource extends JsonResource
             'sku' => $product->sku,
             'description' => $product->description,
             'base_price' => $product->base_price,
+            'stock_quantity' => $product->stock_quantity,
+            'is_in_stock' => $product->stock_quantity > 0,
             'image_url' => $firstImage?->image_url,
             'hover_image_url' => $hoverImage?->image_url,
             'images' => $images
