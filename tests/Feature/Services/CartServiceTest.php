@@ -8,6 +8,7 @@ use App\Exceptions\InsufficientStockException;
 use App\Exceptions\ProductNotFoundException;
 use App\Models\Product;
 use App\Domain\Carts\Services\CartService;
+use App\Enums\ProductType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
@@ -36,6 +37,25 @@ class CartServiceTest extends TestCase
 
         $this->assertCount(1, $cart['items']);
         $this->assertEquals(2, $cart['items'][0]['quantity']);
+    }
+
+    public function test_can_add_ready_made_doll_to_cart(): void
+    {
+        $product = Product::factory()->doll()->create([
+            'slug' => 'queen-doll',
+            'stock_quantity' => 10,
+            'is_active' => true,
+            'base_price' => 3000,
+        ]);
+
+        $cart = $this->cartService->addToCart($product->slug, 1);
+
+        $this->assertCount(1, $cart['items']);
+        $this->assertSame(ProductType::Doll->value, $cart['items'][0]['product']->product_type);
+        $this->assertSame($product->slug, $cart['items'][0]['product']->slug);
+        $this->assertEquals(1, $cart['items'][0]['quantity']);
+        $this->assertEquals(3000.0, $cart['items'][0]['unit_price']);
+        $this->assertNull($cart['items'][0]['configuration']);
     }
 
     public function test_cannot_add_more_than_available_stock(): void

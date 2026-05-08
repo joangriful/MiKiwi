@@ -36,8 +36,36 @@ class CartControllerTest extends TestCase
                 'slug' => $product->slug,
                 'quantity' => 2,
                 'accessories' => [],
+                'unit_price' => (float) $product->base_price,
+                'line_subtotal' => round((float) $product->base_price * 2, 2),
+                'configuration' => null,
             ],
         ], session('shopping_cart'));
+    }
+
+    public function test_store_adds_doll_product_to_cart_session(): void
+    {
+        $product = Product::factory()->doll()->create([
+            'slug' => 'queen-doll',
+            'is_active' => true,
+            'stock_quantity' => 10,
+            'base_price' => 3000,
+        ]);
+
+        $this->post(route('cart.add'), [
+            'product_slug' => $product->slug,
+            'quantity' => 1,
+            'accessories' => [],
+        ])
+            ->assertRedirect()
+            ->assertSessionHas('success', 'Producto agregado al carrito');
+
+        $this->assertSame(ProductType::Doll->value, $product->product_type);
+        $this->assertSame($product->slug, session("shopping_cart.{$product->id}.slug"));
+        $this->assertSame(1, session("shopping_cart.{$product->id}.quantity"));
+        $this->assertSame(3000.0, session("shopping_cart.{$product->id}.unit_price"));
+        $this->assertSame(3000.0, session("shopping_cart.{$product->id}.line_subtotal"));
+        $this->assertNull(session("shopping_cart.{$product->id}.configuration"));
     }
 
     public function test_update_changes_cart_item_quantity_in_session(): void
@@ -107,6 +135,9 @@ class CartControllerTest extends TestCase
             'slug' => $product->slug,
             'quantity' => 3,
             'accessories' => [],
+            'unit_price' => (float) $product->base_price,
+            'line_subtotal' => round((float) $product->base_price * 3, 2),
+            'configuration' => null,
         ], session('buy_now_item'));
     }
 

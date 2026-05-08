@@ -12,7 +12,7 @@ export default function ProductInfo({ product }) {
 
     const parentCategory = product?.category?.parent;
     const currentCategory = product?.category;
-    const isOutOfStock = Number(product?.stock_quantity ?? 0) <= 0;
+    const isOutOfStock = product?.is_in_stock === false;
 
     const showNotification = (type) => {
         setNotification(type);

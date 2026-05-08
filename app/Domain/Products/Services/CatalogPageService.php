@@ -172,6 +172,7 @@ class CatalogPageService
                 'sku',
                 'description',
                 'base_price',
+                'stock_quantity',
                 'product_type',
                 'is_promoted',
                 'created_at',

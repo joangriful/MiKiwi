@@ -110,7 +110,7 @@ class PageRenderingTest extends TestCase
             ['configurador.index', 'Configurator/Index'],
             ['configurador.collections', 'Configurator/Collections'],
             ['configurador.quiz', 'Configurator/Quiz'],
-            ['configurador.dolls', 'Configurator/DollConfigurator'],
+            ['configurador.dolls', 'Configurator/DollConfigTest'],
             ['doll.config.test', 'Configurator/DollConfigTest'],
             ['cart.view', 'Checkout/Cart'],
         ];

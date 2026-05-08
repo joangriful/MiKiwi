@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Repositories;
 
+use App\Enums\ProductType;
 use App\Models\Product;
 use App\Domain\Products\Repositories\Eloquent\EloquentProductRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -32,6 +33,21 @@ class EloquentProductRepositoryTest extends TestCase
 
         $this->assertNotNull($found);
         $this->assertEquals($product->id, $found->id);
+    }
+
+    public function test_can_get_active_in_stock_doll_by_slug_for_cart_purchase(): void
+    {
+        $product = Product::factory()->doll()->create([
+            'slug' => 'queen-doll',
+            'is_active' => true,
+            'stock_quantity' => 10,
+        ]);
+
+        $found = $this->repository->getActiveInStockBySlug('queen-doll');
+
+        $this->assertNotNull($found);
+        $this->assertEquals($product->id, $found->id);
+        $this->assertSame(ProductType::Doll->value, $found->product_type);
     }
 
     public function test_returns_null_for_inactive_product_by_slug(): void

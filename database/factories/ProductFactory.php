@@ -83,6 +83,17 @@ class ProductFactory extends Factory
     }
 
     /**
+     * Indicate that the product is a ready-made doll.
+     */
+    public function doll(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'product_type' => ProductType::Doll->value,
+            'base_price' => $this->faker->randomFloat(2, 500, 3000),
+        ]);
+    }
+
+    /**
      * Indicate that the product is a component (e.g., eyes, wigs).
      */
     public function component(): static

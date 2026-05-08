@@ -7,6 +7,7 @@ use App\Models\DollSetting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class DollSettingsService
 {
@@ -17,7 +18,13 @@ class DollSettingsService
     public function getSettings(): array
     {
         try {
-            $setting = DollSetting::query()->find('default_config');
+            if (! Schema::hasTable('doll_setting')) {
+                return [];
+            }
+
+            $setting = DollSetting::query()
+                ->where('key', 'default_config')
+                ->first();
 
             return $setting?->value ?? [];
         } catch (\Exception $e) {
@@ -46,6 +53,10 @@ class DollSettingsService
     public function getAllPartPositions(): array
     {
         try {
+            if (! Schema::hasTable('doll_part_positions')) {
+                return [];
+            }
+
             $positions = DB::table('doll_part_positions')->get();
             $formatted = [];
 

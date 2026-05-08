@@ -97,7 +97,7 @@ export default function CartStep({ cart, popularProducts = [], isBuyNow = false 
     const { delete: destroy, processing } = useForm();
 
     const addToCart = (product) => {
-        if (Number(product?.stock_quantity ?? 0) <= 0) {
+        if (product?.is_in_stock === false) {
             return;
         }
 

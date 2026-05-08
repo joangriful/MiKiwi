@@ -30,8 +30,7 @@ class ProductResource extends JsonResource
             'sku' => $product->sku,
             'description' => $product->description,
             'base_price' => $product->base_price,
-            'stock_quantity' => $product->stock_quantity,
-            'is_in_stock' => $product->stock_quantity > 0,
+            'is_in_stock' => $this->isInStock($product),
             'image_url' => $firstImage?->image_url,
             'hover_image_url' => $hoverImage?->image_url,
             'images' => $images
@@ -73,5 +72,14 @@ class ProductResource extends JsonResource
         return $product->favoritedByUsers()
             ->whereKey($user->getKey())
             ->exists();
+    }
+
+    private function isInStock(Product $product): bool
+    {
+        if (! array_key_exists('stock_quantity', $product->getAttributes())) {
+            return true;
+        }
+
+        return (int) $product->stock_quantity > 0;
     }
 }

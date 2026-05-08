@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\ProductType;
 use App\Models\Category;
 use App\Models\ChatMessage;
 use App\Models\ChatSession;
@@ -12,6 +13,7 @@ use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
+use Database\Seeders\PrefabDollSeeder;
 use Database\Seeders\ProductionDatabaseSeeder;
 use Database\Seeders\ProductSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -126,6 +128,29 @@ class SeederTest extends TestCase
         );
     }
 
+    public function test_prefab_doll_seeder_creates_ready_made_doll_products(): void
+    {
+        $this->seed(PrefabDollSeeder::class);
+
+        $this->assertDatabaseHas('category', [
+            'slug' => 'munecas',
+            'is_active' => true,
+        ]);
+
+        foreach (['queen-doll', 'hat-doll', 'bikini-doll', 'witch-doll'] as $slug) {
+            $this->assertDatabaseHas('product', [
+                'slug' => $slug,
+                'product_type' => ProductType::Doll->value,
+                'is_active' => true,
+                'stock_quantity' => 20,
+            ]);
+
+            $product = Product::query()->where('slug', $slug)->firstOrFail();
+
+            $this->assertSame(1, $product->images()->count());
+        }
+    }
+
     /**
      * Test que las órdenes se crean con estados y totales válidos.
      */
@@ -194,7 +219,7 @@ class SeederTest extends TestCase
             'email' => 'admin@kinky-toys.com',
             'role' => 'admin',
         ]);
-        $this->assertSame(count(ProductSeeder::productDefinitions()), Product::count());
+        $this->assertSame(count(ProductSeeder::productDefinitions()) + 4, Product::count());
         $this->assertSame(0, Order::count());
         $this->assertSame(0, Review::count());
         $this->assertSame(0, ChatSession::count());
