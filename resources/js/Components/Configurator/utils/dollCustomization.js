@@ -161,9 +161,14 @@ export function getConfigurationEntries(allSelections = {}, configuratorRules = 
     });
 }
 
-export function getMissingRequiredCategories(allSelections = {}, configuratorRules = {}) {
+export function getMissingRequiredCategories(allSelections = {}, configuratorRules = {}, views = {}) {
     const frontSelections = allSelections.front || {};
-    const requiredCategories = configuratorRules.requiredFrontCategories || [];
+    const availableFrontCategories = views.front || {};
+    const requiredCategories = (configuratorRules.requiredFrontCategories || []).filter((category) => {
+        const categoryParts = availableFrontCategories[category] || [];
+
+        return categoryParts.length > 0;
+    });
 
     return requiredCategories.filter((category) => !frontSelections[category]);
 }

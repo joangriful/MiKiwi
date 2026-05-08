@@ -156,8 +156,8 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
     const defaultZoom = useMemo(() => defaultSettings?.zoom || null, [defaultSettings]);
     const configurationEntries = useMemo(() => getConfigurationEntries(allSelections, configuratorRules), [allSelections, configuratorRules]);
     const missingRequiredCategories = useMemo(
-        () => getMissingRequiredCategories(allSelections, configuratorRules).map(getCategoryLabel),
-        [allSelections, configuratorRules],
+        () => getMissingRequiredCategories(allSelections, configuratorRules, sanitizedViews).map(getCategoryLabel),
+        [allSelections, configuratorRules, sanitizedViews],
     );
     const baseDollPrice = Number(dollProduct?.base_price ?? DEFAULT_DOLL_BASE_PRICE);
     const totals = useMemo(
