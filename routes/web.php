@@ -55,6 +55,7 @@ Route::prefix('cart')->group(function () {
 
     Route::middleware('throttle:cart')->group(function () {
         Route::post('/add', [CartController::class, 'store'])->name('cart.add');
+        Route::post('/buy-now', [CartController::class, 'buyNow'])->name('cart.buy-now');
         Route::patch('/update/{id}', [CartController::class, 'update'])->name('cart.update');
         Route::delete('/remove/{id}', [CartController::class, 'destroy'])->name('cart.remove');
     });
@@ -245,9 +246,6 @@ Route::controller(ConfiguratorPageController::class)->prefix('configurador')->gr
     Route::get('/quiz', 'quiz')->name('configurador.quiz');
     Route::get('/munecas', 'dolls')->name('configurador.dolls');
     Route::get('/cart', 'cart')->name('cart.view');
-    Route::post('/cart/buy-now', [App\Http\Controllers\CartController::class, 'buyNow'])
-        ->middleware('throttle:cart')
-        ->name('cart.buy-now');
 });
 
 Route::get('/doll_config_test', [ConfiguratorPageController::class, 'dollConfigTest'])

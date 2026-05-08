@@ -29,6 +29,28 @@ class EloquentProductRepository implements ProductRepositoryInterface
         return $this->activeProductsQuery()->inStock();
     }
 
+    /**
+     * @return array<int, string>
+     */
+    private function purchasableProductTypes(): array
+    {
+        return [
+            ProductType::Simple->value,
+            ProductType::Doll->value,
+            ProductType::Configurable->value,
+        ];
+    }
+
+    /**
+     * @return Builder<Product>
+     */
+    private function purchasableProductsQuery(): Builder
+    {
+        return Product::query()
+            ->active()
+            ->whereIn('product_type', $this->purchasableProductTypes());
+    }
+
     public function getActiveBySlug(string $slug): ?Product
     {
         return $this->activeProductsQuery()
@@ -44,13 +66,8 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
     public function getActiveInStockBySlug(string $slug): ?Product
     {
-        return Product::query()
-            ->active()
+        return $this->purchasableProductsQuery()
             ->inStock()
-            ->whereIn('product_type', [
-                ProductType::Simple->value,
-                ProductType::Configurable->value,
-            ])
             ->where('slug', $slug)
             ->with([
                 'category',
@@ -63,12 +80,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
     public function getActiveBySlugs(array $slugs): Collection
     {
-        return Product::query()
-            ->active()
-            ->whereIn('product_type', [
-                ProductType::Simple->value,
-                ProductType::Configurable->value,
-            ])
+        return $this->purchasableProductsQuery()
             ->whereIn('slug', $slugs)
             ->with(['category', 'images', 'accessories'])
             ->get();

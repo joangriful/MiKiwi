@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef, Suspense, useCallback } from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import axios from 'axios';
 import ConfiguratorLayout from '@/Layouts/ConfiguratorLayout';
 import DollSelectionSummary from '@/Components/Configurator/DollSelectionSummary/DollSelectionSummary';
@@ -42,6 +42,9 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
     const [partPositions, setPartPositions] = useState(initialPartPositions || {});
     const [topSectionHeight, setTopSectionHeight] = useState(65);
     const [isSubmittingPurchase, setIsSubmittingPurchase] = useState(false);
+    const [isSubmittingReadyDollPurchase, setIsSubmittingReadyDollPurchase] = useState(false);
+    const [isAddingReadyDollToCart, setIsAddingReadyDollToCart] = useState(false);
+    const [addedReadyDollSlug, setAddedReadyDollSlug] = useState(null);
     
     // Activity Tracker to prevent UI Jank
     const [canStartBackgroundWarming, setCanStartBackgroundWarming] = useState(false);
@@ -202,6 +205,45 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
         }
     };
 
+    const addReadyDollToCart = (productSlug) => axios.post(route('cart.add'), {
+        product_slug: productSlug,
+        quantity: 1,
+    });
+
+    const handleReadyDollPurchase = async (productSlug) => {
+        if (!productSlug) {
+            return;
+        }
+
+        setIsSubmittingReadyDollPurchase(true);
+
+        try {
+            await addReadyDollToCart(productSlug);
+            router.visit(route('cart.index'));
+        } catch (error) {
+            console.error('No pudimos agregar la muñeca al carrito:', error);
+            setIsSubmittingReadyDollPurchase(false);
+        }
+    };
+
+    const handleReadyDollAddToCart = async (productSlug) => {
+        if (!productSlug) {
+            return;
+        }
+
+        setIsAddingReadyDollToCart(true);
+        setAddedReadyDollSlug(null);
+
+        try {
+            await addReadyDollToCart(productSlug);
+            setAddedReadyDollSlug(productSlug);
+        } catch (error) {
+            console.error('No pudimos agregar la muñeca al carrito:', error);
+        } finally {
+            setIsAddingReadyDollToCart(false);
+        }
+    };
+
     const handleTabChange = (tab) => {
         if (tab === 'ready') {
             const now = performance.now();
@@ -353,6 +395,11 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                         }>
                             <Mannequin3DViewer 
                                 isActive={activeTab === 'ready'}
+                                onBuyDoll={handleReadyDollPurchase}
+                                onAddDollToCart={handleReadyDollAddToCart}
+                                isBuyingDoll={isSubmittingReadyDollPurchase}
+                                isAddingDollToCart={isAddingReadyDollToCart}
+                                addedDollSlug={addedReadyDollSlug}
                                 onModelMounted={() => {
                                     is3DMountedRef.current = true;
                                     if (transitionStartTime) {

@@ -5,13 +5,14 @@ import styles from './Mannequin3DViewer.module.css';
 // Lazy load the 3D scene component
 const MannequinScene3D = lazy(loadMannequinScene3D);
 
-const availableModels = [
+const readyDollModels = [
     {
         id: 'naked_queen',
         name: 'Queen',
         path: '/models/naked-queen/source/NakedQueen.fbx',
         texturePath: '/models/naked-queen/textures/NakedQueen.jpeg',
         thumbnail: null,
+        productSlug: 'queen-doll',
         rotationY: 0
     },
     {
@@ -21,6 +22,7 @@ const availableModels = [
         texturePath: '/models/naked-woman-standing/textures/Nake-Sum_Wom_RtStand_diffuse_875.png',
         normalPath: '/models/naked-woman-standing/textures/Nake-Sum_Wom_RtStand_normal_875.png',
         thumbnail: null,
+        productSlug: 'hat-doll',
         rotationY: Math.PI
     },
     {
@@ -30,6 +32,7 @@ const availableModels = [
         texturePath: '/models/naked-woman-walk/textures/Nake-Sum_Wom_RtWalk_diffuse_854.png',
         normalPath: '/models/naked-woman-walk/textures/Nake-Sum_Wom_RtWalk_normal_854.png',
         thumbnail: null,
+        productSlug: 'bikini-doll',
         rotationY: 0
     },
     {
@@ -38,6 +41,7 @@ const availableModels = [
         path: '/models/witch-naked/source/Yennefer_Naked_med.fbx',
         texturePath: '/models/witch-naked/textures/Yennefer_Naked_med.jpeg',
         thumbnail: null,
+        productSlug: 'witch-doll',
         rotationY: 0
     },
 ];
@@ -52,8 +56,16 @@ function Loader() {
     );
 }
 
-export default function Mannequin3DViewer({ onModelMounted, isActive = false }) {
-    const [selectedModel, setSelectedModel] = useState(availableModels[0]);
+export default function Mannequin3DViewer({
+    onModelMounted,
+    isActive = false,
+    onBuyDoll,
+    onAddDollToCart,
+    isBuyingDoll = false,
+    isAddingDollToCart = false,
+    addedDollSlug = null,
+}) {
+    const [selectedModel, setSelectedModel] = useState(readyDollModels[0]);
     const [isModelReady, setIsModelReady] = useState(false);
     const [bodyParams] = useState({
         height: 0.5,
@@ -74,6 +86,10 @@ export default function Mannequin3DViewer({ onModelMounted, isActive = false }) 
         setIsModelReady(true);
         if (onModelMounted) onModelMounted();
     };
+
+    const canBuySelectedDoll = Boolean(selectedModel.productSlug);
+    const isSelectedDollAdded = addedDollSlug === selectedModel.productSlug;
+    const isSubmittingDollAction = isBuyingDoll || isAddingDollToCart;
 
     return (
         <div className={styles.root}>
@@ -100,7 +116,7 @@ export default function Mannequin3DViewer({ onModelMounted, isActive = false }) 
                         Modelos
                     </p>
                     <div className={styles.selectorList}>
-                        {availableModels.map((model) => (
+                        {readyDollModels.map((model) => (
                             <button
                                 key={model.id}
                                 type="button"
@@ -121,6 +137,36 @@ export default function Mannequin3DViewer({ onModelMounted, isActive = false }) 
                         ))}
                     </div>
                 </div>
+
+                {canBuySelectedDoll ? (
+                    <div className={styles.purchaseOverlay}>
+                        <div>
+                            <p className={styles.purchaseTitle}>{selectedModel.name}</p>
+                            {isSelectedDollAdded ? (
+                                <p className={styles.purchaseStatus}>Añadida al carrito</p>
+                            ) : null}
+                        </div>
+
+                        <div className={styles.purchaseActions}>
+                            <button
+                                type="button"
+                                onClick={() => onAddDollToCart?.(selectedModel.productSlug)}
+                                className={`${styles.purchaseButton} ${styles.purchaseButtonSecondary}`}
+                                disabled={isSubmittingDollAction}
+                            >
+                                {isAddingDollToCart ? 'Añadiendo...' : 'Añadir al carrito'}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => onBuyDoll?.(selectedModel.productSlug)}
+                                className={styles.purchaseButton}
+                                disabled={isSubmittingDollAction}
+                            >
+                                {isBuyingDoll ? 'Procesando...' : 'Comprar'}
+                            </button>
+                        </div>
+                    </div>
+                ) : null}
             </div>
         </div>
     );
