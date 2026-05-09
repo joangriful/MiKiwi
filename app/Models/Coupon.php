@@ -17,14 +17,19 @@ class Coupon extends Model
         'code',
         'type',
         'value',
+        'minimum_amount',
+        'first_order_only',
+        'required_product_type',
         'is_active',
         'expires_at',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'first_order_only' => 'boolean',
         'expires_at' => 'datetime',
         'value' => 'decimal:2',
+        'minimum_amount' => 'decimal:2',
     ];
 
     public function orders(): HasMany
