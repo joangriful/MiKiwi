@@ -86,7 +86,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('coupon', function (Request $request): Limit {
-            return Limit::perMinute(5)->by($this->sessionOrIpKey($request));
+            return Limit::perMinute(20)->by($this->sessionOrIpKey($request));
         });
 
         RateLimiter::for('checkout-payment', function (Request $request): Limit {

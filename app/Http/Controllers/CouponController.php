@@ -6,6 +6,7 @@ use App\Domain\Carts\Services\CartService;
 use App\Domain\Coupons\Services\CouponService;
 use App\Exceptions\InvalidCouponException;
 use App\Http\Requests\ApplyCouponRequest;
+use Illuminate\Support\Facades\Auth;
 
 class CouponController extends Controller
 {
@@ -17,9 +18,13 @@ class CouponController extends Controller
     public function apply(ApplyCouponRequest $request)
     {
         try {
+            $cart = $this->cartService->getCart();
+
             $this->couponService->applyCoupon(
                 $request->validated()['code'],
-                $this->cartService->getCart()['total']
+                (float) ($cart['total'] ?? 0),
+                $cart,
+                Auth::id() ? (string) Auth::id() : null,
             );
         } catch (InvalidCouponException $exception) {
             return redirect()

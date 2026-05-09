@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Domain\Carts\Services\CartService;
+use App\Domain\Coupons\Services\CouponService;
 use App\Domain\Orders\Actions\CancelOrder;
 use App\Domain\Orders\Actions\CreateOrder;
 use App\Domain\Orders\Actions\GenerateOrderInvoice;
@@ -28,6 +29,7 @@ class OrderController extends Controller
     public function __construct(
         protected CartService $cartService,
         protected StripeService $stripeService,
+        private readonly CouponService $couponService,
         private readonly CreateOrder $createOrder,
         private readonly CancelOrder $cancelOrder,
         private readonly ResolveOrderPaymentStatus $resolvePaymentStatus,
@@ -78,7 +80,19 @@ class OrderController extends Controller
 
         try {
             $validated = $request->validated();
+            $coupon = $this->couponService->refreshSessionCoupon(
+                (float) ($cartData['total'] ?? 0),
+                $cartData,
+                Auth::id() ? (string) Auth::id() : null,
+            );
+
+            $cartData['total'] = $this->couponService->payableTotal(
+                $cartData,
+                Auth::id() ? (string) Auth::id() : null,
+            );
+
             $validated['cart'] = $cartData;
+            $validated['coupon_id'] = is_array($coupon) ? ($coupon['id'] ?? null) : null;
             $validated['is_buy_now'] = $isBuyNow;
             $validated['payment_status'] = $this->resolvePaymentStatus->execute($validated['payment_intent_id'] ?? null);
 
@@ -121,7 +135,7 @@ class OrderController extends Controller
             $customer = $this->stripeService->getOrCreateCustomer($user);
 
             $intent = $this->stripeService->createPaymentIntent(
-                $cartData['total'],
+                $this->couponService->payableTotal($cartData, Auth::id() ? (string) Auth::id() : null),
                 'eur',
                 ['order_type' => $isBuyNow ? 'buy_now' : 'standard'],
                 $customer->id,

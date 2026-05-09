@@ -6,6 +6,7 @@ namespace App\Domain\Carts\Services;
 
 use App\Domain\Coupons\Services\CouponService;
 use App\Domain\Products\Services\ProductService;
+use Illuminate\Support\Facades\Auth;
 
 class CartPageService
 {
@@ -25,7 +26,11 @@ class CartPageService
             'cart' => $displayCart,
             'isBuyNow' => $isBuyNow,
             'popularProducts' => $this->productService->getCartPopularProducts(),
-            'coupon' => $this->couponService->refreshSessionCoupon((float) ($displayCart['total'] ?? 0)),
+            'coupon' => $this->couponService->refreshSessionCoupon(
+                (float) ($displayCart['total'] ?? 0),
+                $displayCart ?? [],
+                Auth::id() ? (string) Auth::id() : null,
+            ),
         ];
     }
 }

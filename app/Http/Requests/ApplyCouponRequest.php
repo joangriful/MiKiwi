@@ -8,6 +8,17 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ApplyCouponRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $code = $this->input('code', $this->input('coupon_code'));
+
+        if (is_string($code)) {
+            $this->merge([
+                'code' => strtoupper(trim($code)),
+            ]);
+        }
+    }
+
     public function authorize(): bool
     {
         return true;

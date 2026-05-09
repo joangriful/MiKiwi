@@ -275,8 +275,22 @@
     box-shadow: 0 12px 24px rgb(153 184 73 / 20%);
 }
 
+.couponButton:disabled {
+    cursor: not-allowed;
+    background: var(--color-border-strong);
+    box-shadow: none;
+}
+
 .couponButton:active {
     transform: scale(0.95);
+}
+
+.couponError {
+    margin: 0.75rem 0 0;
+    color: var(--color-danger);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.4;
 }
 
 .appliedCoupon {

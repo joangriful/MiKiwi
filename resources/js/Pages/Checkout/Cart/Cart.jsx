@@ -105,6 +105,10 @@ export default function Cart({
     };
 
     const applyCoupon = () => {
+        if (form.processing) {
+            return;
+        }
+
         form.post(route("cart.coupon.apply"), {
             preserveScroll: true,
             onSuccess: () => form.setData("coupon_code", ""),
@@ -150,6 +154,8 @@ export default function Cart({
                         cart={cart}
                         coupon={coupon}
                         couponCode={form.data.coupon_code}
+                        couponError={form.errors.coupon || form.errors.code}
+                        couponProcessing={form.processing}
                         onCouponCodeChange={(value) => form.setData("coupon_code", value)}
                         onApplyCoupon={applyCoupon}
                         onRemoveCoupon={removeCoupon}

@@ -6,6 +6,8 @@ export default function CheckoutOrderSummary({
     cart,
     coupon,
     couponCode,
+    couponError,
+    couponProcessing,
     onCouponCodeChange,
     onApplyCoupon,
     onRemoveCoupon,
@@ -36,6 +38,8 @@ export default function CheckoutOrderSummary({
                 <CouponBox
                     coupon={coupon}
                     couponCode={couponCode}
+                    couponError={couponError}
+                    couponProcessing={couponProcessing}
                     onCouponCodeChange={onCouponCodeChange}
                     onApplyCoupon={onApplyCoupon}
                     onRemoveCoupon={onRemoveCoupon}
@@ -120,7 +124,7 @@ function OrderSummaryItem({ item, onRemoveItem }) {
     );
 }
 
-function CouponBox({ coupon, couponCode, onCouponCodeChange, onApplyCoupon, onRemoveCoupon }) {
+function CouponBox({ coupon, couponCode, couponError, couponProcessing, onCouponCodeChange, onApplyCoupon, onRemoveCoupon }) {
     return (
         <section className={styles.couponSection}>
             <label className={styles.couponLabel} htmlFor="checkout_coupon">
@@ -136,10 +140,17 @@ function CouponBox({ coupon, couponCode, onCouponCodeChange, onApplyCoupon, onRe
                     aria-label="Código de cupón"
                     onChange={(event) => onCouponCodeChange(event.target.value)}
                 />
-                <button type="button" onClick={onApplyCoupon} className={styles.couponButton}>
-                    Validar
+                <button
+                    type="button"
+                    onClick={onApplyCoupon}
+                    className={styles.couponButton}
+                    disabled={couponProcessing}
+                >
+                    {couponProcessing ? "Validando..." : "Validar"}
                 </button>
             </div>
+
+            {couponError ? <p className={styles.couponError}>{couponError}</p> : null}
 
             {coupon ? (
                 <div className={styles.appliedCoupon}>
