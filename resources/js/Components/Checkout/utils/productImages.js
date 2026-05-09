@@ -1,17 +1,18 @@
 import { resolveProductImageUrl } from "@/Utils/productImageUrls";
 
 const PLACEHOLDER_IMAGE = "https://via.placeholder.com/150";
-const PREFAB_DOLL_THUMBNAIL = "/images/mannequin-base-skin.png";
-const PREFAB_DOLL_SLUGS = new Set([
-    "queen-doll",
-    "hat-doll",
-    "bikini-doll",
-    "witch-doll",
-]);
+const DOLL_CART_IMAGE = "/images/img_cart_doll/img_doll.jpg";
+const DOLL_PRODUCT_TYPE = "doll";
 
 export function getProductImage(product = {}) {
-    if (PREFAB_DOLL_SLUGS.has(product.slug)) {
-        return PREFAB_DOLL_THUMBNAIL;
+    if (product.product_type === DOLL_PRODUCT_TYPE) {
+        return DOLL_CART_IMAGE;
+    }
+
+    const primaryImage = resolveProductImageUrl(product.image_url);
+
+    if (primaryImage) {
+        return primaryImage;
     }
 
     try {
