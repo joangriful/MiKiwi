@@ -61,6 +61,19 @@ class UserPolicy
         return Response::allow();
     }
 
+    public function toggleActive(User $authenticatedUser, User $targetUser): Response
+    {
+        if ($authenticatedUser->role !== UserRole::Admin->value) {
+            return Response::deny('Solo los administradores pueden activar o desactivar usuarios.');
+        }
+
+        if ($authenticatedUser->id === $targetUser->id) {
+            return Response::deny('No puedes desactivar tu propia cuenta.');
+        }
+
+        return Response::allow();
+    }
+
     /**
      * Eliminar: solo admin (no auto-eliminarse)
      */

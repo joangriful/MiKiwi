@@ -184,6 +184,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/users/{user}/toggle-role', [App\Http\Controllers\UserController::class, 'toggleAdmin'])
         ->middleware('throttle:admin-write')
         ->name('users.toggleRole');
+    Route::get('/admin/users', [App\Http\Controllers\UserController::class, 'index'])
+        ->name('users.index');
+    Route::post('/admin/users', [App\Http\Controllers\UserController::class, 'store'])
+        ->middleware('throttle:admin-write')
+        ->name('users.store');
+    Route::put('/admin/users/{user}', [App\Http\Controllers\UserController::class, 'update'])
+        ->middleware('throttle:admin-write')
+        ->name('users.update');
+    Route::patch('/admin/users/{user}/toggle-active', [App\Http\Controllers\UserController::class, 'toggleActive'])
+        ->middleware('throttle:admin-write')
+        ->name('users.toggleActive');
 
     Route::middleware('throttle:uploads')->group(function () {
         Route::post('/content/hero/upload', [App\Http\Controllers\ContentController::class, 'uploadHeroImages'])->name('content.hero.upload');
