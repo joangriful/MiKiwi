@@ -5,6 +5,7 @@ import ConfiguratorLayout from '@/Layouts/ConfiguratorLayout';
 import DollSelectionSummary from '@/Components/Configurator/DollSelectionSummary/DollSelectionSummary';
 import { use3DPreload } from '@/Components/Configurator/hooks/use3DPreload';
 import { loadMannequin3DViewer } from '@/Components/Configurator/utils/lazyLoaders';
+import { buildReadyDollModels } from '@/Components/Configurator/utils/readyDollModels';
 import {
     buildConfigurationPayload,
     calculateConfigurationTotal,
@@ -28,7 +29,7 @@ import styles from './DollConfigTest.module.css';
 const Mannequin3DViewer = React.lazy(loadMannequin3DViewer);
 const DEFAULT_DOLL_BASE_PRICE = 2000;
 
-export default function DollConfigTest({ views, defaultSettings, partPositions: initialPartPositions, dollProduct, configuratorRules }) {
+export default function DollConfigTest({ views, defaultSettings, partPositions: initialPartPositions, dollProduct, readyDollProducts = [], configuratorRules }) {
     // 1. Shared Logic & Network Pre-fetching (Only fetches files to cache, no CPU parsing)
     const { handle2DReady } = use3DPreload(views, defaultSettings);
 
@@ -173,6 +174,10 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
         : missingRequiredCategories.length > 0
             ? 'Completa todas las categorias obligatorias para comprar tu muñeca.'
             : null;
+    const readyDollModels = useMemo(
+        () => buildReadyDollModels(readyDollProducts),
+        [readyDollProducts],
+    );
 
     if (!views || !defaultSettings) return <LoadingScreen />;
 
@@ -210,6 +215,14 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
         quantity: 1,
     });
 
+    const refreshCartCount = () => {
+        router.reload({
+            only: ['cartCount'],
+            preserveScroll: true,
+            preserveState: true,
+        });
+    };
+
     const handleReadyDollPurchase = async (productSlug) => {
         if (!productSlug) {
             return;
@@ -236,6 +249,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
 
         try {
             await addReadyDollToCart(productSlug);
+            refreshCartCount();
             setAddedReadyDollSlug(productSlug);
         } catch (error) {
             console.error('No pudimos agregar la muñeca al carrito:', error);
@@ -269,6 +283,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                             type="button"
                             onClick={() => handleTabChange('customize')}
                             className={`${styles.tabButton} ${activeTab === 'customize' ? styles.tabButtonActive : ''}`}
+                            aria-pressed={activeTab === 'customize'}
                         >
                             PERSONALIZAR
                         </button>
@@ -276,6 +291,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                             type="button"
                             onClick={() => handleTabChange('ready')}
                             className={`${styles.tabButton} ${activeTab === 'ready' ? styles.tabButtonActive : ''}`}
+                            aria-pressed={activeTab === 'ready'}
                         >
                             MUÑECAS LISTAS
                         </button>
@@ -400,6 +416,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                                 isBuyingDoll={isSubmittingReadyDollPurchase}
                                 isAddingDollToCart={isAddingReadyDollToCart}
                                 addedDollSlug={addedReadyDollSlug}
+                                readyDollModels={readyDollModels}
                                 onModelMounted={() => {
                                     is3DMountedRef.current = true;
                                     if (transitionStartTime) {

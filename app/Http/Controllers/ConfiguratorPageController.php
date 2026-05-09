@@ -62,6 +62,9 @@ class ConfiguratorPageController extends Controller
             'defaultSettings' => $config['defaultSettings'],
             'partPositions' => $config['partPositions'],
             'dollProduct' => $product ? ProductResource::make($product)->resolve(request()) : null,
+            'readyDollProducts' => ProductResource::collection(
+                $this->configurableDollProductService->getReadyDollProducts()
+            )->resolve(request()),
             'configuratorRules' => $this->dollCustomizationService->getFrontendRules(),
         ]);
     }

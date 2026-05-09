@@ -1,50 +1,10 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { loadMannequinScene3D } from '@/Components/Configurator/utils/lazyLoaders';
+import { DEFAULT_READY_DOLL_MODELS } from '@/Components/Configurator/utils/readyDollModels';
 import styles from './Mannequin3DViewer.module.css';
 
 // Lazy load the 3D scene component
 const MannequinScene3D = lazy(loadMannequinScene3D);
-
-const readyDollModels = [
-    {
-        id: 'naked_queen',
-        name: 'Queen',
-        path: '/models/naked-queen/source/NakedQueen.fbx',
-        texturePath: '/models/naked-queen/textures/NakedQueen.jpeg',
-        thumbnail: null,
-        productSlug: 'queen-doll',
-        rotationY: 0
-    },
-    {
-        id: 'naked_woman_standing',
-        name: 'Standing',
-        path: '/models/naked-woman-standing/source/Nake-Sum_Wom_RtStand_875.fbx',
-        texturePath: '/models/naked-woman-standing/textures/Nake-Sum_Wom_RtStand_diffuse_875.png',
-        normalPath: '/models/naked-woman-standing/textures/Nake-Sum_Wom_RtStand_normal_875.png',
-        thumbnail: null,
-        productSlug: 'hat-doll',
-        rotationY: Math.PI
-    },
-    {
-        id: 'naked_woman_walk',
-        name: 'Walking',
-        path: '/models/naked-woman-walk/source/Nake-Sum_Wom_RtWalk_854.fbx',
-        texturePath: '/models/naked-woman-walk/textures/Nake-Sum_Wom_RtWalk_diffuse_854.png',
-        normalPath: '/models/naked-woman-walk/textures/Nake-Sum_Wom_RtWalk_normal_854.png',
-        thumbnail: null,
-        productSlug: 'bikini-doll',
-        rotationY: 0
-    },
-    {
-        id: 'witch_naked',
-        name: 'Witch',
-        path: '/models/witch-naked/source/Yennefer_Naked_med.fbx',
-        texturePath: '/models/witch-naked/textures/Yennefer_Naked_med.jpeg',
-        thumbnail: null,
-        productSlug: 'witch-doll',
-        rotationY: 0
-    },
-];
 
 
 function Loader() {
@@ -64,8 +24,12 @@ export default function Mannequin3DViewer({
     isBuyingDoll = false,
     isAddingDollToCart = false,
     addedDollSlug = null,
+    readyDollModels = DEFAULT_READY_DOLL_MODELS,
 }) {
-    const [selectedModel, setSelectedModel] = useState(readyDollModels[0]);
+    const currentReadyDollModels = readyDollModels.length > 0
+        ? readyDollModels
+        : DEFAULT_READY_DOLL_MODELS;
+    const [selectedModel, setSelectedModel] = useState(currentReadyDollModels[0]);
     const [isModelReady, setIsModelReady] = useState(false);
     const [bodyParams] = useState({
         height: 0.5,
@@ -82,13 +46,21 @@ export default function Mannequin3DViewer({
         setIsModelReady(false);
     }, [selectedModel.id]);
 
+    useEffect(() => {
+        setSelectedModel((currentModel) => (
+            currentReadyDollModels.find((model) => model.id === currentModel.id)
+            || currentReadyDollModels[0]
+        ));
+    }, [currentReadyDollModels]);
+
     const handleModelMounted = () => {
         setIsModelReady(true);
         if (onModelMounted) onModelMounted();
     };
 
-    const canBuySelectedDoll = Boolean(selectedModel.productSlug);
-    const isSelectedDollAdded = addedDollSlug === selectedModel.productSlug;
+    const selectedProductSlug = selectedModel.productSlug;
+    const canBuySelectedDoll = Boolean(selectedProductSlug);
+    const isSelectedDollAdded = addedDollSlug === selectedProductSlug;
     const isSubmittingDollAction = isBuyingDoll || isAddingDollToCart;
 
     return (
@@ -116,7 +88,7 @@ export default function Mannequin3DViewer({
                         Modelos
                     </p>
                     <div className={styles.selectorList}>
-                        {readyDollModels.map((model) => (
+                        {currentReadyDollModels.map((model) => (
                             <button
                                 key={model.id}
                                 type="button"
@@ -150,7 +122,7 @@ export default function Mannequin3DViewer({
                         <div className={styles.purchaseActions}>
                             <button
                                 type="button"
-                                onClick={() => onAddDollToCart?.(selectedModel.productSlug)}
+                                onClick={() => onAddDollToCart?.(selectedProductSlug)}
                                 className={`${styles.purchaseButton} ${styles.purchaseButtonSecondary}`}
                                 disabled={isSubmittingDollAction}
                             >
@@ -158,7 +130,7 @@ export default function Mannequin3DViewer({
                             </button>
                             <button
                                 type="button"
-                                onClick={() => onBuyDoll?.(selectedModel.productSlug)}
+                                onClick={() => onBuyDoll?.(selectedProductSlug)}
                                 className={styles.purchaseButton}
                                 disabled={isSubmittingDollAction}
                             >
