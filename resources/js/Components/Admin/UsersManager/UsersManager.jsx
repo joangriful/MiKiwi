@@ -14,6 +14,7 @@ function SearchBar({ searchTerm, setSearchTerm }) {
         <div className={styles.searchBar}>
             <span className={`material-symbols-outlined ${styles.searchIcon}`}>search</span>
             <input
+                aria-label="Buscar usuarios"
                 type="text"
                 placeholder="Buscar por nombre, usuario o email..."
                 value={searchTerm}

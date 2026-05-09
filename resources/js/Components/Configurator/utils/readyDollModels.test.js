@@ -4,7 +4,7 @@ import { buildReadyDollModels, DEFAULT_READY_DOLL_MODELS } from './readyDollMode
 function run(name, fn) {
     try {
         fn();
-        console.log(`PASS ${name}`);
+        process.stdout.write(`PASS ${name}\n`);
     } catch (error) {
         console.error(`FAIL ${name}`);
         throw error;

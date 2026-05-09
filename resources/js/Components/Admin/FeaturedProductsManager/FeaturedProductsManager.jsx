@@ -9,12 +9,27 @@ function ProductRow({ product, isLoading, onToggleFeatured }) {
     const rowClassName = `${styles.productRow} ${isPromoted ? styles.productRowFeatured : ''}`;
     const starIconClassName = `${styles.statusIcon} ${isPromoted ? styles.statusIconFeatured : styles.statusIconInactive}`;
 
+    const handleToggle = () => {
+        onToggleFeatured(product);
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            handleToggle();
+        }
+    };
+
     return (
         <tr
             className={rowClassName}
-            onClick={() => onToggleFeatured(product)}
+            onClick={handleToggle}
+            onKeyDown={handleKeyDown}
+            role="button"
+            tabIndex={0}
+            aria-label={`${isPromoted ? 'Quitar de destacados' : 'Añadir a destacados'} ${product.name}`}
         >
-            <td className={styles.productCell}>
+            <td className={styles.productCell} aria-label={product.name}>
                 <div className={styles.productInfo}>
                     <div className={styles.productImageFrame}>
                         {product.image_url ? (
@@ -89,6 +104,7 @@ export default function FeaturedProductsManager({ products = [] }) {
                 <div className={styles.searchWrapper}>
                     <span className={`material-symbols-outlined ${styles.searchIcon}`}>search</span>
                     <input
+                        aria-label="Buscar producto destacado"
                         type="text"
                         placeholder="Buscar producto..."
                         className={styles.searchInput}

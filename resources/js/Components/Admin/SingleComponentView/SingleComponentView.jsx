@@ -35,6 +35,19 @@ export default function SingleComponentView({ selectedComponentPath, SelectedSin
         });
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key !== 'ContextMenu' && !(e.shiftKey && e.key === 'F10')) {
+            return;
+        }
+
+        e.preventDefault();
+        const rect = e.currentTarget.getBoundingClientRect();
+        setContextMenu({
+            mouseX: rect.left + 24,
+            mouseY: rect.top + 24,
+        });
+    };
+
     const handleCloseContextMenu = () => {
         setContextMenu(null);
     };
@@ -59,6 +72,10 @@ export default function SingleComponentView({ selectedComponentPath, SelectedSin
             className={styles.container}
             style={{ backgroundColor: bgColor }}
             onContextMenu={handleContextMenu}
+            onKeyDown={handleKeyDown}
+            role="region"
+            tabIndex={0}
+            aria-label="Component preview"
         >
             <div className={styles.header}>
                 <h2 className={styles.title}>
@@ -91,7 +108,7 @@ export default function SingleComponentView({ selectedComponentPath, SelectedSin
                             onClick={() => handleColorChange(option.color)}
                             className={`${styles.contextMenuButton} ${bgColor === option.color ? styles.contextMenuButtonActive : ''}`}
                         >
-                            <div className={styles.colorSwatch} style={{ backgroundColor: option.color }}></div>
+                            <div className={styles.colorSwatch} style={{ backgroundColor: option.color }} aria-hidden="true" />
                             {option.label}
                         </button>
                     ))}

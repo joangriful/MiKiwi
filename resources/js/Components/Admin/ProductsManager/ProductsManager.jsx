@@ -11,7 +11,6 @@ const PRODUCT_SECTIONS = [
 ];
 
 export default function ProductsManager({ categories, products, debugCount }) {
-    console.log('ProductsManager received products:', products, 'DebugCount:', debugCount);
     const [activeSection, setActiveSection] = useState('list');
     const [editingProduct, setEditingProduct] = useState(null);
 

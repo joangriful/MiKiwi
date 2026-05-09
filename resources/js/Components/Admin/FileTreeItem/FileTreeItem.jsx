@@ -26,10 +26,12 @@ export default function FileTreeItem({ item, isSelected, isFocused, isOpen, onTo
     const chevronClassName = `${styles.chevronIcon} ${isOpen ? styles.chevronIconOpen : ''}`;
 
     return (
-        <div
+        <button
+            type="button"
             className={rowClassName}
             style={{ paddingLeft: `${item.level * 16 + 12}px` }}
             onClick={handleClick}
+            aria-label={item.isFolder ? `Abrir carpeta ${item.name}` : `Seleccionar archivo ${item.name}`}
         >
             <div className={styles.expansionIcon}>
                 {item.isFolder ? (
@@ -40,18 +42,20 @@ export default function FileTreeItem({ item, isSelected, isFocused, isOpen, onTo
                             onToggle(item);
                         }}
                         className={styles.expandButton}
+                        aria-label={isOpen ? `Contraer ${item.name}` : `Expandir ${item.name}`}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={chevronClassName}>
                             <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
                         </svg>
                     </button>
                 ) : (
-                    <span className={styles.fileDot}></span>
+                    <span className={styles.fileDot} />
                 )}
             </div>
 
             {selectionMode === 'multi' && !item.isFolder && (
                 <input
+                    aria-label={`Seleccionar ${item.name}`}
                     type="checkbox"
                     className={styles.checkbox}
                     checked={isSelected}
@@ -67,6 +71,6 @@ export default function FileTreeItem({ item, isSelected, isFocused, isOpen, onTo
             </svg>
 
             <span className={styles.name}>{item.name}</span>
-        </div>
+        </button>
     );
 }

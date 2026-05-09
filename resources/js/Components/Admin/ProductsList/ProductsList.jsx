@@ -9,6 +9,7 @@ function SearchBar({ searchTerm, setSearchTerm }) {
         <div className={styles.searchWrapper}>
             <span className={`material-symbols-outlined ${styles.searchIcon}`}>search</span>
             <input
+                aria-label="Buscar por nombre o SKU"
                 type="text"
                 placeholder="Buscar por nombre o SKU..."
                 className={styles.searchInput}
@@ -30,7 +31,6 @@ function EmptyState() {
 }
 
 export default function ProductsList({ products = [], onEdit, debugCount }) {
-    console.log('ProductsList received products:', products, 'DebugCount:', debugCount);
     const [searchTerm, setSearchTerm] = useState('');
     const [deletingId, setDeletingId] = useState(null);
 
@@ -65,7 +65,7 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
                 <table className={styles.table}>
                     <thead className={styles.tableHead}>
                         <tr>
-                            <th className={`${styles.tableHeading} ${styles.orderHeading}`}></th>
+                            <th className={`${styles.tableHeading} ${styles.orderHeading}`} aria-label="Orden" />
                             <th className={styles.tableHeading}>Producto</th>
                             <th className={styles.tableHeading}>Categoría</th>
                             <th className={styles.tableHeading}>Precio</th>
@@ -80,7 +80,7 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
                                 <td className={`${styles.tableCell} ${styles.orderCell}`}>
                                     {filteredProducts.length - index}
                                 </td>
-                                <td className={styles.tableCell}>
+                                <td className={styles.tableCell} aria-label={product.name}>
                                     <div className={styles.productInfo}>
                                         <div className={styles.productImageFrame}>
                                             {product.image_url ? (
@@ -105,9 +105,9 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
                                 <td className={styles.tableCell}>
                                     <span className={styles.price}>{parseFloat(product.base_price).toFixed(2)}€</span>
                                 </td>
-                                <td className={styles.tableCell}>
+                                <td className={styles.tableCell} aria-label={`Stock ${product.stock_quantity ?? 0}`}>
                                     <div className={styles.stockInfo}>
-                                        <span className={`${styles.stockDot} ${product.stock_quantity > 0 ? styles.stockDotAvailable : styles.stockDotEmpty}`}></span>
+                                        <span className={`${styles.stockDot} ${product.stock_quantity > 0 ? styles.stockDotAvailable : styles.stockDotEmpty}`} aria-hidden="true" />
                                         <span className={styles.stockValue}>{product.stock_quantity ?? 0}</span>
                                     </div>
                                 </td>
@@ -123,6 +123,7 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
                                             onClick={() => onEdit(product)}
                                             className={`${styles.iconButton} ${styles.editButton}`}
                                             title="Editar"
+                                            aria-label={`Editar ${product.name}`}
                                         >
                                             <span className={`material-symbols-outlined ${styles.iconButtonIcon}`}>edit</span>
                                         </button>
@@ -132,6 +133,7 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
                                             disabled={deletingId === product.id}
                                             className={`${styles.iconButton} ${styles.deleteButton}`}
                                             title="Eliminar"
+                                            aria-label={`Eliminar ${product.name}`}
                                         >
                                             {deletingId === product.id ? (
                                                 <span className={`material-symbols-outlined ${styles.iconButtonIcon} ${styles.spinningIcon}`}>refresh</span>

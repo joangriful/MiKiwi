@@ -8,7 +8,7 @@ function UploadStatus({ uploading }) {
     if (uploading) {
         return (
             <div className={styles.uploadStatus}>
-                <div className={styles.spinner}></div>
+                <div className={styles.spinner} />
                 <p className={styles.uploadStatusText}>Subiendo...</p>
             </div>
         );
@@ -102,6 +102,15 @@ export default function HeroImageManager({
         uploadImages(extractImageFiles(e.target.files));
     };
 
+    const handleUploadCardKeyDown = (e) => {
+        if (uploading || (e.key !== 'Enter' && e.key !== ' ')) {
+            return;
+        }
+
+        e.preventDefault();
+        fileInputRef.current?.click();
+    };
+
     const uploadImages = (files) => {
         setUploading(true);
         const formData = new FormData();
@@ -163,12 +172,17 @@ export default function HeroImageManager({
                     onDrop={handleDrop}
                     className={uploadCardClassName}
                     onClick={() => !uploading && fileInputRef.current?.click()}
+                    onKeyDown={handleUploadCardKeyDown}
+                    role="button"
+                    tabIndex={uploading ? -1 : 0}
+                    aria-label="Subir imagen del hero"
                 >
                     <div className={styles.uploadCardContent}>
                         <UploadStatus uploading={uploading} />
                     </div>
                     <input
                         ref={fileInputRef}
+                        aria-label="Seleccionar imagen del hero"
                         type="file"
                         accept="image/*"
                         multiple

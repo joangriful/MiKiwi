@@ -47,6 +47,7 @@ export default function StripeTestCards() {
                                     onClick={() => handleCopy(card.number.replace(/\s/g, ''), `num-${idx}`)}
                                     className={styles.copyButton}
                                     title="Copiar número"
+                                    aria-label={`Copiar numero de ${card.brand}`}
                                 >
                                     <span className={`material-symbols-outlined ${styles.copyButtonIcon}`}>
                                         {copied === `num-${idx}` ? 'check' : 'content_copy'}
@@ -55,13 +56,15 @@ export default function StripeTestCards() {
                             </div>
 
                             <div className={styles.cardFields}>
-                                <div
+                                <button
+                                    type="button"
                                     className={styles.numberField}
                                     onClick={() => handleCopy(card.number.replace(/\s/g, ''), `num-${idx}`)}
+                                    aria-label={`Copiar numero de ${card.brand}`}
                                 >
                                     <span className={styles.cardNumber}>{card.number}</span>
                                     <span className={styles.copyHint}>Copiar</span>
-                                </div>
+                                </button>
 
                                 <div className={styles.metaFields}>
                                     <div className={styles.metaField}>

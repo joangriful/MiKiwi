@@ -71,7 +71,7 @@ export default function AdminConfirmationModal({ isOpen, onClose, onConfirm, use
                         </span>
                         {actionCopy.title}
                     </h3>
-                    <button type="button" onClick={onClose} className={styles.closeButton}>
+                    <button type="button" onClick={onClose} className={styles.closeButton} aria-label="Close confirmation modal">
                         <span className="material-symbols-outlined">close</span>
                     </button>
                 </div>
@@ -93,6 +93,7 @@ export default function AdminConfirmationModal({ isOpen, onClose, onConfirm, use
 
                     <input
                         id="admin-confirmation-input"
+                        aria-label="Type confirmation phrase"
                         type="text"
                         value={inputValue}
                         onChange={handleInputChange}

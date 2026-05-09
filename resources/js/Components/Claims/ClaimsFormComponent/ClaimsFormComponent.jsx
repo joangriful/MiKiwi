@@ -28,6 +28,7 @@ export default function ClaimsFormComponent() {
                         <FormField label="Nombre completo" htmlFor="name" required>
                             <input
                                 id="name"
+                                aria-label="Nombre completo"
                                 type="text"
                                 name="name"
                                 required
@@ -41,6 +42,7 @@ export default function ClaimsFormComponent() {
                         <FormField label="Correo electronico" htmlFor="email" required>
                             <input
                                 id="email"
+                                aria-label="Correo electronico"
                                 type="email"
                                 name="email"
                                 required
@@ -54,6 +56,7 @@ export default function ClaimsFormComponent() {
                         <FormField label="Telefono de contacto" htmlFor="phone">
                             <input
                                 id="phone"
+                                aria-label="Telefono de contacto"
                                 type="tel"
                                 name="phone"
                                 className={styles.input}
@@ -66,6 +69,7 @@ export default function ClaimsFormComponent() {
                         <FormField label="Numero de pedido" htmlFor="orderId">
                             <input
                                 id="orderId"
+                                aria-label="Numero de pedido"
                                 type="text"
                                 name="orderId"
                                 className={styles.input}
@@ -81,6 +85,7 @@ export default function ClaimsFormComponent() {
                     <FormField label="Motivo de la reclamacion" htmlFor="reason" required>
                         <select
                             id="reason"
+                            aria-label="Motivo de la reclamacion"
                             name="reason"
                             required
                             className={styles.select}
@@ -98,6 +103,7 @@ export default function ClaimsFormComponent() {
                     <FormField label="Descripcion detallada" htmlFor="message" required>
                         <textarea
                             id="message"
+                            aria-label="Descripcion detallada"
                             name="message"
                             required
                             rows="5"
@@ -179,6 +185,7 @@ function PrivacyConsent({ checked, onChange, onToggle }) {
         <div className={styles.privacyRow}>
             <input
                 id="terms"
+                aria-label="Aceptar politica de privacidad"
                 type="checkbox"
                 name="terms"
                 className={styles.checkboxInput}

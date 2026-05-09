@@ -23,7 +23,7 @@ export default function CalibrationSection() {
                 </Link>
             </div>
 
-            <div className={styles.overlay}></div>
+            <div className={styles.overlay} />
         </section>
     );
 }

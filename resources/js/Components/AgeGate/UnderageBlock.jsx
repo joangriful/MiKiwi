@@ -1,8 +1,6 @@
 import MikiwiLogo from '@/Components/MikiwiLogo/MikiwiLogo';
 import styles from './UnderageBlock.module.css';
 
-const STORAGE_KEY_DENIED = 'mw_age_denied';
-
 export default function UnderageBlock({ onBack }) {
     const handleGoBack = () => {
         if (onBack) onBack();

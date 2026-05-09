@@ -40,6 +40,7 @@ export default function FooterNewsletter() {
             </div>
             <form onSubmit={handleSubmit} className={styles.form}>
                 <input
+                    aria-label="Correo electrónico para newsletter"
                     type="email"
                     value={data.email}
                     onChange={(e) => setData('email', e.target.value)}
