@@ -387,7 +387,6 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                                     />
                                     <DollSelectionSummary
                                         dollProduct={dollProduct}
-                                        baseDollPrice={baseDollPrice}
                                         entries={configurationEntries}
                                         totals={totals}
                                         missingCategories={missingRequiredCategories}

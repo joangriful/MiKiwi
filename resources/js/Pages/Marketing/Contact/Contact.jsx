@@ -66,32 +66,48 @@ export default function Contact() {
         <MarketingPageLayout title="Contacto" maxWidth="wide" showBreadcrumb={false}>
             <form className={styles.contactForm} onSubmit={submitContact}>
                 <div className={styles.formGrid}>
-                    <input
-                        type="text"
-                        placeholder="Nombre"
-                        value={contactForm.data.name}
-                        onChange={(event) => contactForm.setData('name', event.target.value)}
-                    />
-                    <input
-                        required
-                        type="email"
-                        placeholder="Correo electrónico *"
-                        value={contactForm.data.email}
-                        onChange={(event) => contactForm.setData('email', event.target.value)}
-                    />
+                    <label>
+                        <span className={styles.screenReaderOnly}>Nombre</span>
+                        <input
+                            aria-label="Nombre"
+                            type="text"
+                            placeholder="Nombre"
+                            value={contactForm.data.name}
+                            onChange={(event) => contactForm.setData('name', event.target.value)}
+                        />
+                    </label>
+                    <label>
+                        <span className={styles.screenReaderOnly}>Correo electrónico</span>
+                        <input
+                            aria-label="Correo electrónico"
+                            required
+                            type="email"
+                            placeholder="Correo electrónico *"
+                            value={contactForm.data.email}
+                            onChange={(event) => contactForm.setData('email', event.target.value)}
+                        />
+                    </label>
                 </div>
-                <input
-                    type="tel"
-                    placeholder="Número de teléfono"
-                    value={contactForm.data.phone}
-                    onChange={(event) => contactForm.setData('phone', event.target.value)}
-                />
-                <textarea
-                    rows="4"
-                    placeholder="Comentario"
-                    value={contactForm.data.message}
-                    onChange={(event) => contactForm.setData('message', event.target.value)}
-                />
+                <label>
+                    <span className={styles.screenReaderOnly}>Número de teléfono</span>
+                    <input
+                        aria-label="Número de teléfono"
+                        type="tel"
+                        placeholder="Número de teléfono"
+                        value={contactForm.data.phone}
+                        onChange={(event) => contactForm.setData('phone', event.target.value)}
+                    />
+                </label>
+                <label>
+                    <span className={styles.screenReaderOnly}>Comentario</span>
+                    <textarea
+                        aria-label="Comentario"
+                        rows="4"
+                        placeholder="Comentario"
+                        value={contactForm.data.message}
+                        onChange={(event) => contactForm.setData('message', event.target.value)}
+                    />
+                </label>
                 <button disabled={contactForm.processing} type="submit">
                     {contactForm.processing ? 'Enviando...' : 'Enviar'}
                 </button>
@@ -110,6 +126,7 @@ export default function Contact() {
                                     <input
                                         checked={newsletterForm.data.gender === option}
                                         name="gender"
+                                        aria-label={option}
                                         type="radio"
                                         onChange={() => newsletterForm.setData('gender', option)}
                                     />
@@ -118,13 +135,17 @@ export default function Contact() {
                             ))}
                         </fieldset>
 
-                        <input
-                            required
-                            type="email"
-                            placeholder="Email"
-                            value={newsletterForm.data.email}
-                            onChange={(event) => newsletterForm.setData('email', event.target.value)}
-                        />
+                        <label>
+                            <span className={styles.screenReaderOnly}>Email de suscripción</span>
+                            <input
+                                aria-label="Email de suscripción"
+                                required
+                                type="email"
+                                placeholder="Email"
+                                value={newsletterForm.data.email}
+                                onChange={(event) => newsletterForm.setData('email', event.target.value)}
+                            />
+                        </label>
 
                         {newsletterError.fieldErrors ? (
                             <p className={styles.errorText}>{newsletterError.message}</p>
@@ -133,6 +154,7 @@ export default function Contact() {
                         <label className={styles.checkbox}>
                             <input
                                 checked={newsletterForm.data.terms}
+                                aria-label="Aceptar la política de privacidad"
                                 type="checkbox"
                                 onChange={() => newsletterForm.setData('terms', !newsletterForm.data.terms)}
                             />

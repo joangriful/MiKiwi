@@ -9,7 +9,6 @@ function formatPrice(price) {
 
 export default function DollSelectionSummary({
     dollProduct,
-    baseDollPrice,
     entries,
     totals,
     missingCategories,

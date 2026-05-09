@@ -6,7 +6,7 @@
         "build": "node scripts/build-report.mjs",
         "build:raw": "vite build",
         "dev": "vite",
-        "lint:frontend": "eslint \"resources/js/{app.jsx,Hooks/**/*.js,Layouts/AuthenticatedLayout.jsx,Pages/{Auth,Configurator,Profile}/**/*.jsx,Components/{AppErrorBoundary,Auth,Catalog,Checkout,Configurator,Dropdown,Profile}/**/*.{js,jsx}}\"",
+        "lint:frontend": "eslint \"resources/js/{app.jsx,Hooks/**/*.js,Layouts/AuthenticatedLayout.jsx,Pages/{Auth,Configurator,Marketing,Profile}/**/*.jsx,Components/{AppErrorBoundary,Auth,Catalog,Checkout,Configurator,Dropdown,Marketing,Profile}/**/*.{js,jsx}}\"",
         "lint:frontend:full": "eslint \"resources/js/**/*.{js,jsx}\"",
         "test:frontend:unit": "node resources/js/Utils/httpError.test.js && node resources/js/Components/Configurator/utils/readyDollModels.test.js",
         "start": "concurrently \"php artisan serve --host=localhost --port=8001\" \"npm run dev\""
