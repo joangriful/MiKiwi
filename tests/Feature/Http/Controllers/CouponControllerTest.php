@@ -46,12 +46,46 @@ class CouponControllerTest extends TestCase
         $response
             ->assertRedirect(route('cart.index'))
             ->assertSessionHas('success', 'Cupón aplicado correctamente.')
-            ->assertSessionHas('coupon', [
-                'code' => 'SAVE20',
-                'type' => CouponType::Percent->value,
-                'value' => '20.00',
-                'discount' => 40.0,
-            ]);
+            ->assertSessionHas('coupon.code', 'SAVE20')
+            ->assertSessionHas('coupon.type', CouponType::Percent->value)
+            ->assertSessionHas('coupon.value', '20.00')
+            ->assertSessionHas('coupon.discount', 40.0);
+    }
+
+    public function test_coupon_code_field_from_checkout_form_is_accepted(): void
+    {
+        $product = Product::factory()->create([
+            'slug' => 'checkout-coupon-product',
+            'is_active' => true,
+            'stock_quantity' => 10,
+            'base_price' => 100,
+        ]);
+
+        Coupon::query()->create([
+            'code' => 'KIWI15',
+            'type' => CouponType::Percent->value,
+            'value' => 15,
+            'is_active' => true,
+            'expires_at' => now()->addDay(),
+        ]);
+
+        $response = $this
+            ->withSession([
+                'shopping_cart' => [
+                    $product->id => [
+                        'slug' => $product->slug,
+                        'quantity' => 2,
+                        'accessories' => [],
+                    ],
+                ],
+            ])
+            ->post(route('cart.coupon.apply'), ['coupon_code' => ' kiwi15 ']);
+
+        $response
+            ->assertRedirect(route('cart.index'))
+            ->assertSessionHas('success', 'Cupón aplicado correctamente.')
+            ->assertSessionHas('coupon.code', 'KIWI15')
+            ->assertSessionHas('coupon.discount', 30.0);
     }
 
     public function test_expired_coupon_redirects_with_error_and_is_not_stored(): void
