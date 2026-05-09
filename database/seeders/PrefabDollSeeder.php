@@ -67,7 +67,7 @@ class PrefabDollSeeder extends Seeder
                 'base_price' => 3000.00,
                 'stock_quantity' => 20,
                 'is_promoted' => true,
-                'images' => ['/models/naked-queen/source/NakedQueen.jpg'],
+                'images' => ['/images/mannequin-base-skin.png'],
             ],
             [
                 'sku' => 'DOLL-HAT-001',
@@ -77,7 +77,7 @@ class PrefabDollSeeder extends Seeder
                 'base_price' => 3000.00,
                 'stock_quantity' => 20,
                 'is_promoted' => false,
-                'images' => ['/models/naked-woman-standing/textures/Nake-Sum_Wom_RtStand_diffuse_875.png'],
+                'images' => ['/images/mannequin-base-skin.png'],
             ],
             [
                 'sku' => 'DOLL-BIKINI-001',
@@ -87,7 +87,7 @@ class PrefabDollSeeder extends Seeder
                 'base_price' => 3000.00,
                 'stock_quantity' => 20,
                 'is_promoted' => false,
-                'images' => ['/models/naked-woman-walk/textures/Nake-Sum_Wom_RtWalk_diffuse_854.png'],
+                'images' => ['/images/mannequin-base-skin.png'],
             ],
             [
                 'sku' => 'DOLL-WITCH-001',
@@ -97,7 +97,7 @@ class PrefabDollSeeder extends Seeder
                 'base_price' => 3000.00,
                 'stock_quantity' => 20,
                 'is_promoted' => false,
-                'images' => ['/models/witch-naked/textures/Yennefer_Naked_med.jpeg'],
+                'images' => ['/images/mannequin-base-skin.png'],
             ],
         ];
     }
