@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
 import { toast } from 'react-toastify';
 import { filterProductsBySearchTerm } from '@/Utils/productSearch';
+import { getAdminProductImage } from '@/Components/Admin/utils/productImages';
 import styles from './FeaturedProductsManager.module.css';
 
 function ProductRow({ product, isLoading, onToggleFeatured }) {
     const isPromoted = !!product.is_promoted;
     const rowClassName = `${styles.productRow} ${isPromoted ? styles.productRowFeatured : ''}`;
     const starIconClassName = `${styles.statusIcon} ${isPromoted ? styles.statusIconFeatured : styles.statusIconInactive}`;
+    const productImage = getAdminProductImage(product);
 
     const handleToggle = () => {
         onToggleFeatured(product);
@@ -32,8 +34,8 @@ function ProductRow({ product, isLoading, onToggleFeatured }) {
             <td className={styles.productCell} aria-label={product.name}>
                 <div className={styles.productInfo}>
                     <div className={styles.productImageFrame}>
-                        {product.image_url ? (
-                            <img src={product.image_url} alt={product.name} className={styles.productImage} />
+                        {productImage ? (
+                            <img src={productImage} alt={product.name} className={styles.productImage} />
                         ) : (
                             <span className={`material-symbols-outlined ${styles.imagePlaceholderIcon}`}>image</span>
                         )}
