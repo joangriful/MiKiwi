@@ -12,12 +12,27 @@
     overflow-y: auto;
     padding: 1.5rem;
     scroll-behavior: smooth;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-primary) rgb(153 184 73 / 14%);
 }
 
 .content::-webkit-scrollbar {
-    display: none;
+    width: 0.5rem;
+}
+
+.content::-webkit-scrollbar-track {
+    border-radius: 999px;
+    background: rgb(153 184 73 / 12%);
+}
+
+.content::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--premium-gradient);
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+    background: var(--premium-gradient-hover);
 }
 
 .emptyState {

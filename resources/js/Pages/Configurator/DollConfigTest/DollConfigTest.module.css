@@ -44,6 +44,14 @@
     transform: scale(1.05);
 }
 
+.tabButtonActive:hover,
+.tabButtonActive:focus-visible,
+.tabButtonActive:active {
+    background: var(--premium-gradient);
+    color: var(--color-white);
+    box-shadow: 0 4px 15px rgb(153 184 73 / 40%);
+}
+
 .mainLayout {
     position: relative;
     display: flex;
@@ -157,6 +165,27 @@
     flex: 1;
     min-height: 0;
     overflow-y: auto;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-primary) rgb(153 184 73 / 14%);
+}
+
+.selectorShell::-webkit-scrollbar {
+    width: 0.5rem;
+}
+
+.selectorShell::-webkit-scrollbar-track {
+    border-radius: 999px;
+    background: rgb(153 184 73 / 12%);
+}
+
+.selectorShell::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--premium-gradient);
+}
+
+.selectorShell::-webkit-scrollbar-thumb:hover {
+    background: var(--premium-gradient-hover);
 }
 
 .selectorContent {
