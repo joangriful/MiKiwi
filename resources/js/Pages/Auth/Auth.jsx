@@ -12,13 +12,13 @@ import { authClass } from '@/Components/Auth/AuthShell/authShellStyles';
 import useMediaQuery from '@/Hooks/useMediaQuery';
 import styles from './Auth.module.css';
 
-export default function Auth({ view, title, subtitle, status, canResetPassword, token, email }) {
+export default function Auth({ view, title, subtitle, status, canResetPassword, token, email, checkoutIntent = false, checkoutBuyNow = false }) {
     const renderForm = () => {
         switch (view) {
             case 'login':
-                return <LoginForm status={status} canResetPassword={canResetPassword} />;
+                return <LoginForm status={status} canResetPassword={canResetPassword} checkoutIntent={checkoutIntent} checkoutBuyNow={checkoutBuyNow} />;
             case 'register':
-                return <RegisterForm />;
+                return <RegisterForm checkoutIntent={checkoutIntent} checkoutBuyNow={checkoutBuyNow} />;
             case 'forgot-password':
                 return <ForgotPasswordForm status={status} />;
             case 'reset-password':
@@ -93,8 +93,9 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
     const [hoveredAuthPanel, setHoveredAuthPanel] = React.useState(null);
     const [selectedAuthPanel, setSelectedAuthPanel] = React.useState(null);
     const currentAuthState = hoveredAuthPanel ?? selectedAuthPanel ?? (isRegisterActive ? 'register' : 'login');
-    const loginHref = route('login');
-    const registerHref = route('register');
+    const authRouteParams = checkoutIntent ? { checkout: 1, buy_now: checkoutBuyNow ? 1 : 0 } : {};
+    const loginHref = route('login', authRouteParams);
+    const registerHref = route('register', authRouteParams);
     const isMobileViewport = useMediaQuery('(max-width: 767px)');
 
     const handleAuthSwitchClick = (event, target) => {
@@ -165,7 +166,7 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
                                 />
 
                                 <Link
-                                    href={route('login')}
+                                    href={loginHref}
                                     className={authClass('mk-auth-mobile-tab', isLoginActive && 'mk-auth-mobile-tab-active')}
                                     preserveScroll
                                 >
@@ -173,7 +174,7 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
                                 </Link>
 
                                 <Link
-                                    href={route('register')}
+                                    href={registerHref}
                                     className={authClass('mk-auth-mobile-tab', isRegisterActive && 'mk-auth-mobile-tab-active')}
                                     preserveScroll
                                 >
@@ -193,6 +194,8 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
                                             status={status}
                                             canResetPassword={canResetPassword}
                                             autoFocus={true}
+                                            checkoutIntent={checkoutIntent}
+                                            checkoutBuyNow={checkoutBuyNow}
                                         />
                                     </section>
                                 ) : (
@@ -202,7 +205,7 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
                                             <p className={authClass('mk-auth-mobile-subtitle')}>Descubre tu huella sónica única</p>
                                         </header>
 
-                                        <RegisterForm autoFocus={true} />
+                                        <RegisterForm autoFocus={true} checkoutIntent={checkoutIntent} checkoutBuyNow={checkoutBuyNow} />
                                     </section>
                                 )}
                             </div>
@@ -231,7 +234,7 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
                                     <p className={authClass('mk-auth-description')}>
                                         Accede a tu perfil sensorial personalizado y continúa tu experiencia <strong className={authClass('mk-auth-mikiwi-text')}>MI KIWI</strong> con total fluidez.
                                     </p>
-                                    <LoginForm status={status} canResetPassword={canResetPassword} autoFocus={false} />
+                                    <LoginForm status={status} canResetPassword={canResetPassword} autoFocus={false} checkoutIntent={checkoutIntent} checkoutBuyNow={checkoutBuyNow} />
                                 </div>
                             </div>
                         </section>
@@ -260,7 +263,7 @@ export default function Auth({ view, title, subtitle, status, canResetPassword, 
                                     <p className={`${authClass('mk-auth-description')} ${styles.descriptionRight}`}>
                                         Descubre tu identidad única y accede a experiencias premium diseñadas para ti.
                                     </p>
-                                    <RegisterForm autoFocus={false} />
+                                    <RegisterForm autoFocus={false} checkoutIntent={checkoutIntent} checkoutBuyNow={checkoutBuyNow} />
                                 </div>
                             </div>
                         </section>

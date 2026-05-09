@@ -6,8 +6,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Domain\Auth\Actions\FindOrCreateGoogleUser;
 use App\Domain\Auth\Actions\GoogleAuthEmailMissingException;
+use App\Domain\Auth\Services\CheckoutAuthRedirectService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Contracts\Provider;
 use Laravel\Socialite\Facades\Socialite;
@@ -18,10 +20,13 @@ class GoogleAuthController extends Controller
 {
     public function __construct(
         private readonly FindOrCreateGoogleUser $findOrCreateGoogleUser,
+        private readonly CheckoutAuthRedirectService $checkoutAuthRedirectService,
     ) {}
 
-    public function redirect(): RedirectResponse
+    public function redirect(Request $request): RedirectResponse
     {
+        $this->checkoutAuthRedirectService->storeSocialIntent($request);
+
         return $this->googleProvider()->redirect();
     }
 
@@ -34,7 +39,7 @@ class GoogleAuthController extends Controller
             Auth::login($user);
             request()->session()->regenerate();
 
-            return redirect()->route('home');
+            return $this->checkoutAuthRedirectService->redirectAfterSocialAuthentication(request());
         } catch (GoogleAuthEmailMissingException) {
             return redirect()
                 ->route('login')

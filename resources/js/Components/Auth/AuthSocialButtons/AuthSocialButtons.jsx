@@ -1,7 +1,12 @@
 import { authClass } from '@/Components/Auth/AuthShell/authShellStyles';
 import styles from './AuthSocialButtons.module.css';
 
-export default function AuthSocialButtons({ dividerText = 'o continúa con' }) {
+export default function AuthSocialButtons({ dividerText = 'o continúa con', checkoutIntent = false, checkoutBuyNow = false }) {
+    const googleHref = route(
+        'auth.google.redirect',
+        checkoutIntent ? { checkout: 1, buy_now: checkoutBuyNow ? 1 : 0 } : {},
+    );
+
     return (
         <div className={styles.root}>
             <div className={authClass('mk-auth-divider-wrap')}>
@@ -12,7 +17,7 @@ export default function AuthSocialButtons({ dividerText = 'o continúa con' }) {
             <div className={authClass('mk-auth-social-wrap')}>
                 <div className={`${authClass('mk-auth-social-grid')} ${styles.singleProviderGrid}`}>
                     <a
-                        href={route('auth.google.redirect')}
+                        href={googleHref}
                         className={authClass('mk-auth-btn-social')}
                         aria-label="Continuar con Google"
                     >

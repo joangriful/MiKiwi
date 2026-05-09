@@ -6,12 +6,14 @@ import { clearStoredQuizResultCategory, getStoredQuizResultCategory } from '@/Ut
 import { Link, useForm } from '@inertiajs/react';
 import styles from './LoginForm.module.css';
 
-export default function LoginForm({ status, canResetPassword, autoFocus = false }) {
+export default function LoginForm({ status, canResetPassword, autoFocus = false, checkoutIntent = false, checkoutBuyNow = false }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
         remember: false,
         quiz_result_category: null,
+        checkout_auth_intent: checkoutIntent,
+        checkout_buy_now: checkoutBuyNow,
     });
 
     useEffect(() => {
@@ -117,7 +119,7 @@ export default function LoginForm({ status, canResetPassword, autoFocus = false 
                 </span>
             </button>
 
-            <AuthSocialButtons dividerText="o continúa con" />
+            <AuthSocialButtons dividerText="o continúa con" checkoutIntent={checkoutIntent} checkoutBuyNow={checkoutBuyNow} />
         </form>
     );
 }

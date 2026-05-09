@@ -6,13 +6,15 @@ import { clearStoredQuizResultCategory, getStoredQuizResultCategory } from '@/Ut
 import { Link, useForm } from '@inertiajs/react';
 import styles from './RegisterForm.module.css';
 
-export default function RegisterForm({ autoFocus = false }) {
+export default function RegisterForm({ autoFocus = false, checkoutIntent = false, checkoutBuyNow = false }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
         quiz_result_category: null,
+        checkout_auth_intent: checkoutIntent,
+        checkout_buy_now: checkoutBuyNow,
     });
 
     useEffect(() => {
@@ -123,7 +125,7 @@ export default function RegisterForm({ autoFocus = false }) {
                 <span>{processing ? 'Creando cuenta...' : 'Crear mi cuenta'}</span>
             </button>
 
-            <AuthSocialButtons dividerText="o regístrate con" />
+            <AuthSocialButtons dividerText="o regístrate con" checkoutIntent={checkoutIntent} checkoutBuyNow={checkoutBuyNow} />
 
 
             <p className={`${styles.legalText} ${styles.desktopAlign}`}>

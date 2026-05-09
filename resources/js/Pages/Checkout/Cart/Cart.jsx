@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Head, useForm } from "@inertiajs/react";
+import { Head, router, useForm } from "@inertiajs/react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutOrderSummary from "@/Components/Checkout/CheckoutOrderSummary/CheckoutOrderSummary";
@@ -26,6 +26,7 @@ export default function Cart({
     stripeKey,
     coupon = null,
     isBuyNow = false,
+    checkoutStep = null,
     total: totalProp = 0,
 }) {
     const cart = useMemo(
@@ -59,6 +60,12 @@ export default function Cart({
     }, [hasCartItems]);
 
     useEffect(() => {
+        if (checkoutStep === "info" && checkoutAuth.user && hasCartItems) {
+            setStep(2);
+        }
+    }, [checkoutAuth.user, checkoutStep, hasCartItems]);
+
+    useEffect(() => {
         const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
         window.scrollTo({
@@ -77,6 +84,25 @@ export default function Cart({
         setStep((currentStep) => Math.min(currentStep + 1, 4));
     };
     const prevStep = () => setStep((currentStep) => Math.max(currentStep - 1, 1));
+
+    const startCheckout = () => {
+        if (!hasCartItems) {
+            setStep(1);
+
+            return;
+        }
+
+        if (!checkoutAuth.user) {
+            router.visit(route("login", {
+                checkout: 1,
+                buy_now: isBuyNow ? 1 : 0,
+            }));
+
+            return;
+        }
+
+        setStep(2);
+    };
 
     const applyCoupon = () => {
         form.post(route("cart.coupon.apply"), {
@@ -128,7 +154,7 @@ export default function Cart({
                         onApplyCoupon={applyCoupon}
                         onRemoveCoupon={removeCoupon}
                         onRemoveItem={handleRemoveItem}
-                        onCheckout={nextStep}
+                        onCheckout={startCheckout}
                         canCheckout={hasCartItems}
                         isBuyNow={isBuyNow}
                         step={step}

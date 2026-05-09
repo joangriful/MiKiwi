@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Domain\Auth\Services\CheckoutAuthRedirectService;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -15,12 +16,19 @@ use Inertia\Response;
 
 class RegisteredUserController extends Controller
 {
+    public function __construct(
+        private readonly CheckoutAuthRedirectService $checkoutAuthRedirectService,
+    ) {}
+
     /**
      * Display the registration view.
      */
-    public function create(): Response
+    public function create(Request $request): Response
     {
-        return Inertia::render('Auth/Auth', ['view' => 'register']);
+        return Inertia::render('Auth/Auth', [
+            'view' => 'register',
+            ...$this->checkoutAuthRedirectService->inertiaPropsFromRequest($request),
+        ]);
     }
 
     /**
@@ -53,6 +61,6 @@ class RegisteredUserController extends Controller
             ]);
         }
 
-        return redirect()->route('home');
+        return $this->checkoutAuthRedirectService->redirectAfterFormAuthentication($request);
     }
 }

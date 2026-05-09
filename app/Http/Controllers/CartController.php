@@ -32,6 +32,7 @@ class CartController extends Controller
             'pageTitle' => 'Carrito de Compras - MiKiwi',
             'stripeKey' => config('services.stripe.key'),
             'coupon' => $pageData['coupon'],
+            'checkoutStep' => $request->string('checkout_step')->toString(),
         ]);
     }
 
