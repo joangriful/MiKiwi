@@ -31,6 +31,20 @@ class GoogleAuthenticationTest extends TestCase
         $response->assertRedirect('https://accounts.google.com/o/oauth2/auth');
     }
 
+    public function test_google_redirect_stores_checkout_intent_for_social_callback(): void
+    {
+        $provider = Mockery::mock(Provider::class);
+        $provider->shouldReceive('scopes')->once()->with(['openid', 'profile', 'email'])->andReturnSelf();
+        $provider->shouldReceive('with')->once()->with(['prompt' => 'select_account'])->andReturnSelf();
+        $provider->shouldReceive('redirect')->once()->andReturn(redirect('https://accounts.google.com/o/oauth2/auth'));
+
+        Socialite::shouldReceive('driver')->once()->with('google')->andReturn($provider);
+
+        $this->get(route('auth.google.redirect', ['checkout' => 1, 'buy_now' => 1]))
+            ->assertRedirect('https://accounts.google.com/o/oauth2/auth')
+            ->assertSessionHas('checkout_auth_intent', ['buy_now' => true]);
+    }
+
     public function test_google_callback_logs_in_existing_user(): void
     {
         $existingUser = User::factory()->unverified()->create([
@@ -50,6 +64,32 @@ class GoogleAuthenticationTest extends TestCase
         $this->assertAuthenticatedAs($existingUser->fresh());
         $this->assertNotNull($existingUser->fresh()->email_verified_at);
         $response->assertRedirect(route('home', absolute: false));
+    }
+
+    public function test_google_callback_returns_to_checkout_information_when_checkout_intent_exists(): void
+    {
+        $existingUser = User::factory()->unverified()->create([
+            'email' => 'checkout-google@example.com',
+        ]);
+
+        $provider = $this->mockGoogleProviderWithUser($this->fakeGoogleUser([
+            'id' => 'google-checkout',
+            'name' => 'Checkout Google',
+            'email' => 'checkout-google@example.com',
+        ]));
+
+        Socialite::shouldReceive('driver')->once()->with('google')->andReturn($provider);
+
+        $response = $this
+            ->withSession(['checkout_auth_intent' => ['buy_now' => true]])
+            ->get(route('auth.google.callback'));
+
+        $this->assertAuthenticatedAs($existingUser->fresh());
+        $response->assertRedirect(route('cart.index', [
+            'checkout_step' => 'info',
+            'buy_now' => 1,
+        ], absolute: false));
+        $response->assertSessionMissing('checkout_auth_intent');
     }
 
     public function test_google_callback_creates_and_logs_in_new_user(): void

@@ -185,6 +185,16 @@ class CartControllerTest extends TestCase
         $this->assertEquals(50.0, session('coupon.discount'));
     }
 
+    public function test_index_exposes_checkout_step_query_to_cart_page(): void
+    {
+        $this->get(route('cart.index', ['checkout_step' => 'info']))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Checkout/Cart')
+                ->where('checkoutStep', 'info')
+            );
+    }
+
     public function test_index_removes_coupon_from_session_when_coupon_is_no_longer_valid(): void
     {
         $product = Product::factory()->simple()->create([

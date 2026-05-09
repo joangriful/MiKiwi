@@ -148,6 +148,10 @@ class SeederTest extends TestCase
             $product = Product::query()->where('slug', $slug)->firstOrFail();
 
             $this->assertSame(1, $product->images()->count());
+            $this->assertSame(
+                '/images/mannequin-base-skin.png',
+                $product->images()->firstOrFail()->image_url
+            );
         }
     }
 
