@@ -21,7 +21,7 @@
 .bannerBackground {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, #7c3aed, #4f46e5);
+    background: linear-gradient(90deg, var(--color-purple-strong), var(--color-info-strong));
 }
 
 .bannerPattern {
@@ -37,12 +37,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgb(0 0 0 / 0%);
+    background: transparent;
     transition: var(--transition);
 }
 
 .bannerArea:hover .bannerOverlay {
-    background: rgb(0 0 0 / 40%);
+    background: var(--color-surface-overlay);
 }
 
 .bannerButton {
@@ -50,7 +50,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    border-radius: 0.75rem;
+    border-radius: var(--radius-md);
     background: var(--color-white);
     color: var(--color-text-strong);
     font-weight: 600;
@@ -61,6 +61,13 @@
 
 .bannerArea:hover .bannerButton {
     opacity: 1;
+}
+
+.bannerButton:hover:not(:disabled),
+.bannerButton:focus-visible {
+    background: var(--color-surface-subtle);
+    box-shadow: var(--shadow-lg);
+    outline: none;
 }
 
 .profileBody {
@@ -109,7 +116,8 @@
     align-items: center;
     justify-content: center;
     border-radius: 999px;
-    background: rgb(0 0 0 / 0%);
+    gap: 0.5rem;
+    background: transparent;
     color: var(--color-white);
     transition: var(--transition);
 }
@@ -120,8 +128,20 @@
 
 .avatarWrap:hover .avatarEdit,
 .avatarEdit:focus-visible {
-    background: rgb(0 0 0 / 50%);
+    background: var(--color-surface-overlay);
     opacity: 1;
+    outline: none;
+}
+
+.avatarEditLabel {
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--color-white-overlay);
+    border-radius: 999px;
+    background: var(--color-black-faint);
+    color: var(--color-white);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
 }
 
 .statusDot {
@@ -159,7 +179,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.7rem 1rem;
-    border-radius: 0.75rem;
+    border-radius: var(--radius-md);
     text-decoration: none;
     transition: var(--transition);
 }
@@ -174,6 +194,14 @@
 .secondaryButton:hover,
 .secondaryLink:hover {
     background: var(--color-surface-disabled);
+}
+
+.secondaryButton:focus-visible,
+.secondaryLink:focus-visible,
+.primaryLink:focus-visible,
+.favoriteButton:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-primary-ring);
 }
 
 .recommendationsCard {
@@ -213,13 +241,15 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border-radius: 1.5rem;
+    border-radius: var(--radius-md);
     background: var(--bg-surface);
-    transition: transform 0.5s ease;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
 }
 
 .productCard:hover {
     transform: translateY(-0.5rem);
+    box-shadow: var(--shadow-md);
 }
 
 .productLink {
@@ -250,7 +280,7 @@
     position: relative;
     overflow: hidden;
     aspect-ratio: 4 / 5;
-    background: #f3f3f3;
+    background: var(--color-surface-disabled);
 }
 
 .productImage,
@@ -296,7 +326,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 999px;
-    background: rgb(255 255 255 / 60%);
+    background: var(--color-white-muted);
     opacity: 0;
     backdrop-filter: blur(8px);
     transition: var(--transition);
@@ -343,7 +373,7 @@
 
 .productName {
     margin: 0;
-    color: var(--color-black);
+    color: var(--color-text-strongest);
     font-size: 1rem;
     font-weight: 700;
     line-height: 1.3;
@@ -352,7 +382,7 @@
 }
 
 .productPrice {
-    color: rgb(0 0 0 / 80%);
+    color: var(--color-text-strong);
     font-size: 1rem;
     font-weight: 500;
 }
@@ -360,7 +390,7 @@
 .productDivider {
     width: 3rem;
     height: 1px;
-    background: rgb(0 0 0 / 5%);
+    background: var(--color-black-faint);
     transition: width 0.5s ease;
 }
 
@@ -370,7 +400,7 @@
 
 .productDescription {
     margin: 0;
-    color: rgb(0 0 0 / 40%);
+    color: var(--color-text-muted-ui);
     font-size: 0.75rem;
     line-height: 1.6;
 }
@@ -381,7 +411,7 @@
     align-items: center;
     padding: 2rem;
     border: 1px dashed var(--color-border-default);
-    border-radius: 1rem;
+    border-radius: var(--radius-md);
     background: var(--color-surface-subtle);
     text-align: center;
 }

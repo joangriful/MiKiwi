@@ -26,13 +26,16 @@
     width: 100%;
     padding: 0.85rem 1rem;
     border: 1px solid var(--color-border-soft);
-    border-radius: 0.9rem;
+    border-radius: var(--radius-md);
     background: var(--color-surface-subtle);
     transition: var(--transition);
 }
 
-.mobileTrigger:hover {
+.mobileTrigger:hover,
+.mobileTrigger:focus-visible {
     background: var(--color-surface-disabled);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-primary-ring);
 }
 
 .mobileActive {
@@ -70,7 +73,7 @@
     align-items: center;
     width: 100%;
     padding: 0.85rem 1rem;
-    border-radius: 0.75rem;
+    border-radius: var(--radius-md);
     font-size: 0.875rem;
     font-weight: 600;
     text-align: left;
@@ -88,8 +91,14 @@
 }
 
 .itemButtonIdle:hover {
-    background: #fff1f7;
-    color: #db2777;
+    background: rgb(248 183 234 / 10%);
+    color: var(--color-text-soft);
+}
+
+.itemButton:focus-visible,
+.logoutButton:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-primary-ring);
 }
 
 .logoutWrap {
@@ -108,7 +117,7 @@
     align-items: center;
     width: 100%;
     padding: 0.85rem 1rem;
-    border-radius: 0.75rem;
+    border-radius: var(--radius-md);
     color: var(--color-danger);
     font-size: 0.875rem;
     font-weight: 600;

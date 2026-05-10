@@ -168,6 +168,7 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
 
                     <div className={styles.bannerOverlay}>
                         <button
+                            type="button"
                             onClick={handleEditBanner}
                             disabled={uploadingBanner}
                             className={styles.bannerButton}
@@ -201,11 +202,14 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
 
                                 {!uploadingProfile && (
                                     <button
+                                        type="button"
                                         onClick={handleEditProfileImage}
                                         disabled={uploadingProfile}
                                         className={styles.avatarEdit}
+                                        aria-label="Editar foto de perfil"
                                     >
                                         <span className={styles.materialIconLarge}>edit</span>
+                                        <span className={styles.avatarEditLabel}>Editar foto</span>
                                     </button>
                                 )}
 
@@ -225,7 +229,7 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                         </div>
 
                         <div className={styles.profileActions}>
-                            <button onClick={() => setActiveTab('edit-account')} className={styles.secondaryButton}>
+                            <button type="button" onClick={() => setActiveTab('edit-account')} className={styles.secondaryButton}>
                                 Editar perfil
                             </button>
                         </div>

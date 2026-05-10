@@ -6,7 +6,7 @@
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    background: rgb(17 24 39 / 78%);
+    background: var(--color-surface-overlay);
     backdrop-filter: blur(10px);
 }
 
@@ -17,9 +17,9 @@
     max-height: calc(100vh - 2rem);
     overflow: hidden;
     border: 1px solid var(--color-border-default);
-    border-radius: 1.5rem;
+    border-radius: var(--radius-lg);
     background: var(--color-white);
-    box-shadow: 0 30px 90px rgb(0 0 0 / 35%);
+    box-shadow: var(--shadow-lg);
 }
 
 .header {
@@ -75,7 +75,7 @@
     width: min(100%, 42rem);
     padding: 3rem;
     border: 2px dashed;
-    border-radius: 1rem;
+    border-radius: var(--radius-md);
     cursor: pointer;
     transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }

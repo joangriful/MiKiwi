@@ -29,7 +29,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    border-radius: 0.75rem;
+    border-radius: var(--radius-md);
     background: var(--color-primary);
     color: var(--color-white);
     font-weight: 700;
@@ -39,6 +39,11 @@
 
 .addButton:hover {
     background: var(--color-primary-dark);
+}
+
+.addButton:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-primary-ring), var(--shadow-sm);
 }
 
 .addIcon {
@@ -60,7 +65,7 @@
 .emptyState {
     padding: 2.5rem 1rem;
     border: 1px dashed var(--color-border-strong);
-    border-radius: 1rem;
+    border-radius: var(--radius-md);
     background: var(--color-surface-subtle);
     text-align: center;
 }
