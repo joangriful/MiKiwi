@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 class ConfigurableDollProductService
 {
+    public const BASE_DOLL_SKU = 'DOLL-BASE-001';
+
     private const READY_DOLL_SKUS = [
         'DOLL-QUEEN-001',
         'DOLL-HAT-001',
@@ -21,14 +23,9 @@ class ConfigurableDollProductService
     {
         return Product::query()
             ->active()
-            ->whereIn('product_type', [
-                ProductType::Configurable->value,
-                ProductType::Doll->value,
-            ])
+            ->where('product_type', ProductType::Doll->value)
+            ->where('sku', self::BASE_DOLL_SKU)
             ->with(['category', 'images'])
-            ->orderByRaw("CASE WHEN product_type = ? THEN 0 ELSE 1 END", [ProductType::Configurable->value])
-            ->orderByDesc('is_promoted')
-            ->orderBy('name')
             ->first();
     }
 

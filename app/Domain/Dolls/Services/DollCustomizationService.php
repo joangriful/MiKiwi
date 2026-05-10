@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Dolls\Services;
 
+use App\Enums\ProductType;
+use App\Models\DollProductAccessory;
+use App\Models\Product;
+
 class DollCustomizationService
 {
     private const OPTIONAL_CATEGORIES = [
@@ -66,41 +70,64 @@ class DollCustomizationService
         ];
     }
 
-    public function validateConfiguration(array $configuration): void
+    public function validateConfiguration(array $configuration, ?Product $baseDollProduct = null, int $quantity = 1): void
     {
         $selectedParts = $this->extractSelectedParts($configuration);
-        $requiredCategories = $this->resolveRequiredFrontCategories($configuration);
+        $resolvedAccessories = $this->resolveSelectedAccessories($selectedParts, $baseDollProduct, $quantity);
+        $requiredCategories = $this->resolveRequiredFrontCategories($baseDollProduct);
 
         foreach ($requiredCategories as $category) {
-            if (! isset($selectedParts['front'][$category])) {
+            if (! isset($resolvedAccessories['front'][$category])) {
                 throw new \InvalidArgumentException("Falta seleccionar la categoria obligatoria: {$category}.");
             }
         }
     }
 
-    public function buildCartConfiguration(array $configuration): array
+    public function buildCartConfiguration(array $configuration, ?Product $baseDollProduct = null, int $quantity = 1): array
     {
         $selectedParts = $this->extractSelectedParts($configuration);
+        $resolvedAccessories = $this->resolveSelectedAccessories($selectedParts, $baseDollProduct, $quantity);
+        $requiredCategories = $this->resolveRequiredFrontCategories($baseDollProduct);
         $entries = [];
+        $accessories = [];
 
-        foreach ($selectedParts as $view => $categories) {
-            foreach ($categories as $category => $part) {
-                $entries[] = $this->buildEntry($view, $category, $part);
+        foreach ($requiredCategories as $category) {
+            if (! isset($resolvedAccessories['front'][$category])) {
+                throw new \InvalidArgumentException("Falta seleccionar la categoria obligatoria: {$category}.");
             }
         }
 
-        usort($entries, fn (array $a, array $b): int => [$a['view'], $a['category'], $a['part_id']] <=> [$b['view'], $b['category'], $b['part_id']]);
+        foreach ($resolvedAccessories as $view => $categories) {
+            foreach ($categories as $category => $resolvedAccessory) {
+                $entry = $this->buildEntry($view, $category, $resolvedAccessory['part'], $resolvedAccessory['product']);
+                $entries[] = $entry;
+                $accessories[] = [
+                    'product_id' => $entry['product_id'],
+                    'sku' => $entry['sku'],
+                    'name' => $entry['label'],
+                    'category' => $category,
+                    'view' => $view,
+                    'quantity' => 1,
+                    'unit_price' => $entry['extra_price'],
+                    'visual_data_snapshot' => $resolvedAccessory['part'],
+                ];
+            }
+        }
+
+        usort($entries, fn (array $a, array $b): int => [$a['view'], $a['category'], $a['sku']] <=> [$b['view'], $b['category'], $b['sku']]);
+        usort($accessories, fn (array $a, array $b): int => [$a['view'], $a['category'], $a['sku']] <=> [$b['view'], $b['category'], $b['sku']]);
 
         return [
             'selected_parts' => $selectedParts,
             'entries' => $entries,
+            'accessories' => $accessories,
             'extra_price' => round(array_sum(array_column($entries, 'extra_price')), 2),
         ];
     }
 
-    public function calculateUnitPrice(float $basePrice, array $configuration): float
+    public function calculateUnitPrice(float $basePrice, array $configuration, ?Product $baseDollProduct = null, int $quantity = 1): float
     {
-        $builtConfiguration = $this->buildCartConfiguration($configuration);
+        $builtConfiguration = $this->buildCartConfiguration($configuration, $baseDollProduct, $quantity);
 
         return round($basePrice + (float) $builtConfiguration['extra_price'], 2);
     }
@@ -137,8 +164,11 @@ class DollCustomizationService
 
                 $normalized[(string) $view][(string) $category] = [
                     'id' => $partId,
+                    'product_id' => (string) ($part['product_id'] ?? $part['productId'] ?? ''),
+                    'sku' => (string) ($part['sku'] ?? ''),
                     'path' => $path,
                     'label' => (string) ($part['label'] ?? $partId),
+                    'layers' => is_array($part['layers'] ?? null) ? $part['layers'] : [],
                 ];
             }
         }
@@ -150,16 +180,18 @@ class DollCustomizationService
      * @param  array<string, mixed>  $part
      * @return array<string, mixed>
      */
-    private function buildEntry(string $view, string $category, array $part): array
+    private function buildEntry(string $view, string $category, array $part, Product $accessory): array
     {
         $path = $this->normalizePath((string) $part['path']);
-        $extraPrice = $this->resolveExtraPrice($category, $path);
+        $extraPrice = (float) $accessory->base_price;
 
         return [
             'view' => $view,
             'category' => $category,
             'part_id' => (string) $part['id'],
-            'label' => (string) ($part['label'] ?? $part['id']),
+            'product_id' => (string) $accessory->getKey(),
+            'sku' => (string) $accessory->sku,
+            'label' => (string) $accessory->name,
             'path' => $path,
             'extra_price' => $extraPrice,
             'has_special_price' => $extraPrice > 0,
@@ -176,39 +208,178 @@ class DollCustomizationService
     }
 
     /**
-     * @param  array<string, mixed>  $configuration
      * @return array<int, string>
      */
-    private function resolveRequiredFrontCategories(array $configuration): array
+    private function resolveRequiredFrontCategories(?Product $baseDollProduct = null): array
     {
-        $availableFrontCategories = $configuration['available_front_categories'] ?? null;
+        $baseDollProduct = $this->resolveBaseDollProduct($baseDollProduct);
 
-        if (! is_array($availableFrontCategories) || $availableFrontCategories === []) {
-            return self::REQUIRED_FRONT_CATEGORIES;
+        $requiredCategories = DollProductAccessory::query()
+            ->where('doll_product_id', $baseDollProduct->getKey())
+            ->where('is_mandatory', true)
+            ->whereNotNull('group_name')
+            ->pluck('group_name')
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        return $requiredCategories !== [] ? $requiredCategories : self::REQUIRED_FRONT_CATEGORIES;
+    }
+
+    /**
+     * @param  array<string, array<string, array<string, mixed>>>  $selectedParts
+     * @return array<string, array<string, array{part: array<string, mixed>, product: Product}>>
+     */
+    private function resolveSelectedAccessories(array $selectedParts, ?Product $baseDollProduct = null, int $quantity = 1): array
+    {
+        $baseDollProduct = $this->resolveBaseDollProduct($baseDollProduct);
+        $compatibleAccessories = $this->getCompatibleAccessories($baseDollProduct);
+        $resolved = [];
+
+        foreach ($selectedParts as $view => $categories) {
+            foreach ($categories as $category => $part) {
+                $accessory = $this->findCompatibleAccessory($part, $compatibleAccessories);
+
+                if (! $accessory) {
+                    throw new \InvalidArgumentException("El accesorio seleccionado no es valido para la categoria {$category}.");
+                }
+
+                if (($accessory['group_name'] ?? null) !== null && $accessory['group_name'] !== $category) {
+                    throw new \InvalidArgumentException("El accesorio seleccionado no pertenece a la categoria {$category}.");
+                }
+
+                $product = $accessory['product'];
+
+                if ($product->stock_quantity < $quantity) {
+                    throw new \InvalidArgumentException("No hay stock disponible para {$product->name}.");
+                }
+
+                $resolved[$view][$category] = [
+                    'part' => $part,
+                    'product' => $product,
+                ];
+            }
         }
 
-        $normalizedAvailableCategories = array_values(array_filter(array_map(
-            static fn (mixed $category): string => is_string($category) ? trim($category) : '',
-            $availableFrontCategories,
-        ), static fn (string $category): bool => $category !== ''));
+        return $resolved;
+    }
 
-        if ($normalizedAvailableCategories === []) {
-            return self::REQUIRED_FRONT_CATEGORIES;
+    private function resolveBaseDollProduct(?Product $baseDollProduct): Product
+    {
+        if ($baseDollProduct instanceof Product) {
+            return $baseDollProduct;
         }
 
-        $optionalCategories = array_flip(self::OPTIONAL_CATEGORIES);
-        $requiredCategories = array_values(array_filter(
-            $normalizedAvailableCategories,
-            static fn (string $category): bool => ! array_key_exists($category, $optionalCategories),
-        ));
+        $baseDollProduct = Product::query()
+            ->where('sku', ConfigurableDollProductService::BASE_DOLL_SKU)
+            ->first();
 
-        if ($requiredCategories === []) {
-            $requiredCategories = array_values(array_intersect(self::REQUIRED_FRONT_CATEGORIES, $normalizedAvailableCategories));
+        if (! $baseDollProduct) {
+            throw new \InvalidArgumentException('No hay una muñeca base configurable disponible.');
         }
 
-        return $requiredCategories !== []
-            ? $requiredCategories
-            : self::REQUIRED_FRONT_CATEGORIES;
+        return $baseDollProduct;
+    }
+
+    /**
+     * @return array{
+     *     by_id: array<string, array{product: Product, group_name: string|null}>,
+     *     by_sku: array<string, array{product: Product, group_name: string|null}>,
+     *     by_path: array<string, array{product: Product, group_name: string|null}>
+     * }
+     */
+    private function getCompatibleAccessories(Product $baseDollProduct): array
+    {
+        $byId = [];
+        $bySku = [];
+        $byPath = [];
+
+        $rows = DollProductAccessory::query()
+            ->where('doll_product_id', $baseDollProduct->getKey())
+            ->whereHas('accessoryProduct', fn ($query) => $query
+                ->active()
+                ->where('product_type', ProductType::Accessory->value)
+            )
+            ->with(['accessoryProduct.images'])
+            ->get();
+
+        foreach ($rows as $row) {
+            $product = $row->accessoryProduct;
+
+            if (! $product) {
+                continue;
+            }
+
+            $payload = [
+                'product' => $product,
+                'group_name' => $row->group_name,
+            ];
+
+            $byId[(string) $product->getKey()] = $payload;
+            $bySku[(string) $product->sku] = $payload;
+
+            foreach ($product->images as $image) {
+                $path = $this->normalizePath((string) $image->image_url);
+
+                if ($path !== '') {
+                    $byPath[$path] = $payload;
+                }
+            }
+        }
+
+        return [
+            'by_id' => $byId,
+            'by_sku' => $bySku,
+            'by_path' => $byPath,
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $part
+     * @param  array<string, array<string, array{product: Product, group_name: string|null}>>  $compatibleAccessories
+     * @return array{product: Product, group_name: string|null}|null
+     */
+    private function findCompatibleAccessory(array $part, array $compatibleAccessories): ?array
+    {
+        $productId = (string) ($part['product_id'] ?? '');
+
+        if ($productId !== '' && isset($compatibleAccessories['by_id'][$productId])) {
+            return $compatibleAccessories['by_id'][$productId];
+        }
+
+        $sku = (string) ($part['sku'] ?? '');
+
+        if ($sku !== '' && isset($compatibleAccessories['by_sku'][$sku])) {
+            return $compatibleAccessories['by_sku'][$sku];
+        }
+
+        foreach ($this->partPaths($part) as $path) {
+            if (isset($compatibleAccessories['by_path'][$path])) {
+                return $compatibleAccessories['by_path'][$path];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $part
+     * @return array<int, string>
+     */
+    private function partPaths(array $part): array
+    {
+        $paths = [$this->normalizePath((string) ($part['path'] ?? ''))];
+
+        foreach (($part['layers'] ?? []) as $layer) {
+            if (! is_array($layer)) {
+                continue;
+            }
+
+            $paths[] = $this->normalizePath((string) ($layer['url'] ?? ''));
+        }
+
+        return array_values(array_filter(array_unique($paths)));
     }
 
     private function normalizePath(string $path): string

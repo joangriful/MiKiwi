@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Carts\Services;
 
 use App\Enums\ProductType;
+use App\Domain\Dolls\Services\ConfigurableDollProductService;
 use App\Domain\Dolls\Services\DollCustomizationService;
 use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Exceptions\InsufficientStockException;
@@ -103,7 +104,7 @@ class CartService
         }
 
         $cart = Session::get($this->cartSessionKey, []);
-        $configurationData = $this->resolveConfigurationData((float) $product->base_price, $configuration);
+        $configurationData = $this->resolveConfigurationData((float) $product->base_price, $configuration, $product, $quantity);
         $itemKey = $this->buildItemKey((string) $product->id, $configurationData['configuration']);
 
         // Si el producto ya existe, actualizar cantidad
@@ -118,6 +119,10 @@ class CartService
                     requestedQuantity: $newQuantity,
                     productIdentifier: $product->sku ?? $product->id
                 );
+            }
+
+            if (is_array($configuration) && ! empty($configuration)) {
+                $this->dollCustomizationService->validateConfiguration($configuration, $product, $newQuantity);
             }
 
             $cart[$itemKey]['quantity'] = $newQuantity;
@@ -163,6 +168,10 @@ class CartService
                 requestedQuantity: $quantity,
                 productIdentifier: $product->sku ?? $product->id
             );
+        }
+
+        if ($product && is_array($cart[$productId]['configuration'] ?? null)) {
+            $this->dollCustomizationService->validateConfiguration($cart[$productId]['configuration'], $product, $quantity);
         }
 
         $cart[$productId]['quantity'] = $quantity;
@@ -249,7 +258,7 @@ class CartService
             );
         }
 
-        $configurationData = $this->resolveConfigurationData((float) $product->base_price, $configuration);
+        $configurationData = $this->resolveConfigurationData((float) $product->base_price, $configuration, $product, $quantity);
 
         Session::put($this->buyNowSessionKey, [
             'slug' => $productSlug,
@@ -315,7 +324,7 @@ class CartService
      * @param  array<string, mixed>|null  $configuration
      * @return array{configuration: array<string, mixed>|null, unit_price: float}
      */
-    private function resolveConfigurationData(float $basePrice, ?array $configuration): array
+    private function resolveConfigurationData(float $basePrice, ?array $configuration, ?Product $product = null, int $quantity = 1): array
     {
         if (! is_array($configuration) || empty($configuration)) {
             return [
@@ -324,12 +333,11 @@ class CartService
             ];
         }
 
-        $this->dollCustomizationService->validateConfiguration($configuration);
-        $normalizedConfiguration = $this->dollCustomizationService->buildCartConfiguration($configuration);
+        $normalizedConfiguration = $this->dollCustomizationService->buildCartConfiguration($configuration, $product, $quantity);
 
         return [
             'configuration' => $normalizedConfiguration,
-            'unit_price' => $this->dollCustomizationService->calculateUnitPrice($basePrice, $configuration),
+            'unit_price' => $this->dollCustomizationService->calculateUnitPrice($basePrice, $configuration, $product, $quantity),
         ];
     }
 
@@ -345,7 +353,10 @@ class CartService
         }
 
         if (
-            $product->product_type === ProductType::Configurable->value
+            (
+                $product->product_type === ProductType::Configurable->value
+                || $product->sku === ConfigurableDollProductService::BASE_DOLL_SKU
+            )
             && (! is_array($configuration) || empty($configuration))
         ) {
             throw new \InvalidArgumentException('La muñeca configurable requiere una configuración válida.');
