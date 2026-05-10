@@ -268,6 +268,7 @@ erDiagram
         uuid product_id FK
         string product_name_snapshot
         string sku_snapshot
+        json configuration_snapshot
         integer quantity
         decimal unit_price
         datetime created_at
@@ -280,8 +281,11 @@ erDiagram
         uuid product_id FK
         string product_name_snapshot
         string sku_snapshot
+        string category
+        string view
         decimal unit_price
         integer quantity
+        json visual_data_snapshot
         datetime created_at
         datetime updated_at
     }

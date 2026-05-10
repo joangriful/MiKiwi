@@ -18,13 +18,17 @@ class OrderItemAccessory extends Model
         'product_id',
         'product_name_snapshot',
         'sku_snapshot',
+        'category',
+        'view',
         'unit_price',
         'quantity',
+        'visual_data_snapshot',
     ];
 
     protected $casts = [
         'unit_price' => 'decimal:2',
         'quantity' => 'integer',
+        'visual_data_snapshot' => 'array',
     ];
 
     public function orderItem(): BelongsTo

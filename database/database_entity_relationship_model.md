@@ -171,6 +171,12 @@ Nota sobre `doll_product_accessory`:
 - como `accessory`: el producto accesorio compatible
 - Sirve para expresar qué accesorios pueden usarse con qué dolls.
 
+Nota sobre muñecas configuradas en pedidos:
+- `order_item.product_id` apunta a la doll comprada, por ejemplo `base_doll`.
+- `order_item.configuration_snapshot` conserva la configuración visual completa comprada.
+- `order_item_accessory` conserva los accesorios seleccionados para esa línea de pedido.
+- Sus campos `category`, `view` y `visual_data_snapshot` guardan el contexto visual de cada accesorio.
+
 Nota sobre `password_reset_token`:
 - Es una entidad técnica de soporte al flujo de recuperación de contraseña.
 - Se vincula conceptualmente con `user` mediante `email`.

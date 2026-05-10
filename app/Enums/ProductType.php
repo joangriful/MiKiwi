@@ -8,6 +8,7 @@ enum ProductType: string
     case Doll = 'doll';
     case Configurable = 'configurable';
     case Component = 'component';
+    case Accessory = 'accessory';
 
     public static function values(): array
     {

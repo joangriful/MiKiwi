@@ -60,6 +60,16 @@ class PrefabDollSeeder extends Seeder
     {
         return [
             [
+                'sku' => 'DOLL-BASE-001',
+                'name' => 'base_doll',
+                'slug' => 'base-doll',
+                'description' => 'Muñeca base para configuraciones personalizadas.',
+                'base_price' => 3000.00,
+                'stock_quantity' => 20,
+                'is_promoted' => true,
+                'images' => ['/images/mannequin-base-skin.png'],
+            ],
+            [
                 'sku' => 'DOLL-QUEEN-001',
                 'name' => 'Queen',
                 'slug' => 'queen-doll',
