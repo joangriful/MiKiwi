@@ -132,7 +132,7 @@ class CartService
             $cart[$itemKey] = [
                 'slug' => $product->slug,
                 'quantity' => $quantity,
-                'accessories' => $accessories,
+                'accessories' => $configurationData['accessories'] ?: $accessories,
                 'unit_price' => $configurationData['unit_price'],
                 'line_subtotal' => round($configurationData['unit_price'] * $quantity, 2),
                 'configuration' => $configurationData['configuration'],
@@ -230,6 +230,10 @@ class CartService
             } elseif ($this->shouldValidateStock($product) && $product->stock_quantity < $item['quantity']) {
                 $errors[] = "Stock insuficiente para {$product->name}. Disponible: {$product->stock_quantity}";
             }
+
+            foreach ($this->resolveItemAccessoryStockErrors($item) as $error) {
+                $errors[] = $error;
+            }
         }
 
         return [
@@ -261,9 +265,9 @@ class CartService
         $configurationData = $this->resolveConfigurationData((float) $product->base_price, $configuration, $product, $quantity);
 
         Session::put($this->buyNowSessionKey, [
-            'slug' => $productSlug,
+            'slug' => $product->slug,
             'quantity' => $quantity,
-            'accessories' => $accessories,
+            'accessories' => $configurationData['accessories'] ?: $accessories,
             'unit_price' => $configurationData['unit_price'],
             'line_subtotal' => round($configurationData['unit_price'] * $quantity, 2),
             'configuration' => $configurationData['configuration'],
@@ -322,13 +326,14 @@ class CartService
 
     /**
      * @param  array<string, mixed>|null  $configuration
-     * @return array{configuration: array<string, mixed>|null, unit_price: float}
+     * @return array{configuration: array<string, mixed>|null, accessories: array<int, array<string, mixed>>, unit_price: float}
      */
     private function resolveConfigurationData(float $basePrice, ?array $configuration, ?Product $product = null, int $quantity = 1): array
     {
         if (! is_array($configuration) || empty($configuration)) {
             return [
                 'configuration' => null,
+                'accessories' => [],
                 'unit_price' => round($basePrice, 2),
             ];
         }
@@ -337,8 +342,47 @@ class CartService
 
         return [
             'configuration' => $normalizedConfiguration,
-            'unit_price' => $this->dollCustomizationService->calculateUnitPrice($basePrice, $configuration, $product, $quantity),
+            'accessories' => $normalizedConfiguration['accessories'] ?? [],
+            'unit_price' => round($basePrice + (float) ($normalizedConfiguration['extra_price'] ?? 0), 2),
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     * @return array<int, string>
+     */
+    private function resolveItemAccessoryStockErrors(array $item): array
+    {
+        $errors = [];
+        $quantity = (int) ($item['quantity'] ?? 1);
+
+        foreach (($item['accessories'] ?? []) as $accessory) {
+            if (! is_array($accessory)) {
+                continue;
+            }
+
+            $productId = (string) ($accessory['product_id'] ?? '');
+
+            if ($productId === '') {
+                continue;
+            }
+
+            $product = Product::query()->active()->find($productId);
+
+            if (! $product) {
+                $errors[] = 'Uno de los accesorios seleccionados ya no está disponible.';
+
+                continue;
+            }
+
+            $requiredQuantity = $quantity * (int) ($accessory['quantity'] ?? 1);
+
+            if ($product->stock_quantity < $requiredQuantity) {
+                $errors[] = "Stock insuficiente para {$product->name}. Disponible: {$product->stock_quantity}";
+            }
+        }
+
+        return $errors;
     }
 
     /**
