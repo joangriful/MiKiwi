@@ -37,7 +37,10 @@ class OrderSeeder extends Seeder
         $totalItems = 0;
 
         // Cargar todos los productos una vez para evitar N+1 queries
-        $products = Product::all();
+        $products = Product::query()
+            ->where('is_active', true)
+            ->where('base_price', '>', 0)
+            ->get();
         if ($products->isEmpty()) {
             $this->command->error('❌ No hay productos. Ejecuta ProductSeeder primero.');
 

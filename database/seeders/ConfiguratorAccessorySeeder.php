@@ -16,7 +16,7 @@ class ConfiguratorAccessorySeeder extends Seeder
 {
     private const BASE_DOLL_SKU = 'DOLL-BASE-001';
 
-    private const DEFAULT_STOCK = 100;
+    private const DEFAULT_STOCK = 50;
 
     private const VIEW_LABELS = [
         'front' => 'frontal',

@@ -86,7 +86,12 @@ class SeederTest extends TestCase
         $this->assertCount(5, $product->images);
         $this->assertGreaterThanOrEqual(1, $product->collections->count());
 
-        $this->assertSame(0, DB::table('doll_product_accessory')->count());
+        $accessoryCount = Product::query()
+            ->where('product_type', ProductType::Accessory->value)
+            ->count();
+
+        $this->assertGreaterThan(0, $accessoryCount);
+        $this->assertSame($accessoryCount, DB::table('doll_product_accessory')->count());
     }
 
     public function test_product_seeder_accepts_single_and_structured_image_payloads(): void
@@ -223,7 +228,12 @@ class SeederTest extends TestCase
             'email' => 'admin@kinky-toys.com',
             'role' => 'admin',
         ]);
-        $this->assertSame(count(ProductSeeder::productDefinitions()) + 4, Product::count());
+        $accessoryCount = Product::query()
+            ->where('product_type', ProductType::Accessory->value)
+            ->count();
+
+        $this->assertGreaterThan(0, $accessoryCount);
+        $this->assertSame(count(ProductSeeder::productDefinitions()) + 5 + $accessoryCount, Product::count());
         $this->assertSame(0, Order::count());
         $this->assertSame(0, Review::count());
         $this->assertSame(0, ChatSession::count());
