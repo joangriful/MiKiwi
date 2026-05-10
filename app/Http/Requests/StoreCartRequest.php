@@ -22,6 +22,7 @@ class StoreCartRequest extends FormRequest
             'accessories.*' => 'string|exists:product,slug',
             'configuration' => 'nullable|array',
             'configuration.selected_parts' => 'nullable|array',
+            'configuration.selected_accessories' => 'nullable|array',
             'configuration.entries' => 'nullable|array',
         ];
     }

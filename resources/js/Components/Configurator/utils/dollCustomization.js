@@ -125,7 +125,7 @@ export function getConfigurationEntries(allSelections = {}, configuratorRules = 
             seenCategories.add(category);
 
             const path = normalizePartPath(part);
-            const extraPrice = partSurcharges[path] ?? categorySurcharges[category] ?? 0;
+            const extraPrice = resolvePartPrice(part, category, partSurcharges, categorySurcharges);
 
             entries.push({
                 key: `${view}-${category}-${part.id}`,
@@ -168,28 +168,40 @@ export function getMissingRequiredCategories(allSelections = {}, configuratorRul
     return requiredCategories.filter((category) => !frontSelections[category]);
 }
 
-export function buildConfigurationPayload(allSelections = {}, availableFrontCategories = []) {
-    const selectedParts = {};
+export function buildConfigurationPayload(allSelections = {}) {
+    const selectedAccessories = {};
 
     Object.entries(allSelections).forEach(([view, categories]) => {
-        selectedParts[view] = {};
+        selectedAccessories[view] = {};
 
         Object.entries(categories || {}).forEach(([category, part]) => {
             if (!part) {
                 return;
             }
 
-            selectedParts[view][category] = {
+            const path = normalizePartPath(part);
+
+            selectedAccessories[view][category] = {
                 id: part.id,
+                product_id: part.product_id || part.productId || '',
+                sku: part.sku || '',
+                slug: part.slug || '',
+                category: part.category || category,
+                view: part.view || view,
                 label: getPartDisplayLabel(category, part),
-                path: normalizePartPath(part),
+                path,
+                visual_data: {
+                    id: part.id,
+                    path,
+                    thumbnail: part.thumbnail || path,
+                    layers: Array.isArray(part.layers) ? part.layers : [],
+                },
             };
         });
     });
 
     return {
-        selected_parts: selectedParts,
-        available_front_categories: availableFrontCategories,
+        selected_accessories: selectedAccessories,
     };
 }
 
@@ -208,9 +220,12 @@ export function getPartExtraPrice(category, item, configuratorRules = {}) {
         return 0;
     }
 
-    const path = normalizePartPath(item);
-
-    return configuratorRules.partSurcharges?.[path] ?? configuratorRules.categorySurcharges?.[category] ?? 0;
+    return resolvePartPrice(
+        item,
+        category,
+        configuratorRules.partSurcharges || {},
+        configuratorRules.categorySurcharges || {},
+    );
 }
 
 function capitalize(value = '') {
@@ -227,6 +242,20 @@ function getPartDisplayLabel(category, part) {
     }
 
     return part?.label || part?.name || part?.id || getCategoryLabel(category);
+}
+
+function resolvePartPrice(part, category, partSurcharges = {}, categorySurcharges = {}) {
+    if (part?.price !== undefined && part.price !== null) {
+        return Number(part.price) || 0;
+    }
+
+    if (part?.base_price !== undefined && part.base_price !== null) {
+        return Number(part.base_price) || 0;
+    }
+
+    const path = normalizePartPath(part);
+
+    return partSurcharges[path] ?? categorySurcharges[category] ?? 0;
 }
 
 function resolveRequiredFrontCategories(configuratorRules = {}, availableFrontCategories = {}) {

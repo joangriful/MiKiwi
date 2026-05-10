@@ -160,12 +160,6 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
     const sectionOrder = useMemo(() => defaultSettings?.sectionOrder || [], [defaultSettings]);
     const defaultZoom = useMemo(() => defaultSettings?.zoom || null, [defaultSettings]);
     const configurationEntries = useMemo(() => getConfigurationEntries(allSelections, configuratorRules), [allSelections, configuratorRules]);
-    const availableFrontCategories = useMemo(
-        () => Object.entries(sanitizedViews?.front || {})
-            .filter(([, parts]) => Array.isArray(parts) && parts.length > 0)
-            .map(([category]) => category),
-        [sanitizedViews],
-    );
     const missingRequiredCategories = useMemo(
         () => getMissingRequiredCategories(allSelections, configuratorRules, sanitizedViews).map(getCategoryLabel),
         [allSelections, configuratorRules, sanitizedViews],
@@ -175,7 +169,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
         () => calculateConfigurationTotal(baseDollPrice, configurationEntries),
         [baseDollPrice, configurationEntries],
     );
-    const canPurchase = true;
+    const canPurchase = Boolean(dollProduct?.slug) && missingRequiredCategories.length === 0;
     const purchaseDisabledReason = !dollProduct?.slug
         ? 'No hay una muñeca configurable disponible para compra en este momento.'
         : missingRequiredCategories.length > 0
@@ -207,7 +201,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
             const payload = {
                 product_slug: dollProduct.slug,
                 quantity: 1,
-                configuration: buildConfigurationPayload({ front: allSelections.front || {} }, availableFrontCategories),
+                configuration: buildConfigurationPayload({ front: allSelections.front || {} }),
             };
 
             const { data } = await axios.post(route('cart.buy-now'), payload);

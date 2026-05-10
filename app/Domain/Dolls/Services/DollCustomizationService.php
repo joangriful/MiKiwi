@@ -137,7 +137,7 @@ class DollCustomizationService
      */
     private function extractSelectedParts(array $configuration): array
     {
-        $selectedParts = $configuration['selected_parts'] ?? [];
+        $selectedParts = $configuration['selected_accessories'] ?? $configuration['selected_parts'] ?? [];
 
         if (! is_array($selectedParts)) {
             throw new \InvalidArgumentException('La configuracion de la muñeca no es valida.');
@@ -156,7 +156,8 @@ class DollCustomizationService
                 }
 
                 $partId = (string) ($part['id'] ?? '');
-                $path = $this->normalizePath((string) ($part['path'] ?? $part['url'] ?? $part['thumbnail'] ?? ''));
+                $visualData = is_array($part['visual_data'] ?? null) ? $part['visual_data'] : [];
+                $path = $this->normalizePath((string) ($part['path'] ?? $visualData['path'] ?? $part['url'] ?? $part['thumbnail'] ?? ''));
 
                 if ($partId === '' || $path === '') {
                     continue;
@@ -168,7 +169,7 @@ class DollCustomizationService
                     'sku' => (string) ($part['sku'] ?? ''),
                     'path' => $path,
                     'label' => (string) ($part['label'] ?? $partId),
-                    'layers' => is_array($part['layers'] ?? null) ? $part['layers'] : [],
+                    'layers' => is_array($part['layers'] ?? null) ? $part['layers'] : ($visualData['layers'] ?? []),
                 ];
             }
         }
