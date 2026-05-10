@@ -16,6 +16,7 @@ class EloquentOrderRepository implements OrderRepositoryInterface
 {
     private const ORDER_RELATIONS = [
         'items.product',
+        'items.accessories.product',
         'user',
         'shippingAddress',
         'billingAddress',
@@ -47,17 +48,35 @@ class EloquentOrderRepository implements OrderRepositoryInterface
             // Crear los items del pedido si existen
             if (isset($data['items']) && is_array($data['items'])) {
                 foreach ($data['items'] as $item) {
-                    $order->items()->create([
+                    $orderItem = $order->items()->create([
                         'product_id' => $item['product_id'],
                         'quantity' => $item['quantity'],
                         'unit_price' => $item['unit_price'],
                         'product_name_snapshot' => $item['product_name_snapshot'] ?? 'Producto sin nombre',
                         'sku_snapshot' => $item['sku_snapshot'] ?? 'SKU-GENERICO',
+                        'configuration_snapshot' => $item['configuration_snapshot'] ?? null,
                     ]);
+
+                    foreach (($item['accessories'] ?? []) as $accessory) {
+                        if (! is_array($accessory)) {
+                            continue;
+                        }
+
+                        $orderItem->accessories()->create([
+                            'product_id' => $accessory['product_id'],
+                            'product_name_snapshot' => $accessory['product_name_snapshot'] ?? $accessory['name'] ?? 'Accesorio sin nombre',
+                            'sku_snapshot' => $accessory['sku_snapshot'] ?? $accessory['sku'] ?? 'SKU-GENERICO',
+                            'category' => $accessory['category'] ?? null,
+                            'view' => $accessory['view'] ?? null,
+                            'unit_price' => $accessory['unit_price'],
+                            'quantity' => $accessory['quantity'] ?? 1,
+                            'visual_data_snapshot' => $accessory['visual_data_snapshot'] ?? null,
+                        ]);
+                    }
                 }
             }
 
-            return $order->load(['items.product', 'shippingAddress', 'billingAddress', 'coupon']);
+            return $order->load(['items.product', 'items.accessories.product', 'shippingAddress', 'billingAddress', 'coupon']);
         });
     }
 

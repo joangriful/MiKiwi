@@ -14,6 +14,7 @@ use App\Exceptions\CartEmptyException;
 use App\Exceptions\InsufficientStockException;
 use App\Models\Address;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -45,6 +46,8 @@ class CreateOrder
                     $product->sku ?? $product->id
                 );
             }
+
+            $this->assertAccessoryStock($item);
         }
 
         return DB::transaction(function () use ($data, $cart, $isBuyNow) {
@@ -55,12 +58,15 @@ class CreateOrder
             $orderItems = [];
             foreach ($cart['items'] as $item) {
                 $product = $item['product'];
+                $isCustomDoll = ! empty($item['configuration']);
                 $orderItems[] = [
                     'product_id' => $product->id,
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['unit_price'] ?? $product->base_price,
-                    'product_name_snapshot' => ! empty($item['configuration']) ? $product->name.' - Configuracion personalizada' : $product->name,
+                    'product_name_snapshot' => $isCustomDoll ? 'Muñeca personalizada' : $product->name,
                     'sku_snapshot' => $product->sku ?? 'SKU-GENERICO',
+                    'configuration_snapshot' => $item['configuration'] ?? null,
+                    'accessories' => $this->buildOrderItemAccessories($item),
                 ];
             }
 
@@ -83,6 +89,8 @@ class CreateOrder
                 if ($this->shouldValidateStock($product)) {
                     $product->decrement('stock_quantity', $item['quantity']);
                 }
+
+                $this->decrementAccessoryStock($item);
             }
 
             if ($isBuyNow) {
@@ -133,8 +141,102 @@ class CreateOrder
         ]);
     }
 
-    private function shouldValidateStock($product): bool
+    private function shouldValidateStock(Product $product): bool
     {
         return $product->product_type !== ProductType::Configurable->value;
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     */
+    private function assertAccessoryStock(array $item): void
+    {
+        foreach (($item['accessories'] ?? []) as $accessory) {
+            if (! is_array($accessory)) {
+                continue;
+            }
+
+            $product = $this->resolveAccessoryProduct($accessory);
+            $requiredQuantity = $this->accessoryRequiredQuantity($item, $accessory);
+
+            if ($product->stock_quantity < $requiredQuantity) {
+                throw new InsufficientStockException(
+                    $product->name,
+                    $product->stock_quantity,
+                    $requiredQuantity,
+                    $product->sku ?? $product->id
+                );
+            }
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildOrderItemAccessories(array $item): array
+    {
+        $accessories = [];
+
+        foreach (($item['accessories'] ?? []) as $accessory) {
+            if (! is_array($accessory)) {
+                continue;
+            }
+
+            $product = $this->resolveAccessoryProduct($accessory);
+
+            $accessories[] = [
+                'product_id' => $product->id,
+                'product_name_snapshot' => $product->name,
+                'sku_snapshot' => $product->sku ?? 'SKU-GENERICO',
+                'category' => $accessory['category'] ?? null,
+                'view' => $accessory['view'] ?? null,
+                'unit_price' => $accessory['unit_price'] ?? $product->base_price,
+                'quantity' => $this->accessoryRequiredQuantity($item, $accessory),
+                'visual_data_snapshot' => $accessory['visual_data_snapshot'] ?? null,
+            ];
+        }
+
+        return $accessories;
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     */
+    private function decrementAccessoryStock(array $item): void
+    {
+        foreach (($item['accessories'] ?? []) as $accessory) {
+            if (! is_array($accessory)) {
+                continue;
+            }
+
+            $product = $this->resolveAccessoryProduct($accessory);
+            $product->decrement('stock_quantity', $this->accessoryRequiredQuantity($item, $accessory));
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     * @param  array<string, mixed>  $accessory
+     */
+    private function accessoryRequiredQuantity(array $item, array $accessory): int
+    {
+        return (int) ($item['quantity'] ?? 1) * (int) ($accessory['quantity'] ?? 1);
+    }
+
+    /**
+     * @param  array<string, mixed>  $accessory
+     */
+    private function resolveAccessoryProduct(array $accessory): Product
+    {
+        $productId = (string) ($accessory['product_id'] ?? '');
+
+        if ($productId === '') {
+            throw new \InvalidArgumentException('El accesorio seleccionado no tiene producto asociado.');
+        }
+
+        return Product::query()
+            ->where('product_type', ProductType::Accessory->value)
+            ->findOrFail($productId);
     }
 }
