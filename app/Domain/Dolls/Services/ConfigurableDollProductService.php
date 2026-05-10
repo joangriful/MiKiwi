@@ -21,9 +21,12 @@ class ConfigurableDollProductService
     {
         return Product::query()
             ->active()
-            ->inStock()
-            ->where('product_type', ProductType::Configurable->value)
+            ->whereIn('product_type', [
+                ProductType::Configurable->value,
+                ProductType::Doll->value,
+            ])
             ->with(['category', 'images'])
+            ->orderByRaw("CASE WHEN product_type = ? THEN 0 ELSE 1 END", [ProductType::Configurable->value])
             ->orderByDesc('is_promoted')
             ->orderBy('name')
             ->first();

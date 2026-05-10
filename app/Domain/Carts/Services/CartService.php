@@ -93,7 +93,7 @@ class CartService
         }
 
         // Validar stock disponible
-        if ($product->stock_quantity < $quantity) {
+        if ($this->shouldValidateStock($product) && $product->stock_quantity < $quantity) {
             throw new InsufficientStockException(
                 productName: $product->name,
                 availableStock: $product->stock_quantity,
@@ -111,7 +111,7 @@ class CartService
             $newQuantity = $cart[$itemKey]['quantity'] + $quantity;
 
             // Validar stock total
-            if ($product->stock_quantity < $newQuantity) {
+            if ($this->shouldValidateStock($product) && $product->stock_quantity < $newQuantity) {
                 throw new InsufficientStockException(
                     productName: $product->name,
                     availableStock: $product->stock_quantity,
@@ -155,8 +155,8 @@ class CartService
         }
 
         // Validar stock
-        $product = $this->productRepository->getActiveInStockBySlug($cart[$productId]['slug']);
-        if ($product && $product->stock_quantity < $quantity) {
+        $product = $this->productRepository->getActiveBySlug($cart[$productId]['slug']);
+        if ($product && $this->shouldValidateStock($product) && $product->stock_quantity < $quantity) {
             throw new InsufficientStockException(
                 productName: $product->name,
                 availableStock: $product->stock_quantity,
@@ -214,11 +214,11 @@ class CartService
         $errors = [];
 
         foreach ($cart as $productId => $item) {
-            $product = $this->productRepository->getActiveInStockBySlug($item['slug']);
+            $product = $this->productRepository->getActiveBySlug($item['slug']);
 
             if (! $product) {
                 $errors[] = "Producto {$item['slug']} ya no está disponible.";
-            } elseif ($product->stock_quantity < $item['quantity']) {
+            } elseif ($this->shouldValidateStock($product) && $product->stock_quantity < $item['quantity']) {
                 $errors[] = "Stock insuficiente para {$product->name}. Disponible: {$product->stock_quantity}";
             }
         }
@@ -240,7 +240,7 @@ class CartService
             throw new ProductNotFoundException($productSlug);
         }
 
-        if ($product->stock_quantity < $quantity) {
+        if ($this->shouldValidateStock($product) && $product->stock_quantity < $quantity) {
             throw new InsufficientStockException(
                 productName: $product->name,
                 availableStock: $product->stock_quantity,
@@ -272,7 +272,7 @@ class CartService
             return null;
         }
 
-        $product = $this->productRepository->getActiveInStockBySlug($item['slug']);
+        $product = $this->productRepository->getActiveBySlug($item['slug']);
 
         if (! $product) {
             $this->clearBuyNowItem();
@@ -338,7 +338,7 @@ class CartService
      */
     private function resolvePurchasableProduct(string $productSlug, ?array $configuration): ?Product
     {
-        $product = $this->productRepository->getActiveInStockBySlug($productSlug);
+        $product = $this->productRepository->getActiveBySlug($productSlug);
 
         if (! $product) {
             return null;
@@ -352,6 +352,11 @@ class CartService
         }
 
         return $product;
+    }
+
+    private function shouldValidateStock(Product $product): bool
+    {
+        return $product->product_type !== ProductType::Configurable->value;
     }
 
     /**

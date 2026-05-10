@@ -69,8 +69,9 @@ class DollCustomizationService
     public function validateConfiguration(array $configuration): void
     {
         $selectedParts = $this->extractSelectedParts($configuration);
+        $requiredCategories = $this->resolveRequiredFrontCategories($configuration);
 
-        foreach (self::REQUIRED_FRONT_CATEGORIES as $category) {
+        foreach ($requiredCategories as $category) {
             if (! isset($selectedParts['front'][$category])) {
                 throw new \InvalidArgumentException("Falta seleccionar la categoria obligatoria: {$category}.");
             }
@@ -172,6 +173,42 @@ class DollCustomizationService
         }
 
         return self::CATEGORY_SURCHARGES[$category] ?? 0.0;
+    }
+
+    /**
+     * @param  array<string, mixed>  $configuration
+     * @return array<int, string>
+     */
+    private function resolveRequiredFrontCategories(array $configuration): array
+    {
+        $availableFrontCategories = $configuration['available_front_categories'] ?? null;
+
+        if (! is_array($availableFrontCategories) || $availableFrontCategories === []) {
+            return self::REQUIRED_FRONT_CATEGORIES;
+        }
+
+        $normalizedAvailableCategories = array_values(array_filter(array_map(
+            static fn (mixed $category): string => is_string($category) ? trim($category) : '',
+            $availableFrontCategories,
+        ), static fn (string $category): bool => $category !== ''));
+
+        if ($normalizedAvailableCategories === []) {
+            return self::REQUIRED_FRONT_CATEGORIES;
+        }
+
+        $optionalCategories = array_flip(self::OPTIONAL_CATEGORIES);
+        $requiredCategories = array_values(array_filter(
+            $normalizedAvailableCategories,
+            static fn (string $category): bool => ! array_key_exists($category, $optionalCategories),
+        ));
+
+        if ($requiredCategories === []) {
+            $requiredCategories = array_values(array_intersect(self::REQUIRED_FRONT_CATEGORIES, $normalizedAvailableCategories));
+        }
+
+        return $requiredCategories !== []
+            ? $requiredCategories
+            : self::REQUIRED_FRONT_CATEGORIES;
     }
 
     private function normalizePath(string $path): string

@@ -8,6 +8,7 @@ use App\Domain\Carts\Services\CartService;
 use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Models\Address;
 use App\Models\User;
+use App\Enums\ProductType;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Exceptions\CartEmptyException;
@@ -77,7 +78,9 @@ class OrderService
         ]);
 
         foreach ($cart['items'] as $item) {
-            $item['product']->decrement('stock_quantity', $item['quantity']);
+            if ($this->shouldValidateStock($item['product'])) {
+                $item['product']->decrement('stock_quantity', $item['quantity']);
+            }
         }
 
         $this->cartService->clearCart();
@@ -184,5 +187,10 @@ class OrderService
                 'is_default' => false,
             ]);
         });
+    }
+
+    private function shouldValidateStock($product): bool
+    {
+        return $product->product_type !== ProductType::Configurable->value;
     }
 }

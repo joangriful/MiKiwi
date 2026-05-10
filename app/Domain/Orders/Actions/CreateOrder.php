@@ -6,6 +6,7 @@ namespace App\Domain\Orders\Actions;
 
 use App\Domain\Carts\Services\CartService;
 use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
+use App\Enums\ProductType;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Events\OrderCreated;
@@ -36,7 +37,7 @@ class CreateOrder
 
         foreach ($cart['items'] as $item) {
             $product = $item['product'];
-            if ($product->stock_quantity < $item['quantity']) {
+            if ($this->shouldValidateStock($product) && $product->stock_quantity < $item['quantity']) {
                 throw new InsufficientStockException(
                     $product->name,
                     $product->stock_quantity,
@@ -79,7 +80,9 @@ class CreateOrder
 
             foreach ($cart['items'] as $item) {
                 $product = $item['product'];
-                $product->decrement('stock_quantity', $item['quantity']);
+                if ($this->shouldValidateStock($product)) {
+                    $product->decrement('stock_quantity', $item['quantity']);
+                }
             }
 
             if ($isBuyNow) {
@@ -128,5 +131,10 @@ class CreateOrder
             'country' => $addressData['country'] ?? 'ES',
             'is_default' => false,
         ]);
+    }
+
+    private function shouldValidateStock($product): bool
+    {
+        return $product->product_type !== ProductType::Configurable->value;
     }
 }

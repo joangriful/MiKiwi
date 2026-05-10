@@ -55,7 +55,8 @@ class ConfiguratorPageController extends Controller
     private function renderDollConfigurator(): Response
     {
         $config = $this->dollSettingsService->getConsolidatedConfiguration();
-        $product = $this->configurableDollProductService->getDefaultDollProduct();
+        $readyDollProducts = $this->configurableDollProductService->getReadyDollProducts();
+        $product = $this->configurableDollProductService->getDefaultDollProduct() ?? $readyDollProducts->first();
 
         return Inertia::render('Configurator/DollConfigTest', [
             'views' => $config['views'],
@@ -63,7 +64,7 @@ class ConfiguratorPageController extends Controller
             'partPositions' => $config['partPositions'],
             'dollProduct' => $product ? ProductResource::make($product)->resolve(request()) : null,
             'readyDollProducts' => ProductResource::collection(
-                $this->configurableDollProductService->getReadyDollProducts()
+                $readyDollProducts
             )->resolve(request()),
             'configuratorRules' => $this->dollCustomizationService->getFrontendRules(),
         ]);

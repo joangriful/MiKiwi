@@ -53,7 +53,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
     public function getActiveBySlug(string $slug): ?Product
     {
-        return $this->activeProductsQuery()
+        return $this->purchasableProductsQuery()
             ->where('slug', $slug)
             ->with([
                 'category',
