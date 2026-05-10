@@ -43,6 +43,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
     const [partPositions, setPartPositions] = useState(initialPartPositions || {});
     const [topSectionHeight, setTopSectionHeight] = useState(65);
     const [isSubmittingPurchase, setIsSubmittingPurchase] = useState(false);
+    const [purchaseErrorMessage, setPurchaseErrorMessage] = useState('');
     const [isSubmittingReadyDollPurchase, setIsSubmittingReadyDollPurchase] = useState(false);
     const [isAddingReadyDollToCart, setIsAddingReadyDollToCart] = useState(false);
     const [addedReadyDollSlug, setAddedReadyDollSlug] = useState(null);
@@ -159,6 +160,12 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
     const sectionOrder = useMemo(() => defaultSettings?.sectionOrder || [], [defaultSettings]);
     const defaultZoom = useMemo(() => defaultSettings?.zoom || null, [defaultSettings]);
     const configurationEntries = useMemo(() => getConfigurationEntries(allSelections, configuratorRules), [allSelections, configuratorRules]);
+    const availableFrontCategories = useMemo(
+        () => Object.entries(sanitizedViews?.front || {})
+            .filter(([, parts]) => Array.isArray(parts) && parts.length > 0)
+            .map(([category]) => category),
+        [sanitizedViews],
+    );
     const missingRequiredCategories = useMemo(
         () => getMissingRequiredCategories(allSelections, configuratorRules, sanitizedViews).map(getCategoryLabel),
         [allSelections, configuratorRules, sanitizedViews],
@@ -168,7 +175,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
         () => calculateConfigurationTotal(baseDollPrice, configurationEntries),
         [baseDollPrice, configurationEntries],
     );
-    const canPurchase = Boolean(dollProduct?.slug) && missingRequiredCategories.length === 0;
+    const canPurchase = true;
     const purchaseDisabledReason = !dollProduct?.slug
         ? 'No hay una muñeca configurable disponible para compra en este momento.'
         : missingRequiredCategories.length > 0
@@ -188,17 +195,19 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
     };
 
     const handlePurchase = async () => {
-        if (!canPurchase || !dollProduct?.slug) {
+        if (!dollProduct?.slug) {
+            setPurchaseErrorMessage('No hay una muñeca configurable disponible para compra en este momento.');
             return;
         }
 
+        setPurchaseErrorMessage('');
         setIsSubmittingPurchase(true);
 
         try {
             const payload = {
                 product_slug: dollProduct.slug,
                 quantity: 1,
-                configuration: buildConfigurationPayload(allSelections),
+                configuration: buildConfigurationPayload({ front: allSelections.front || {} }, availableFrontCategories),
             };
 
             const { data } = await axios.post(route('cart.buy-now'), payload);
@@ -206,6 +215,9 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
             window.location.href = data.redirect || route('cart.index', { buy_now: 1 });
         } catch (error) {
             console.error('No pudimos preparar la compra de la muñeca:', error);
+            const apiMessage = error?.response?.data?.message;
+            const fallbackMessage = 'No pudimos preparar la compra directa. Revisa tu seleccion e intentalo de nuevo.';
+            setPurchaseErrorMessage(typeof apiMessage === 'string' && apiMessage.trim() !== '' ? apiMessage : fallbackMessage);
             setIsSubmittingPurchase(false);
         }
     };
@@ -392,6 +404,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                                         missingCategories={missingRequiredCategories}
                                         canPurchase={canPurchase}
                                         purchaseDisabledReason={purchaseDisabledReason}
+                                        purchaseErrorMessage={purchaseErrorMessage}
                                         onReset={handleResetSelections}
                                         onPurchase={handlePurchase}
                                         isSubmitting={isSubmittingPurchase}

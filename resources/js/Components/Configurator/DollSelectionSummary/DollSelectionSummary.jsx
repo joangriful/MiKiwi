@@ -14,6 +14,7 @@ export default function DollSelectionSummary({
     missingCategories,
     canPurchase,
     purchaseDisabledReason,
+    purchaseErrorMessage,
     onReset,
     onPurchase,
     isSubmitting,
@@ -69,6 +70,10 @@ export default function DollSelectionSummary({
 
             {purchaseDisabledReason ? (
                 <p className={styles.statusText}>{purchaseDisabledReason}</p>
+            ) : null}
+
+            {purchaseErrorMessage ? (
+                <p className={styles.statusText}>{purchaseErrorMessage}</p>
             ) : null}
 
             <div className={styles.actions}>

@@ -163,17 +163,12 @@ export function getConfigurationEntries(allSelections = {}, configuratorRules = 
 
 export function getMissingRequiredCategories(allSelections = {}, configuratorRules = {}, views = {}) {
     const frontSelections = allSelections.front || {};
-    const availableFrontCategories = views.front || {};
-    const requiredCategories = (configuratorRules.requiredFrontCategories || []).filter((category) => {
-        const categoryParts = availableFrontCategories[category] || [];
-
-        return categoryParts.length > 0;
-    });
+    const requiredCategories = resolveRequiredFrontCategories(configuratorRules, views.front || {});
 
     return requiredCategories.filter((category) => !frontSelections[category]);
 }
 
-export function buildConfigurationPayload(allSelections = {}) {
+export function buildConfigurationPayload(allSelections = {}, availableFrontCategories = []) {
     const selectedParts = {};
 
     Object.entries(allSelections).forEach(([view, categories]) => {
@@ -192,7 +187,10 @@ export function buildConfigurationPayload(allSelections = {}) {
         });
     });
 
-    return { selected_parts: selectedParts };
+    return {
+        selected_parts: selectedParts,
+        available_front_categories: availableFrontCategories,
+    };
 }
 
 export function calculateConfigurationTotal(basePrice, entries = []) {
@@ -229,6 +227,24 @@ function getPartDisplayLabel(category, part) {
     }
 
     return part?.label || part?.name || part?.id || getCategoryLabel(category);
+}
+
+function resolveRequiredFrontCategories(configuratorRules = {}, availableFrontCategories = {}) {
+    const visibleFrontCategories = Object.entries(availableFrontCategories)
+        .filter(([, parts]) => Array.isArray(parts) && parts.length > 0)
+        .map(([category]) => category);
+    const optionalCategories = new Set(configuratorRules.optionalCategories || []);
+    const inferredRequiredCategories = visibleFrontCategories.filter((category) => !optionalCategories.has(category));
+
+    if (inferredRequiredCategories.length > 0) {
+        return inferredRequiredCategories;
+    }
+
+    return (configuratorRules.requiredFrontCategories || []).filter((category) => {
+        const categoryParts = availableFrontCategories[category] || [];
+
+        return categoryParts.length > 0;
+    });
 }
 
 function isHiddenPart(part) {

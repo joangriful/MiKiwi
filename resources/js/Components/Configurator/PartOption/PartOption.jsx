@@ -259,6 +259,7 @@ export default function PartOption({
         <>
             <div className={styles.cardRoot}>
                 <button
+                    type="button"
                     onClick={() => onSelect(item)}
                     onKeyDown={onKeyDown}
                     className={getClassName(
@@ -269,34 +270,34 @@ export default function PartOption({
                 >
                     {renderContent(false)}
 
-                    {onSavePosition ? (
-                        <button
-                            type="button"
-                            onClick={(event) => {
-                                event.stopPropagation();
-                                setIsEditing(true);
-                            }}
-                            className={styles.editTrigger}
-                            title="Editar posición"
-                            aria-label={`Editar posicion de ${item.id}`}
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className={styles.editIcon}
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                                />
-                            </svg>
-                        </button>
-                    ) : null}
                 </button>
+
+                {onSavePosition ? (
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setIsEditing(true);
+                        }}
+                        className={styles.editTrigger}
+                        title="Editar posición"
+                        aria-label={`Editar posicion de ${item.id}`}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className={styles.editIcon}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                            />
+                        </svg>
+                    </button>
+                ) : null}
             </div>
 
             {isEditing ? (
