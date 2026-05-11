@@ -6,6 +6,8 @@ namespace App\Domain\Products\Services;
 
 use App\Domain\Categories\Services\CategoryService;
 use App\Domain\Reviews\Services\ReviewService;
+use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
@@ -291,7 +293,21 @@ class CatalogPageService
             return;
         }
 
-        $product->setAttribute('can_review', $this->reviewService->canUserReviewProduct($user, $product));
+        $product->loadExists([
+            'reviews as user_has_reviewed' => fn (Builder $query) => $query->where('user_id', $user->getKey()),
+            'orderItems as user_has_purchased' => fn (Builder $query) => $query->whereHas('order', function (Builder $orderQuery) use ($user): void {
+                $orderQuery
+                    ->where('user_id', $user->getKey())
+                    ->where('payment_status', PaymentStatus::Paid->value)
+                    ->where('status', '!=', OrderStatus::Cancelled->value);
+            }),
+        ]);
+
+        $product->setAttribute(
+            'can_review',
+            (bool) $product->getAttribute('user_has_purchased')
+                && ! (bool) $product->getAttribute('user_has_reviewed')
+        );
         $product->setRelation('userReview', $this->reviewService->getUserReviewForProduct($user, $product));
     }
 }
