@@ -10,7 +10,7 @@ Bienvenido a la documentación técnica y de gestión del proyecto MiKiwi. Aquí
 
 - <img src="assets/icons/project_structure.svg" width="18" height="18" /> [Estructura del Proyecto](PROJECT_STRUCTURE.md)
 - <img src="assets/icons/ai.svg" width="18" height="18" /> [Guía para Agentes e IA](../AGENTS.md)
-- <img src="assets/icons/log.svg" width="18" height="18" /> [Historial de Cambios (Changelog)](../CHANGELOG.md)
+- <img src="assets/icons/changelog.svg" width="18" height="18" /> [Historial de Cambios (Changelog)](../CHANGELOG.md)
 - <img src="assets/icons/ux.svg" width="18" height="18" /> [Diseño y Experiencia de Usuario](design/README.md)
 - <img src="assets/icons/design.svg" width="18" height="18" /> [Prototipos y Mockups HTML](mockups/README.md)
   - [Detalle de Producto (Mockup)](mockups/001.html)

@@ -1,4 +1,4 @@
-# Changelog
+# <img src="docs/assets/icons/changelog.svg" width="32" height="32" /> Changelog
 
 Todos los cambios notables en este proyecto serán documentados en este archivo.
 
