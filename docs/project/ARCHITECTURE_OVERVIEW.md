@@ -6,13 +6,36 @@ MiKiwi sigue una arquitectura de capas limpia, facilitando el mantenimiento y la
 
 ## Flujo de Información (4 Capas)
 
-El flujo estándar para cualquier petición en el backend es:
-`Ruta HTTP -> Controller -> Domain Service/Action -> Repository -> Model -> Inertia Page`
+El sistema está diseñado siguiendo una arquitectura de capas que separa las responsabilidades de transporte, lógica de negocio y persistencia.
 
-1.  **Controladores**: Finos, encargados solo de recibir el request y devolver la respuesta.
-2.  **Servicios/Actions**: Contienen la lógica de negocio pura.
-3.  **Repositorios**: Abstraen el acceso a datos (Eloquent).
-4.  **Modelos**: Definen esquemas, relaciones y casts.
+```mermaid
+graph TD
+    A[Usuario / Navegador] --- B[Frontend - React/Inertia]
+    B -->|Request HTTP| C[Controlador - app/Http]
+    
+    subgraph "Capa de Dominio"
+        C -->|Orquesta| D[Service / Action - app/Domain]
+        D -->|Consulta / Guarda| E[Repository - app/Domain]
+    end
+    
+    subgraph "Capa de Datos"
+        E -->|Eloquent| F[Modelo - app/Models]
+        F <-->|Query| G[(PostgreSQL)]
+    end
+    
+    D -.->|Retorna Datos| C
+    C -.->|Inertia::render| B
+    B -.->|React Render| A
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style G fill:#00d2ff,stroke:#333,stroke-width:2px
+    style D fill:#fff4dd,stroke:#d4a017,stroke-width:2px
+```
+
+1.  **Controladores**: Finos, encargados solo de recibir el request y devolver la respuesta (Inertia o JSON).
+2.  **Servicios/Actions**: Contienen la lógica de negocio pura y reglas de dominio.
+3.  **Repositorios**: Abstraen el acceso a datos para que el dominio no dependa de Eloquent directamente.
+4.  **Modelos**: Definen el esquema, relaciones, casts y scopes de la base de datos.
 
 ## Estructura de Directorios
 
@@ -30,4 +53,6 @@ El flujo estándar para cualquier petición en el backend es:
 *   `Providers/`: Registro de servicios e inyección de dependencias.
 
 ---
-*Documentación modularizada - Mayo 2026*
+*Última actualización: Mayo 2026*
+
+![Footer](../assets/img/footer.png)
