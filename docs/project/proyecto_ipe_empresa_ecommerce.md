@@ -1,3 +1,5 @@
+<a href="README.md"><img src="../assets/icons/IconParkSolidBack.svg" width="24" height="24" alt="Volver a la carpeta" /></a>
+
 ### 
 
 ### 
@@ -156,7 +158,7 @@ Entregar un producto **técnicamente sólido, estable y escalable**, que cumpla 
 
 #### **2.3. Objetivo secundario (alianza):**
 
-Construir una **alianza tecnológica sólida** con el cliente, basada en la transparencia, la comunicación constante y la fiabilidad. La meta es convertirse en su **socio tecnológico de referencia**, de manera que futuras fases de expansión —como el desarrollo de una app móvil, un sistema de recomendaciones inteligentes o nuevas integraciones— sean delegadas al mismo equipo. 
+Construir una **alianza tecnológica sólida** con el cliente, basada en la transparencia, la comunicación constante y la fiabilidad. La meta es convertirse en su **socio tecnológico de referencia**, de manera que futuras fases de expansión â€”como el desarrollo de una app móvil, un sistema de recomendaciones inteligentes o nuevas integracionesâ€” sean delegadas al mismo equipo. 
 
 #### **2.4. interno (aprendizaje y especialización):**
 
@@ -265,7 +267,7 @@ Código modular y documentado, preparado para ampliaciones y alto tráfico![][im
   * Contable o gestor financiero  
   * Administrativo
 
-* **Equipo:** Ángel y Miguel.
+* **Equipo:** Ãngel y Miguel.
 
 ### 5\. Atención al cliente / soporte.
 
@@ -336,15 +338,15 @@ Aunque la empresa respeta la privacidad y la organización del hogar de cada emp
 
 "Democratizar la plenitud sexual ofreciendo a cada individuo la posibilidad de co-crear herramientas de placer únicas, personalizadas bajo demanda, con un compromiso inquebrantable de inclusión, seguridad y discreción."
 
-#### **¿Qué hacemos?**
+#### **Â¿Qué hacemos?**
 
-**MIKIWI** crea y ofrece **herramientas de bienestar sexual personalizadas y co-creadas** (On-Demand). Nuestro enfoque no es vender productos genéricos de un catálogo masivo, sino proveer una solución tecnológica —el configurador— que permite al usuario diseñar un producto **único y a la medida** que se ajusta perfectamente a sus necesidades anatómicas, funcionales y estéticas. En esencia, estamos creando la próxima generación de productos de placer, diseñados por y para el usuario.
+**MIKIWI** crea y ofrece **herramientas de bienestar sexual personalizadas y co-creadas** (On-Demand). Nuestro enfoque no es vender productos genéricos de un catálogo masivo, sino proveer una solución tecnológica â€”el configuradorâ€” que permite al usuario diseñar un producto **único y a la medida** que se ajusta perfectamente a sus necesidades anatómicas, funcionales y estéticas. En esencia, estamos creando la próxima generación de productos de placer, diseñados por y para el usuario.
 
-#### **¿Para quién lo hacemos?**
+#### **Â¿Para quién lo hacemos?**
 
 Lo hacemos para **todo individuo** (el cliente consciente) que ve la sexualidad como un componente esencial de su bienestar y que busca la **plenitud** más allá de los estándares de la industria tradicional. Esto incluye, de manera crucial, a las comunidades que han sido históricamente ignoradas por los productos genéricos, como la **comunidad LGTBQ+** y aquellos con necesidades anatómicas específicas. Buscamos servir al consumidor que exige **calidad, respeto y la seguridad** de que su producto realmente le funcionará.
 
-#### **¿Cómo lo hacemos?**
+#### **Â¿Cómo lo hacemos?**
 
 Lo logramos a través de la **innovación tecnológica** (nuestro modelo On-Demand) que elimina la fricción y la incertidumbre en la compra digital. Nos diferenciamos por nuestro **compromiso ético** basado en tres pilares:
 
@@ -358,11 +360,11 @@ Lo logramos a través de la **innovación tecnológica** (nuestro modelo On-Dema
 
 "Ser el referente global del bienestar sexual personalizado, eliminando la estandarización y normalizando la autoexploración como un componente esencial de la salud integral. Queremos ser la plataforma que transforme el tabú en tecnología, y la incertidumbre en confianza."
 
-#### **¿Qué queremos ser?**
+#### **Â¿Qué queremos ser?**
 
 **MIKIWI** aspira a ser el **líder indiscutible y el referente global** en el sector del bienestar sexual, pero con una diferencia crucial: seremos reconocidos específicamente por nuestra **innovación en la personalización (On-Demand)**. Buscamos ser el sinónimo de **placer a medida**, la primera opción a la que acude cualquier persona que valora la calidad, la seguridad y la adecuación perfecta de un producto a sus necesidades únicas. Queremos ser un modelo de negocio que demuestre que la ética, la inclusión y la tecnología pueden generar un alto valor.
 
-#### **¿Qué queremos lograr?**
+#### **Â¿Qué queremos lograr?**
 
 Buscamos lograr una **transformación cultural y de mercado** en tres niveles principales:
 

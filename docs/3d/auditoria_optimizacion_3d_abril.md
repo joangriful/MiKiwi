@@ -1,3 +1,5 @@
+<a href="README.md"><img src="../assets/icons/IconParkSolidBack.svg" width="24" height="24" alt="Volver a la carpeta" /></a>
+
 # Informe de Auditoría y Optimización: Ecosistema 3D (Abril 2026)
 
 Este documento detalla todas las intervenciones realizadas para alcanzar el objetivo de rendimiento sub-500ms, la reducción del bundle de producción y la limpieza arquitectónica del configurador.

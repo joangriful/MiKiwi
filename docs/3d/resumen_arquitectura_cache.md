@@ -1,3 +1,5 @@
+<a href="README.md"><img src="../assets/icons/IconParkSolidBack.svg" width="24" height="24" alt="Volver a la carpeta" /></a>
+
 # Reporte Técnico: Arquitectura de Caché Activa (Pre-warming)
 
 Este documento resume la optimización del backend para eliminar los cuellos de botella en la carga de recursos externos (Cloudinary), mejorando la experiencia del usuario final.

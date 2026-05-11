@@ -1,4 +1,6 @@
-# MiKiwi - Documentación del Backend (Estado Actual)
+<a href="README.md"><img src="../assets/icons/IconParkSolidBack.svg" width="24" height="24" alt="Volver a la carpeta" /></a>
+
+# Reporte de Evolución y Configuración del Backend
 
 **Fecha:** 23 de Enero, 2026
 **Estado:** Backend Inicial Configurado (MySQL + Laravel)
@@ -23,7 +25,7 @@ Se han creado las tablas principales del E-commerce adaptadas a MySQL:
 * **`users`:** Usuarios (Admin, Clientes). Usa `UUID` como ID.
 * **`products`:** Catálogo híbrido.
     * Soporta tipos: `simple`, `configurable` (para las muñecas), `component`.
-    * Columna `images`: Almacena JSON (ej: `["url1", "url2"]`).
+    * Columna `images`: Almana JSON (ej: `["url1", "url2"]`).
 * **`categories`:** Categorías jerárquicas (con `parent_id`).
 * **`product_accessories`:** Tabla pivote para relacionar componentes (ej: Ojos, Calefacción) con productos padre.
 * **`orders` & `order_items`:** Estructura lista para pedidos (con snapshots de precios y direcciones en JSON).
@@ -85,7 +87,7 @@ php artisan config:clear
 # (Reiniciar editor o...)
 composer dump-autoload
 
-## 6. Siguientes Pasos (Hoja de Ruta)
+## 6. Hoja de Ruta Técnica
 
 El Backend está listo a nivel de estructura de datos (Base de datos, Modelos y Seeders). Ahora debemos construir las "vías de comunicación" para que la web funcione.
 
