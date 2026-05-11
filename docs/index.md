@@ -43,6 +43,7 @@ Bienvenido a la documentación técnica y de gestión del proyecto MiKiwi. Aquí
 - <img src="assets/icons/instalacion.svg" width="18" height="18" /> [Instalación del Proyecto](setup/README.md)
   - [Guía de Instalación Paso a Paso](setup/GUIA_INSTALACION.md)
   - [Configuración de Cloudinary](setup/CLOUDINARY_SETUP.md)
+  - [Onboarding Day 1 (Nuevos Devs)](setup/ONBOARDING.md)
 - <img src="assets/icons/log.svg" width="18" height="18" /> [Planes de Refactorización](refactor/README.md)
   - [Estrategia de Commits](refactor/COMMIT_PLAN.md)
   - [Auditoría de Inventario](refactor/INVENTORY_AUDIT.md)
