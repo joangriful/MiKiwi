@@ -1,3 +1,5 @@
+<a href="README.md"><img src="../assets/icons/IconParkSolidBack.svg" width="24" height="24" alt="Volver a la carpeta" /></a>
+
 # Plan Detallado de Migracion (Laravel + Inertia + React + Tailwind)
 
 > Objetivo: refactor gradual sin cambiar la UI, priorizando rendimiento y mantenibilidad.

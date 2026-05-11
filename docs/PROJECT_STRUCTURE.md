@@ -1,4 +1,6 @@
-# Arquitectura y Estructura del Proyecto (MiKiwi)
+<a href="index.md"><img src="assets/icons/IconParkSolidBack.svg" width="24" height="24" alt="Volver" /></a>
+
+# <img src="assets/icons/project_structure.svg" width="32" height="32" /> Arquitectura y Estructura del Proyecto (MiKiwi)
 
 Este documento describe la **estructura vigente** del proyecto tras el cierre del refactor estructural de frontend y la extracción de dominio en backend.
 
@@ -277,3 +279,5 @@ La convención por defecto del proyecto es:
 - `Domain`
 
 sin volver a `Features`, sin `Common`, y sin CSS local plano para páginas o componentes nuevos.
+
+![Footer](assets/img/footer.png)

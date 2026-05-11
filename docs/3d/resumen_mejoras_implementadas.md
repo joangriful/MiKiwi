@@ -1,3 +1,5 @@
+<a href="README.md"><img src="../assets/icons/IconParkSolidBack.svg" width="24" height="24" alt="Volver a la carpeta" /></a>
+
 # Resumen de Mejoras Implementadas - Configurador Mikiwi
 
 A continuación se detallan las mejoras técnicas y de experiencia de usuario implementadas en el configurador:

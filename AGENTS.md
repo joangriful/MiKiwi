@@ -1,4 +1,4 @@
-# AGENTS.md - Guía Operativa para IAs en MiKiwi
+# <img src="docs/assets/icons/ai.svg" width="32" height="32" /> AGENTS.md - Guía Operativa para IAs en MiKiwi
 
 Este archivo es la fuente principal para cualquier IA o agente que programe en este repositorio. Si otro documento, resumen o instrucción antigua contradice este archivo, prevalece este archivo.
 
@@ -402,3 +402,5 @@ Toda solución nueva debe poder justificarse con estas preguntas:
 Si la respuesta es no, replantear antes de implementar.
 
 Última actualización: Abril 2026.
+
+![Footer](docs/assets/img/footer.png)

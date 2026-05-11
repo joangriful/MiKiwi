@@ -1,4 +1,7 @@
-<h1 align="center">MiKiwi</h1>
+<p align="center">
+  <img src="docs/assets/img/header_readme.png" alt="MiKiwi Header" width="100%">
+</p>
+
 
 <p align="center">
   <strong>Una experiencia e-commerce para productos personalizables, diseñada como producto real y construida con arquitectura full-stack moderna.</strong>
@@ -7,6 +10,11 @@
 <p align="center">
   Laravel · React · Inertia · PostgreSQL · Stripe · Cloudinary · Three.js
 </p>
+
+<p align="center">
+  <a href="docs/index.md"><strong>Ver documentación del proyecto</strong></a>
+</p>
+
 
 ---
 
@@ -111,3 +119,5 @@ Este README es una carta de presentación. La documentación completa vive en:
 Proyecto en desarrollo activo.
 
 MiKiwi está pensado para mostrar una base full-stack sólida, con identidad de producto y suficiente complejidad técnica como para defender decisiones reales en una entrevista, portfolio o revisión de código.
+
+![Footer](docs/assets/img/footer.png)
