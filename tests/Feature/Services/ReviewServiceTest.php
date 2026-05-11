@@ -4,6 +4,7 @@ namespace Tests\Feature\Services;
 
 use App\Domain\Reviews\Services\ReviewService;
 use App\Enums\OrderStatus;
+use App\Enums\ProductType;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -66,6 +67,33 @@ class ReviewServiceTest extends TestCase
         $this->assertFalse($this->canCreateReview($user, $cancelledProduct));
     }
 
+    public function test_only_simple_and_doll_products_can_be_reviewed(): void
+    {
+        $user = User::factory()->create();
+        $simpleProduct = Product::factory()->simple()->create();
+        $dollProduct = Product::factory()->doll()->create();
+        $accessoryProduct = Product::factory()->create([
+            'product_type' => ProductType::Accessory->value,
+        ]);
+        $configurableProduct = Product::factory()->configurable()->create();
+
+        foreach ([$simpleProduct, $dollProduct, $accessoryProduct, $configurableProduct] as $product) {
+            $this->createPurchasedOrderItem($user, $product);
+        }
+
+        $this->assertTrue($this->reviewService()->canUserReviewProduct($user, $simpleProduct));
+        $this->assertTrue($this->reviewService()->canUserReviewProduct($user, $dollProduct));
+        $this->assertFalse($this->reviewService()->canUserReviewProduct($user, $accessoryProduct));
+        $this->assertFalse($this->reviewService()->canUserReviewProduct($user, $configurableProduct));
+
+        $this->expectException(AuthorizationException::class);
+
+        $this->reviewService()->createUserReview($user, $accessoryProduct, [
+            'rating' => 4,
+            'comment' => 'Accesorio no reseñable.',
+        ]);
+    }
+
     public function test_user_cannot_review_the_same_product_twice(): void
     {
         $user = User::factory()->create();
@@ -116,6 +144,25 @@ class ReviewServiceTest extends TestCase
         $this->assertTrue($this->reviewService()->deleteAsAdmin($admin, $review));
         $this->assertDatabaseMissing('review', [
             'id' => $review->getKey(),
+        ]);
+    }
+
+    public function test_admin_cannot_create_review_for_non_reviewable_product(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $user = User::factory()->create();
+        $accessoryProduct = Product::factory()->create([
+            'product_type' => ProductType::Accessory->value,
+        ]);
+
+        $this->expectException(ValidationException::class);
+
+        $this->reviewService()->createAsAdmin($admin, [
+            'user_id' => $user->getKey(),
+            'product_id' => $accessoryProduct->getKey(),
+            'rating' => 5,
+            'comment' => 'No debe crearse.',
+            'is_approved' => false,
         ]);
     }
 

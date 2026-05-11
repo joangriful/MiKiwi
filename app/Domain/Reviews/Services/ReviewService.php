@@ -9,6 +9,7 @@ use App\Domain\Reviews\Actions\CreateReview;
 use App\Domain\Reviews\Actions\DeleteReview;
 use App\Domain\Reviews\Actions\UpdateReview;
 use App\Domain\Reviews\Repositories\Interfaces\ReviewRepositoryInterface;
+use App\Domain\Reviews\Support\ReviewableProductTypes;
 use App\Http\Resources\AdminReviewResource;
 use App\Models\Product;
 use App\Models\Review;
@@ -41,6 +42,14 @@ class ReviewService
     {
         if ($admin->cannot('viewAny', Review::class)) {
             throw new \Illuminate\Auth\Access\AuthorizationException('Solo los administradores pueden crear reseñas.');
+        }
+
+        $product = Product::query()->findOrFail($data['product_id']);
+
+        if (! $this->isReviewableProduct($product)) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'product_id' => 'Solo se pueden crear reseñas para productos simples o dolls.',
+            ]);
         }
 
         return $this->reviewRepository->create([
@@ -115,6 +124,7 @@ class ReviewService
                 ->get(),
             'products' => Product::query()
                 ->select(['id', 'name', 'slug', 'sku'])
+                ->whereIn('product_type', ReviewableProductTypes::values())
                 ->orderBy('name')
                 ->get(),
         ];
@@ -122,12 +132,18 @@ class ReviewService
 
     public function canUserReviewProduct(User $user, Product $product): bool
     {
-        return $this->reviewRepository->userHasPurchasedProduct($user, $product)
+        return $this->isReviewableProduct($product)
+            && $this->reviewRepository->userHasPurchasedProduct($user, $product)
             && ! $this->reviewRepository->userHasReviewedProduct($user, $product);
     }
 
     public function getUserReviewForProduct(User $user, Product $product): ?Review
     {
         return $this->reviewRepository->getUserReviewForProduct($user, $product);
+    }
+
+    public function isReviewableProduct(Product $product): bool
+    {
+        return ReviewableProductTypes::includes($product);
     }
 }

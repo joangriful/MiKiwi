@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Reviews\Actions;
 
 use App\Domain\Reviews\Repositories\Interfaces\ReviewRepositoryInterface;
+use App\Domain\Reviews\Support\ReviewableProductTypes;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
@@ -25,6 +26,10 @@ class CreateReview
      */
     public function execute(User $user, Product $product, array $data): Review
     {
+        if (! ReviewableProductTypes::includes($product)) {
+            throw new AuthorizationException('Solo puedes reseñar productos simples o dolls.');
+        }
+
         if (! $this->reviewRepository->userHasPurchasedProduct($user, $product)) {
             throw new AuthorizationException('Solo puedes reseñar productos comprados.');
         }

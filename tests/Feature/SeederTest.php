@@ -13,6 +13,7 @@ use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
+use Database\Seeders\PendingProductReviewSeeder;
 use Database\Seeders\PrefabDollSeeder;
 use Database\Seeders\ProductionDatabaseSeeder;
 use Database\Seeders\ProductSeeder;
@@ -205,6 +206,45 @@ class SeederTest extends TestCase
             $this->assertGreaterThanOrEqual(1, $review->rating);
             $this->assertLessThanOrEqual(5, $review->rating);
         }
+    }
+
+    public function test_pending_product_review_seeder_creates_unapproved_reviews_for_75_percent_of_products(): void
+    {
+        Product::factory()->count(4)->simple()->create();
+        Product::factory()->count(4)->doll()->create();
+        Product::factory()->count(2)->configurable()->create();
+        Product::factory()->count(2)->create([
+            'product_type' => ProductType::Accessory->value,
+        ]);
+
+        $this->seed(PendingProductReviewSeeder::class);
+
+        $this->assertSame(6, Review::count());
+        $this->assertSame(8, User::query()->where('email', 'like', 'reviewer-%@mikiwi.test')->count());
+        $this->assertTrue(Review::query()->where('is_approved', true)->doesntExist());
+
+        Review::query()->with(['user', 'product'])->each(function (Review $review): void {
+            $this->assertContains($review->product->product_type, [
+                ProductType::Simple->value,
+                ProductType::Doll->value,
+            ]);
+
+            $this->assertDatabaseHas('orders', [
+                'user_id' => $review->user_id,
+                'payment_status' => 'paid',
+            ]);
+
+            $this->assertTrue(
+                OrderItem::query()
+                    ->where('product_id', $review->product_id)
+                    ->whereHas('order', fn ($query) => $query->where('user_id', $review->user_id))
+                    ->exists()
+            );
+        });
+
+        $this->seed(PendingProductReviewSeeder::class);
+
+        $this->assertSame(6, Review::count());
     }
 
     public function test_database_seeder_is_idempotent_for_critical_catalog_data(): void

@@ -293,6 +293,13 @@ class CatalogPageService
             return;
         }
 
+        if (! $this->reviewService->isReviewableProduct($product)) {
+            $product->setAttribute('can_review', false);
+            $product->setRelation('userReview', null);
+
+            return;
+        }
+
         $product->loadExists([
             'reviews as user_has_reviewed' => fn (Builder $query) => $query->where('user_id', $user->getKey()),
             'orderItems as user_has_purchased' => fn (Builder $query) => $query->whereHas('order', function (Builder $orderQuery) use ($user): void {
