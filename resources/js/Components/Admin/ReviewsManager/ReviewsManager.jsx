@@ -18,6 +18,8 @@ const RATING_FILTERS = [
     { id: '1', label: '1 estrella' },
 ];
 
+const REVIEWABLE_PRODUCT_TYPES = ['simple', 'doll'];
+
 const EMPTY_FORM = {
     user_id: '',
     product_id: '',
@@ -165,6 +167,10 @@ export default function ReviewsManager({ reviews = [], users = [], products = []
     const [loadingAction, setLoadingAction] = useState(null);
     const [editingReview, setEditingReview] = useState(null);
     const [formData, setFormData] = useState(EMPTY_FORM);
+
+    const reviewableProducts = useMemo(() => products.filter((product) => (
+        !product.product_type || REVIEWABLE_PRODUCT_TYPES.includes(product.product_type)
+    )), [products]);
 
     const counts = useMemo(() => ({
         all: reviews.length,
@@ -421,7 +427,7 @@ export default function ReviewsManager({ reviews = [], users = [], products = []
 
                     <ReviewForm
                         users={users}
-                        products={products}
+                        products={reviewableProducts}
                         formData={formData}
                         editingReview={editingReview}
                         saving={saving}

@@ -13,7 +13,7 @@ import StripeTestCards from '@/Components/Admin/StripeTestCards/StripeTestCards'
 import { useComponentsManager } from '@/Components/Admin/hooks/useComponentsManager';
 import styles from './ComponentsManager.module.css';
 
-export default function ComponentsManager({ views, defaultSettings, partPositions, users, heroImages, categories, products, reviews, debugCount }) {
+export default function ComponentsManager({ views, defaultSettings, partPositions, users, heroImages, categories, products, reviewableProducts = [], reviews, debugCount }) {
     const [activeManager, setActiveManager] = useState('components'); // 'components' | 'doll' | 'users' | 'content'
 
     const {
@@ -133,7 +133,7 @@ export default function ComponentsManager({ views, defaultSettings, partPosition
                 )}
 
                 {activeManager === 'reviews' && (
-                    <ReviewsManager reviews={reviews} users={users} products={products} />
+                    <ReviewsManager reviews={reviews} users={users} products={reviewableProducts} />
                 )}
 
                 {activeManager === 'payments' && (

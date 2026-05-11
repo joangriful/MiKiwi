@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Admin;
 
+use App\Enums\ProductType;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
@@ -44,6 +45,29 @@ class ReviewManagerControllerTest extends TestCase
                 ->where('reviews.0.id', $review->getKey())
                 ->has('users')
                 ->has('products')
+            );
+    }
+
+    public function test_components_manager_review_form_only_receives_reviewable_products(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $doll = Product::factory()->doll()->create(['name' => 'A Doll']);
+        $simple = Product::factory()->simple()->create(['name' => 'B Simple']);
+        Product::factory()->create([
+            'name' => 'C Accessory',
+            'product_type' => ProductType::Accessory->value,
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('components.manager'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/ComponentsManager')
+                ->has('reviewableProducts', 2)
+                ->where('reviewableProducts.0.id', $doll->getKey())
+                ->where('reviewableProducts.0.product_type', ProductType::Doll->value)
+                ->where('reviewableProducts.1.id', $simple->getKey())
+                ->where('reviewableProducts.1.product_type', ProductType::Simple->value)
             );
     }
 

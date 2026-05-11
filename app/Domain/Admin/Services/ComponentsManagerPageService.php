@@ -29,6 +29,8 @@ class ComponentsManagerPageService
 
     public function getPageData(Request $request): array
     {
+        $reviewManagerData = $this->reviewService->getAdminManagerData($request);
+
         return [
             'views' => $this->getCachedViews(),
             'defaultSettings' => $this->dollSettingsService->getSettings(),
@@ -36,7 +38,8 @@ class ComponentsManagerPageService
             'users' => $this->adminUserService->getComponentsManagerUsers(),
             'heroImages' => $this->heroImageRepository->getAllOrdered(),
             'products' => $this->productService->getAdminProducts(),
-            'reviews' => $this->reviewService->getAdminManagerData($request)['reviews'],
+            'reviewableProducts' => $reviewManagerData['products'],
+            'reviews' => $reviewManagerData['reviews'],
             'categories' => $this->categoryService->getAdminAssignableCategories(),
             'collectionImages' => $this->getCollectionImages(),
         ];

@@ -123,7 +123,7 @@ class ReviewService
                 ->orderBy('name')
                 ->get(),
             'products' => Product::query()
-                ->select(['id', 'name', 'slug', 'sku'])
+                ->select(['id', 'name', 'slug', 'sku', 'product_type'])
                 ->whereIn('product_type', ReviewableProductTypes::values())
                 ->orderBy('name')
                 ->get(),
