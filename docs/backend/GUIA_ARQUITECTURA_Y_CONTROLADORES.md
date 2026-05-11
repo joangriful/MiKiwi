@@ -34,10 +34,10 @@ graph TD
     S --> R
     R --> M
 
-    style C fill:#f0f7ff,stroke:#003366,stroke-width:2px
-    style S fill:#fff9f0,stroke:#996600,stroke-width:2px
-    style R fill:#f9f0ff,stroke:#660099,stroke-width:2px
-    style M fill:#f0fff4,stroke:#006633,stroke-width:2px
+    style C fill:#f0f7ff,stroke:#003366,stroke-width:2px,color:#000
+    style S fill:#fff9f0,stroke:#996600,stroke-width:2px,color:#000
+    style R fill:#f9f0ff,stroke:#660099,stroke-width:2px,color:#000
+    style M fill:#f0fff4,stroke:#006633,stroke-width:2px,color:#000
 ```
 
 ---

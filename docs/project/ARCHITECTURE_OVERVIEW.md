@@ -27,9 +27,13 @@ graph TD
     C -.->|Inertia::render| B
     B -.->|React Render| A
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style G fill:#00d2ff,stroke:#333,stroke-width:2px
-    style D fill:#fff4dd,stroke:#d4a017,stroke-width:2px
+    style A fill:#f9f,stroke:#333,stroke-width:2px,color:#000
+    style B fill:#fff,stroke:#333,stroke-width:1px,color:#000
+    style C fill:#fff,stroke:#333,stroke-width:1px,color:#000
+    style D fill:#fff4dd,stroke:#d4a017,stroke-width:2px,color:#000
+    style E fill:#fff,stroke:#333,stroke-width:1px,color:#000
+    style F fill:#fff,stroke:#333,stroke-width:1px,color:#000
+    style G fill:#00d2ff,stroke:#333,stroke-width:2px,color:#000
 ```
 
 1.  **Controladores**: Finos, encargados solo de recibir el request y devolver la respuesta (Inertia o JSON).
