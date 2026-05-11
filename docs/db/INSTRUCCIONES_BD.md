@@ -1,3 +1,5 @@
+<a href="README.md"><img src="../assets/icons/IconParkSolidBack.svg" width="24" height="24" alt="Volver a la carpeta" /></a>
+
 # Guia de Base de Datos Compartida en Supabase
 
 La base ahora vive en Supabase y el proyecto Laravel ya esta configurado para usar PostgreSQL. Esta guia deja el flujo minimo para levantar el esquema sin depender de Railway.

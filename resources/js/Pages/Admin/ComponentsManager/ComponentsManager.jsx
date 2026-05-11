@@ -8,11 +8,12 @@ import PagesGridView from '@/Components/Admin/PagesGridView/PagesGridView';
 import UsersManager from '@/Components/Admin/UsersManager/UsersManager';
 import ContentManager from '@/Components/Admin/ContentManager/ContentManager';
 import ProductsManager from '@/Components/Admin/ProductsManager/ProductsManager';
+import ReviewsManager from '@/Components/Admin/ReviewsManager/ReviewsManager';
 import StripeTestCards from '@/Components/Admin/StripeTestCards/StripeTestCards';
 import { useComponentsManager } from '@/Components/Admin/hooks/useComponentsManager';
 import styles from './ComponentsManager.module.css';
 
-export default function ComponentsManager({ views, defaultSettings, partPositions, users, heroImages, categories, products, debugCount }) {
+export default function ComponentsManager({ views, defaultSettings, partPositions, users, heroImages, categories, products, reviewableProducts = [], reviews, debugCount }) {
     const [activeManager, setActiveManager] = useState('components'); // 'components' | 'doll' | 'users' | 'content'
 
     const {
@@ -61,6 +62,7 @@ export default function ComponentsManager({ views, defaultSettings, partPosition
                         { id: 'users', label: 'Users', icon: 'group' },
                         { id: 'content', label: 'Content', icon: 'image' },
                         { id: 'products', label: 'Products', icon: 'inventory_2' },
+                        { id: 'reviews', label: 'Reviews', icon: 'rate_review' },
                         { id: 'payments', label: 'Payments', icon: 'payments' }
                     ].map(tab => (
                         <button
@@ -128,6 +130,10 @@ export default function ComponentsManager({ views, defaultSettings, partPosition
 
                 {activeManager === 'products' && (
                     <ProductsManager categories={categories} products={products} debugCount={debugCount} />
+                )}
+
+                {activeManager === 'reviews' && (
+                    <ReviewsManager reviews={reviews} users={users} products={reviewableProducts} />
                 )}
 
                 {activeManager === 'payments' && (

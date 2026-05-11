@@ -1,18 +1,19 @@
-# MiKiwi - Documentación del Backend (Estado Actual)
+<a href="README.md"><img src="../assets/icons/IconParkSolidBack.svg" width="24" height="24" alt="Volver a la carpeta" /></a>
 
-**Fecha:** 23 de Enero, 2026
-**Estado:** Backend Inicial Configurado (MySQL + Laravel)
+# Reporte de Evolución y Configuración del Backend
+
+**Fecha:** Mayo 2026
+**Estado:** Ecosistema Profesional Consolidado (PostgreSQL + Laravel 12)
 
 ---
 
 ## 1. Configuración del Entorno
-Hemos migrado la configuración original de PostgreSQL a **MySQL (XAMPP)** para facilitar el desarrollo local en Windows.
+Hemos consolidado el entorno utilizando **PostgreSQL** como motor principal, alineando el desarrollo local con la producción en **Supabase**.
 
-* **Base de Datos:** `mikiwi_db`
-* **Gestor:** phpMyAdmin / XAMPP
-* **Puerto:** 3306
-* **Usuario DB:** `root` (sin contraseña)
-* **Archivo .env:** Configurado para `DB_CONNECTION=mysql`.
+* **Base de Datos:** `mikiwi`
+* **Motor:** PostgreSQL 15+
+* **Testing:** PostgreSQL local (`mikiwi_testing`)
+* **Archivo .env:** Configurado para `DB_CONNECTION=pgsql`.
 
 ---
 
@@ -23,7 +24,7 @@ Se han creado las tablas principales del E-commerce adaptadas a MySQL:
 * **`users`:** Usuarios (Admin, Clientes). Usa `UUID` como ID.
 * **`products`:** Catálogo híbrido.
     * Soporta tipos: `simple`, `configurable` (para las muñecas), `component`.
-    * Columna `images`: Almacena JSON (ej: `["url1", "url2"]`).
+    * Columna `images`: Almana JSON (ej: `["url1", "url2"]`).
 * **`categories`:** Categorías jerárquicas (con `parent_id`).
 * **`product_accessories`:** Tabla pivote para relacionar componentes (ej: Ojos, Calefacción) con productos padre.
 * **`orders` & `order_items`:** Estructura lista para pedidos (con snapshots de precios y direcciones en JSON).
@@ -85,7 +86,7 @@ php artisan config:clear
 # (Reiniciar editor o...)
 composer dump-autoload
 
-## 6. Siguientes Pasos (Hoja de Ruta)
+## 6. Hoja de Ruta Técnica
 
 El Backend está listo a nivel de estructura de datos (Base de datos, Modelos y Seeders). Ahora debemos construir las "vías de comunicación" para que la web funcione.
 
@@ -159,3 +160,8 @@ En esta fase se ha expandido la funcionalidad del backend integrando módulos es
 
 ### Estado Final de la Fase 3
 El backend ahora soporta flujos bidireccionales de información (Usuario <-> Sistema), permitiendo no solo la transacción comercial (Pedidos), sino también la interacción social (Reseñas) y el soporte técnico (Chat). La arquitectura sigue siendo modular y preparada para la integración con el Frontend.
+
+---
+*Última actualización: Mayo 2026*
+
+![Footer](../assets/img/footer.png)

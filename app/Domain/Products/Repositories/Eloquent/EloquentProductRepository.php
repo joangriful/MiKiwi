@@ -59,8 +59,10 @@ class EloquentProductRepository implements ProductRepositoryInterface
                 'category',
                 'images',
                 'accessories',
-                'reviews' => fn ($query) => $query->approved()->latest(),
+                'reviews' => fn ($query) => $query->approved()->with('user:id,name')->latest(),
             ])
+            ->withCount(['reviews as reviews_count' => fn ($query) => $query->approved()])
+            ->withAvg(['reviews as reviews_average_rating' => fn ($query) => $query->approved()], 'rating')
             ->first();
     }
 
@@ -73,8 +75,10 @@ class EloquentProductRepository implements ProductRepositoryInterface
                 'category',
                 'images',
                 'accessories',
-                'reviews' => fn ($query) => $query->approved()->latest(),
+                'reviews' => fn ($query) => $query->approved()->with('user:id,name')->latest(),
             ])
+            ->withCount(['reviews as reviews_count' => fn ($query) => $query->approved()])
+            ->withAvg(['reviews as reviews_average_rating' => fn ($query) => $query->approved()], 'rating')
             ->first();
     }
 

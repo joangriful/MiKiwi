@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Carts\Services;
 
-use App\Enums\ProductType;
 use App\Domain\Dolls\Services\ConfigurableDollProductService;
 use App\Domain\Dolls\Services\DollCustomizationService;
 use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
+use App\Enums\ProductType;
 use App\Exceptions\InsufficientStockException;
 use App\Exceptions\ProductNotFoundException;
 use App\Models\Product;

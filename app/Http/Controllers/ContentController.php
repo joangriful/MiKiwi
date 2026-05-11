@@ -11,15 +11,14 @@ class ContentController extends Controller
 {
     public function __construct(
         private readonly HeroImageManagementService $heroImageManagementService,
-    ) {
-    }
+    ) {}
 
     public function uploadHeroImages(Request $request)
     {
         $request->validate([
             'images' => 'required|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:10240', // Explicitly allow GIF
-            'type' => 'nullable|string|in:home,sustainability,dolls,calibration', 
+            'type' => 'nullable|string|in:home,sustainability,dolls,calibration',
         ]);
 
         try {

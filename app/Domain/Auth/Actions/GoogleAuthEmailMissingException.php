@@ -6,6 +6,4 @@ namespace App\Domain\Auth\Actions;
 
 use RuntimeException;
 
-class GoogleAuthEmailMissingException extends RuntimeException
-{
-}
+class GoogleAuthEmailMissingException extends RuntimeException {}

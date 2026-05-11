@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Repositories;
 
+use App\Domain\Orders\Repositories\Eloquent\EloquentOrderRepository;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
-use App\Domain\Orders\Repositories\Eloquent\EloquentOrderRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

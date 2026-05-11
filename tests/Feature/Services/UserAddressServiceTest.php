@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Services;
 
+use App\Domain\Addresses\Services\UserAddressService;
 use App\Models\Address;
 use App\Models\User;
-use App\Domain\Addresses\Services\UserAddressService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

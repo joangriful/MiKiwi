@@ -1,3 +1,5 @@
+<a href="README.md"><img src="../assets/icons/IconParkSolidBack.svg" width="24" height="24" alt="Volver a la carpeta" /></a>
+
 # 🛡️ Plan de Gestión de Riesgos y Contingencia - MiKiwi
 
 Este documento establece los protocolos de seguridad, prevención de riesgos técnicos y planes de continuidad para la plataforma MiKiwi, cumpliendo con los estándares de calidad y seguridad requeridos.

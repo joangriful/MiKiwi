@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Home\Services;
 
-use App\Domain\Products\Services\ProductService;
 use App\Domain\HeroImages\Repositories\Interfaces\HeroImageRepositoryInterface;
+use App\Domain\Products\Services\ProductService;
 use App\Models\HomeSectionImage;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -14,8 +14,7 @@ class HomePageService
     public function __construct(
         private readonly HeroImageRepositoryInterface $heroImageRepository,
         private readonly ProductService $productService,
-    ) {
-    }
+    ) {}
 
     public function getPageData(): array
     {

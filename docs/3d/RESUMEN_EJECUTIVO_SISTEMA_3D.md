@@ -1,3 +1,7 @@
+<a href="README.md"><img src="../assets/icons/IconParkSolidBack.svg" width="24" height="24" alt="Volver a la carpeta" /></a>
+
+# Resumen Ejecutivo del Sistema 3D
+
 ⚡ Rendimiento y Carga (Métrica: <500ms)
 Carga Híbrida/Lazy: Implementación de React.lazy() y carga diferida de Three.js. El motor 3D ya no bloquea el inicio; ahora se descarga en segundo plano tras 3 segundos de inactividad o cuando el 2D está listo.
 

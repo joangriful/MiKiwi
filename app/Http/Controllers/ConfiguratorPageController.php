@@ -20,8 +20,7 @@ class ConfiguratorPageController extends Controller
         private readonly DollSettingsService $dollSettingsService,
         private readonly ConfigurableDollProductService $configurableDollProductService,
         private readonly DollCustomizationService $dollCustomizationService,
-    ) {
-    }
+    ) {}
 
     public function index(): Response
     {

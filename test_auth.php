@@ -2,9 +2,9 @@
 
 use Illuminate\Support\Facades\Http;
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 
-$app = require_once __DIR__ . '/bootstrap/app.php';
+$app = require_once __DIR__.'/bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
@@ -15,8 +15,8 @@ $baseUrl = config('services.correos.base_url', 'https://api.correos.es');
 echo "Base URL: $baseUrl\n";
 
 $endpoints = [
-    $baseUrl . '/token/v1/accessToken',
-    $baseUrl . '/token',
+    $baseUrl.'/token/v1/accessToken',
+    $baseUrl.'/token',
 ];
 
 foreach ($endpoints as $url) {
@@ -28,10 +28,10 @@ foreach ($endpoints as $url) {
                 'grant_type' => 'client_credentials',
             ]);
 
-        echo "Status: " . $res->status() . "\n";
-        echo "Body: " . $res->body() . "\n";
+        echo 'Status: '.$res->status()."\n";
+        echo 'Body: '.$res->body()."\n";
     } catch (\Exception $e) {
-        echo "Error: " . $e->getMessage() . "\n";
+        echo 'Error: '.$e->getMessage()."\n";
     }
 
     echo "\n--- Testing with Body Params: $url ---\n";
@@ -43,9 +43,9 @@ foreach ($endpoints as $url) {
                 'client_secret' => $clientSecret,
             ]);
 
-        echo "Status: " . $res->status() . "\n";
-        echo "Body: " . $res->body() . "\n";
+        echo 'Status: '.$res->status()."\n";
+        echo 'Body: '.$res->body()."\n";
     } catch (\Exception $e) {
-        echo "Error: " . $e->getMessage() . "\n";
+        echo 'Error: '.$e->getMessage()."\n";
     }
 }

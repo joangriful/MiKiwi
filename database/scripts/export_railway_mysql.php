@@ -21,7 +21,6 @@ declare(strict_types=1);
  *     RAILWAY_DB_USERNAME
  *     RAILWAY_DB_PASSWORD
  */
-
 function envValue(string $key): ?string
 {
     $value = getenv($key);
@@ -48,7 +47,7 @@ function cliOption(string $name): ?string
 
 function fail(string $message, int $exitCode = 1): never
 {
-    fwrite(STDERR, $message . PHP_EOL);
+    fwrite(STDERR, $message.PHP_EOL);
     exit($exitCode);
 }
 
@@ -82,8 +81,8 @@ if ($databaseUrl) {
 
 if (! $host || ! $database || ! $username || $password === null) {
     fail(
-        'Faltan variables de conexion. Usa RAILWAY_DB_URL o bien ' .
-        'RAILWAY_DB_HOST, RAILWAY_DB_PORT, RAILWAY_DB_DATABASE, ' .
+        'Faltan variables de conexion. Usa RAILWAY_DB_URL o bien '.
+        'RAILWAY_DB_HOST, RAILWAY_DB_PORT, RAILWAY_DB_DATABASE, '.
         'RAILWAY_DB_USERNAME y RAILWAY_DB_PASSWORD.'
     );
 }
@@ -112,7 +111,7 @@ try {
         PDO::ATTR_TIMEOUT => 15,
     ]);
 } catch (PDOException $e) {
-    fail('No se pudo conectar a Railway MySQL: ' . $e->getMessage());
+    fail('No se pudo conectar a Railway MySQL: '.$e->getMessage());
 }
 
 $tablesStmt = $pdo->prepare(
@@ -134,7 +133,7 @@ $tables = $tableFilter
 
 if ($tableFilter && count($tables) !== count($tableFilter)) {
     $missing = array_values(array_diff($tableFilter, $tables));
-    fail('Tablas no encontradas en Railway: ' . implode(', ', $missing));
+    fail('Tablas no encontradas en Railway: '.implode(', ', $missing));
 }
 
 if ($tables === []) {
@@ -167,7 +166,7 @@ foreach ($tables as $table) {
         fail("No se pudo serializar la tabla {$table} a JSON.");
     }
 
-    $filePath = rtrim($outputDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $table . '.json';
+    $filePath = rtrim($outputDir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$table.'.json';
     file_put_contents($filePath, $json);
 
     $meta['tables'][] = [
@@ -176,7 +175,7 @@ foreach ($tables as $table) {
         'file' => $filePath,
     ];
 
-    fwrite(STDOUT, "Exportada {$table}: {$total} filas" . PHP_EOL);
+    fwrite(STDOUT, "Exportada {$table}: {$total} filas".PHP_EOL);
 }
 
 $metaJson = json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -186,8 +185,8 @@ if ($metaJson === false) {
 }
 
 file_put_contents(
-    rtrim($outputDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'export-meta.json',
+    rtrim($outputDir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'export-meta.json',
     $metaJson
 );
 
-fwrite(STDOUT, 'Export completado en: ' . realpath($outputDir) . PHP_EOL);
+fwrite(STDOUT, 'Export completado en: '.realpath($outputDir).PHP_EOL);

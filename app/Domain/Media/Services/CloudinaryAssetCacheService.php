@@ -8,6 +8,7 @@ use UnexpectedValueException;
 class CloudinaryAssetCacheService
 {
     public const DOLL_PARTS_CACHE_KEY = 'doll_parts_cloudinary';
+
     public const DOLL_CONFIG_CACHE_KEY = 'doll_config_consolidated';
 
     public function __construct(

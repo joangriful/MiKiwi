@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Domain\Products\Services;
 
 use App\Domain\Categories\Services\CategoryService;
+use App\Domain\Reviews\Services\ReviewService;
+use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
@@ -26,12 +29,14 @@ class CatalogPageService
     public function __construct(
         private readonly ProductService $productService,
         private readonly CategoryService $categoryService,
+        private readonly ReviewService $reviewService,
     ) {}
 
     public function getProductPageData(string $slug, Request $request): array
     {
         $productData = $this->productService->getProductDetails($slug);
         $product = $productData['product'];
+        $this->attachReviewState($product, $request);
 
         $relatedProducts = Product::query()
             ->active()
@@ -274,5 +279,42 @@ class CatalogPageService
         }
 
         return $query->where('slug', $categoryParam)->first();
+    }
+
+    private function attachReviewState(Product $product, Request $request): void
+    {
+        /** @var \App\Models\User|null $user */
+        $user = $request->user();
+
+        if (! $user) {
+            $product->setAttribute('can_review', false);
+            $product->setRelation('userReview', null);
+
+            return;
+        }
+
+        if (! $this->reviewService->isReviewableProduct($product)) {
+            $product->setAttribute('can_review', false);
+            $product->setRelation('userReview', null);
+
+            return;
+        }
+
+        $product->loadExists([
+            'reviews as user_has_reviewed' => fn (Builder $query) => $query->where('user_id', $user->getKey()),
+            'orderItems as user_has_purchased' => fn (Builder $query) => $query->whereHas('order', function (Builder $orderQuery) use ($user): void {
+                $orderQuery
+                    ->where('user_id', $user->getKey())
+                    ->where('payment_status', PaymentStatus::Paid->value)
+                    ->where('status', '!=', OrderStatus::Cancelled->value);
+            }),
+        ]);
+
+        $product->setAttribute(
+            'can_review',
+            (bool) $product->getAttribute('user_has_purchased')
+                && ! (bool) $product->getAttribute('user_has_reviewed')
+        );
+        $product->setRelation('userReview', $this->reviewService->getUserReviewForProduct($user, $product));
     }
 }

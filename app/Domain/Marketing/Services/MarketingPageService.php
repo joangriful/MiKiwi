@@ -10,8 +10,7 @@ class MarketingPageService
 {
     public function __construct(
         private readonly HeroImageRepositoryInterface $heroImageRepository,
-    ) {
-    }
+    ) {}
 
     public function getSustainabilityPageData(): array
     {

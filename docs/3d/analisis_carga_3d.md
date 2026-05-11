@@ -1,3 +1,5 @@
+<a href="README.md"><img src="../assets/icons/IconParkSolidBack.svg" width="24" height="24" alt="Volver a la carpeta" /></a>
+
 # Análisis de Carga de Recursos 3D - MiKiwi (Rama Dev)
 
 Este documento detalla la investigación realizada sobre el sistema de carga de librerías 3D en la rama de desarrollo actual, adaptado a la nueva estructura modular de carpetas.

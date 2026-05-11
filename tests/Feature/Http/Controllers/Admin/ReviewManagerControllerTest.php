@@ -1,0 +1,185 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Feature\Http\Controllers\Admin;
+
+use App\Enums\ProductType;
+use App\Models\Product;
+use App\Models\Review;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class ReviewManagerControllerTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_admin_can_list_reviews(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $review = Review::factory()->approved()->create([
+            'rating' => 5,
+            'comment' => 'Visible para admin.',
+        ]);
+
+        $this->actingAs($admin)
+            ->getJson(route('admin.reviews.index'))
+            ->assertOk()
+            ->assertJsonPath('reviews.0.id', $review->getKey())
+            ->assertJsonPath('reviews.0.rating', 5)
+            ->assertJsonPath('reviews.0.comment', 'Visible para admin.')
+            ->assertJsonPath('reviews.0.is_approved', true);
+    }
+
+    public function test_admin_reviews_page_renders_with_manager_props(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $review = Review::factory()->approved()->create();
+
+        $this->actingAs($admin)
+            ->get(route('admin.reviews.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Reviews')
+                ->where('reviews.0.id', $review->getKey())
+                ->has('users')
+                ->has('products')
+            );
+    }
+
+    public function test_components_manager_review_form_only_receives_reviewable_products(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $doll = Product::factory()->doll()->create(['name' => 'A Doll']);
+        $simple = Product::factory()->simple()->create(['name' => 'B Simple']);
+        Product::factory()->create([
+            'name' => 'C Accessory',
+            'product_type' => ProductType::Accessory->value,
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('components.manager'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/ComponentsManager')
+                ->has('reviewableProducts', 2)
+                ->where('reviewableProducts.0.id', $doll->getKey())
+                ->where('reviewableProducts.0.product_type', ProductType::Doll->value)
+                ->where('reviewableProducts.1.id', $simple->getKey())
+                ->where('reviewableProducts.1.product_type', ProductType::Simple->value)
+            );
+    }
+
+    public function test_admin_can_create_review(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $user = User::factory()->create();
+        $product = Product::factory()->create();
+
+        $this->actingAs($admin)
+            ->from(route('components.manager'))
+            ->post(route('admin.reviews.store'), [
+                'user_id' => $user->getKey(),
+                'product_id' => $product->getKey(),
+                'rating' => 4,
+                'comment' => 'Creada por admin.',
+                'is_approved' => true,
+            ])
+            ->assertRedirect(route('components.manager'));
+
+        $this->assertDatabaseHas('review', [
+            'user_id' => $user->getKey(),
+            'product_id' => $product->getKey(),
+            'rating' => 4,
+            'comment' => 'Creada por admin.',
+            'is_approved' => true,
+        ]);
+    }
+
+    public function test_admin_can_update_approve_and_delete_review(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $user = User::factory()->create();
+        $product = Product::factory()->create();
+        $review = Review::factory()->pending()->create();
+
+        $this->actingAs($admin)
+            ->put(route('admin.reviews.update', $review), [
+                'user_id' => $user->getKey(),
+                'product_id' => $product->getKey(),
+                'rating' => 3,
+                'comment' => 'Actualizada.',
+                'is_approved' => false,
+            ])
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('review', [
+            'id' => $review->getKey(),
+            'user_id' => $user->getKey(),
+            'product_id' => $product->getKey(),
+            'rating' => 3,
+            'comment' => 'Actualizada.',
+            'is_approved' => false,
+        ]);
+
+        $this->actingAs($admin)
+            ->patch(route('admin.reviews.approve', $review))
+            ->assertRedirect();
+
+        $this->assertTrue($review->fresh()->is_approved);
+
+        $this->actingAs($admin)
+            ->delete(route('admin.reviews.destroy', $review))
+            ->assertRedirect();
+
+        $this->assertDatabaseMissing('review', [
+            'id' => $review->getKey(),
+        ]);
+    }
+
+    public function test_non_admin_cannot_access_review_management(): void
+    {
+        $customer = User::factory()->create();
+        $user = User::factory()->create();
+        $product = Product::factory()->create();
+        $review = Review::factory()->create();
+
+        $this->actingAs($customer)
+            ->get(route('admin.reviews.index'))
+            ->assertRedirect(route('dashboard'));
+
+        $this->actingAs($customer)
+            ->post(route('admin.reviews.store'), [
+                'user_id' => $user->getKey(),
+                'product_id' => $product->getKey(),
+                'rating' => 5,
+                'comment' => 'No permitida.',
+                'is_approved' => true,
+            ])
+            ->assertRedirect(route('dashboard'));
+
+        $this->actingAs($customer)
+            ->put(route('admin.reviews.update', $review), [
+                'user_id' => $user->getKey(),
+                'product_id' => $product->getKey(),
+                'rating' => 4,
+                'comment' => 'No permitida.',
+                'is_approved' => true,
+            ])
+            ->assertRedirect(route('dashboard'));
+
+        $this->actingAs($customer)
+            ->patch(route('admin.reviews.approve', $review))
+            ->assertRedirect(route('dashboard'));
+
+        $this->actingAs($customer)
+            ->delete(route('admin.reviews.destroy', $review))
+            ->assertRedirect(route('dashboard'));
+
+        $this->assertDatabaseMissing('review', [
+            'user_id' => $user->getKey(),
+            'product_id' => $product->getKey(),
+        ]);
+    }
+}

@@ -45,7 +45,7 @@ class AuthenticatedSessionController extends Controller
             $user = $request->user();
             if ($user) {
                 $user->update([
-                    'quiz_result_category' => $request->input('quiz_result_category')
+                    'quiz_result_category' => $request->input('quiz_result_category'),
                 ]);
             }
         }

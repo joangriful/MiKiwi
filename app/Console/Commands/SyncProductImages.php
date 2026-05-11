@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Domain\Media\Services\CloudinaryService;
 use App\Models\Product;
 use App\Models\ProductImage;
-use App\Domain\Media\Services\CloudinaryService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
@@ -44,10 +44,11 @@ class SyncProductImages extends Command
 
         if (empty($resources)) {
             $this->error("No images found in folder: {$folder}");
+
             return 1;
         }
 
-        $this->info("Found " . count($resources) . " images. Fetching products...");
+        $this->info('Found '.count($resources).' images. Fetching products...');
 
         $products = Product::all();
         $bar = $this->output->createProgressBar(count($products));
@@ -77,16 +78,20 @@ class SyncProductImages extends Command
                 }
             }
 
-            if (!empty($matchedImages)) {
+            if (! empty($matchedImages)) {
                 // Sort images to have a consistent primary image
                 // If one matches the slug exactly (or plus extension), it should be first
                 usort($matchedImages, function ($a, $b) use ($slug) {
                     $aName = pathinfo($a, PATHINFO_FILENAME);
                     $bName = pathinfo($b, PATHINFO_FILENAME);
-                    
-                    if ($aName === $slug) return -1;
-                    if ($bName === $slug) return 1;
-                    
+
+                    if ($aName === $slug) {
+                        return -1;
+                    }
+                    if ($bName === $slug) {
+                        return 1;
+                    }
+
                     return strcmp($a, $b);
                 });
 

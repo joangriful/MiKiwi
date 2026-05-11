@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\ComponentsManagerController;
+use App\Http\Controllers\Admin\ReviewManagerController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CatalogProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClaimsPageController;
 use App\Http\Controllers\ColeccionesController;
@@ -10,9 +12,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketingPageController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\CatalogProductController;
 use App\Http\Controllers\ProductFavoriteController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserAddressController;
 use Illuminate\Support\Facades\Route;
 
@@ -78,6 +80,8 @@ Route::middleware('auth')->group(function () {
             ->name('products.favorite.store');
         Route::delete('/productos/{product}/favorito', [ProductFavoriteController::class, 'destroy'])
             ->name('products.favorite.destroy');
+        Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])
+            ->name('products.reviews.store');
     });
 
     // Resumen antes de pagar
@@ -221,7 +225,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::middleware('throttle:admin-write')->group(function () {
         Route::put('/products/{product:id}', [App\Http\Controllers\ProductManagerController::class, 'updateProduct'])->name('products.update');
         Route::delete('/products/{product:id}', [App\Http\Controllers\ProductManagerController::class, 'deleteProduct'])->name('products.delete');
+        Route::post('/admin/reviews', [ReviewManagerController::class, 'store'])->name('admin.reviews.store');
+        Route::put('/admin/reviews/{review}', [ReviewManagerController::class, 'update'])->name('admin.reviews.update');
+        Route::patch('/admin/reviews/{review}/approve', [ReviewManagerController::class, 'approve'])->name('admin.reviews.approve');
+        Route::delete('/admin/reviews/{review}', [ReviewManagerController::class, 'destroy'])->name('admin.reviews.destroy');
     });
+
+    Route::get('/admin/reviews', [ReviewManagerController::class, 'index'])
+        ->name('admin.reviews.index');
 
 });
 

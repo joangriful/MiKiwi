@@ -6,13 +6,13 @@ namespace App\Domain\Orders\Services;
 
 use App\Domain\Carts\Services\CartService;
 use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
-use App\Models\Address;
-use App\Models\User;
-use App\Enums\ProductType;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
+use App\Enums\ProductType;
 use App\Exceptions\CartEmptyException;
 use App\Exceptions\InvalidOrderException;
+use App\Models\Address;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;

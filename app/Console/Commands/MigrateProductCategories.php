@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 class MigrateProductCategories extends Command
 {
     protected $signature = 'products:migrate-categories';
+
     protected $description = 'Migrate existing products to the new category structure based on keywords';
 
     public function handle()
@@ -42,7 +43,7 @@ class MigrateProductCategories extends Command
         $migrated = 0;
 
         foreach ($products as $product) {
-            $text = Str::lower($product->name . ' ' . $product->description);
+            $text = Str::lower($product->name.' '.$product->description);
             $found = false;
 
             foreach ($mapping as $categoryName => $keywords) {
@@ -60,7 +61,7 @@ class MigrateProductCategories extends Command
                 }
             }
 
-            if (!$found) {
+            if (! $found) {
                 $this->warn("No mapping found for: {$product->name}");
             }
         }

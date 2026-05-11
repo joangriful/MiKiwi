@@ -7,6 +7,7 @@ use App\Models\PickupPoint;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -35,6 +36,18 @@ class PostgresFlowCompatibilityTest extends TestCase
             'product_id' => $product->getKey(),
             'rating' => 5,
         ]);
+    }
+
+    public function test_user_can_only_review_the_same_product_once(): void
+    {
+        $user = $this->createUser();
+        $product = $this->createProduct();
+
+        Review::factory()->for($user)->for($product)->create();
+
+        $this->expectException(QueryException::class);
+
+        Review::factory()->for($user)->for($product)->create();
     }
 
     public function test_product_index_filters_by_category_and_case_insensitive_search(): void

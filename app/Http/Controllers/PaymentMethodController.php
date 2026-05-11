@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Concerns\InteractsWithApiErrors;
 use App\Domain\Payments\Services\StripeService;
+use App\Http\Controllers\Concerns\InteractsWithApiErrors;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;

@@ -27,7 +27,7 @@ class NewsletterController extends Controller
 
         if ($validator->fails()) {
             return back()->withErrors([
-                'newsletter' => $validator->errors()->first('email')
+                'newsletter' => $validator->errors()->first('email'),
             ]);
         }
 

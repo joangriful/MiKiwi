@@ -9,8 +9,10 @@ use App\Domain\Dolls\Services\DollSettingsService;
 use App\Domain\HeroImages\Repositories\Interfaces\HeroImageRepositoryInterface;
 use App\Domain\Media\Services\CloudinaryService;
 use App\Domain\Products\Services\ProductService;
+use App\Domain\Reviews\Services\ReviewService;
 use App\Models\HomeSectionImage;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class ComponentsManagerPageService
@@ -22,11 +24,13 @@ class ComponentsManagerPageService
         private readonly HeroImageRepositoryInterface $heroImageRepository,
         private readonly ProductService $productService,
         private readonly CategoryService $categoryService,
-    ) {
-    }
+        private readonly ReviewService $reviewService,
+    ) {}
 
-    public function getPageData(): array
+    public function getPageData(Request $request): array
     {
+        $reviewManagerData = $this->reviewService->getAdminManagerData($request);
+
         return [
             'views' => $this->getCachedViews(),
             'defaultSettings' => $this->dollSettingsService->getSettings(),
@@ -34,6 +38,8 @@ class ComponentsManagerPageService
             'users' => $this->adminUserService->getComponentsManagerUsers(),
             'heroImages' => $this->heroImageRepository->getAllOrdered(),
             'products' => $this->productService->getAdminProducts(),
+            'reviewableProducts' => $reviewManagerData['products'],
+            'reviews' => $reviewManagerData['reviews'],
             'categories' => $this->categoryService->getAdminAssignableCategories(),
             'collectionImages' => $this->getCollectionImages(),
         ];

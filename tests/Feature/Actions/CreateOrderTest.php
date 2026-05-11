@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Actions;
 
+use App\Domain\Carts\Services\CartService;
 use App\Domain\Orders\Actions\CreateOrder;
 use App\Enums\ProductType;
 use App\Exceptions\CartEmptyException;
@@ -12,7 +13,6 @@ use App\Models\DollProductAccessory;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\User;
-use App\Domain\Carts\Services\CartService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;

@@ -10,8 +10,7 @@ class MarketingPageController extends Controller
 {
     public function __construct(
         private readonly MarketingPageService $marketingPageService,
-    ) {
-    }
+    ) {}
 
     public function privacyPolicy(): Response
     {
