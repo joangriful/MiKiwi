@@ -8,7 +8,7 @@ use App\Domain\Reviews\Services\ReviewService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreAdminReviewRequest;
 use App\Http\Requests\Admin\UpdateAdminReviewRequest;
-use App\Http\Resources\Admin\AdminReviewResource;
+use App\Http\Resources\AdminReviewResource;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;

@@ -17,6 +17,8 @@ class ReviewResource extends JsonResource
         return [
             'rating' => $this->rating,
             'comment' => $this->comment,
+            'created_at' => $this->created_at?->toISOString(),
+            'user_name' => $this->whenLoaded('user', fn () => $this->user?->name),
         ];
     }
 }

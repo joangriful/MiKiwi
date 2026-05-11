@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Http\Resources;
 
-use App\Http\Resources\Admin\AdminReviewResource;
+use App\Http\Resources\AdminReviewResource;
 use App\Http\Resources\ReviewResource;
 use App\Models\Product;
 use App\Models\Review;
@@ -17,17 +17,23 @@ class ReviewResourceTest extends TestCase
 
     public function test_public_review_resource_hides_internal_fields(): void
     {
-        $review = Review::factory()->approved()->create([
+        $user = User::factory()->create([
+            'name' => 'Cliente Visible',
+        ]);
+        $review = Review::factory()->approved()->for($user)->create([
             'rating' => 5,
             'comment' => 'Visible.',
-        ]);
+        ])->load('user');
 
         $payload = ReviewResource::make($review)->resolve(Request::create('/'));
 
-        $this->assertSame([
-            'rating' => 5,
-            'comment' => 'Visible.',
-        ], $payload);
+        $this->assertSame(5, $payload['rating']);
+        $this->assertSame('Visible.', $payload['comment']);
+        $this->assertSame('Cliente Visible', $payload['user_name']);
+        $this->assertArrayHasKey('created_at', $payload);
+        $this->assertArrayNotHasKey('user_id', $payload);
+        $this->assertArrayNotHasKey('product_id', $payload);
+        $this->assertArrayNotHasKey('is_approved', $payload);
     }
 
     public function test_admin_review_resource_exposes_management_fields(): void
@@ -55,6 +61,6 @@ class ReviewResourceTest extends TestCase
         $this->assertSame($product->getKey(), $payload['product']['id']);
         $this->assertSame($product->slug, $payload['product']['slug']);
         $this->assertArrayHasKey('created_at', $payload);
-        $this->assertArrayHasKey('updated_at', $payload);
+        $this->assertArrayNotHasKey('updated_at', $payload);
     }
 }

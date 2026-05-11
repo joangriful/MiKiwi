@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Products\Services;
 
 use App\Domain\Categories\Services\CategoryService;
+use App\Domain\Reviews\Services\ReviewService;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
@@ -26,12 +27,14 @@ class CatalogPageService
     public function __construct(
         private readonly ProductService $productService,
         private readonly CategoryService $categoryService,
+        private readonly ReviewService $reviewService,
     ) {}
 
     public function getProductPageData(string $slug, Request $request): array
     {
         $productData = $this->productService->getProductDetails($slug);
         $product = $productData['product'];
+        $this->attachReviewState($product, $request);
 
         $relatedProducts = Product::query()
             ->active()
@@ -274,5 +277,21 @@ class CatalogPageService
         }
 
         return $query->where('slug', $categoryParam)->first();
+    }
+
+    private function attachReviewState(Product $product, Request $request): void
+    {
+        /** @var \App\Models\User|null $user */
+        $user = $request->user();
+
+        if (! $user) {
+            $product->setAttribute('can_review', false);
+            $product->setRelation('userReview', null);
+
+            return;
+        }
+
+        $product->setAttribute('can_review', $this->reviewService->canUserReviewProduct($user, $product));
+        $product->setRelation('userReview', $this->reviewService->getUserReviewForProduct($user, $product));
     }
 }

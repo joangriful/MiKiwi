@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Enums\ProductType;
 use App\Models\Category;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
@@ -37,6 +39,11 @@ class ProductPublicExposureTest extends TestCase
                 ->has('product.reviews', 1)
                 ->where('product.reviews.0.rating', 5)
                 ->where('product.reviews.0.comment', 'Visible approved review.')
+                ->where('product.reviews.0.user_name', $approvedReviewUser->name)
+                ->where('product.reviews_count', 1)
+                ->where('product.reviews_average_rating', 5)
+                ->where('product.can_review', false)
+                ->where('product.user_review', null)
                 ->missing('product.reviews.0.user_id')
                 ->missing('product.reviews.0.product_id')
                 ->missing('product.reviews.0.is_approved')
@@ -67,8 +74,40 @@ class ProductPublicExposureTest extends TestCase
 
         $this->assertSame(4, $review['rating']);
         $this->assertSame('API visible review.', $review['comment']);
+        $this->assertSame($approvedReviewUser->name, $review['user_name']);
+        $this->assertSame(1, data_get($payload, 'data.product.reviews_count'));
+        $this->assertEquals(4.0, data_get($payload, 'data.product.reviews_average_rating'));
         $this->assertCount(1, data_get($payload, 'data.product.reviews'));
         $this->assertPayloadDoesNotExposeKeys($review, $this->privateReviewKeys());
+    }
+
+    public function test_product_page_exposes_backend_review_state_for_authenticated_user(): void
+    {
+        $product = $this->createPublicProduct(['slug' => 'reviewable-product']);
+        $user = User::factory()->create();
+        $this->createPurchasedOrderItem($user, $product);
+
+        $this->actingAs($user)
+            ->get(route('products.show', $product->slug))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('product.can_review', true)
+                ->where('product.user_review', null)
+            );
+
+        Review::factory()->pending()->for($user)->for($product)->create([
+            'rating' => 3,
+            'comment' => 'Pendiente del usuario.',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('products.show', $product->slug))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('product.can_review', false)
+                ->where('product.user_review.rating', 3)
+                ->where('product.user_review.comment', 'Pendiente del usuario.')
+            );
     }
 
     public function test_public_products_api_index_does_not_expose_product_internal_fields(): void
@@ -208,6 +247,20 @@ class ProductPublicExposureTest extends TestCase
         ], $overrides));
     }
 
+    private function createPurchasedOrderItem(User $user, Product $product): OrderItem
+    {
+        $order = Order::factory()
+            ->paid()
+            ->processing()
+            ->for($user)
+            ->create();
+
+        return OrderItem::factory()
+            ->forOrder($order)
+            ->forProduct($product)
+            ->create();
+    }
+
     /**
      * @param  array<string, mixed>  $payload
      */
@@ -252,7 +305,6 @@ class ProductPublicExposureTest extends TestCase
             'user_id',
             'product_id',
             'is_approved',
-            'created_at',
             'updated_at',
         ];
     }

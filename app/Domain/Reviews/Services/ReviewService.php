@@ -99,4 +99,15 @@ class ReviewService
     {
         return $this->reviewRepository->getForAdmin();
     }
+
+    public function canUserReviewProduct(User $user, Product $product): bool
+    {
+        return $this->reviewRepository->userHasPurchasedProduct($user, $product)
+            && ! $this->reviewRepository->userHasReviewedProduct($user, $product);
+    }
+
+    public function getUserReviewForProduct(User $user, Product $product): ?Review
+    {
+        return $this->reviewRepository->getUserReviewForProduct($user, $product);
+    }
 }

@@ -82,6 +82,14 @@ class EloquentReviewRepository implements ReviewRepositoryInterface
             ->exists();
     }
 
+    public function getUserReviewForProduct(User $user, Product $product): ?Review
+    {
+        return Review::query()
+            ->where('user_id', $user->getKey())
+            ->where('product_id', $product->getKey())
+            ->first();
+    }
+
     public function userHasPurchasedProduct(User $user, Product $product): bool
     {
         return Order::query()

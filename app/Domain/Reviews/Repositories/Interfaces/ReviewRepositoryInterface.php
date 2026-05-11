@@ -45,5 +45,7 @@ interface ReviewRepositoryInterface
 
     public function userHasReviewedProduct(User $user, Product $product): bool;
 
+    public function getUserReviewForProduct(User $user, Product $product): ?Review;
+
     public function userHasPurchasedProduct(User $user, Product $product): bool;
 }

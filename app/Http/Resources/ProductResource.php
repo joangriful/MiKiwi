@@ -6,6 +6,7 @@ namespace App\Http\Resources;
 
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -45,6 +46,10 @@ class ProductResource extends JsonResource
             'product_type' => $product->product_type,
             'is_promoted' => (bool) $product->is_promoted,
             'is_favorite' => $this->isFavoriteForRequestUser($request, $product),
+            'reviews_count' => $this->reviewsCount($product),
+            'reviews_average_rating' => $this->reviewsAverageRating($product),
+            'can_review' => (bool) $product->getAttribute('can_review'),
+            'user_review' => $this->userReview($request, $product),
             'category' => $this->whenLoaded('category', function () use ($product): array {
                 return [
                     'id' => $product->category?->id,
@@ -81,5 +86,48 @@ class ProductResource extends JsonResource
         }
 
         return (int) $product->stock_quantity > 0;
+    }
+
+    private function reviewsCount(Product $product): int
+    {
+        if (array_key_exists('reviews_count', $product->getAttributes())) {
+            return (int) $product->getAttribute('reviews_count');
+        }
+
+        if ($product->relationLoaded('reviews')) {
+            return $product->reviews->count();
+        }
+
+        return 0;
+    }
+
+    private function reviewsAverageRating(Product $product): ?float
+    {
+        if (array_key_exists('reviews_average_rating', $product->getAttributes())) {
+            $average = $product->getAttribute('reviews_average_rating');
+
+            return $average === null ? null : round((float) $average, 2);
+        }
+
+        if ($product->relationLoaded('reviews') && $product->reviews->isNotEmpty()) {
+            return round((float) $product->reviews->avg('rating'), 2);
+        }
+
+        return null;
+    }
+
+    private function userReview(Request $request, Product $product): ?array
+    {
+        if (! $product->relationLoaded('userReview')) {
+            return null;
+        }
+
+        $review = $product->getRelation('userReview');
+
+        if (! $review instanceof Review) {
+            return null;
+        }
+
+        return ReviewResource::make($review)->resolve($request);
     }
 }
