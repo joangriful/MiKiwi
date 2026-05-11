@@ -7,6 +7,7 @@ namespace App\Domain\Reviews\Repositories\Interfaces;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 interface ReviewRepositoryInterface
 {
@@ -21,6 +22,26 @@ interface ReviewRepositoryInterface
     public function update(Review $review, array $data): Review;
 
     public function delete(Review $review): bool;
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getApprovedForProduct(Product $product): Collection;
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getPending(): Collection;
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getForUser(User $user): Collection;
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getForAdmin(): Collection;
 
     public function userHasReviewedProduct(User $user, Product $product): bool;
 

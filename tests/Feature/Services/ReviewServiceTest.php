@@ -119,6 +119,43 @@ class ReviewServiceTest extends TestCase
         ]);
     }
 
+    public function test_review_service_exposes_repository_queries(): void
+    {
+        $targetProduct = Product::factory()->create();
+        $otherProduct = Product::factory()->create();
+        $targetUser = User::factory()->create();
+        $otherUser = User::factory()->create();
+
+        $approvedReview = Review::factory()
+            ->approved()
+            ->for($targetUser)
+            ->for($targetProduct)
+            ->create();
+        $pendingReview = Review::factory()
+            ->pending()
+            ->for($otherUser)
+            ->for($targetProduct)
+            ->create();
+        $otherProductReview = Review::factory()
+            ->approved()
+            ->for($targetUser)
+            ->for($otherProduct)
+            ->create();
+
+        $approvedProductReviews = $this->reviewService()->getApprovedProductReviews($targetProduct);
+        $pendingReviews = $this->reviewService()->getPendingReviews();
+        $userReviews = $this->reviewService()->getUserReviews($targetUser);
+        $adminReviews = $this->reviewService()->getAdminReviews();
+
+        $this->assertTrue($approvedProductReviews->contains($approvedReview));
+        $this->assertFalse($approvedProductReviews->contains($pendingReview));
+        $this->assertTrue($pendingReviews->contains($pendingReview));
+        $this->assertFalse($pendingReviews->contains($approvedReview));
+        $this->assertTrue($userReviews->contains($approvedReview));
+        $this->assertTrue($userReviews->contains($otherProductReview));
+        $this->assertCount(3, $adminReviews);
+    }
+
     private function reviewService(): ReviewService
     {
         return app(ReviewService::class);

@@ -11,6 +11,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 class EloquentReviewRepository implements ReviewRepositoryInterface
 {
@@ -35,6 +36,42 @@ class EloquentReviewRepository implements ReviewRepositoryInterface
     public function delete(Review $review): bool
     {
         return (bool) $review->delete();
+    }
+
+    public function getApprovedForProduct(Product $product): Collection
+    {
+        return Review::query()
+            ->approved()
+            ->where('product_id', $product->getKey())
+            ->with('user:id,name')
+            ->latest()
+            ->get();
+    }
+
+    public function getPending(): Collection
+    {
+        return Review::query()
+            ->pending()
+            ->with(['user:id,name,email', 'product:id,name,slug,sku'])
+            ->latest()
+            ->get();
+    }
+
+    public function getForUser(User $user): Collection
+    {
+        return Review::query()
+            ->where('user_id', $user->getKey())
+            ->with('product:id,name,slug,sku')
+            ->latest()
+            ->get();
+    }
+
+    public function getForAdmin(): Collection
+    {
+        return Review::query()
+            ->with(['user:id,name,email', 'product:id,name,slug,sku'])
+            ->latest()
+            ->get();
     }
 
     public function userHasReviewedProduct(User $user, Product $product): bool
