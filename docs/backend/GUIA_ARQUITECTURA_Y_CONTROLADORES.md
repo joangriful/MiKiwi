@@ -20,41 +20,24 @@ Se han implementado **12 archivos nuevos** siguiendo el patrón **Repository →
 
 ## 🏗️ Arquitectura Implementada
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    CAPA 4: CONTROLLERS                  │
-│  (Maneja HTTP: Request/Response, Validación)            │
-│  - ColeccionesController                                │
-│  - CategoryController                                   │
-│  - CartController                                       │
-│  - ProductController (actualizado)                      │
-└────────────────────┬────────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│                    CAPA 3: SERVICES                     │
-│  (Lógica de Negocio, Validaciones, Reglas)             │
-│  - CategoryService                                      │
-│  - CartService                                          │
-│  - OrderService                                         │
-│  - ProductService (existente)                           │
-└────────────────────┬────────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│                  CAPA 2: REPOSITORIES                   │
-│  (Abstracción de Datos, Consultas Eloquent)            │
-│  - EloquentCategoryRepository                           │
-│  - EloquentOrderRepository                              │
-│  - ProductRepository (existente)                        │
-└────────────────────┬────────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│                    CAPA 1: MODELS                       │
-│  (Eloquent ORM, Relaciones, Scopes)                    │
-│  - Product, Category, Order, OrderItem, etc.            │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    C["<b>CAPA 4: CONTROLLERS</b><br/><i>(Maneja HTTP: Request/Response, Validación)</i><br/>• ColeccionesController<br/>• CategoryController<br/>• CartController<br/>• ProductController"]
+    
+    S["<b>CAPA 3: SERVICES</b><br/><i>(Lógica de Negocio, Validaciones, Reglas)</i><br/>• CategoryService<br/>• CartService<br/>• OrderService<br/>• ProductService"]
+    
+    R["<b>CAPA 2: REPOSITORIES</b><br/><i>(Abstracción de Datos, Consultas Eloquent)</i><br/>• EloquentCategoryRepository<br/>• EloquentOrderRepository<br/>• ProductRepository"]
+    
+    M["<b>CAPA 1: MODELS</b><br/><i>(Eloquent ORM, Relaciones, Scopes)</i><br/>• Product, Category, Order, OrderItem..."]
+
+    C --> S
+    S --> R
+    R --> M
+
+    style C fill:#f0f7ff,stroke:#003366,stroke-width:2px
+    style S fill:#fff9f0,stroke:#996600,stroke-width:2px
+    style R fill:#f9f0ff,stroke:#660099,stroke-width:2px
+    style M fill:#f0fff4,stroke:#006633,stroke-width:2px
 ```
 
 ---
@@ -488,4 +471,6 @@ Si tienes dudas sobre la implementación, revisa:
 
 **Estado**: ✅ Backend completado - Listo para integración con Frontend
 
-**Última actualización**: 27 de Enero, 2026
+**Última actualización**: Mayo 2026
+ 
+![Footer](../assets/img/footer.png)
