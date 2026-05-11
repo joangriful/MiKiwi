@@ -6,7 +6,6 @@ Bienvenido a la documentación técnica y de gestión del proyecto MiKiwi. Aquí
 
 ---
 
-## 📂 Documentación Técnica y de Producto
 
 - <img src="assets/icons/project_structure.svg" width="18" height="18" /> [Estructura del Proyecto](PROJECT_STRUCTURE.md)
 - <img src="assets/icons/ai.svg" width="18" height="18" /> [Guía para Agentes e IA](../AGENTS.md)
