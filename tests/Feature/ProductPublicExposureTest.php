@@ -17,14 +17,15 @@ class ProductPublicExposureTest extends TestCase
     public function test_public_product_page_only_returns_approved_reviews(): void
     {
         $product = $this->createPublicProduct(['slug' => 'public-product']);
-        $user = User::factory()->create();
+        $approvedReviewUser = User::factory()->create();
+        $pendingReviewUser = User::factory()->create();
 
-        Review::factory()->approved()->for($user)->for($product)->create([
+        Review::factory()->approved()->for($approvedReviewUser)->for($product)->create([
             'rating' => 5,
             'comment' => 'Visible approved review.',
         ]);
 
-        Review::factory()->pending()->for($user)->for($product)->create([
+        Review::factory()->pending()->for($pendingReviewUser)->for($product)->create([
             'rating' => 1,
             'comment' => 'Hidden pending review.',
         ]);
@@ -45,14 +46,15 @@ class ProductPublicExposureTest extends TestCase
     public function test_public_product_api_show_does_not_expose_review_internal_fields(): void
     {
         $product = $this->createPublicProduct(['slug' => 'api-product']);
-        $user = User::factory()->create();
+        $approvedReviewUser = User::factory()->create();
+        $pendingReviewUser = User::factory()->create();
 
-        Review::factory()->approved()->for($user)->for($product)->create([
+        Review::factory()->approved()->for($approvedReviewUser)->for($product)->create([
             'rating' => 4,
             'comment' => 'API visible review.',
         ]);
 
-        Review::factory()->pending()->for($user)->for($product)->create([
+        Review::factory()->pending()->for($pendingReviewUser)->for($product)->create([
             'rating' => 2,
             'comment' => 'API hidden pending review.',
         ]);
