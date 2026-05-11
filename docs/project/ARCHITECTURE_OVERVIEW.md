@@ -27,11 +27,11 @@ graph TD
     C -.->|Inertia::render| B
     B -.->|React Render| A
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px,color:#000,rx:10,ry:10
+    style A fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#000,rx:10,ry:10
     style B fill:#fff,stroke:#333,stroke-width:1px,color:#000,rx:10,ry:10
-    style C fill:#fff,stroke:#333,stroke-width:1px,color:#000,rx:10,ry:10
-    style D fill:#fff4dd,stroke:#d4a017,stroke-width:2px,color:#000,rx:10,ry:10
-    style E fill:#fff,stroke:#333,stroke-width:1px,color:#000,rx:10,ry:10
+    style C fill:#FCE8E6,stroke:#EA4335,stroke-width:1px,color:#000,rx:10,ry:10
+    style D fill:#FEF7E0,stroke:#FBBC05,stroke-width:2px,color:#000,rx:10,ry:10
+    style E fill:#E6F4EA,stroke:#34A853,stroke-width:1px,color:#000,rx:10,ry:10
     style F fill:#fff,stroke:#333,stroke-width:1px,color:#000,rx:10,ry:10
     style G fill:#00d2ff,stroke:#333,stroke-width:2px,color:#000,rx:10,ry:10
 ```
