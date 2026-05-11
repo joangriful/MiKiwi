@@ -3,6 +3,12 @@ import MikiwiLogo from '@/Components/MikiwiLogo/MikiwiLogo';
 import UnderageBlock from './UnderageBlock';
 import styles from './AgeGate.module.css';
 
+// Rutas en las que el AgeGate no debe aparecer (páginas legales consultables libremente)
+const LEGAL_BYPASS_PATHS = new Set([
+    '/terminos-uso',
+    '/politica-privacidad',
+]);
+
 const STORAGE_KEY_VERIFIED = 'mw_age_verified';
 const STORAGE_KEY_DENIED   = 'mw_age_denied';
 const EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -27,11 +33,27 @@ function isDenied() {
 }
 
 export default function AgeGate({ isLoggedIn = false }) {
+    // window.location.pathname es siempre accesible, sin depender del contexto de Inertia.
+    const [pathname, setPathname] = useState(() => window.location.pathname);
+    const isLegalPage = LEGAL_BYPASS_PATHS.has(pathname);
+
     const [status, setStatus] = useState('checking'); // 'checking' | 'visible' | 'denied' | 'hidden'
 
-    // Determine initial status on mount / when isLoggedIn changes
+    // Sincronizar pathname en navegaciones SPA (Inertia + historial del navegador)
     useEffect(() => {
-        if (isLoggedIn || isVerified()) {
+        const sync = () => setPathname(window.location.pathname);
+        window.addEventListener('popstate', sync);
+        document.addEventListener('inertia:finish', sync);
+        return () => {
+            window.removeEventListener('popstate', sync);
+            document.removeEventListener('inertia:finish', sync);
+        };
+    }, []);
+
+    // Determine initial status on mount / when isLoggedIn or route changes
+    useEffect(() => {
+        // En páginas legales, ocultar el gate sin tocar localStorage
+        if (isLegalPage || isLoggedIn || isVerified()) {
             setStatus('hidden');
             return;
         }
@@ -40,7 +62,7 @@ export default function AgeGate({ isLoggedIn = false }) {
             return;
         }
         setStatus('visible');
-    }, [isLoggedIn]);
+    }, [isLoggedIn, isLegalPage]);
 
     // Scroll lock: driven exclusively by status
     useEffect(() => {
@@ -91,7 +113,8 @@ export default function AgeGate({ isLoggedIn = false }) {
         setStatus('visible');
     };
 
-    if (status === 'checking' || status === 'hidden') return null;
+    // Todos los hooks ya se han ejecutado; ahora es seguro hacer returns condicionales
+    if (isLegalPage || status === 'checking' || status === 'hidden') return null;
 
     if (status === 'denied') return <UnderageBlock onBack={handleGoBack} />;
 
