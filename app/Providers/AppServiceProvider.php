@@ -14,7 +14,11 @@ use App\Domain\Orders\Repositories\Eloquent\EloquentOrderRepository;
 use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Domain\Products\Repositories\Eloquent\EloquentProductRepository;
 use App\Domain\Products\Repositories\Interfaces\ProductRepositoryInterface;
+use App\Domain\Reviews\Repositories\Eloquent\EloquentReviewRepository;
+use App\Domain\Reviews\Repositories\Interfaces\ReviewRepositoryInterface;
 use App\Models\Address;
+use App\Models\Review;
+use App\Policies\ReviewPolicy;
 use App\Policies\UserAddressPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -60,6 +64,12 @@ class AppServiceProvider extends ServiceProvider
             HeroImageRepositoryInterface::class,
             EloquentHeroImageRepository::class
         );
+
+        // Review Repository
+        $this->app->bind(
+            ReviewRepositoryInterface::class,
+            EloquentReviewRepository::class
+        );
     }
 
     public function boot(): void
@@ -72,6 +82,7 @@ class AppServiceProvider extends ServiceProvider
 
         Vite::prefetch(concurrency: 3);
         Gate::policy(Address::class, UserAddressPolicy::class);
+        Gate::policy(Review::class, ReviewPolicy::class);
 
         RateLimiter::for('auth-sensitive', function (Request $request): Limit {
             return Limit::perMinute(5)->by($this->authSensitiveKey($request));
