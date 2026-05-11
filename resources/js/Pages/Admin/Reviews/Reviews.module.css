@@ -1,0 +1,6 @@
+.root {
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg-surface);
+    font-family: var(--font-body);
+}

@@ -31,6 +31,22 @@ class ReviewManagerControllerTest extends TestCase
             ->assertJsonPath('reviews.0.is_approved', true);
     }
 
+    public function test_admin_reviews_page_renders_with_manager_props(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $review = Review::factory()->approved()->create();
+
+        $this->actingAs($admin)
+            ->get(route('admin.reviews.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Reviews')
+                ->where('reviews.0.id', $review->getKey())
+                ->has('users')
+                ->has('products')
+            );
+    }
+
     public function test_admin_can_create_review(): void
     {
         $admin = User::factory()->admin()->create();

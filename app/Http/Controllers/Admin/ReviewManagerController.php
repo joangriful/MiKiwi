@@ -8,12 +8,13 @@ use App\Domain\Reviews\Services\ReviewService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreAdminReviewRequest;
 use App\Http\Requests\Admin\UpdateAdminReviewRequest;
-use App\Http\Resources\AdminReviewResource;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ReviewManagerController extends Controller
 {
@@ -21,13 +22,19 @@ class ReviewManagerController extends Controller
         private readonly ReviewService $reviewService,
     ) {}
 
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): JsonResponse|Response
     {
         $this->authorize('viewAny', Review::class);
 
-        return response()->json([
-            'reviews' => AdminReviewResource::collection($this->reviewService->getAdminReviews())->resolve($request),
-        ]);
+        $pageData = $this->reviewService->getAdminManagerData($request);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'reviews' => $pageData['reviews'],
+            ]);
+        }
+
+        return Inertia::render('Admin/Reviews', $pageData);
     }
 
     public function store(StoreAdminReviewRequest $request): RedirectResponse

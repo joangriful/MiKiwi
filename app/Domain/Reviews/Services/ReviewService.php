@@ -9,10 +9,12 @@ use App\Domain\Reviews\Actions\CreateReview;
 use App\Domain\Reviews\Actions\DeleteReview;
 use App\Domain\Reviews\Actions\UpdateReview;
 use App\Domain\Reviews\Repositories\Interfaces\ReviewRepositoryInterface;
+use App\Http\Resources\AdminReviewResource;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 
 class ReviewService
 {
@@ -98,6 +100,24 @@ class ReviewService
     public function getAdminReviews(): Collection
     {
         return $this->reviewRepository->getForAdmin();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getAdminManagerData(Request $request): array
+    {
+        return [
+            'reviews' => AdminReviewResource::collection($this->getAdminReviews())->resolve($request),
+            'users' => User::query()
+                ->select(['id', 'name', 'email'])
+                ->orderBy('name')
+                ->get(),
+            'products' => Product::query()
+                ->select(['id', 'name', 'slug', 'sku'])
+                ->orderBy('name')
+                ->get(),
+        ];
     }
 
     public function canUserReviewProduct(User $user, Product $product): bool
