@@ -1,10 +1,15 @@
-import { useState } from 'react';
 import styles from './ProductCardInfo.module.css';
 
-export default function ProductCardInfo({ name, description, price }) {
-    const [rating, setRating] = useState(0);
-    const [hoverRating, setHoverRating] = useState(0);
-    const reviewsCount = 120; // Placeholder until we have real reviews
+const STARS = [1, 2, 3, 4, 5];
+
+export default function ProductCardInfo({
+    name,
+    description,
+    price,
+    reviewsAverageRating = null,
+    reviewsCount = 0,
+}) {
+    const ratingValue = Number(reviewsAverageRating || 0);
 
     return (
         <div className={styles.root}>
@@ -20,24 +25,15 @@ export default function ProductCardInfo({ name, description, price }) {
                 <div className={styles.ratingRow}>
                     <div
                         className={styles.ratingStars}
-                        onMouseLeave={() => setHoverRating(0)}
-                        role="radiogroup"
-                        tabIndex={0}
-                        aria-label="Valorar producto"
+                        aria-label={`${ratingValue.toFixed(1)} de 5 estrellas`}
                     >
-                        {[1, 2, 3, 4, 5].map((star) => (
-                            <button
+                        {STARS.map((star) => (
+                            <span
                                 key={star}
-                                type="button"
-                                className={`${styles.ratingButton} ${star <= (hoverRating || rating) ? styles.ratingButtonActive : styles.ratingButtonInactive}`}
-                                onClick={() => setRating(star)}
-                                onMouseEnter={() => setHoverRating(star)}
-                                role="radio"
-                                aria-checked={star === rating}
-                                aria-label={`${star} estrellas`}
+                                className={`${styles.ratingStar} ${star <= Math.round(ratingValue) ? styles.ratingStarActive : styles.ratingStarInactive}`}
                             >
                                 ★
-                            </button>
+                            </span>
                         ))}
                     </div>
                     <span className={styles.reviewCount}>({reviewsCount})</span>

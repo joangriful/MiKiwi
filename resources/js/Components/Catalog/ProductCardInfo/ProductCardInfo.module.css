@@ -46,16 +46,15 @@
     display: flex;
 }
 
-.ratingButton {
+.ratingStar {
     font-size: 1.25rem;
-    transition: color 0.2s ease;
 }
 
-.ratingButtonActive {
+.ratingStarActive {
     color: #facc15;
 }
 
-.ratingButtonInactive {
+.ratingStarInactive {
     color: var(--color-border-default);
 }
 
