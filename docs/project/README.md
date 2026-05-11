@@ -18,9 +18,12 @@ Aquí se documenta desde la visión fundacional del producto hasta los protocolo
 *   **[Seguridad y Riesgos](SECURITY_AND_RISKS.md)**: Protocolos de protección de datos y mitigación de vulnerabilidades.
 *   **[Diseño y UI](UI_UX_DESIGN.md)**: Estándares visuales, principios de diseño y convenciones de interfaz.
 *   **[Tareas Pendientes (Backlog)](TODO.md)**: Registro de tareas pendientes, mejoras técnicas y evolución del producto.
+*   **[Glosario de Dominio](DOMAIN_GLOSSARY.md)**: Diccionario de términos técnicos y de negocio del ecosistema.
 *   **[Documentación Histórica](LEGACY_AND_HISTORY.md)**: Auditoría de recursos antiguos y cronología de la evolución del proyecto.
 
 ## 📄 Otros Documentos de Control
+*   **[Infraestructura y Despliegue](DEPLOYMENT_AND_INFRASTRUCTURE.md)**: Ecosistema de servicios, CI/CD y gestión de entornos.
+*   **[Manual de Administración](ADMIN_MANUAL.md)**: Guía operativa para la gestión del catálogo, pedidos y configuración 3D.
 *   **[Plan de Contingencia](PLAN_CONTINGENCIA.md)**: Protocolos de actuación ante fallos críticos y análisis de riesgos.
 *   **[Resumen Ejecutivo](PROJECT_SUMMARY.md)**: Vista rápida de hitos alcanzados, estado actual y metas de desarrollo.
 *   **[Revisión de Rúbrica](REVISION_RUBRICA.md)**: Verificación de cumplimiento de requisitos técnicos y académicos.

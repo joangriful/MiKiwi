@@ -56,6 +56,7 @@ Bienvenido a la documentación técnica y de gestión del proyecto MiKiwi. Aquí
 - <img src="assets/icons/resources.svg" width="18" height="18" /> [Recursos y Assets](assets/README.md)
 - <img src="assets/icons/epics.svg" width="18" height="18" /> [Historias de Usuario y Épicas](epics/README.md)
 - <img src="assets/icons/backup.svg" width="18" height="18" /> [Documentación Antigua (Legacy)](legacy/README.md)
+- <img src="assets/icons/log.svg" width="18" height="18" /> [Historial de Cambios (Changelog)](../CHANGELOG.md)
 - <img src="assets/icons/notas.svg" width="18" height="18" /> [Notas y Logs de Desarrollo](notes/README.md)
   - <img src="assets/icons/log.svg" width="14" height="14" /> [Log Limpio de Git](notes/git_log_clean.txt)
 

@@ -13,6 +13,7 @@ Para garantizar una experiencia de desarrollo fluida y consistente, es fundament
 
 *   **[Guía de Instalación Paso a Paso](GUIA_INSTALACION.md)**: Manual detallado para el despliegue del entorno local y dependencias.
 *   **[Configuración de Cloudinary](CLOUDINARY_SETUP.md)**: Instrucciones para la gestión de APIs y almacenamiento de imágenes en la nube.
+*   **[Guía de Onboarding (Day 1)](ONBOARDING.md)**: Manual de bienvenida para nuevos desarrolladores y flujo de trabajo.
 
 ---
 *Última actualización: Mayo 2026*
