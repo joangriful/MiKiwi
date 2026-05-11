@@ -2,19 +2,18 @@
 
 # Reporte de Evolución y Configuración del Backend
 
-**Fecha:** 23 de Enero, 2026
-**Estado:** Backend Inicial Configurado (MySQL + Laravel)
+**Fecha:** Mayo 2026
+**Estado:** Ecosistema Profesional Consolidado (PostgreSQL + Laravel 12)
 
 ---
 
 ## 1. Configuración del Entorno
-Hemos migrado la configuración original de PostgreSQL a **MySQL (XAMPP)** para facilitar el desarrollo local en Windows.
+Hemos consolidado el entorno utilizando **PostgreSQL** como motor principal, alineando el desarrollo local con la producción en **Supabase**.
 
-* **Base de Datos:** `mikiwi_db`
-* **Gestor:** phpMyAdmin / XAMPP
-* **Puerto:** 3306
-* **Usuario DB:** `root` (sin contraseña)
-* **Archivo .env:** Configurado para `DB_CONNECTION=mysql`.
+* **Base de Datos:** `mikiwi`
+* **Motor:** PostgreSQL 15+
+* **Testing:** PostgreSQL local (`mikiwi_testing`)
+* **Archivo .env:** Configurado para `DB_CONNECTION=pgsql`.
 
 ---
 
@@ -161,3 +160,8 @@ En esta fase se ha expandido la funcionalidad del backend integrando módulos es
 
 ### Estado Final de la Fase 3
 El backend ahora soporta flujos bidireccionales de información (Usuario <-> Sistema), permitiendo no solo la transacción comercial (Pedidos), sino también la interacción social (Reseñas) y el soporte técnico (Chat). La arquitectura sigue siendo modular y preparada para la integración con el Frontend.
+
+---
+*Última actualización: Mayo 2026*
+
+![Footer](../assets/img/footer.png)
