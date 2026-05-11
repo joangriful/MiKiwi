@@ -1,3 +1,5 @@
+<a href="docs/index.md"><img src="docs/assets/icons/IconParkSolidBack.svg" width="24" height="24" alt="Volver" /></a>
+
 # <img src="docs/assets/icons/changelog.svg" width="32" height="32" /> Changelog
 
 Todos los cambios notables en este proyecto serán documentados en este archivo.
