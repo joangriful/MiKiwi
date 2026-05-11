@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Services;
 
+use App\Domain\Carts\Services\CartService;
+use App\Enums\ProductType;
 use App\Exceptions\InsufficientStockException;
 use App\Exceptions\ProductNotFoundException;
 use App\Models\Product;
-use App\Domain\Carts\Services\CartService;
-use App\Enums\ProductType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;

@@ -56,6 +56,7 @@ class NewsletterService
             return '¡Gracias por suscribirte! Datos guardados correctamente.';
         } catch (\Exception $e) {
             Log::error('Newsletter Error: '.$e->getMessage());
+
             return '¡Gracias! Te hemos anotado en nuestra lista.';
         }
     }

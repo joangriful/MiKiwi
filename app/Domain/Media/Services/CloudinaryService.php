@@ -263,33 +263,34 @@ class CloudinaryService
 
     /**
      * List all images in the products folder
-     * 
-     * @param string $folder
+     *
      * @return array
      */
     public function listProductImages(string $folder = 'products')
     {
         $search = new SearchApi;
         try {
-            $expression = "resource_type:image";
+            $expression = 'resource_type:image';
             if ($folder && $folder !== 'all' && $folder !== 'ROOT') {
                 $expression .= " AND folder:$folder/*";
             }
-            
+
             $result = $search->expression($expression)
                 ->maxResults(500)
                 ->execute();
+
             return $result['resources'] ?? [];
         } catch (\Exception $e) {
-            \Log::error("Cloudinary product search failed: " . $e->getMessage());
+            \Log::error('Cloudinary product search failed: '.$e->getMessage());
+
             return [];
         }
     }
 
     /**
      * Get the secure URL for a public ID if it's not already a full URL
-     * 
-     * @param string $idOrUrl
+     *
+     * @param  string  $idOrUrl
      * @return string
      */
     public function getImageUrl($idOrUrl)
@@ -300,6 +301,7 @@ class CloudinaryService
 
         // Generate URL from Public ID
         $cloudName = env('CLOUDINARY_CLOUD_NAME', 'dqwwonjie'); // Use a realistic default or empty
-        return "https://res.cloudinary.com/{$cloudName}/image/upload/f_auto,q_auto/" . $idOrUrl;
+
+        return "https://res.cloudinary.com/{$cloudName}/image/upload/f_auto,q_auto/".$idOrUrl;
     }
 }

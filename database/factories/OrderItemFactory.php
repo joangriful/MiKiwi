@@ -92,5 +92,4 @@ class OrderItemFactory extends Factory
             'quantity' => $quantity,
         ]);
     }
-
 }

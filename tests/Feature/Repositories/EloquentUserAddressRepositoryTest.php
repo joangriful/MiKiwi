@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Repositories;
 
+use App\Domain\Addresses\Repositories\Eloquent\EloquentUserAddressRepository;
 use App\Models\Address;
 use App\Models\User;
-use App\Domain\Addresses\Repositories\Eloquent\EloquentUserAddressRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

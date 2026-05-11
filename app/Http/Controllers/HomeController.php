@@ -12,8 +12,7 @@ class HomeController extends Controller
 {
     public function __construct(
         private readonly HomePageService $homePageService,
-    ) {
-    }
+    ) {}
 
     public function __invoke(Request $request): Response
     {

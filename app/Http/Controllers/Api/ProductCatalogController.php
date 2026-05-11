@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Domain\Products\Services\ProductService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProductCatalogController extends Controller
 {

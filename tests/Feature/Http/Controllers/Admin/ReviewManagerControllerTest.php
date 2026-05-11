@@ -117,6 +117,8 @@ class ReviewManagerControllerTest extends TestCase
     public function test_non_admin_cannot_access_review_management(): void
     {
         $customer = User::factory()->create();
+        $user = User::factory()->create();
+        $product = Product::factory()->create();
         $review = Review::factory()->create();
 
         $this->actingAs($customer)
@@ -124,7 +126,36 @@ class ReviewManagerControllerTest extends TestCase
             ->assertRedirect(route('dashboard'));
 
         $this->actingAs($customer)
+            ->post(route('admin.reviews.store'), [
+                'user_id' => $user->getKey(),
+                'product_id' => $product->getKey(),
+                'rating' => 5,
+                'comment' => 'No permitida.',
+                'is_approved' => true,
+            ])
+            ->assertRedirect(route('dashboard'));
+
+        $this->actingAs($customer)
+            ->put(route('admin.reviews.update', $review), [
+                'user_id' => $user->getKey(),
+                'product_id' => $product->getKey(),
+                'rating' => 4,
+                'comment' => 'No permitida.',
+                'is_approved' => true,
+            ])
+            ->assertRedirect(route('dashboard'));
+
+        $this->actingAs($customer)
+            ->patch(route('admin.reviews.approve', $review))
+            ->assertRedirect(route('dashboard'));
+
+        $this->actingAs($customer)
             ->delete(route('admin.reviews.destroy', $review))
             ->assertRedirect(route('dashboard'));
+
+        $this->assertDatabaseMissing('review', [
+            'user_id' => $user->getKey(),
+            'product_id' => $product->getKey(),
+        ]);
     }
 }

@@ -13,8 +13,7 @@ class HeroImageManagementService
     public function __construct(
         private readonly CloudinaryService $cloudinaryService,
         private readonly HeroImageRepositoryInterface $heroImageRepository,
-    ) {
-    }
+    ) {}
 
     public function uploadImages(array $images, string $type = 'home'): int
     {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Addresses\Repositories\Eloquent;
 
-use App\Models\Address;
 use App\Domain\Addresses\Repositories\Interfaces\UserAddressRepositoryInterface;
+use App\Models\Address;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;

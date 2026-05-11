@@ -3,6 +3,7 @@
 namespace Tests\Feature\Database;
 
 use App\Enums\UserRole;
+use App\Models\Address;
 use App\Models\ChatMessage;
 use App\Models\ChatSession;
 use App\Models\Order;
@@ -10,7 +11,6 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
-use App\Models\Address;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;

@@ -6,9 +6,9 @@ namespace App\Domain\Orders\Actions;
 
 use App\Domain\Carts\Services\CartService;
 use App\Domain\Orders\Repositories\Interfaces\OrderRepositoryInterface;
-use App\Enums\ProductType;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
+use App\Enums\ProductType;
 use App\Events\OrderCreated;
 use App\Exceptions\CartEmptyException;
 use App\Exceptions\InsufficientStockException;
