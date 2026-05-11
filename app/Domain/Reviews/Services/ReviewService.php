@@ -33,6 +33,24 @@ class ReviewService
     }
 
     /**
+     * @param  array{user_id:string, product_id:string, rating:int, comment?:string|null, is_approved?:bool}  $data
+     */
+    public function createAsAdmin(User $admin, array $data): Review
+    {
+        if ($admin->cannot('viewAny', Review::class)) {
+            throw new \Illuminate\Auth\Access\AuthorizationException('Solo los administradores pueden crear reseñas.');
+        }
+
+        return $this->reviewRepository->create([
+            'user_id' => $data['user_id'],
+            'product_id' => $data['product_id'],
+            'rating' => $data['rating'],
+            'comment' => $data['comment'] ?? null,
+            'is_approved' => $data['is_approved'] ?? false,
+        ]);
+    }
+
+    /**
      * @param  array{rating?:int, comment?:string|null, is_approved?:bool}  $data
      */
     public function updateAsAdmin(User $admin, Review $review, array $data): Review
