@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  Laravel · React · Inertia · PostgreSQL · Stripe · Cloudinary · Three.js
+  Laravel · React · Tailwind · Inertia · PostgreSQL · Stripe · Cloudinary · Three.js
 </p>
 
 <p align="center">
