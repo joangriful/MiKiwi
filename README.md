@@ -14,13 +14,7 @@
 <p align="center">
   <a href="docs/index.md"><strong>Ver documentación del proyecto</strong></a>
 </p>
-
-<p align="center">
-  <video src="docs/assets/video/demo_web.mp4" width="100%" style="border-radius: 12px;" controls autoplay loop muted></video>
-</p>
-
-
----
+<br>
 
 ## El Proyecto
 
@@ -31,7 +25,13 @@ La aplicación combina una experiencia de compra completa con un configurador in
 
 Es un proyecto de portfolio, pero tratado como un producto real: con decisiones técnicas defendibles, estructura mantenible y foco en rendimiento.
 
----
+<br><br>
+
+<p align="center">
+  <video src="docs/assets/video/demo_web.mp4" width="100%" style="border-radius: 12px;" controls autoplay loop muted></video>
+</p>
+
+<br>
 
 ## La Experiencia
 
