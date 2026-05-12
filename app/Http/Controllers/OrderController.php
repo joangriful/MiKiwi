@@ -102,7 +102,10 @@ class OrderController extends Controller
 
             return redirect()->route('orders.success')->with('success', '¡Pedido realizado con éxito!');
         } catch (\Throwable $exception) {
-            Log::error('Order creation failed: '.$exception->getMessage());
+            Log::error('Order creation failed: '.$exception->getMessage(), [
+                'exception' => $exception,
+                'user_id' => Auth::id(),
+            ]);
 
             throw ValidationException::withMessages([
                 'checkout' => 'No pudimos guardar tu pedido. Si el cargo se ha realizado, contacta con soporte con tu referencia de pago.',
@@ -120,6 +123,14 @@ class OrderController extends Controller
     public function createPaymentIntent(Request $request)
     {
         try {
+            if (! $this->stripeService->isConfigured()) {
+                return $this->apiError(
+                    'checkout_payment_not_configured',
+                    'El pago seguro no está configurado correctamente. Contacta con soporte.',
+                    503
+                );
+            }
+
             $isBuyNow = session()->has('buy_now_item');
             $cartData = $isBuyNow ? $this->cartService->getBuyNowItem() : $this->cartService->getCart();
 
@@ -146,7 +157,10 @@ class OrderController extends Controller
                 'clientSecret' => $intent->client_secret,
             ]);
         } catch (\Throwable $exception) {
-            Log::error('Payment intent creation failed: '.$exception->getMessage());
+            Log::error('Payment intent creation failed: '.$exception->getMessage(), [
+                'exception' => $exception,
+                'user_id' => Auth::id(),
+            ]);
 
             return $this->apiError(
                 'checkout_payment_intent_failed',

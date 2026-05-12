@@ -18,6 +18,7 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CreateOrder
@@ -50,7 +51,7 @@ class CreateOrder
             $this->assertAccessoryStock($item);
         }
 
-        return DB::transaction(function () use ($data, $cart, $isBuyNow) {
+        $order = DB::transaction(function () use ($data, $cart) {
             $userId = (string) ($data['user_id'] ?? Auth::id());
             $shippingAddress = $this->resolveAddress($userId, $data['shipping_address'], 'shipping');
             $billingAddress = $this->resolveAddress($userId, $data['billing_address'] ?? $data['shipping_address'], 'billing');
@@ -88,23 +89,33 @@ class CreateOrder
                 $product = $item['product'];
                 if ($this->shouldValidateStock($product)) {
                     $product->forceFill([
-                        'stock_quantity' => max(0, ($product->stock_quantity ?? 0) - $item['quantity'])
+                        'stock_quantity' => max(0, ($product->stock_quantity ?? 0) - $item['quantity']),
                     ])->save();
                 }
 
                 $this->decrementAccessoryStock($item);
             }
 
-            if ($isBuyNow) {
-                $this->cartService->clearBuyNowItem();
-            } else {
-                $this->cartService->clearCart();
-            }
-
-            event(new OrderCreated($order));
-
             return $order;
         });
+
+        if ($isBuyNow) {
+            $this->cartService->clearBuyNowItem();
+        } else {
+            $this->cartService->clearCart();
+        }
+
+        try {
+            event(new OrderCreated($order));
+        } catch (\Throwable $exception) {
+            Log::error('Order post-create event failed: '.$exception->getMessage(), [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'exception' => $exception,
+            ]);
+        }
+
+        return $order;
     }
 
     protected function generateOrderNumber(): string
@@ -214,7 +225,7 @@ class CreateOrder
 
             $product = $this->resolveAccessoryProduct($accessory);
             $product->forceFill([
-                'stock_quantity' => max(0, ($product->stock_quantity ?? 0) - $this->accessoryRequiredQuantity($item, $accessory))
+                'stock_quantity' => max(0, ($product->stock_quantity ?? 0) - $this->accessoryRequiredQuantity($item, $accessory)),
             ])->save();
         }
     }

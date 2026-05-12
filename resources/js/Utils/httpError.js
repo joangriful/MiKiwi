@@ -42,6 +42,10 @@ const CODE_MESSAGES = {
         title: 'No pudimos iniciar el pago',
         message: 'No pudimos iniciar el pago seguro. Inténtalo de nuevo en unos minutos.',
     },
+    checkout_payment_not_configured: {
+        title: 'Pago seguro no disponible',
+        message: 'El pago seguro no está configurado correctamente. Contacta con soporte.',
+    },
     pickup_points_load_failed: {
         title: 'No pudimos cargar los puntos de recogida',
         message: 'No pudimos cargar los puntos de recogida disponibles. Vuelve a intentarlo en unos minutos.',

@@ -16,6 +16,11 @@ class StripeService
         Stripe::setApiKey(Config::get('services.stripe.secret'));
     }
 
+    public function isConfigured(): bool
+    {
+        return filled(Config::get('services.stripe.secret'));
+    }
+
     /**
      * Create a new PaymentIntent
      *

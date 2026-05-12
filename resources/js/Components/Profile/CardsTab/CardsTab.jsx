@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePage } from '@inertiajs/react';
 import axios from 'axios';
-import { loadStripe } from '@stripe/stripe-js';
 import { toast } from 'react-toastify';
 import { normalizeApiError, normalizeStripeError } from '@/Utils/httpError';
+import { createStripePromise } from '@/Utils/stripe';
 import styles from './CardsTab.module.css';
 import {
     Elements,
@@ -137,7 +137,7 @@ function CardForm({ onCancel, onSuccess }) {
 export default function CardsTab() {
     const { stripeKey } = usePage().props;
     const { auth } = usePage().props;
-    const [stripePromise] = useState(() => (stripeKey ? loadStripe(stripeKey) : null));
+    const [stripePromise] = useState(() => createStripePromise(stripeKey));
     const [cards, setCards] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);

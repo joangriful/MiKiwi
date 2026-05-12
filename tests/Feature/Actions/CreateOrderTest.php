@@ -7,6 +7,7 @@ namespace Tests\Feature\Actions;
 use App\Domain\Carts\Services\CartService;
 use App\Domain\Orders\Actions\CreateOrder;
 use App\Enums\ProductType;
+use App\Events\OrderCreated;
 use App\Exceptions\CartEmptyException;
 use App\Exceptions\InsufficientStockException;
 use App\Models\DollProductAccessory;
@@ -14,7 +15,9 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Session;
+use RuntimeException;
 use Tests\TestCase;
 
 class CreateOrderTest extends TestCase
@@ -124,6 +127,37 @@ class CreateOrderTest extends TestCase
 
         $cart = $this->cartService->getCart();
         $this->assertCount(0, $cart['items']);
+    }
+
+    public function test_order_is_not_rolled_back_when_post_create_event_fails(): void
+    {
+        Event::listen(OrderCreated::class, static function (): void {
+            throw new RuntimeException('Notification transport unavailable.');
+        });
+
+        $product = Product::factory()->create([
+            'stock_quantity' => 10,
+            'is_active' => true,
+            'base_price' => 100.00,
+        ]);
+
+        $this->cartService->addToCart($product->slug, 1);
+
+        $order = $this->action->execute([
+            'shipping_address' => [
+                'street_address' => 'Test Street 123',
+                'city' => 'Test City',
+                'postal_code' => '12345',
+                'country' => 'ES',
+            ],
+            'payment_method' => 'stripe',
+        ]);
+
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            'order_number' => $order->order_number,
+        ]);
+        $this->assertSame([], session('shopping_cart', []));
     }
 
     public function test_order_items_are_created(): void

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { Head, router, useForm } from "@inertiajs/react";
-import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutOrderSummary from "@/Components/Checkout/CheckoutOrderSummary/CheckoutOrderSummary";
 import CheckoutProgress from "@/Components/Checkout/CheckoutProgress/CheckoutProgress";
@@ -11,6 +10,7 @@ import {
 } from "@/Components/Checkout/utils/checkoutTotals";
 import Footer from "@/Components/Footer/Footer";
 import Header from "@/Components/Header/Header";
+import { createStripePromise } from "@/Utils/stripe";
 import styles from "./Cart.module.css";
 
 // Stripe is initialized dynamically via the stripeKey prop
@@ -38,7 +38,7 @@ export default function Cart({
         [auth?.user, user],
     );
     const finalStripePromise = useMemo(
-        () => (stripeKey ? loadStripe(stripeKey) : null),
+        () => createStripePromise(stripeKey),
         [stripeKey],
     );
     const [step, setStep] = useState(1);
