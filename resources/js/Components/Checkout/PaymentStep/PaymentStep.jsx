@@ -504,11 +504,12 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                         <BillingField
                             label="Dirección Completa"
                             htmlFor="billing_address"
-                            value={data.billing_address.address}
+                            value={data.billing_address.street_address}
                             onChange={(event) =>
                                 setData("billing_address", {
                                     ...data.billing_address,
-                                    address: event.target.value,
+                                    street_address: event.target.value,
+                                    country: "ES",
                                 })
                             }
                             placeholder="Calle, número, portal..."
@@ -523,6 +524,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                                     setData("billing_address", {
                                         ...data.billing_address,
                                         city: event.target.value,
+                                        country: "ES",
                                     })
                                 }
                                 placeholder="Ej: Madrid"
@@ -536,6 +538,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                                     setData("billing_address", {
                                         ...data.billing_address,
                                         postal_code: event.target.value,
+                                        country: "ES",
                                     })
                                 }
                                 placeholder="28001"

@@ -80,10 +80,10 @@ export default function InfoStep({ data, setData, onNext, onBack, user, errors }
             email: "juan.perez@example.com",
             dni: "12345678Z",
             phone: "34622222222",
-            address: "Calle Mayor 1",
+            street_address: "Calle Mayor 1",
             city: "Madrid",
             postal_code: "28001",
-            country: "España",
+            country: "ES",
         };
 
         Object.entries(testData).forEach(([key, value]) => {
@@ -227,11 +227,11 @@ export default function InfoStep({ data, setData, onNext, onBack, user, errors }
             </StepSection>
 
             <StepSection badge="B" badgeVariant="primary" title="Dirección de Envío">
-                <FormField label="Calle y número" htmlFor="address">
+                <FormField label="Calle y número" htmlFor="street_address">
                     <TextInput
-                        id="address"
-                        name="address"
-                        value={data.address}
+                        id="street_address"
+                        name="street_address"
+                        value={data.street_address}
                         onChange={handleChange}
                         className={styles.input}
                         placeholder="Ej: Calle Gran Vía 12, 4º B"

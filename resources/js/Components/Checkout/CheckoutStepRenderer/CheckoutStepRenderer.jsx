@@ -141,7 +141,7 @@ function buildConfirmPaymentData(data, elements) {
                 email: data.email,
                 phone: data.phone,
                 address: {
-                    line1: data.address,
+                    line1: data.street_address,
                     city: data.city,
                     postal_code: data.postal_code,
                     country: "ES",
@@ -160,10 +160,10 @@ function buildOrderPayload(data, paymentIntentId) {
         shipping_address: {
             full_name: `${data.first_name} ${data.last_name}`,
             phone: data.phone,
-            street_address: data.address,
+            street_address: data.street_address,
             city: data.city,
             postal_code: data.postal_code,
-            country: data.country || "España",
+            country: data.country || "ES",
             email: data.email,
         },
         billing_address: data.billing_same_as_shipping
@@ -171,10 +171,10 @@ function buildOrderPayload(data, paymentIntentId) {
             : {
                   full_name: `${data.first_name} ${data.last_name}`,
                   phone: data.phone,
-                  street_address: data.billing_address?.address,
+                  street_address: data.billing_address?.street_address,
                   city: data.billing_address?.city,
                   postal_code: data.billing_address?.postal_code,
-                  country: data.billing_address?.country || "España",
+                  country: data.billing_address?.country || "ES",
               },
         notes: data.notes || null,
     };
