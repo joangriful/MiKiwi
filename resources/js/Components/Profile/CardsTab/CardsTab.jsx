@@ -137,7 +137,7 @@ function CardForm({ onCancel, onSuccess }) {
 export default function CardsTab() {
     const { stripeKey } = usePage().props;
     const { auth } = usePage().props;
-    const [stripePromise] = useState(() => loadStripe(stripeKey));
+    const [stripePromise] = useState(() => (stripeKey ? loadStripe(stripeKey) : null));
     const [cards, setCards] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);

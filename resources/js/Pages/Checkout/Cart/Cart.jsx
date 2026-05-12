@@ -13,7 +13,7 @@ import Footer from "@/Components/Footer/Footer";
 import Header from "@/Components/Header/Header";
 import styles from "./Cart.module.css";
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY || "");
+// Stripe is initialized dynamically via the stripeKey prop
 
 const DEFAULT_AUTH = { user: null };
 const DEFAULT_CART = { items: [], total: 0 };
@@ -38,7 +38,7 @@ export default function Cart({
         [auth?.user, user],
     );
     const finalStripePromise = useMemo(
-        () => (stripeKey ? loadStripe(stripeKey) : stripePromise),
+        () => (stripeKey ? loadStripe(stripeKey) : null),
         [stripeKey],
     );
     const [step, setStep] = useState(1);
