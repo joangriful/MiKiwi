@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  Laravel · React · Inertia · PostgreSQL · Stripe · Cloudinary · Three.js
+  Laravel · React · Tailwind · Inertia · PostgreSQL · Stripe · Cloudinary · Three.js
 </p>
 
 <p align="center">
@@ -25,13 +25,13 @@ La aplicación combina una experiencia de compra completa con un configurador in
 
 Es un proyecto de portfolio, pero tratado como un producto real: con decisiones técnicas defendibles, estructura mantenible y foco en rendimiento.
 
-<br><br>
+
 
 <p align="center">
   <img src="docs/assets/video/demo_web.gif" width="100%" style="border-radius: 12px;" alt="MiKiwi Demo" />
 </p>
 
-<br>
+
 
 ## La Experiencia
 
