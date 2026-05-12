@@ -15,10 +15,15 @@
   <a href="docs/index.md"><strong>Ver documentación del proyecto</strong></a>
 </p>
 
+<p align="center">
+  <video src="docs/assets/video/demo_web.mp4" width="100%" style="border-radius: 12px;" controls autoplay loop muted></video>
+</p>
+
 
 ---
 
 ## El Proyecto
+
 
 MiKiwi no es un catálogo más. Es una tienda online pensada alrededor de una idea clara: que el usuario pueda personalizar visualmente un producto antes de comprarlo.
 
@@ -108,9 +113,9 @@ MiKiwi refleja varias capacidades importantes en un proyecto profesional:
 
 Este README es una carta de presentación. La documentación completa vive en:
 
-- `docs/DOCUMENTACION_PROYECTO.md`
-- `docs/AGENTS.md`
-- `docs/PROJECT_STRUCTURE.md`
+- **[Índice de Documentación](docs/index.md)** (Arquitectura, Setup, Dominio)
+- **[Guía para Agentes e IA](AGENTS.md)**
+- **[Estructura del Proyecto](docs/PROJECT_STRUCTURE.md)**
 
 ---
 
