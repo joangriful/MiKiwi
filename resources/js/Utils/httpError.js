@@ -84,7 +84,7 @@ function buildError(overrides = {}) {
 }
 
 function normalizeFieldErrors(errors) {
-    if (!errors || typeof errors !== 'object' || Array.isArray(errors)) {
+    if (!errors || typeof errors !== 'object' || Array.isArray(errors) || Object.keys(errors).length === 0) {
         return null;
     }
 
