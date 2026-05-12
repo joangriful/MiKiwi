@@ -27,7 +27,9 @@ Es un proyecto de portfolio, pero tratado como un producto real: con decisiones 
 
 <br><br>
 
-![MiKiwi Demo](docs/assets/video/demo_web.mp4)
+<p align="center">
+  <video src="PEGA_AQUÍ_LA_URL_DE_GITHUB_ASSETS" width="100%" style="border-radius: 12px;" muted loop autoplay playsinline></video>
+</p>
 
 <br>
 
