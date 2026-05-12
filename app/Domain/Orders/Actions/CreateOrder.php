@@ -87,7 +87,9 @@ class CreateOrder
             foreach ($cart['items'] as $item) {
                 $product = $item['product'];
                 if ($this->shouldValidateStock($product)) {
-                    $product->decrement('stock_quantity', $item['quantity']);
+                    $product->forceFill([
+                        'stock_quantity' => max(0, ($product->stock_quantity ?? 0) - $item['quantity'])
+                    ])->save();
                 }
 
                 $this->decrementAccessoryStock($item);
@@ -133,7 +135,7 @@ class CreateOrder
             'alias' => $addressData['alias'] ?? $alias,
             'full_name' => $addressData['full_name'] ?? $user->name,
             'phone' => $addressData['phone'] ?? null,
-            'street_address' => $addressData['street_address'] ?? '',
+            'street_address' => $addressData['address'] ?? $addressData['street_address'] ?? '',
             'city' => $addressData['city'] ?? '',
             'postal_code' => $addressData['postal_code'] ?? '',
             'country' => $addressData['country'] ?? 'ES',
@@ -211,7 +213,9 @@ class CreateOrder
             }
 
             $product = $this->resolveAccessoryProduct($accessory);
-            $product->decrement('stock_quantity', $this->accessoryRequiredQuantity($item, $accessory));
+            $product->forceFill([
+                'stock_quantity' => max(0, ($product->stock_quantity ?? 0) - $this->accessoryRequiredQuantity($item, $accessory))
+            ])->save();
         }
     }
 
