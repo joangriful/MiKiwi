@@ -1,0 +1,18 @@
+.unknownViewError {
+    text-align: center;
+    color: var(--color-danger);
+}
+
+.navDivider {
+    opacity: 0.3;
+}
+
+@media (min-width: 768px) {
+    .panelContentRight {
+        text-align: right;
+    }
+
+    .descriptionRight {
+        margin-left: auto;
+    }
+}
