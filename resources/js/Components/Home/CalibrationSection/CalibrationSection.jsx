@@ -1,15 +1,23 @@
 import React from 'react';
 import { Link } from '@inertiajs/react';
+import { getCloudinaryUrl } from '@/Utils/cloudinary';
 import styles from './CalibrationSection.module.css';
 
 export default function CalibrationSection() {
-    const backgroundImage = 'https://res.cloudinary.com/dquwonjie/image/upload/v1771865798/Julia_Platanomelon_944_iuusvc.jpg';
+    const backgroundImage = getCloudinaryUrl(
+        'https://res.cloudinary.com/dquwonjie/image/upload/v1771865798/Julia_Platanomelon_944_iuusvc.jpg',
+        { transformations: 'f_auto,q_auto,w_1600,c_fill' },
+    );
 
     return (
         <section className={styles.root}>
             <img
                 src={backgroundImage}
                 alt="Calibration Background"
+                width="1600"
+                height="800"
+                loading="lazy"
+                decoding="async"
                 className={styles.backgroundImage}
             />
 

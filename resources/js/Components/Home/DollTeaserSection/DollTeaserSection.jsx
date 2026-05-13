@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 
 import ScrollReveal from '@/Utils/ScrollReveal';
+import { getCloudinaryUrl } from '@/Utils/cloudinary';
 import styles from './DollTeaserSection.module.css';
 
 const TEASER_IMAGE = 'https://res.cloudinary.com/dquwonjie/image/upload/v1771872987/46bfb4f33999ce12ffa791b9df263c4f_vuktao.jpg';
@@ -9,7 +10,15 @@ export default function DollTeaserSection() {
     return (
         <section className={styles.root}>
             <div className={styles.background} aria-hidden="true">
-                <img src={TEASER_IMAGE} alt="" className={styles.backgroundImage} />
+                <img
+                    src={getCloudinaryUrl(TEASER_IMAGE, { transformations: 'f_auto,q_auto,w_1400,h_900,c_fill' })}
+                    alt=""
+                    width="1400"
+                    height="900"
+                    loading="lazy"
+                    decoding="async"
+                    className={styles.backgroundImage}
+                />
                 <div className={styles.gradient} />
             </div>
 

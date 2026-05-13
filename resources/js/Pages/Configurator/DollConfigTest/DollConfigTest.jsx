@@ -29,22 +29,20 @@ import styles from './DollConfigTest.module.css';
 const Mannequin3DViewer = React.lazy(loadMannequin3DViewer);
 const DEFAULT_DOLL_BASE_PRICE = 2000;
 
-function getInitialReadyDollSlug() {
+function getConfiguratorLocationState() {
     if (typeof window === 'undefined') {
-        return null;
+        return {
+            activeTab: 'customize',
+            readyDollSlug: null,
+        };
     }
 
-    return new URLSearchParams(window.location.search).get('doll');
-}
+    const searchParams = new URLSearchParams(window.location.search);
 
-function getInitialConfiguratorTab() {
-    if (typeof window === 'undefined') {
-        return 'customize';
-    }
-
-    return new URLSearchParams(window.location.search).get('tab') === 'ready'
-        ? 'ready'
-        : 'customize';
+    return {
+        activeTab: searchParams.get('tab') === 'ready' ? 'ready' : 'customize',
+        readyDollSlug: searchParams.get('doll'),
+    };
 }
 
 export default function DollConfigTest({ views, defaultSettings, partPositions: initialPartPositions, dollProduct, readyDollProducts = [], configuratorRules }) {
@@ -53,8 +51,8 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
 
     // 2. State
     const sanitizedViews = useMemo(() => filterHiddenPartsFromViews(views || {}), [views]);
-    const initialReadyDollSlug = useMemo(() => getInitialReadyDollSlug(), []);
-    const [activeTab, setActiveTab] = useState(getInitialConfiguratorTab);
+    const [initialReadyDollSlug, setInitialReadyDollSlug] = useState(null);
+    const [activeTab, setActiveTab] = useState('customize');
     const [allSelections, setAllSelections] = useState({ front: {}, back: {} });
     const [currentView, setCurrentView] = useState('front');
     const [zoomLevel, setZoomLevel] = useState(100);
@@ -99,6 +97,12 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
             setPartPositions(initialPartPositions);
         }
     }, [initialPartPositions]);
+
+    useEffect(() => {
+        const { activeTab: locationTab, readyDollSlug } = getConfiguratorLocationState();
+        setActiveTab(locationTab);
+        setInitialReadyDollSlug(readyDollSlug);
+    }, []);
 
     useEffect(() => {
         const defaults = defaultSettings?.selections || { front: {}, back: {} };

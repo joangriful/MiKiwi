@@ -133,31 +133,34 @@
     font-family: 'Sugo Pro Display';
     src: url('../fonts/Sugo-Pro-Display-Thin-trial.ttf') format('truetype');
     font-weight: 100;
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'Sugo Pro Display';
     src: url('../fonts/Sugo-Pro-Display-Light-trial.ttf') format('truetype');
     font-weight: 300;
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'Sugo Pro Display';
     src: url('../fonts/Sugo-Pro-Display-Regular-trial.ttf') format('truetype');
     font-weight: 400;
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'Sugo Pro Display';
     src: url('../fonts/Sugo-Pro-Display-Bold-trial.ttf') format('truetype');
     font-weight: 700;
+    font-display: swap;
 }
 
 /* Typography Utilities */
 :root {
     --font-head: 'Sugo Pro Display', sans-serif;
     --font-body: 'Mulish', 'Inter', sans-serif;
-    /* Agrandir style alternative */
 }
 
 .font-sugo {

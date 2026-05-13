@@ -14,7 +14,14 @@ export default function HeroSection() {
                         transition={{ duration: 1.2, ease: 'easeOut' }}
                         className={styles.logoWrap}
                     >
-                        <img src="/assets/icons/mikiwi_logo.svg" alt="MiKiwi Logo" className={styles.logo} />
+                        <img
+                            src="/assets/icons/mikiwi_logo.svg"
+                            alt="MiKiwi Logo"
+                            width="632"
+                            height="248"
+                            decoding="async"
+                            className={styles.logo}
+                        />
                     </motion.div>
 
                     <motion.div

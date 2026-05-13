@@ -2,6 +2,7 @@ import { Link } from '@inertiajs/react';
 
 import ScrollReveal from '@/Utils/ScrollReveal';
 import { HOME_COLLECTIONS } from '@/Components/Home/utils/homeContent';
+import { getCloudinaryUrl } from '@/Utils/cloudinary';
 import styles from './CollectionsSection.module.css';
 
 function normalizeCollectionImages(collectionImages) {
@@ -39,7 +40,15 @@ export default function CollectionsSection({ collectionImages = [] }) {
                     <ScrollReveal key={collection.category} direction="left" delay={index * 0.1} distance={30}>
                         <Link href={route('products.index', { category: collection.category })} className={styles.item}>
                             <div className={styles.imageBox}>
-                                <img src={collection.image} alt={collection.title} className={styles.image} />
+                                <img
+                                    src={getCloudinaryUrl(collection.image, { transformations: 'f_auto,q_auto,w_700,h_520,c_fill' })}
+                                    alt={collection.title}
+                                    width="700"
+                                    height="520"
+                                    loading="lazy"
+                                    decoding="async"
+                                    className={styles.image}
+                                />
                             </div>
                             <h3 className={styles.collectionTitle}>{collection.title}</h3>
                         </Link>

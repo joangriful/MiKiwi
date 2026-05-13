@@ -17,6 +17,10 @@ function Loader() {
 }
 
 function resolveInitialModel(models, productSlug) {
+    if (!Array.isArray(models) || models.length === 0) {
+        return null;
+    }
+
     if (!productSlug) {
         return models[0];
     }
@@ -52,16 +56,24 @@ export default function Mannequin3DViewer({
 
     // Reset ready state when model changes to show loader during transitions
     useEffect(() => {
+        if (!selectedModel) {
+            return;
+        }
+
         setIsModelReady(false);
-    }, [selectedModel.id]);
+    }, [selectedModel]);
 
     useEffect(() => {
         setSelectedModel((currentModel) => (
             currentReadyDollModels.find((model) => model.productSlug === initialProductSlug)
-            || currentReadyDollModels.find((model) => model.id === currentModel.id)
+            || currentReadyDollModels.find((model) => model.id === currentModel?.id)
             || currentReadyDollModels[0]
         ));
     }, [currentReadyDollModels, initialProductSlug]);
+
+    if (!selectedModel) {
+        return null;
+    }
 
     const handleModelMounted = () => {
         setIsModelReady(true);
