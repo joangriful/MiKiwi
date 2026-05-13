@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import HeroImageManager from '../HeroImageManager/HeroImageManager';
 import styles from './ContentManager.module.css';
 
@@ -62,7 +63,7 @@ export default function ContentManager({ heroImages }) {
                             onClick={() => setActiveSection(section.id)}
                             className={`${styles.sectionButton} ${activeSection === section.id ? styles.sectionButtonActive : ''}`}
                         >
-                            <span className={`material-symbols-outlined ${styles.sectionButtonIcon}`}>{section.icon}</span>
+                            <MaterialIcon name={section.icon} className={`material-symbols-outlined ${styles.sectionButtonIcon}`} />
                             {section.label}
                         </button>
                     ))}

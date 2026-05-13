@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { usePage, router, Link } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import ImageEditorModal from '@/Components/Profile/ImageEditorModal/ImageEditorModal';
 import useProductFavorite from '@/Hooks/useProductFavorite';
 import { normalizeApiError } from '@/Utils/httpError';
@@ -175,12 +176,12 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                         >
                             {uploadingBanner ? (
                                 <>
-                                    <span className={`${styles.materialIcon} ${styles.spin}`}>refresh</span>
+                                    <MaterialIcon name="refresh" className={`${styles.materialIcon} ${styles.spin}`} />
                                     Subiendo...
                                 </>
                             ) : (
                                 <>
-                                    <span className={styles.materialIcon}>edit</span>
+                                    <MaterialIcon name="edit" className={styles.materialIcon} />
                                     {currentBannerImage ? 'Editar Banner' : 'Añadir Banner'}
                                 </>
                             )}
@@ -208,14 +209,14 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                                         className={styles.avatarEdit}
                                         aria-label="Editar foto de perfil"
                                     >
-                                        <span className={styles.materialIconLarge}>edit</span>
+                                        <MaterialIcon name="edit" className={styles.materialIconLarge} />
                                         <span className={styles.avatarEditLabel}>Editar foto</span>
                                     </button>
                                 )}
 
                                 {uploadingProfile && (
                                     <div className={styles.avatarLoading}>
-                                        <span className={`${styles.materialIconLarge} ${styles.spin}`}>refresh</span>
+                                        <MaterialIcon name="refresh" className={`${styles.materialIconLarge} ${styles.spin}`} />
                                     </div>
                                 )}
 
@@ -240,13 +241,13 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
             <div className={styles.recommendationsCard}>
                 <div className={styles.recommendationsHeader}>
                     <h3 className={styles.recommendationsTitle}>
-                        <span className={`${styles.materialIcon} ${styles.titleIcon}`}>magic_button</span>
+                        <MaterialIcon name="magic_button" className={`${styles.materialIcon} ${styles.titleIcon}`} />
                         Recomendados para ti
                     </h3>
 
                     {recommendedProducts && recommendedProducts.length > 0 && (
                         <Link href="/configurador/quiz" className={styles.secondaryLink}>
-                            <span className={styles.materialIcon}>refresh</span>
+                            <MaterialIcon name="refresh" className={styles.materialIcon} />
                             Repetir Quiz
                         </Link>
                     )}
@@ -300,7 +301,7 @@ export default function ProfileTab({ setActiveTab, recommendedProducts = [] }) {
                     </div>
                 ) : (
                     <div className={styles.emptyQuizState}>
-                        <span className={`${styles.materialIconLarge} ${styles.emptyQuizIcon}`}>quiz</span>
+                        <MaterialIcon name="quiz" className={`${styles.materialIconLarge} ${styles.emptyQuizIcon}`} />
                         <h4 className={styles.emptyQuizTitle}>Descubre tu estilo ideal</h4>
                         <p className={styles.emptyQuizText}>
                             Completa nuestro quiz inicial para que podamos recomendarte los productos que mejor se adapten a tus gustos y preferencias.

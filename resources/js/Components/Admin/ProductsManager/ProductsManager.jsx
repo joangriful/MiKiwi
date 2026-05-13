@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import UploadProduct from '../UploadProduct/UploadProduct';
 import ProductsList from '../ProductsList/ProductsList';
 import FeaturedProductsManager from '../FeaturedProductsManager/FeaturedProductsManager';
@@ -42,7 +43,7 @@ export default function ProductsManager({ categories, products, debugCount }) {
                             onClick={() => handleTabChange(section.id)}
                             className={`${styles.navButton} ${activeSection === section.id ? styles.navButtonActive : ''}`}
                         >
-                            <span className={`material-symbols-outlined ${styles.navButtonIcon}`}>{section.icon}</span>
+                            <MaterialIcon name={section.icon} className={`material-symbols-outlined ${styles.navButtonIcon}`} />
                             {section.label}
                         </button>
                     ))}

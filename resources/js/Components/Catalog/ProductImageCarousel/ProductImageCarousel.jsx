@@ -1,3 +1,4 @@
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import styles from './ProductImageCarousel.module.css';
 
 export default function ProductImageCarousel({ images = [], selectedImage, onSelectImage }) {
@@ -22,7 +23,7 @@ export default function ProductImageCarousel({ images = [], selectedImage, onSel
                     className={styles.navButton}
                     aria-label="Anterior imagen"
                 >
-                    <span className={`material-symbols-outlined ${styles.navIcon}`}>chevron_left</span>
+                    <MaterialIcon name="chevron_left" className={`material-symbols-outlined ${styles.navIcon}`} />
                 </button>
 
                 <div className={styles.thumbnailTrack}>
@@ -49,7 +50,7 @@ export default function ProductImageCarousel({ images = [], selectedImage, onSel
                     className={styles.navButton}
                     aria-label="Siguiente imagen"
                 >
-                    <span className={`material-symbols-outlined ${styles.navIcon}`}>chevron_right</span>
+                    <MaterialIcon name="chevron_right" className={`material-symbols-outlined ${styles.navIcon}`} />
                 </button>
             </div>
         </div>

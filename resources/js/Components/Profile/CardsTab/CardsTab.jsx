@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import { normalizeApiError, normalizeStripeError } from '@/Utils/httpError';
 import { createStripePromise } from '@/Utils/stripe';
 import styles from './CardsTab.module.css';
@@ -69,7 +70,7 @@ function CardForm({ onCancel, onSuccess }) {
         <div className={styles.modalOverlay}>
             <div className={styles.modalCard}>
                 <button type="button" onClick={onCancel} className={styles.closeButton} aria-label="Cerrar formulario de tarjeta">
-                    <span className={styles.materialIcon}>close</span>
+                    <MaterialIcon name="close" className={styles.materialIcon} />
                 </button>
 
                 <h3 className={styles.modalTitle}>Nueva Tarjeta</h3>
@@ -110,7 +111,7 @@ function CardForm({ onCancel, onSuccess }) {
 
                     {error && (
                         <div className={styles.errorBox}>
-                            <span className={styles.materialIcon}>error</span>
+                            <MaterialIcon name="error" className={styles.materialIcon} />
                             <p className={styles.errorText}>{error}</p>
                         </div>
                     )}
@@ -123,7 +124,7 @@ function CardForm({ onCancel, onSuccess }) {
                             </>
                         ) : (
                             <>
-                                <span className={styles.materialIcon}>verified_user</span>
+                                <MaterialIcon name="verified_user" className={styles.materialIcon} />
                                 <span>Vincular Tarjeta</span>
                             </>
                         )}
@@ -208,7 +209,7 @@ export default function CardsTab() {
                 </div>
 
                 <button onClick={() => setIsAdding(true)} className={styles.addButton}>
-                    <span className={styles.materialIcon}>add_card</span>
+                    <MaterialIcon name="add_card" className={styles.materialIcon} />
                     Añadir Nuevo Método
                 </button>
             </div>
@@ -232,19 +233,19 @@ export default function CardsTab() {
                                 <p className={styles.cardNumber}>•••• •••• •••• {card.card.last4}</p>
                                 <div className={styles.cardMeta}>
                                     <span className={styles.cardMetaItem}>
-                                        <span className={styles.cardMetaIcon}>calendar_month</span>
+                                        <MaterialIcon name="calendar_month" className={styles.cardMetaIcon} />
                                         Expira: {card.card.exp_month}/{card.card.exp_year}
                                     </span>
                                     <div className={styles.cardMetaDot} />
                                     <span className={styles.cardMetaItem}>
-                                        <span className={styles.cardMetaIcon}>person</span>
+                                        <MaterialIcon name="person" className={styles.cardMetaIcon} />
                                         {card.billing_details.name || 'Titular'}
                                     </span>
                                 </div>
                             </div>
 
                             <button onClick={() => handleDelete(card.id)} className={styles.deleteButton} title="Eliminar tarjeta">
-                                <span className={styles.materialIcon}>delete</span>
+                                <MaterialIcon name="delete" className={styles.materialIcon} />
                             </button>
                         </div>
                     ))}
@@ -252,7 +253,7 @@ export default function CardsTab() {
             ) : (
                 <div className={`${styles.centerState} ${styles.emptyState}`}>
                     <div className={styles.emptyIconWrap}>
-                        <span className={styles.emptyIcon}>credit_card_off</span>
+                        <MaterialIcon name="credit_card_off" className={styles.emptyIcon} />
                     </div>
                     <p className={styles.emptyTitle}>Sin métodos de pago</p>
                     <p className={styles.emptyDescription}>Añade una tarjeta para acelerar tus futuras compras en MiKiwi.</p>
@@ -275,7 +276,7 @@ export default function CardsTab() {
                 <div className={styles.adminSection}>
                     <div className={styles.adminHeader}>
                         <div className={styles.adminIconWrap}>
-                            <span className={styles.materialIcon}>science</span>
+                            <MaterialIcon name="science" className={styles.materialIcon} />
                         </div>
                         <div>
                             <h3 className={styles.adminTitle}>Referencia para Pruebas</h3>
@@ -294,9 +295,10 @@ export default function CardsTab() {
                                         className={`${styles.copyButton} ${copiedId === `profile-card-${index}` ? styles.copyButtonSuccess : styles.copyButtonIdle}`}
                                         title="Copiar número"
                                     >
-                                        <span className={styles.copyIcon}>
-                                            {copiedId === `profile-card-${index}` ? 'check' : 'content_copy'}
-                                        </span>
+                                        <MaterialIcon
+                                            name={copiedId === `profile-card-${index}` ? 'check' : 'content_copy'}
+                                            className={styles.copyIcon}
+                                        />
                                     </button>
                                 </div>
                                 <div className={styles.testFooter}>

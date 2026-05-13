@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import styles from './BurgerMenu.module.css';
 
 /**
@@ -30,7 +31,7 @@ export default function BurgerMenu({ isOpen, onClose, primaryLinks, stimulationL
                 {/* Close Button */}
                 <div className={styles.header}>
                     <button onClick={onClose} className={styles.closeButton}>
-                        <span className="material-symbols-outlined">close</span>
+                        <MaterialIcon name="close" className="material-symbols-outlined" />
                     </button>
                 </div>
 
@@ -51,9 +52,10 @@ export default function BurgerMenu({ isOpen, onClose, primaryLinks, stimulationL
                                 onClick={() => setIsStimulationOpen(!isStimulationOpen)} 
                                 className={styles.expandableLink}
                             >
-                                <span className={`material-symbols-outlined ${styles.arrow} ${isStimulationOpen ? styles.arrowOpen : ''}`}>
-                                    keyboard_arrow_right
-                                </span>
+                                <MaterialIcon
+                                    name="keyboard_arrow_right"
+                                    className={`material-symbols-outlined ${styles.arrow} ${isStimulationOpen ? styles.arrowOpen : ''}`}
+                                />
                                 Estimulación
                             </button>
                             

@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { useState } from 'react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import useProductFavorite from '@/Hooks/useProductFavorite';
 import styles from './FavoritesTab.module.css';
 
@@ -60,9 +61,7 @@ function FavoriteProductCard({ product, onRemoved }) {
                 aria-label={isFavorite ? `Quitar ${product.name} de favoritos` : `Añadir ${product.name} a favoritos`}
                 aria-pressed={isFavorite}
             >
-                <span className={`material-symbols-outlined ${styles.favoriteIcon}`}>
-                    favorite
-                </span>
+                <MaterialIcon name="favorite" filled className={`material-symbols-outlined ${styles.favoriteIcon}`} />
             </button>
         </article>
     );
@@ -86,7 +85,7 @@ export default function FavoritesTab({ favoriteProducts = [] }) {
                 </div>
 
                 <Link href={route('products.index')} className={styles.catalogLink}>
-                    <span className={styles.materialIcon}>storefront</span>
+                    <MaterialIcon name="storefront" className={styles.materialIcon} />
                     Ver catálogo
                 </Link>
             </div>
@@ -103,7 +102,7 @@ export default function FavoritesTab({ favoriteProducts = [] }) {
                 </div>
             ) : (
                 <div className={styles.emptyState}>
-                    <span className={`material-symbols-outlined ${styles.emptyIcon}`}>favorite</span>
+                    <MaterialIcon name="favorite" filled className={`material-symbols-outlined ${styles.emptyIcon}`} />
                     <h3 className={styles.emptyTitle}>Aún no tienes favoritos</h3>
                     <p className={styles.emptyText}>
                         Guarda productos desde el catálogo para encontrarlos aquí rápidamente.

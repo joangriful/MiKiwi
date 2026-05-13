@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from '@inertiajs/react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import styles from './ProfileSidebar.module.css';
 
 export default function ProfileSidebar({ activeTab, setActiveTab }) {
@@ -24,9 +25,10 @@ export default function ProfileSidebar({ activeTab, setActiveTab }) {
     const renderIcon = (item, isActive) => {
         if (item.isMaterial) {
             return (
-                <span className={`${styles.materialIcon} ${isActive ? styles.materialIconActive : styles.materialIconIdle}`}>
-                    {item.icon}
-                </span>
+                <MaterialIcon
+                    name={item.icon}
+                    className={`${styles.materialIcon} ${isActive ? styles.materialIconActive : styles.materialIconIdle}`}
+                />
             );
         }
 
@@ -53,9 +55,10 @@ export default function ProfileSidebar({ activeTab, setActiveTab }) {
                             {renderIcon(activeItem, true)}
                             <span className={styles.mobileLabel}>{activeItem.label}</span>
                         </div>
-                        <span className={`${styles.materialIcon} ${styles.mobileChevron} ${isMobileOpen ? styles.mobileChevronOpen : ''}`}>
-                            expand_more
-                        </span>
+                        <MaterialIcon
+                            name="expand_more"
+                            className={`${styles.materialIcon} ${styles.mobileChevron} ${isMobileOpen ? styles.mobileChevronOpen : ''}`}
+                        />
                     </button>
                 </div>
 
@@ -83,7 +86,7 @@ export default function ProfileSidebar({ activeTab, setActiveTab }) {
                         as="button"
                         className={styles.logoutButton}
                     >
-                        <span className={styles.materialIcon}>logout</span>
+                        <MaterialIcon name="logout" className={styles.materialIcon} />
                         Cerrar Sesión
                     </Link>
                 </div>

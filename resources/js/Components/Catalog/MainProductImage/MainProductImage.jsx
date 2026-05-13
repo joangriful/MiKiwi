@@ -1,3 +1,4 @@
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import styles from './MainProductImage.module.css';
 export default function MainProductImage({ image }) {
     return (
@@ -9,7 +10,7 @@ export default function MainProductImage({ image }) {
                     className={styles.image}
                 />
             ) : (
-                <span className={`material-symbols-outlined ${styles.placeholderIcon}`}>image</span>
+                <MaterialIcon name="image" className={`material-symbols-outlined ${styles.placeholderIcon}`} />
             )}
         </div>
     );

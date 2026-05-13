@@ -24,25 +24,25 @@ export const HOME_BENEFITS = [
 export const HOME_COLLECTIONS = [
     {
         title: 'PARA ELLA.',
-        image: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771865798/platanomelon-sexualidad-sin-tabues-1024x767_d9nufa.jpg',
+        image: 'https://res.cloudinary.com/dquwonjie/image/upload/v1778705585/platanomelon-sexualidad-sin-tabues-1024x767_d9nufa_1_hyveey.webp',
         description: 'Diseños ergonómicos y texturas premium.',
         category: 'para-ella',
     },
     {
         title: 'PARA ÉL.',
-        image: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771865798/juguetes-sexuales-platanomelon_nlqjcv.jpg',
+        image: 'https://res.cloudinary.com/dquwonjie/image/upload/v1778705585/juguetes-sexuales-platanomelon_nlqjcv_1_bgc58y.webp',
         description: 'Innovación masculina redefinida.',
         category: 'para-el',
     },
     {
         title: 'PAREJAS.',
-        image: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771866759/Julia_Platanomelon_900-1024x512_tycrzc.jpg',
+        image: 'https://res.cloudinary.com/dquwonjie/image/upload/v1778705585/Julia_Platanomelon_900-1024x512_tycrzc_1_myvjpe.webp',
         description: 'Juguetes diseñados para compartir.',
         category: 'parejas',
     },
     {
         title: 'EXPERIENCIAS.',
-        image: 'https://res.cloudinary.com/dquwonjie/image/upload/v1771866855/Julia_Platanomelon_910_ALTA-copia-1024x512_vnsnhs.jpg',
+        image: 'https://res.cloudinary.com/dquwonjie/image/upload/v1778705585/Julia_Platanomelon_910_ALTA-copia-1024x512_vnsnhs_1_nflrxs.webp',
         description: 'Kits curados para despertar los sentidos.',
         category: 'experiencias',
     },

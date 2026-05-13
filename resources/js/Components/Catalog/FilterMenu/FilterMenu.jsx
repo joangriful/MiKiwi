@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { router } from '@inertiajs/react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import styles from './FilterMenu.module.css';
 
 const NOISE_LEVELS = [
@@ -104,7 +105,7 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
                         <span className={styles.eyebrow}>Sincronía Sensorial</span>
                     </div>
                     <button type="button" onClick={onClose} className={styles.closeButton} aria-label="Cerrar panel de filtros">
-                        <span className={`material-symbols-outlined ${styles.closeIcon}`}>close</span>
+                        <MaterialIcon name="close" className={`material-symbols-outlined ${styles.closeIcon}`} />
                     </button>
                 </div>
 
@@ -188,7 +189,7 @@ export default function FilterMenu({ isOpen, onClose, categories = [], filters =
                                     aria-label={`Filtrar por ${rating} estrellas o más`}
                                 >
                                     <span className={styles.ratingLabel}>{rating}</span>
-                                    <span className={`material-symbols-outlined ${styles.ratingIcon} ${localFilters.rating == rating ? styles.ratingIconActive : ''}`}>star</span>
+                                    <MaterialIcon name="star" className={`material-symbols-outlined ${styles.ratingIcon} ${localFilters.rating == rating ? styles.ratingIconActive : ''}`} />
                                 </button>
                             ))}
                         </div>

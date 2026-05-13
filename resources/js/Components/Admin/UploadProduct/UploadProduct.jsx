@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import { extractImageFiles } from '@/Utils/imageFiles';
 import { resolveProductImageUrl } from '@/Utils/productImageUrls';
 import styles from './UploadProduct.module.css';
@@ -334,7 +335,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                         </div>
                     </div>
 
-                    {isUploadingImages && <span className={styles.uploadingStatus}><span className={`material-symbols-outlined ${styles.spinningIcon}`}>refresh</span> Subiendo imágenes...</span>}
+                    {isUploadingImages && <span className={styles.uploadingStatus}><MaterialIcon name="refresh" className={`material-symbols-outlined ${styles.spinningIcon}`} /> Subiendo imágenes...</span>}
 
                     {uploadMethod === 'upload' ? (
                         <label
@@ -356,7 +357,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                                 aria-label="Subir imágenes del producto"
                             />
                             <div className={styles.dropzoneContent}>
-                                <span className={`material-symbols-outlined ${styles.dropzoneIcon}`}>cloud_upload</span>
+                                <MaterialIcon name="cloud_upload" className={`material-symbols-outlined ${styles.dropzoneIcon}`} />
                                 <span className={styles.dropzoneText}>
                                     {isDragging ? 'Suelta aquí' : (formData.name ? 'Arrastra imágenes o haz click para subir' : 'Escribe arriba el nombre del producto primero para poder subir fotos')}
                                 </span>
@@ -392,7 +393,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
 
                     <div className={styles.manualLinks}>
                         <div className={styles.manualLinksHeader}>
-                            <span className={`material-symbols-outlined ${styles.manualLinksIcon}`}>link</span>
+                            <MaterialIcon name="link" className={`material-symbols-outlined ${styles.manualLinksIcon}`} />
                             <h4 className={styles.manualLinksTitle}>Enlaces manuales de Cloudinary</h4>
                         </div>
 
@@ -478,7 +479,7 @@ export default function UploadProduct({ categories = [], initialData = null, onC
                                                 if (isHover) setHoverImage('');
                                             }}
                                         >
-                                            <span className={`material-symbols-outlined ${styles.removeImageIcon}`}>close</span>
+                                            <MaterialIcon name="close" className={`material-symbols-outlined ${styles.removeImageIcon}`} />
                                         </button>
 
                                         <div className={`${styles.galleryActions} ${!isMain && !isHover ? styles.galleryActionsHidden : ''}`}>

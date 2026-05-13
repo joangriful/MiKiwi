@@ -1,3 +1,4 @@
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import styles from './CatalogToolbar.module.css';
 
 export default function CatalogToolbar({
@@ -9,7 +10,7 @@ export default function CatalogToolbar({
     return (
         <div className={styles.root}>
             <div className={styles.searchWrap}>
-                <span className={`material-symbols-outlined ${styles.searchIcon}`}>search</span>
+                <MaterialIcon name="search" className={`material-symbols-outlined ${styles.searchIcon}`} />
                 <input
                     type="text"
                     placeholder="Buscar..."
@@ -25,7 +26,7 @@ export default function CatalogToolbar({
                         className={styles.clearSearchButton}
                         aria-label="Limpiar busqueda"
                     >
-                        <span className={`material-symbols-outlined ${styles.clearSearchIcon}`}>close</span>
+                        <MaterialIcon name="close" className={`material-symbols-outlined ${styles.clearSearchIcon}`} />
                     </button>
                 )}
             </div>
@@ -35,7 +36,7 @@ export default function CatalogToolbar({
                 onClick={onOpenFilters}
                 className={styles.filterButton}
             >
-                <span className={`material-symbols-outlined ${styles.filterIcon}`}>tune</span>
+                <MaterialIcon name="tune" className={`material-symbols-outlined ${styles.filterIcon}`} />
                 <span className={styles.filterButtonLabel}>Filtrar</span>
                 {activeFilterCount > 0 && (
                     <span className={styles.filterCount}>{activeFilterCount}</span>

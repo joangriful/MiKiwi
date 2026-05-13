@@ -41,10 +41,8 @@ export default function CollectionsSection({ collectionImages = [] }) {
                         <Link href={route('products.index', { category: collection.category })} className={styles.item}>
                             <div className={styles.imageBox}>
                                 <img
-                                    src={getCloudinaryUrl(collection.image, { transformations: 'f_auto,q_auto,w_700,h_520,c_fill' })}
+                                    src={getCloudinaryUrl(collection.image, { transformations: 'f_auto,q_auto' })}
                                     alt={collection.title}
-                                    width="700"
-                                    height="520"
                                     loading="lazy"
                                     decoding="async"
                                     className={styles.image}

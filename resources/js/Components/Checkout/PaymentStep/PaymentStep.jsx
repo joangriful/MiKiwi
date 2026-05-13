@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { CardElement, useStripe } from "@stripe/react-stripe-js";
 import axios from "axios";
+import MaterialIcon from "@/Components/Icon/MaterialIcon/MaterialIcon";
 import InputLabel from "@/Components/InputLabel/InputLabel";
 import { normalizeApiError } from "@/Utils/httpError";
 import styles from "./PaymentStep.module.css";
@@ -212,7 +213,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
 
             <div className={styles.infoBanner}>
                     <div className={styles.infoBannerIcon}>
-                    <span className={`material-symbols-outlined ${styles.materialIconLg}`}>shield_moon</span>
+                    <MaterialIcon name="shield_moon" className={`material-symbols-outlined ${styles.materialIconLg}`} />
                 </div>
                 <p className={styles.infoBannerText}>
                     Selecciona un método de pago. Tus datos están protegidos por
@@ -322,7 +323,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                     aria-label="Usar una nueva tarjeta"
                 >
                     <div className={`${styles.newCardIcon} ${paymentOption === "new" ? styles.newCardIconSelected : ""}`}>
-                        <span className={`material-symbols-outlined ${styles.materialIconLg}`}>add_card</span>
+                        <MaterialIcon name="add_card" className={`material-symbols-outlined ${styles.materialIconLg}`} />
                     </div>
 
                     <div className={styles.optionContent}>
@@ -386,7 +387,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                                         onClick={() => setShowAdminTestCards(!showAdminTestCards)}
                                         className={styles.adminToggle}
                                     >
-                                        <span className={`material-symbols-outlined ${styles.materialIconSm}`}>science</span>
+                                        <MaterialIcon name="science" className={`material-symbols-outlined ${styles.materialIconSm}`} />
                                         {showAdminTestCards
                                             ? "Ocultar Cuentas de Prueba"
                                             : "Modo Developer: Ver Cuentas de Prueba"}
@@ -410,9 +411,10 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                                                             }`}
                                                             title="Copiar Número"
                                                         >
-                                                            <span className={`material-symbols-outlined ${styles.materialIconSm}`}>
-                                                                {copiedId === `num-${index}` ? "check" : "content_copy"}
-                                                            </span>
+                                                            <MaterialIcon
+                                                                name={copiedId === `num-${index}` ? "check" : "content_copy"}
+                                                                className={`material-symbols-outlined ${styles.materialIconSm}`}
+                                                            />
                                                         </button>
 
                                                         <button
@@ -423,9 +425,10 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                                                             }`}
                                                             title="Copiar Exp/CVC"
                                                         >
-                                                            <span className={`material-symbols-outlined ${styles.materialIconSm}`}>
-                                                                {copiedId === `exp-${index}` ? "check" : "calendar_today"}
-                                                            </span>
+                                                            <MaterialIcon
+                                                                name={copiedId === `exp-${index}` ? "check" : "calendar_today"}
+                                                                className={`material-symbols-outlined ${styles.materialIconSm}`}
+                                                            />
                                                         </button>
                                                     </div>
                                                 </div>
@@ -567,7 +570,7 @@ export default function PaymentStep({ data, setData, auth, onSubmit, onBack, pro
                             </>
                         ) : (
                             <>
-                                <span className={`material-symbols-outlined ${styles.buttonIcon}`}>verified_user</span>
+                                <MaterialIcon name="verified_user" className={`material-symbols-outlined ${styles.buttonIcon}`} />
                                 <span className={styles.buttonText}>FINALIZAR PEDIDO</span>
                             </>
                         )}

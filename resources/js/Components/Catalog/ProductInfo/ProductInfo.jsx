@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, router } from "@inertiajs/react";
 import axios from "axios";
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import useProductFavorite from '@/Hooks/useProductFavorite';
 import styles from './ProductInfo.module.css';
 
@@ -67,9 +68,7 @@ export default function ProductInfo({ product }) {
             >
                 {notification === "added" && (
                     <div className={`${styles.notification} ${styles.notificationSuccess}`}>
-                        <span className={`material-symbols-outlined ${styles.notificationIcon}`}>
-                            check_circle
-                        </span>
+                        <MaterialIcon name="check_circle" className={`material-symbols-outlined ${styles.notificationIcon}`} />
                         <span className={styles.notificationText}>
                             ¡Producto añadido al carrito! Redirigiendo…
                         </span>
@@ -77,9 +76,7 @@ export default function ProductInfo({ product }) {
                 )}
                 {notification === "error" && (
                     <div className={`${styles.notification} ${styles.notificationError}`}>
-                        <span className={`material-symbols-outlined ${styles.notificationIcon}`}>
-                            error
-                        </span>
+                        <MaterialIcon name="error" className={`material-symbols-outlined ${styles.notificationIcon}`} />
                         <span className={styles.notificationText}>
                             Error al añadir el producto. Inténtalo de nuevo.
                         </span>
@@ -123,15 +120,11 @@ export default function ProductInfo({ product }) {
                     aria-label={isFavorite ? `Quitar ${product?.name} de favoritos` : `Añadir ${product?.name} a favoritos`}
                     aria-pressed={isFavorite}
                 >
-                    <span
+                    <MaterialIcon
+                        name="favorite"
+                        filled={isFavorite}
                         className={`material-symbols-outlined ${styles.favoriteIcon} ${isFavorite ? styles.favoriteIconFilled : ''}`}
-                        style={{
-                            fontVariationSettings:
-                                "'FILL' " + (isFavorite ? 1 : 0),
-                        }}
-                    >
-                        favorite
-                    </span>
+                    />
                 </button>
             </div>
 
@@ -188,9 +181,7 @@ export default function ProductInfo({ product }) {
                     disabled={isLoading || isOutOfStock}
                     className={styles.addToCartButton}
                 >
-                    <span className={`material-symbols-outlined ${styles.actionIcon}`}>
-                        shopping_cart
-                    </span>
+                    <MaterialIcon name="shopping_cart" className={`material-symbols-outlined ${styles.actionIcon}`} />
                     {isOutOfStock ? 'Sin stock' : 'Añadir al carrito'}
                 </button>
 
@@ -199,9 +190,7 @@ export default function ProductInfo({ product }) {
                     disabled={isLoading || isOutOfStock}
                     className={styles.buyNowButton}
                 >
-                    <span className={`material-symbols-outlined ${styles.actionIcon}`}>
-                        bolt
-                    </span>
+                    <MaterialIcon name="bolt" className={`material-symbols-outlined ${styles.actionIcon}`} />
                     {isOutOfStock ? 'Sin stock' : 'Comprar ahora'}
                 </button>
             </div>

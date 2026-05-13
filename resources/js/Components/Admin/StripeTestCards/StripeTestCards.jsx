@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import styles from './StripeTestCards.module.css';
 
 const TEST_CARDS = [
@@ -33,7 +34,7 @@ export default function StripeTestCards() {
                             <div className={styles.cardHeader}>
                                 <div className={styles.cardBrand}>
                                     <div className={`${styles.cardIconWrapper} ${card.type === 'Success' ? styles.cardIconSuccess : styles.cardIconDanger}`}>
-                                        <span className="material-symbols-outlined">{card.icon}</span>
+                                        <MaterialIcon name={card.icon} className="material-symbols-outlined" />
                                     </div>
                                     <div>
                                         <h3 className={styles.cardTitle}>{card.brand}</h3>
@@ -49,9 +50,10 @@ export default function StripeTestCards() {
                                     title="Copiar número"
                                     aria-label={`Copiar número de ${card.brand}`}
                                 >
-                                    <span className={`material-symbols-outlined ${styles.copyButtonIcon}`}>
-                                        {copied === `num-${idx}` ? 'check' : 'content_copy'}
-                                    </span>
+                                    <MaterialIcon
+                                        name={copied === `num-${idx}` ? 'check' : 'content_copy'}
+                                        className={`material-symbols-outlined ${styles.copyButtonIcon}`}
+                                    />
                                 </button>
                             </div>
 
@@ -90,9 +92,7 @@ export default function StripeTestCards() {
                             El C.P. recomendado para España es <strong>28001</strong>.
                         </p>
                     </div>
-                    <span className={`material-symbols-outlined ${styles.noticeIcon}`}>
-                        security
-                    </span>
+                    <MaterialIcon name="security" className={`material-symbols-outlined ${styles.noticeIcon}`} />
                 </div>
             </div>
         </div>

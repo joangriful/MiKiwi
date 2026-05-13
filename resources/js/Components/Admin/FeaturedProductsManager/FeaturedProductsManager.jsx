@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
 import { toast } from 'react-toastify';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import { filterProductsBySearchTerm } from '@/Utils/productSearch';
 import { getAdminProductImage } from '@/Components/Admin/utils/productImages';
 import styles from './FeaturedProductsManager.module.css';
@@ -37,7 +38,7 @@ function ProductRow({ product, isLoading, onToggleFeatured }) {
                         {productImage ? (
                             <img src={productImage} alt={product.name} className={styles.productImage} />
                         ) : (
-                            <span className={`material-symbols-outlined ${styles.imagePlaceholderIcon}`}>image</span>
+                            <MaterialIcon name="image" className={`material-symbols-outlined ${styles.imagePlaceholderIcon}`} />
                         )}
                     </div>
                     <div className={styles.productText}>
@@ -48,11 +49,12 @@ function ProductRow({ product, isLoading, onToggleFeatured }) {
             </td>
             <td className={`${styles.productCell} ${styles.statusCell}`}>
                 {isLoading ? (
-                    <span className={`material-symbols-outlined ${styles.loadingIcon}`}>refresh</span>
+                    <MaterialIcon name="refresh" className={`material-symbols-outlined ${styles.loadingIcon}`} />
                 ) : (
-                    <span className={`material-symbols-outlined ${starIconClassName}`}>
-                        {isPromoted ? 'star' : 'star_border'}
-                    </span>
+                    <MaterialIcon
+                        name={isPromoted ? 'star' : 'star_border'}
+                        className={`material-symbols-outlined ${starIconClassName}`}
+                    />
                 )}
             </td>
         </tr>
@@ -62,7 +64,7 @@ function ProductRow({ product, isLoading, onToggleFeatured }) {
 function EmptyState({ icon, title, description }) {
     return (
         <div className={styles.emptyState}>
-            {icon && <span className={`material-symbols-outlined ${styles.emptyStateIcon}`}>{icon}</span>}
+            {icon && <MaterialIcon name={icon} className={`material-symbols-outlined ${styles.emptyStateIcon}`} />}
             <p className={styles.emptyStateTitle}>{title}</p>
             {description && <p className={styles.emptyStateDescription}>{description}</p>}
         </div>
@@ -104,7 +106,7 @@ export default function FeaturedProductsManager({ products = [] }) {
                     <p className={styles.description}>Selecciona los productos que aparecerán en la sección de inicio.</p>
                 </div>
                 <div className={styles.searchWrapper}>
-                    <span className={`material-symbols-outlined ${styles.searchIcon}`}>search</span>
+                    <MaterialIcon name="search" className={`material-symbols-outlined ${styles.searchIcon}`} />
                     <input
                         aria-label="Buscar producto destacado"
                         type="text"

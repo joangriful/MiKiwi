@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import MikiwiLogo from '@/Components/MikiwiLogo/MikiwiLogo';
 import BurgerMenu from './BurgerMenu';
 import styles from './Header.module.css';
@@ -53,11 +54,10 @@ export default function Header() {
                 <div className={styles.dropdown}>
                     <span className={styles.dropdownTrigger}>
                         Estimulación
-                        <span
+                        <MaterialIcon
+                            name="keyboard_arrow_down"
                             className={`${styles.dropdownIcon} material-symbols-outlined`}
-                        >
-                            keyboard_arrow_down
-                        </span>
+                        />
                     </span>
 
                     <div className={styles.dropdownPopover}>
@@ -85,11 +85,10 @@ export default function Header() {
 
             <div className={styles.actions}>
                 <Link href="/perfil" className={styles.iconLink}>
-                    <span
+                    <MaterialIcon
+                        name="person"
                         className={`${styles.icon} material-symbols-outlined`}
-                    >
-                        person
-                    </span>
+                    />
                 </Link>
 
                 {user?.role === 'admin' && (
@@ -120,7 +119,7 @@ export default function Header() {
                     onClick={() => setIsMenuOpen(true)}
                     aria-label="Open menu"
                 >
-                    <span className="material-symbols-outlined">menu</span>
+                    <MaterialIcon name="menu" className="material-symbols-outlined" />
                 </button>
             </div>
 

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useId, useState } from 'react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import Cropper from 'react-easy-crop';
 import styles from './ImageEditorModal.module.css';
 
@@ -171,7 +172,7 @@ export default function ImageEditorModal({
                         {type === 'banner' ? 'Editar Banner' : 'Editar Foto de Perfil'}
                     </h2>
                     <button type="button" onClick={handleClose} className={styles.closeButton} aria-label="Cerrar editor de imagen">
-                        <span className={styles.materialIcon}>close</span>
+                        <MaterialIcon name="close" className={styles.materialIcon} />
                     </button>
                 </div>
 
@@ -187,9 +188,10 @@ export default function ImageEditorModal({
                             className={`${styles.dropZone} ${dragActive ? styles.dropZoneActive : styles.dropZoneIdle}`}
                         >
                             <div className={styles.dropZoneContent}>
-                                <span className={`${styles.materialIconHero} ${styles.dropZoneIcon}`}>
-                                    {dragActive ? 'download' : 'cloud_upload'}
-                                </span>
+                                <MaterialIcon
+                                    name={dragActive ? 'download' : 'cloud_upload'}
+                                    className={`${styles.materialIconHero} ${styles.dropZoneIcon}`}
+                                />
                                 <div>
                                     <h3 className={styles.dropZoneTitle}>
                                         {dragActive ? 'Suelta la imagen aquí' : 'Arrastra y suelta tu imagen'}
@@ -234,7 +236,7 @@ export default function ImageEditorModal({
                         <div className={styles.controlsPanel}>
                             <div className={styles.controlGroup}>
                                 <label htmlFor="image-editor-zoom" className={styles.controlLabel}>
-                                    <span className={styles.materialIcon}>zoom_in</span>
+                                    <MaterialIcon name="zoom_in" className={styles.materialIcon} />
                                     Zoom: {zoom.toFixed(1)}x
                                 </label>
                                 <input
@@ -252,19 +254,19 @@ export default function ImageEditorModal({
 
                             <div className={styles.controlGroup}>
                                 <span className={styles.controlLabel}>
-                                    <span className={styles.materialIcon}>rotate_right</span>
+                                    <MaterialIcon name="rotate_right" className={styles.materialIcon} />
                                     Rotación: {rotation}°
                                 </span>
                                 <div className={styles.rotationActions}>
                                     <button type="button" onClick={() => setRotation((value) => value - 90)} className={styles.ghostAction}>
-                                        <span className={styles.materialIcon}>rotate_left</span>
+                                        <MaterialIcon name="rotate_left" className={styles.materialIcon} />
                                         -90°
                                     </button>
                                     <button type="button" onClick={() => setRotation(0)} className={styles.ghostAction}>
                                         Reset
                                     </button>
                                     <button type="button" onClick={() => setRotation((value) => value + 90)} className={styles.ghostAction}>
-                                        <span className={styles.materialIcon}>rotate_right</span>
+                                        <MaterialIcon name="rotate_right" className={styles.materialIcon} />
                                         +90°
                                     </button>
                                 </div>
@@ -280,12 +282,12 @@ export default function ImageEditorModal({
                                 <button type="button" onClick={handleSave} disabled={saving} className={styles.primaryAction}>
                                     {saving ? (
                                         <>
-                                            <span className={`${styles.materialIcon} ${styles.spin}`}>refresh</span>
+                                            <MaterialIcon name="refresh" className={`${styles.materialIcon} ${styles.spin}`} />
                                             Procesando...
                                         </>
                                     ) : (
                                         <>
-                                            <span className={styles.materialIcon}>check</span>
+                                            <MaterialIcon name="check" className={styles.materialIcon} />
                                             Guardar y Subir
                                         </>
                                     )}

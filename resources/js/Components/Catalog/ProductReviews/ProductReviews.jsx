@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useForm } from '@inertiajs/react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import styles from './ProductReviews.module.css';
 
 const STARS = [1, 2, 3, 4, 5];
@@ -203,7 +204,7 @@ export default function ProductReviews({ product }) {
                 </div>
             ) : (
                 <div className={styles.emptyState}>
-                    <span className={`material-symbols-outlined ${styles.emptyIcon}`}>reviews</span>
+                    <MaterialIcon name="reviews" className={`material-symbols-outlined ${styles.emptyIcon}`} />
                     <p>Este producto todavía no tiene reseñas aprobadas.</p>
                 </div>
             )}

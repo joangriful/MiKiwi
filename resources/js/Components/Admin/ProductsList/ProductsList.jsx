@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
 import { toast } from 'react-toastify';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import { filterProductsBySearchTerm } from '@/Utils/productSearch';
 import { getAdminProductImage } from '@/Components/Admin/utils/productImages';
 import styles from './ProductsList.module.css';
@@ -8,7 +9,7 @@ import styles from './ProductsList.module.css';
 function SearchBar({ searchTerm, setSearchTerm }) {
     return (
         <div className={styles.searchWrapper}>
-            <span className={`material-symbols-outlined ${styles.searchIcon}`}>search</span>
+            <MaterialIcon name="search" className={`material-symbols-outlined ${styles.searchIcon}`} />
             <input
                 aria-label="Buscar por nombre o SKU"
                 type="text"
@@ -24,7 +25,7 @@ function SearchBar({ searchTerm, setSearchTerm }) {
 function EmptyState() {
     return (
         <div className={styles.emptyState}>
-            <span className={`material-symbols-outlined ${styles.emptyStateIcon}`}>inventory_2</span>
+            <MaterialIcon name="inventory_2" className={`material-symbols-outlined ${styles.emptyStateIcon}`} />
             <p className={styles.emptyStateTitle}>No se encontraron productos</p>
             <p className={styles.emptyStateDescription}>Inténtalo con otro término de búsqueda o crea uno nuevo.</p>
         </div>
@@ -91,7 +92,7 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
                                                     <img src={productImage} alt={product.name} className={styles.productImage} />
                                                 ) : (
                                                     <div className={styles.productImagePlaceholder}>
-                                                        <span className="material-symbols-outlined">image</span>
+                                                        <MaterialIcon name="image" className="material-symbols-outlined" />
                                                     </div>
                                                 )}
                                             </div>
@@ -129,7 +130,7 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
                                                 title="Editar"
                                                 aria-label={`Editar ${product.name}`}
                                             >
-                                                <span className={`material-symbols-outlined ${styles.iconButtonIcon}`}>edit</span>
+                                                <MaterialIcon name="edit" className={`material-symbols-outlined ${styles.iconButtonIcon}`} />
                                             </button>
                                             <button
                                                 type="button"
@@ -140,9 +141,9 @@ export default function ProductsList({ products = [], onEdit, debugCount }) {
                                                 aria-label={`Eliminar ${product.name}`}
                                             >
                                                 {deletingId === product.id ? (
-                                                    <span className={`material-symbols-outlined ${styles.iconButtonIcon} ${styles.spinningIcon}`}>refresh</span>
+                                                    <MaterialIcon name="refresh" className={`material-symbols-outlined ${styles.iconButtonIcon} ${styles.spinningIcon}`} />
                                                 ) : (
-                                                    <span className={`material-symbols-outlined ${styles.iconButtonIcon}`}>delete</span>
+                                                    <MaterialIcon name="delete" className={`material-symbols-outlined ${styles.iconButtonIcon}`} />
                                                 )}
                                             </button>
                                         </div>

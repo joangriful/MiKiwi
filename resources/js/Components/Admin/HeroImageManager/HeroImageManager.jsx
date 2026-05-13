@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { router } from '@inertiajs/react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import Toast from '@/Components/Toast/Toast';
 import { extractImageFiles } from '@/Utils/imageFiles';
 import styles from './HeroImageManager.module.css';
@@ -37,7 +38,7 @@ function ImageCard({ image, onDelete }) {
                     className={styles.overlayButton}
                     title="Ver imagen"
                 >
-                    <span className={`material-symbols-outlined ${styles.overlayButtonIcon}`}>visibility</span>
+                    <MaterialIcon name="visibility" className={`material-symbols-outlined ${styles.overlayButtonIcon}`} />
                 </button>
                 <button
                     type="button"
@@ -45,7 +46,7 @@ function ImageCard({ image, onDelete }) {
                     className={`${styles.overlayButton} ${styles.overlayButtonDanger}`}
                     title="Eliminar imagen"
                 >
-                    <span className={`material-symbols-outlined ${styles.overlayButtonIcon}`}>delete</span>
+                    <MaterialIcon name="delete" className={`material-symbols-outlined ${styles.overlayButtonIcon}`} />
                 </button>
             </div>
         </div>

@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { router, usePage } from '@inertiajs/react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import Toast from '@/Components/Toast/Toast';
 import styles from './UsersManager.module.css';
 
@@ -59,7 +60,7 @@ function getErrorMessage(errors, fallback) {
 function SearchBar({ searchTerm, onSearchTermChange }) {
     return (
         <div className={styles.searchBar}>
-            <span className={`material-symbols-outlined ${styles.searchIcon}`}>search</span>
+            <MaterialIcon name="search" className={`material-symbols-outlined ${styles.searchIcon}`} />
             <input
                 aria-label="Buscar usuarios"
                 type="text"
@@ -75,7 +76,7 @@ function SearchBar({ searchTerm, onSearchTermChange }) {
 function EmptyState() {
     return (
         <div className={styles.emptyState}>
-            <span className={`material-symbols-outlined ${styles.emptyStateIcon}`}>person_off</span>
+            <MaterialIcon name="person_off" className={`material-symbols-outlined ${styles.emptyStateIcon}`} />
             <p>No se encontraron usuarios.</p>
         </div>
     );
@@ -190,7 +191,7 @@ function UserDetails({ user, onClose }) {
                     <p className={styles.panelDescription}>{user.email}</p>
                 </div>
                 <button type="button" className={styles.iconButton} onClick={onClose} aria-label="Cerrar detalle">
-                    <span className="material-symbols-outlined">close</span>
+                    <MaterialIcon name="close" className="material-symbols-outlined" />
                 </button>
             </div>
             <dl className={styles.detailsList}>
@@ -408,10 +409,10 @@ export default function UsersManager({ users = [] }) {
                                                 <td className={`${styles.cell} ${styles.cellRight}`}>
                                                     <div className={styles.actionGroup}>
                                                         <button type="button" className={styles.iconButton} onClick={() => setSelectedUser(user)} aria-label={`Ver ${user.name}`}>
-                                                            <span className="material-symbols-outlined">visibility</span>
+                                                            <MaterialIcon name="visibility" className="material-symbols-outlined" />
                                                         </button>
                                                         <button type="button" className={styles.iconButton} onClick={() => editUser(user)} aria-label={`Editar ${user.name}`}>
-                                                            <span className="material-symbols-outlined">edit</span>
+                                                            <MaterialIcon name="edit" className="material-symbols-outlined" />
                                                         </button>
                                                         <button
                                                             type="button"

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import ConfiguratorLayout from '@/Layouts/ConfiguratorLayout';
 import { normalizeApiError } from '@/Utils/httpError';
 import styles from './Quiz.module.css';
@@ -285,7 +286,7 @@ export default function Quiz() {
                                         onClick={handleBack}
                                         className={styles.backButton}
                                     >
-                                        <span className={`material-symbols-outlined ${styles.backIcon}`}>arrow_back</span>
+                                        <MaterialIcon name="arrow_back" className={`material-symbols-outlined ${styles.backIcon}`} />
                                         Volver
                                     </button>
                                 ) : (

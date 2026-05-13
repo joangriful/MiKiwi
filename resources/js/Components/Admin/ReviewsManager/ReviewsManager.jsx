@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { router } from '@inertiajs/react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import Toast from '@/Components/Toast/Toast';
 import styles from './ReviewsManager.module.css';
 
@@ -327,7 +328,7 @@ export default function ReviewsManager({ reviews = [], users = [], products = []
             <main className={styles.content}>
                 <div className={styles.toolbar}>
                     <div className={styles.searchBar}>
-                        <span className={`material-symbols-outlined ${styles.searchIcon}`}>search</span>
+                        <MaterialIcon name="search" className={`material-symbols-outlined ${styles.searchIcon}`} />
                         <input
                             type="text"
                             value={searchTerm}
@@ -379,7 +380,7 @@ export default function ReviewsManager({ reviews = [], users = [], products = []
                                             <td className={`${styles.cell} ${styles.cellRight}`}>
                                                 <div className={styles.actionGroup}>
                                                     <button type="button" className={styles.iconButton} onClick={() => editReview(review)} aria-label="Editar reseña">
-                                                        <span className="material-symbols-outlined">edit</span>
+                                                        <MaterialIcon name="edit" className="material-symbols-outlined" />
                                                     </button>
                                                     {review.is_approved ? (
                                                         <button
@@ -407,7 +408,7 @@ export default function ReviewsManager({ reviews = [], users = [], products = []
                                                         onClick={() => deleteReview(review)}
                                                         aria-label="Eliminar reseña"
                                                     >
-                                                        <span className="material-symbols-outlined">delete</span>
+                                                        <MaterialIcon name="delete" className="material-symbols-outlined" />
                                                     </button>
                                                 </div>
                                             </td>
@@ -418,7 +419,7 @@ export default function ReviewsManager({ reviews = [], users = [], products = []
 
                             {filteredReviews.length === 0 && (
                                 <div className={styles.emptyState}>
-                                    <span className={`material-symbols-outlined ${styles.emptyIcon}`}>rate_review</span>
+                                    <MaterialIcon name="rate_review" className={`material-symbols-outlined ${styles.emptyIcon}`} />
                                     <p>No hay reseñas con los filtros actuales.</p>
                                 </div>
                             )}

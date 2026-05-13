@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import styles from './Toast.module.css';
 
 export default function Toast({ message, type = 'success', onClose }) {
@@ -18,9 +19,10 @@ export default function Toast({ message, type = 'success', onClose }) {
 
     return (
         <div className={toastClassName}>
-            <span className={`${styles.icon} material-symbols-outlined`}>
-                {type === 'success' ? 'check' : 'priority_high'}
-            </span>
+            <MaterialIcon
+                name={type === 'success' ? 'check' : 'priority_high'}
+                className={`${styles.icon} material-symbols-outlined`}
+            />
             <div className={styles.body}>
                 <p className={styles.message}>{message}</p>
             </div>
@@ -30,7 +32,7 @@ export default function Toast({ message, type = 'success', onClose }) {
                 className={styles.closeButton}
                 aria-label="Close notification"
             >
-                <span className="material-symbols-outlined">close</span>
+                <MaterialIcon name="close" className="material-symbols-outlined" />
             </button>
         </div>
     );

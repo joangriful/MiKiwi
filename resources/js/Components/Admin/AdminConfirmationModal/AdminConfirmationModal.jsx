@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import styles from './AdminConfirmationModal.module.css';
 
 const REMOVE_ACTION = 'remove';
@@ -66,13 +67,14 @@ export default function AdminConfirmationModal({ isOpen, onClose, onConfirm, use
             <div className={styles.modal}>
                 <div className={styles.header}>
                     <h3 className={styles.title}>
-                        <span className={`material-symbols-outlined ${styles.titleIcon} ${actionCopy.titleIconClassName}`}>
-                            {actionCopy.icon}
-                        </span>
+                        <MaterialIcon
+                            name={actionCopy.icon}
+                            className={`material-symbols-outlined ${styles.titleIcon} ${actionCopy.titleIconClassName}`}
+                        />
                         {actionCopy.title}
                     </h3>
                     <button type="button" onClick={onClose} className={styles.closeButton} aria-label="Close confirmation modal">
-                        <span className="material-symbols-outlined">close</span>
+                        <MaterialIcon name="close" className="material-symbols-outlined" />
                     </button>
                 </div>
 
@@ -117,7 +119,7 @@ export default function AdminConfirmationModal({ isOpen, onClose, onConfirm, use
                         onClick={handleConfirmClick}
                         className={`${styles.confirmButton} ${isMatch ? actionCopy.confirmButtonVariant : styles.confirmButtonDisabled}`}
                     >
-                        {isMatch && <span className={`material-symbols-outlined ${styles.confirmIcon}`}>check</span>}
+                        {isMatch && <MaterialIcon name="check" className={`material-symbols-outlined ${styles.confirmIcon}`} />}
                         {actionCopy.confirmButtonText}
                     </button>
                 </div>

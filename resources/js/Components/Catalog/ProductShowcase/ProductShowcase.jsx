@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import { resolveProductImageUrl } from '@/Utils/productImageUrls';
 import ProductImageCarousel from '../ProductImageCarousel/ProductImageCarousel';
 import MainProductImage from '../MainProductImage/MainProductImage';
@@ -52,8 +53,8 @@ export default function ProductShowcase({ product }) {
                         <div className={styles.keyboardTip}>
                             <span className={styles.keyboardTipText}>Navega con las flechas</span>
                             <div className={styles.keyboardTipIcons}>
-                                <span className={`material-symbols-outlined ${styles.keyboardTipIcon}`}>keyboard_arrow_left</span>
-                                <span className={`material-symbols-outlined ${styles.keyboardTipIcon}`}>keyboard_arrow_right</span>
+                                <MaterialIcon name="keyboard_arrow_left" className={`material-symbols-outlined ${styles.keyboardTipIcon}`} />
+                                <MaterialIcon name="keyboard_arrow_right" className={`material-symbols-outlined ${styles.keyboardTipIcon}`} />
                             </div>
                         </div>
                     </div>

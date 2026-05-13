@@ -5,7 +5,7 @@ import styles from './CalibrationSection.module.css';
 
 export default function CalibrationSection() {
     const backgroundImage = getCloudinaryUrl(
-        'https://res.cloudinary.com/dquwonjie/image/upload/v1771865798/Julia_Platanomelon_944_iuusvc.jpg',
+        'https://res.cloudinary.com/dquwonjie/image/upload/v1778704826/Julia_Platanomelon_944_iuusvc2_koohg8.webp',
         { transformations: 'f_auto,q_auto,w_1600,c_fill' },
     );
 

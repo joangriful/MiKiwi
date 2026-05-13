@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import DollManager from '@/Components/Configurator/DollManager/DollManager';
 import { Head } from '@inertiajs/react';
+import MaterialIcon from '@/Components/Icon/MaterialIcon/MaterialIcon';
 import ManagerHeader from '@/Components/Admin/ManagerHeader/ManagerHeader';
 import ManagerSidebar from '@/Components/Admin/ManagerSidebar/ManagerSidebar';
 import SingleComponentView from '@/Components/Admin/SingleComponentView/SingleComponentView';
@@ -71,7 +72,7 @@ export default function ComponentsManager({ views, defaultSettings, partPosition
                             onClick={() => setActiveManager(tab.id)}
                             className={`${styles.tabButton} ${activeManager === tab.id ? styles.tabButtonActive : ''}`}
                         >
-                            <span className={`material-symbols-outlined ${styles.tabIcon}`}>{tab.icon}</span>
+                            <MaterialIcon name={tab.icon} className={`material-symbols-outlined ${styles.tabIcon}`} />
                             <span className={styles.tabLabel}>{tab.label}</span>
                         </button>
                     ))}
