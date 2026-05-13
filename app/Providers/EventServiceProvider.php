@@ -47,7 +47,7 @@ class EventServiceProvider extends ServiceProvider
 
             if (in_array($event->command, self::BLOCKED_COMMANDS, true)) {
                 throw new RuntimeException(
-                    "El comando '{$event->command}' esta bloqueado para proteger la base de datos."
+                    "El comando '{$event->command}' está bloqueado para proteger la base de datos."
                 );
             }
         });

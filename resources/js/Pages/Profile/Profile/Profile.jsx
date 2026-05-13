@@ -7,7 +7,6 @@ import AddressesTab from "@/Components/Profile/AddressesTab/AddressesTab";
 import OrderHistoryTab from "@/Components/Profile/OrderHistoryTab/OrderHistoryTab";
 import EditAccountTab from "@/Components/Profile/EditAccountTab/EditAccountTab";
 import CardsTab from "@/Components/Profile/CardsTab/CardsTab";
-import PreferencesTab from "@/Components/Profile/PreferencesTab/PreferencesTab";
 import ReturnsTab from "@/Components/Profile/ReturnsTab/ReturnsTab";
 import { Head } from '@inertiajs/react';
 import { useState } from "react";
@@ -30,8 +29,6 @@ export default function Profile({ recommendedProducts, favoriteProducts = [], or
                 return <EditAccountTab />;
             case 'cards':
                 return <CardsTab />;
-            case 'preferences':
-                return <PreferencesTab />;
             case 'returns':
                 return <ReturnsTab />;
             default:

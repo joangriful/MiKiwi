@@ -16,6 +16,14 @@ function Loader() {
     );
 }
 
+function resolveInitialModel(models, productSlug) {
+    if (!productSlug) {
+        return models[0];
+    }
+
+    return models.find((model) => model.productSlug === productSlug) || models[0];
+}
+
 export default function Mannequin3DViewer({
     onModelMounted,
     isActive = false,
@@ -25,11 +33,12 @@ export default function Mannequin3DViewer({
     isAddingDollToCart = false,
     addedDollSlug = null,
     readyDollModels = DEFAULT_READY_DOLL_MODELS,
+    initialProductSlug = null,
 }) {
     const currentReadyDollModels = readyDollModels.length > 0
         ? readyDollModels
         : DEFAULT_READY_DOLL_MODELS;
-    const [selectedModel, setSelectedModel] = useState(currentReadyDollModels[0]);
+    const [selectedModel, setSelectedModel] = useState(() => resolveInitialModel(currentReadyDollModels, initialProductSlug));
     const [isModelReady, setIsModelReady] = useState(false);
     const [bodyParams] = useState({
         height: 0.5,
@@ -48,10 +57,11 @@ export default function Mannequin3DViewer({
 
     useEffect(() => {
         setSelectedModel((currentModel) => (
-            currentReadyDollModels.find((model) => model.id === currentModel.id)
+            currentReadyDollModels.find((model) => model.productSlug === initialProductSlug)
+            || currentReadyDollModels.find((model) => model.id === currentModel.id)
             || currentReadyDollModels[0]
         ));
-    }, [currentReadyDollModels]);
+    }, [currentReadyDollModels, initialProductSlug]);
 
     const handleModelMounted = () => {
         setIsModelReady(true);

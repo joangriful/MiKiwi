@@ -26,7 +26,7 @@ export default function CatalogPagination({ links = [] }) {
     }
 
     return (
-        <nav className={styles.root} aria-label="Paginacion del catalogo">
+        <nav className={styles.root} aria-label="Paginación del catálogo">
             <div className={styles.list}>
                 {links.map((link, index) => {
                     const label = cleanPaginationLabel(link.label);

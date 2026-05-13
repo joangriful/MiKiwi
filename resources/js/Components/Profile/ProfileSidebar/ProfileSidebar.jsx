@@ -10,7 +10,6 @@ export default function ProfileSidebar({ activeTab, setActiveTab }) {
         { id: 'orders', label: 'Historial de pedidos', icon: 'pedidos.svg' },
         { id: 'edit-account', label: 'Editar Detalles de la cuenta', icon: 'account_preferences.svg' },
         { id: 'cards', label: 'Tarjetas', icon: 'credit_card', isMaterial: true },
-        { id: 'preferences', label: 'Gestiona tus preferencias', icon: 'preferences.svg' },
         { id: 'returns', label: 'Devoluciones', icon: 'refund.svg' },
     ];
 

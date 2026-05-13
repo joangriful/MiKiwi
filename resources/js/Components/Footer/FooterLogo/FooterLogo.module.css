@@ -5,16 +5,26 @@
     margin-bottom: 2.5rem;
 }
 
+.logoLink {
+    display: inline-flex;
+    color: var(--color-white);
+    transition: transform 300ms ease, opacity 150ms ease;
+}
+
+.logoLink:hover {
+    transform: scale(1.05);
+}
+
+.logoLink:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 0.35rem;
+}
+
 .logo {
     width: 12rem;
     height: auto;
-    color: var(--color-white);
+    color: currentColor;
     opacity: 0.9;
-    transition: transform 300ms ease;
-}
-
-.logo:hover {
-    transform: scale(1.05);
 }
 
 @media (min-width: 768px) {

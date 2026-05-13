@@ -7,6 +7,14 @@ function formatPrice(price) {
     }).format(price || 0);
 }
 
+function getDollDisplayName(dollProduct) {
+    if (!dollProduct?.name || dollProduct.name === 'base_doll') {
+        return 'Muñeca Personalizada';
+    }
+
+    return dollProduct.name;
+}
+
 export default function DollSelectionSummary({
     dollProduct,
     entries,
@@ -15,20 +23,25 @@ export default function DollSelectionSummary({
     canPurchase,
     purchaseDisabledReason,
     purchaseErrorMessage,
+    addedMessage,
     onReset,
+    onAddToCart,
     onPurchase,
+    isAddingToCart,
     isSubmitting,
 }) {
+    const isProcessing = isAddingToCart || isSubmitting;
+
     return (
         <section className={styles.root} aria-label="Resumen de muñeca personalizada">
             <div className={styles.header}>
                 <div className={styles.headerContent}>
-                    <p className={styles.eyebrow}>Resumen de configuracion</p>
-                    <h3 className={styles.title}>{dollProduct?.name || 'Muñeca personalizada'}</h3>
+                    <p className={styles.eyebrow}>Resumen de configuración</p>
+                    <h3 className={styles.title}>{getDollDisplayName(dollProduct)}</h3>
 
                     {missingCategories.length > 0 ? (
                         <div className={styles.warningBox}>
-                            <p className={styles.warningTitle}>Faltan categorias obligatorias</p>
+                            <p className={styles.warningTitle}>Faltan categorías obligatorias</p>
                             <p className={styles.warningText}>{missingCategories.join(', ')}</p>
                         </div>
                     ) : null}
@@ -76,15 +89,27 @@ export default function DollSelectionSummary({
                 <p className={styles.statusText}>{purchaseErrorMessage}</p>
             ) : null}
 
+            {addedMessage ? (
+                <p className={styles.successText}>{addedMessage}</p>
+            ) : null}
+
             <div className={styles.actions}>
-                <button type="button" onClick={onReset} className={styles.resetButton} disabled={isSubmitting}>
+                <button type="button" onClick={onReset} className={styles.resetButton} disabled={isProcessing}>
                     Borrar
+                </button>
+                <button
+                    type="button"
+                    onClick={onAddToCart}
+                    className={styles.addToCartButton}
+                    disabled={!canPurchase || isProcessing}
+                >
+                    {isAddingToCart ? 'Añadiendo...' : 'Añadir al carrito'}
                 </button>
                 <button
                     type="button"
                     onClick={onPurchase}
                     className={styles.purchaseButton}
-                    disabled={!canPurchase || isSubmitting}
+                    disabled={!canPurchase || isProcessing}
                 >
                     {isSubmitting ? 'Procesando...' : 'Comprar'}
                 </button>

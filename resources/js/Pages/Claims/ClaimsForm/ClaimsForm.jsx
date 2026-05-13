@@ -20,7 +20,7 @@ export default function ClaimsForm() {
                 <header className={styles.header}>
                     <h1 className={styles.title}>Formulario de Reclamaciones</h1>
                     <p className={styles.intro}>
-                        En MiKiwi nos preocupamos por tu satisfaccion. Si tienes alguna incidencia, estamos aqui para ayudarte.
+                        En MiKiwi nos preocupamos por tu satisfacción. Si tienes alguna incidencia, estamos aquí para ayudarte.
                     </p>
                 </header>
 

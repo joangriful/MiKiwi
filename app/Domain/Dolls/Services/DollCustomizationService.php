@@ -78,7 +78,7 @@ class DollCustomizationService
 
         foreach ($requiredCategories as $category) {
             if (! isset($resolvedAccessories['front'][$category])) {
-                throw new \InvalidArgumentException("Falta seleccionar la categoria obligatoria: {$category}.");
+                throw new \InvalidArgumentException("Falta seleccionar la categoría obligatoria: {$category}.");
             }
         }
     }
@@ -93,7 +93,7 @@ class DollCustomizationService
 
         foreach ($requiredCategories as $category) {
             if (! isset($resolvedAccessories['front'][$category])) {
-                throw new \InvalidArgumentException("Falta seleccionar la categoria obligatoria: {$category}.");
+                throw new \InvalidArgumentException("Falta seleccionar la categoría obligatoria: {$category}.");
             }
         }
 
@@ -140,7 +140,7 @@ class DollCustomizationService
         $selectedParts = $configuration['selected_accessories'] ?? $configuration['selected_parts'] ?? [];
 
         if (! is_array($selectedParts)) {
-            throw new \InvalidArgumentException('La configuracion de la muñeca no es valida.');
+            throw new \InvalidArgumentException('La configuración de la muñeca no es válida.');
         }
 
         $normalized = [];
@@ -243,11 +243,11 @@ class DollCustomizationService
                 $accessory = $this->findCompatibleAccessory($part, $compatibleAccessories);
 
                 if (! $accessory) {
-                    throw new \InvalidArgumentException("El accesorio seleccionado no es valido para la categoria {$category}.");
+                    throw new \InvalidArgumentException("El accesorio seleccionado no es válido para la categoría {$category}.");
                 }
 
                 if (($accessory['group_name'] ?? null) !== null && $accessory['group_name'] !== $category) {
-                    throw new \InvalidArgumentException("El accesorio seleccionado no pertenece a la categoria {$category}.");
+                    throw new \InvalidArgumentException("El accesorio seleccionado no pertenece a la categoría {$category}.");
                 }
 
                 $product = $accessory['product'];

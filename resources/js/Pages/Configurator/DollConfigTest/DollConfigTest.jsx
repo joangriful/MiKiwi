@@ -29,13 +29,32 @@ import styles from './DollConfigTest.module.css';
 const Mannequin3DViewer = React.lazy(loadMannequin3DViewer);
 const DEFAULT_DOLL_BASE_PRICE = 2000;
 
+function getInitialReadyDollSlug() {
+    if (typeof window === 'undefined') {
+        return null;
+    }
+
+    return new URLSearchParams(window.location.search).get('doll');
+}
+
+function getInitialConfiguratorTab() {
+    if (typeof window === 'undefined') {
+        return 'customize';
+    }
+
+    return new URLSearchParams(window.location.search).get('tab') === 'ready'
+        ? 'ready'
+        : 'customize';
+}
+
 export default function DollConfigTest({ views, defaultSettings, partPositions: initialPartPositions, dollProduct, readyDollProducts = [], configuratorRules }) {
     // 1. Shared Logic & Network Pre-fetching (Only fetches files to cache, no CPU parsing)
     const { handle2DReady } = use3DPreload(views, defaultSettings);
 
     // 2. State
     const sanitizedViews = useMemo(() => filterHiddenPartsFromViews(views || {}), [views]);
-    const [activeTab, setActiveTab] = useState('customize');
+    const initialReadyDollSlug = useMemo(() => getInitialReadyDollSlug(), []);
+    const [activeTab, setActiveTab] = useState(getInitialConfiguratorTab);
     const [allSelections, setAllSelections] = useState({ front: {}, back: {} });
     const [currentView, setCurrentView] = useState('front');
     const [zoomLevel, setZoomLevel] = useState(100);
@@ -43,6 +62,8 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
     const [partPositions, setPartPositions] = useState(initialPartPositions || {});
     const [topSectionHeight, setTopSectionHeight] = useState(65);
     const [isSubmittingPurchase, setIsSubmittingPurchase] = useState(false);
+    const [isAddingCustomDollToCart, setIsAddingCustomDollToCart] = useState(false);
+    const [customDollAddedMessage, setCustomDollAddedMessage] = useState('');
     const [purchaseErrorMessage, setPurchaseErrorMessage] = useState('');
     const [isSubmittingReadyDollPurchase, setIsSubmittingReadyDollPurchase] = useState(false);
     const [isAddingReadyDollToCart, setIsAddingReadyDollToCart] = useState(false);
@@ -173,7 +194,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
     const purchaseDisabledReason = !dollProduct?.slug
         ? 'No hay una muñeca configurable disponible para compra en este momento.'
         : missingRequiredCategories.length > 0
-            ? 'Completa todas las categorias obligatorias para comprar tu muñeca.'
+            ? 'Completa todas las categorías obligatorias para comprar tu muñeca.'
             : null;
     const readyDollModels = useMemo(
         () => buildReadyDollModels(readyDollProducts),
@@ -186,6 +207,40 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
         const defaults = defaultSettings?.selections || { front: {}, back: {} };
         const normalizedDefaults = defaults.front || defaults.back ? defaults : { front: defaults, back: {} };
         setAllSelections(ensurePreselectedSelections(sanitizedViews, filterHiddenPartsFromSelections(normalizedDefaults), configuratorRules));
+        setCustomDollAddedMessage('');
+        setPurchaseErrorMessage('');
+    };
+
+    const buildCustomDollCartPayload = () => ({
+        product_slug: dollProduct.slug,
+        quantity: 1,
+        configuration: buildConfigurationPayload({ front: allSelections.front || {} }),
+    });
+
+    const addCustomDollToCart = () => axios.post(route('cart.add'), buildCustomDollCartPayload());
+
+    const handleAddCustomDollToCart = async () => {
+        if (!dollProduct?.slug) {
+            setPurchaseErrorMessage('No hay una muñeca configurable disponible para compra en este momento.');
+            return;
+        }
+
+        setPurchaseErrorMessage('');
+        setCustomDollAddedMessage('');
+        setIsAddingCustomDollToCart(true);
+
+        try {
+            await addCustomDollToCart();
+            refreshCartCount();
+            setCustomDollAddedMessage('Muñeca añadida al carrito.');
+        } catch (error) {
+            console.error('No pudimos agregar la muñeca al carrito:', error);
+            const apiMessage = error?.response?.data?.message;
+            const fallbackMessage = 'No pudimos añadir la muñeca al carrito. Revisa tu selección e inténtalo de nuevo.';
+            setPurchaseErrorMessage(typeof apiMessage === 'string' && apiMessage.trim() !== '' ? apiMessage : fallbackMessage);
+        } finally {
+            setIsAddingCustomDollToCart(false);
+        }
     };
 
     const handlePurchase = async () => {
@@ -195,22 +250,17 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
         }
 
         setPurchaseErrorMessage('');
+        setCustomDollAddedMessage('');
         setIsSubmittingPurchase(true);
 
         try {
-            const payload = {
-                product_slug: dollProduct.slug,
-                quantity: 1,
-                configuration: buildConfigurationPayload({ front: allSelections.front || {} }),
-            };
+            await addCustomDollToCart();
 
-            const { data } = await axios.post(route('cart.buy-now'), payload);
-
-            window.location.href = data.redirect || route('cart.index', { buy_now: 1 });
+            router.visit(route('cart.index'));
         } catch (error) {
             console.error('No pudimos preparar la compra de la muñeca:', error);
             const apiMessage = error?.response?.data?.message;
-            const fallbackMessage = 'No pudimos preparar la compra directa. Revisa tu seleccion e intentalo de nuevo.';
+            const fallbackMessage = 'No pudimos preparar la compra. Revisa tu selección e inténtalo de nuevo.';
             setPurchaseErrorMessage(typeof apiMessage === 'string' && apiMessage.trim() !== '' ? apiMessage : fallbackMessage);
             setIsSubmittingPurchase(false);
         }
@@ -299,7 +349,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                             className={`${styles.tabButton} ${activeTab === 'ready' ? styles.tabButtonActive : ''}`}
                             aria-pressed={activeTab === 'ready'}
                         >
-                            MUÑECAS LISTAS
+                            MUÑECAS PREDETERMINADAS
                         </button>
                     </div>
                 </div>
@@ -399,8 +449,11 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                                         canPurchase={canPurchase}
                                         purchaseDisabledReason={purchaseDisabledReason}
                                         purchaseErrorMessage={purchaseErrorMessage}
+                                        addedMessage={customDollAddedMessage}
                                         onReset={handleResetSelections}
+                                        onAddToCart={handleAddCustomDollToCart}
                                         onPurchase={handlePurchase}
+                                        isAddingToCart={isAddingCustomDollToCart}
                                         isSubmitting={isSubmittingPurchase}
                                     />
                                 </div>
@@ -423,6 +476,7 @@ export default function DollConfigTest({ views, defaultSettings, partPositions: 
                                 isAddingDollToCart={isAddingReadyDollToCart}
                                 addedDollSlug={addedReadyDollSlug}
                                 readyDollModels={readyDollModels}
+                                initialProductSlug={initialReadyDollSlug}
                                 onModelMounted={() => {
                                     is3DMountedRef.current = true;
                                     if (transitionStartTime) {

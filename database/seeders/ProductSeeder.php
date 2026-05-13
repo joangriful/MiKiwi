@@ -27,7 +27,7 @@ class ProductSeeder extends Seeder
             $this->syncProductCollections($product, $definition['collections'] ?? []);
         }
 
-        $this->command->info('ProductSeeder completado con catalogo demo declarativo.');
+        $this->command->info('ProductSeeder completado con catálogo demo declarativo.');
     }
 
     /**
@@ -188,7 +188,7 @@ class ProductSeeder extends Seeder
                 'sku' => 'CRABY-001',
                 'name' => 'Craby',
                 'slug' => 'craby',
-                'description' => 'El vibrador de parejas mas versatil e inclusivo',
+                'description' => 'El vibrador de parejas más versátil e inclusivo',
                 'base_price' => 39.99,
                 'stock_quantity' => 50,
                 'product_type' => ProductType::Simple->value,
@@ -477,7 +477,7 @@ class ProductSeeder extends Seeder
             return $fallbackCategoryId;
         }
 
-        $this->command?->error('No hay categorias en la base de datos. Abortando ProductSeeder.');
+        $this->command?->error('No hay categorías en la base de datos. Abortando ProductSeeder.');
 
         throw new RuntimeException('No categories found for ProductSeeder.');
     }

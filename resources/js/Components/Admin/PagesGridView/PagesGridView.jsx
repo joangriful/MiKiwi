@@ -122,7 +122,7 @@ export default function PagesGridView({
             <div className={styles.toolbar}>
                 <label className={styles.toolbarCheckboxLabel}>
                     <input
-                        aria-label="Ver todas las paginas"
+                        aria-label="Ver todas las páginas"
                         type="checkbox"
                         checked={areAllPagesSelected}
                         onChange={(e) => {
@@ -142,7 +142,7 @@ export default function PagesGridView({
                 <div className={styles.columnsControl}>
                     <span className={styles.toolbarLabel}>Columns:</span>
                     <input
-                        aria-label="Numero de columnas"
+                        aria-label="Número de columnas"
                         type="number"
                         min="1"
                         max="5"

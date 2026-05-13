@@ -38,28 +38,28 @@ run('normalizeApiError extracts first validation message from Laravel JSON error
             data: {
                 message: 'The given data was invalid.',
                 errors: {
-                    email: ['Introduce una direccion de correo valida.'],
+                    email: ['Introduce una dirección de correo válida.'],
                 },
             },
         },
     });
 
     assert.equal(normalized.code, 'validation_failed');
-    assert.equal(normalized.message, 'Introduce una direccion de correo valida.');
+    assert.equal(normalized.message, 'Introduce una dirección de correo válida.');
     assert.deepEqual(normalized.fieldErrors, {
-        email: ['Introduce una direccion de correo valida.'],
+        email: ['Introduce una dirección de correo válida.'],
     });
 });
 
 run('normalizeInertiaErrors returns the first field error and preserves fieldErrors', () => {
     const normalized = normalizeInertiaErrors({
-        newsletter: 'No pudimos completar tu suscripcion.',
+        newsletter: 'No pudimos completar tu suscripción.',
     });
 
     assert.equal(normalized.code, 'validation_failed');
-    assert.equal(normalized.message, 'No pudimos completar tu suscripcion.');
+    assert.equal(normalized.message, 'No pudimos completar tu suscripción.');
     assert.deepEqual(normalized.fieldErrors, {
-        newsletter: ['No pudimos completar tu suscripcion.'],
+        newsletter: ['No pudimos completar tu suscripción.'],
     });
 });
 

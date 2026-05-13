@@ -2,6 +2,33 @@ import { Link } from "@inertiajs/react";
 import { getProductImage } from "@/Components/Checkout/utils/productImages";
 import styles from "./CheckoutOrderSummary.module.css";
 
+function isBaseDollProduct(product = {}) {
+    return product.sku === "DOLL-BASE-001" || product.slug === "base-doll" || product.name === "base_doll";
+}
+
+function isDollProduct(product = {}) {
+    return product.product_type === "doll";
+}
+
+function getProductHref(product = {}) {
+    if (isBaseDollProduct(product)) {
+        return null;
+    }
+
+    if (isDollProduct(product)) {
+        return route("doll.config.test", {
+            tab: "ready",
+            doll: product.slug,
+        });
+    }
+
+    return route("products.show", product.slug);
+}
+
+function getProductDisplayName(product = {}) {
+    return isBaseDollProduct(product) ? "Muñeca Personalizada" : product.name;
+}
+
 export default function CheckoutOrderSummary({
     cart,
     coupon,
@@ -30,7 +57,7 @@ export default function CheckoutOrderSummary({
                         ))
                     ) : (
                         <div className={styles.emptyState}>
-                            <p>Carrito vacio</p>
+                            <p>Carrito vacío</p>
                         </div>
                     )}
                 </div>
@@ -76,28 +103,30 @@ function SummaryHeader({ isBuyNow }) {
 
 function OrderSummaryItem({ item, onRemoveItem }) {
     const lineTotal = Number.parseFloat(item.subtotal ?? ((item.unit_price ?? item.product.base_price) * item.quantity)).toFixed(2);
-    const isConfigurable = item.product?.product_type === "configurable";
+    const productHref = getProductHref(item.product);
+    const productName = getProductDisplayName(item.product);
+    const shouldRenderLink = Boolean(productHref);
 
     return (
         <div className={styles.item}>
-            {isConfigurable ? (
+            {!shouldRenderLink ? (
                 <div className={styles.imageLink}>
-                    <img src={getProductImage(item.product)} alt={item.product.name} className={styles.image} />
+                    <img src={getProductImage(item.product)} alt={productName} className={styles.image} />
                     <span className={styles.quantity}>{item.quantity}</span>
                 </div>
             ) : (
-                <Link href={route("products.show", item.product.slug)} className={styles.imageLink}>
-                    <img src={getProductImage(item.product)} alt={item.product.name} className={styles.image} />
+                <Link href={productHref} className={styles.imageLink}>
+                    <img src={getProductImage(item.product)} alt={productName} className={styles.image} />
                     <span className={styles.quantity}>{item.quantity}</span>
                 </Link>
             )}
 
             <div className={styles.itemInfo}>
-                {isConfigurable ? (
-                    <span className={styles.itemName}>{item.product.name}</span>
+                {!shouldRenderLink ? (
+                    <span className={styles.itemName}>{productName}</span>
                 ) : (
-                    <Link href={route("products.show", item.product.slug)} className={styles.itemName}>
-                        {item.product.name}
+                    <Link href={productHref} className={styles.itemName}>
+                        {productName}
                     </Link>
                 )}
                 <div className={styles.itemMeta}>
@@ -128,13 +157,13 @@ function CouponBox({ coupon, couponCode, couponError, couponProcessing, onCoupon
     return (
         <section className={styles.couponSection}>
             <label className={styles.couponLabel} htmlFor="checkout_coupon">
-                Cupon de descuento
+                Cupón de descuento
             </label>
             <div className={styles.couponInputGroup}>
                 <input
                     id="checkout_coupon"
                     type="text"
-                    placeholder="Tengo un codigo..."
+                    placeholder="Tengo un código..."
                     className={styles.couponInput}
                     value={couponCode}
                     aria-label="Código de cupón"
@@ -168,7 +197,7 @@ function CouponBox({ coupon, couponCode, couponError, couponProcessing, onCoupon
                         </div>
                     </div>
 
-                    <button type="button" onClick={onRemoveCoupon} className={styles.removeCouponButton} aria-label="Quitar cupon">
+                    <button type="button" onClick={onRemoveCoupon} className={styles.removeCouponButton} aria-label="Quitar cupón">
                         <svg className={styles.iconMd} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -186,19 +215,19 @@ function TotalsBox({ coupon, step, totals, onCheckout, canCheckout }) {
 
             {coupon ? (
                 <SummaryRow
-                    label="Ahorro cupon"
+                    label="Ahorro cupón"
                     value={`-${totals.couponDiscount.toFixed(2)} €`}
                     variant="discount"
                 />
             ) : null}
 
             <SummaryRow
-                label="Gastos Envio"
+                label="Gastos Envío"
                 value={
                     step > 2 ? (
                         `${totals.shippingCost.toFixed(2)} €`
                     ) : (
-                        <span className={styles.pendingShipping}>pendiente de envio</span>
+                        <span className={styles.pendingShipping}>pendiente de envío</span>
                     )
                 }
             />

@@ -73,6 +73,7 @@
 .warningTitle,
 .warningText,
 .statusText,
+.successText,
 .emptyState {
     margin: 0;
 }
@@ -120,10 +121,16 @@
 
 .warningText,
 .statusText,
+.successText,
 .emptyState {
     color: var(--text-muted);
     font-size: 0.8rem;
     line-height: 1.45;
+}
+
+.successText {
+    color: var(--color-primary);
+    font-weight: 700;
 }
 
 .totals {
@@ -153,11 +160,12 @@
 
 .actions {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 0.85fr 1.15fr 1fr;
     gap: 0.75rem;
 }
 
 .resetButton,
+.addToCartButton,
 .purchaseButton {
     min-height: 3rem;
     border-radius: 999px;
@@ -175,6 +183,16 @@
     border-color: var(--text-main);
 }
 
+.addToCartButton {
+    border: 1px solid var(--color-primary);
+    background: var(--bg-surface);
+    color: var(--color-primary);
+}
+
+.addToCartButton:hover:not(:disabled) {
+    background: var(--color-primary-soft);
+}
+
 .purchaseButton {
     background: var(--premium-gradient);
     color: var(--color-white);
@@ -187,7 +205,14 @@
 }
 
 .purchaseButton:disabled,
+.addToCartButton:disabled,
 .resetButton:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+    .actions {
+        grid-template-columns: 1fr;
+    }
 }

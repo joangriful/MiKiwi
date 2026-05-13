@@ -39,10 +39,10 @@ export default function ClaimsFormComponent() {
                             />
                         </FormField>
 
-                        <FormField label="Correo electronico" htmlFor="email" required>
+                        <FormField label="Correo electrónico" htmlFor="email" required>
                             <input
                                 id="email"
-                                aria-label="Correo electronico"
+                                aria-label="Correo electrónico"
                                 type="email"
                                 name="email"
                                 required
@@ -53,10 +53,10 @@ export default function ClaimsFormComponent() {
                             />
                         </FormField>
 
-                        <FormField label="Telefono de contacto" htmlFor="phone">
+                        <FormField label="Teléfono de contacto" htmlFor="phone">
                             <input
                                 id="phone"
-                                aria-label="Telefono de contacto"
+                                aria-label="Teléfono de contacto"
                                 type="tel"
                                 name="phone"
                                 className={styles.input}
@@ -66,10 +66,10 @@ export default function ClaimsFormComponent() {
                             />
                         </FormField>
 
-                        <FormField label="Numero de pedido" htmlFor="orderId">
+                        <FormField label="Número de pedido" htmlFor="orderId">
                             <input
                                 id="orderId"
-                                aria-label="Numero de pedido"
+                                aria-label="Número de pedido"
                                 type="text"
                                 name="orderId"
                                 className={styles.input}
@@ -81,11 +81,11 @@ export default function ClaimsFormComponent() {
                     </div>
                 </FormSection>
 
-                <FormSection title="Detalle de la reclamacion">
-                    <FormField label="Motivo de la reclamacion" htmlFor="reason" required>
+                <FormSection title="Detalle de la reclamación">
+                    <FormField label="Motivo de la reclamación" htmlFor="reason" required>
                         <select
                             id="reason"
-                            aria-label="Motivo de la reclamacion"
+                            aria-label="Motivo de la reclamación"
                             name="reason"
                             required
                             className={styles.select}
@@ -100,20 +100,20 @@ export default function ClaimsFormComponent() {
                         </select>
                     </FormField>
 
-                    <FormField label="Descripcion detallada" htmlFor="message" required>
+                    <FormField label="Descripción detallada" htmlFor="message" required>
                         <textarea
                             id="message"
-                            aria-label="Descripcion detallada"
+                            aria-label="Descripción detallada"
                             name="message"
                             required
                             rows="5"
                             className={styles.textarea}
-                            placeholder="Describe el problema con el mayor detalle posible. Incluye fechas, importes y cualquier informacion relevante..."
+                            placeholder="Describe el problema con el mayor detalle posible. Incluye fechas, importes y cualquier información relevante..."
                             value={formData.message}
                             onChange={handleChange}
                         />
                         <p className={styles.fieldHint}>
-                            Cuantos mas detalles incluyas, antes podremos resolver tu caso.
+                            Cuantos más detalles incluyas, antes podremos resolver tu caso.
                         </p>
                     </FormField>
                 </FormSection>
@@ -137,8 +137,8 @@ function ClaimsFormHeader() {
                 Formulario de Reclamaciones
             </h2>
             <p className={styles.formIntro}>
-                Lamentamos que hayas tenido una incidencia. Rellena los datos y nuestro equipo se pondra en contacto
-                contigo en un plazo maximo de <strong>48 horas habiles</strong>.
+                Lamentamos que hayas tenido una incidencia. Rellena los datos y nuestro equipo se pondrá en contacto
+                contigo en un plazo máximo de <strong>48 horas hábiles</strong>.
             </p>
         </header>
     );
@@ -148,9 +148,9 @@ function LegalNotice() {
     return (
         <aside className={styles.legalNotice}>
             <p>
-                <strong>Informacion sobre la resolucion de litigios.</strong> De conformidad con el Reglamento (UE)
-                n.o 524/2013 sobre resolucion de litigios en linea en materia de consumo, la Comision Europea pone a
-                disposicion una plataforma de resolucion en linea accesible en{" "}
+                <strong>Información sobre la resolución de litigios.</strong> De conformidad con el Reglamento (UE)
+                n.o 524/2013 sobre resolución de litigios en línea en materia de consumo, la Comisión Europea pone a
+                disposición una plataforma de resolución en línea accesible en{" "}
                 <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer">
                     ec.europa.eu/consumers/odr
                 </a>
@@ -185,7 +185,7 @@ function PrivacyConsent({ checked, onChange, onToggle }) {
         <div className={styles.privacyRow}>
             <input
                 id="terms"
-                aria-label="Aceptar politica de privacidad"
+                aria-label="Aceptar política de privacidad"
                 type="checkbox"
                 name="terms"
                 className={styles.checkboxInput}
@@ -196,7 +196,7 @@ function PrivacyConsent({ checked, onChange, onToggle }) {
                 type="button"
                 className={`${styles.checkboxVisual} ${checked ? styles.checkboxVisualChecked : ""}`}
                 onClick={onToggle}
-                aria-label="Aceptar politica de privacidad"
+                aria-label="Aceptar política de privacidad"
                 aria-pressed={checked}
             >
                 {checked ? (
@@ -206,9 +206,9 @@ function PrivacyConsent({ checked, onChange, onToggle }) {
                 ) : null}
             </button>
             <label htmlFor="terms" className={styles.privacyText}>
-                He leido y acepto la{" "}
-                <Link href={route("privacy.policy")}>Politica de Privacidad</Link>{" "}
-                y autorizo el tratamiento de mis datos personales para la gestion de esta reclamacion, de conformidad
+                He leído y acepto la{" "}
+                <Link href={route("privacy.policy")}>Política de Privacidad</Link>{" "}
+                y autorizo el tratamiento de mis datos personales para la gestión de esta reclamación, de conformidad
                 con el RGPD (UE) 2016/679.
             </label>
         </div>
@@ -219,10 +219,10 @@ function FormActions() {
     return (
         <footer className={styles.actions}>
             <p>
-                Respondemos en un plazo maximo de <strong>48 horas habiles</strong>.
+                Respondemos en un plazo máximo de <strong>48 horas hábiles</strong>.
             </p>
             <button type="submit" className={styles.submitButton}>
-                Enviar Reclamacion
+                Enviar Reclamación
             </button>
         </footer>
     );
@@ -237,14 +237,14 @@ function ClaimSuccess({ email, referenceNumber }) {
                 </svg>
             </div>
             <h2 id="claim_success_title" className={styles.successTitle}>
-                Reclamacion registrada
+                Reclamación registrada
             </h2>
             <p className={styles.successText}>
-                Tu reclamacion ha sido registrada correctamente. Recibiras una confirmacion en <strong>{email}</strong>{" "}
-                y nos pondremos en contacto contigo en un plazo maximo de <strong>48 horas habiles</strong>.
+                Tu reclamación ha sido registrada correctamente. Recibirás una confirmación en <strong>{email}</strong>{" "}
+                y nos pondremos en contacto contigo en un plazo máximo de <strong>48 horas hábiles</strong>.
             </p>
             <p className={styles.successReference}>
-                Numero de referencia: <strong>{referenceNumber}</strong>. Guardalo para futuras consultas.
+                Número de referencia: <strong>{referenceNumber}</strong>. Guárdalo para futuras consultas.
             </p>
             <Link href={route("home")} className={styles.homeLink}>
                 Volver al inicio

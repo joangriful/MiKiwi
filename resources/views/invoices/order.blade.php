@@ -207,9 +207,9 @@
                 <td style="padding-left: 40px;">
                     <div class="section-label">Emisor</div>
                     <div class="info-box">
-                        <strong>MiKiwi SL</strong><br>
-                        Calle de la Innovación 1<br>
-                        28001 Madrid, España<br>
+                        <strong>MiKiwi - Innovación, Inclusión y Bienestar</strong><br>
+                        Pago Valdeconejos, s/n<br>
+                        11550 Chipiona, Cádiz<br>
                         CIF: B12345678<br>
                         E: info@mikiwi.com
                     </div>

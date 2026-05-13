@@ -38,7 +38,7 @@ class StoreCartRequest extends FormRequest
             'quantity.max' => 'La cantidad máxima es 99.',
             'accessories.array' => 'Los accesorios deben ser una lista.',
             'accessories.*.exists' => 'Uno de los accesorios seleccionados no existe.',
-            'configuration.array' => 'La configuracion de la muñeca debe ser valida.',
+            'configuration.array' => 'La configuración de la muñeca debe ser válida.',
         ];
     }
 
@@ -48,7 +48,7 @@ class StoreCartRequest extends FormRequest
             'product_slug' => 'producto',
             'quantity' => 'cantidad',
             'accessories' => 'accesorios',
-            'configuration' => 'configuracion',
+            'configuration' => 'configuración',
         ];
     }
 }

@@ -109,7 +109,7 @@ export default function MannequinConfigurator() {
 
     return (
         <ConfiguratorLayout>
-            <Head title="Configurador de Maniqui Avanzado" />
+            <Head title="Configurador de Maniquí Avanzado" />
 
             <div className={styles.root}>
                 <main className={styles.viewport}>
@@ -146,9 +146,9 @@ export default function MannequinConfigurator() {
                         )}
                     </Suspense>
 
-                    <section className={styles.viewportLabel} aria-label="Informacion del configurador">
-                        <h1>Estudio de Diseno</h1>
-                        <p>Configuracion Avanzada 3D</p>
+                    <section className={styles.viewportLabel} aria-label="Información del configurador">
+                        <h1>Estudio de Diseño</h1>
+                        <p>Configuración Avanzada 3D</p>
                     </section>
 
                     <div className={styles.resetBar}>
@@ -180,7 +180,7 @@ export default function MannequinConfigurator() {
 
 function TabHeader({ activeTab, onTabChange }) {
     return (
-        <div className={styles.tabs} role="tablist" aria-label="Modo de configuracion">
+        <div className={styles.tabs} role="tablist" aria-label="Modo de configuración">
             <button
                 type="button"
                 role="tab"

@@ -46,7 +46,7 @@ export default function Products({ products, categories = [], filters = {} }) {
                     filters={filters}
                 />
 
-                <section className={styles.results} aria-label="Resultados del catalogo">
+                <section className={styles.results} aria-label="Resultados del catálogo">
                     {hasProducts ? (
                         <>
                             <CatalogProductGrid products={productItems} />

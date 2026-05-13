@@ -14,7 +14,7 @@ export default function CheckoutSuccessPanel({ orderId }) {
                 Pedido realizado
             </h1>
             <p className={styles.text}>
-                Tu pedido ha sido procesado correctamente. Recibiras un correo de confirmacion en breve.
+                Tu pedido ha sido procesado correctamente. Recibirás un correo de confirmación en breve.
             </p>
 
             <div className={styles.actions}>

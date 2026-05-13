@@ -11,10 +11,10 @@ declare(strict_types=1);
  *   php database/scripts/export_railway_mysql.php --output=storage/app/private/railway-export
  *
  * Variables de entorno requeridas:
- *   Opcion A:
+ *   Opción A:
  *     RAILWAY_DB_URL
  *
- *   Opcion B:
+ *   Opción B:
  *     RAILWAY_DB_HOST
  *     RAILWAY_DB_PORT
  *     RAILWAY_DB_DATABASE
@@ -63,7 +63,7 @@ if ($databaseUrl) {
     $parts = parse_url($databaseUrl);
 
     if ($parts === false) {
-        fail('RAILWAY_DB_URL no tiene un formato valido.');
+        fail('RAILWAY_DB_URL no tiene un formato válido.');
     }
 
     $host = $parts['host'] ?? null;
@@ -81,7 +81,7 @@ if ($databaseUrl) {
 
 if (! $host || ! $database || ! $username || $password === null) {
     fail(
-        'Faltan variables de conexion. Usa RAILWAY_DB_URL o bien '.
+        'Faltan variables de conexión. Usa RAILWAY_DB_URL o bien '.
         'RAILWAY_DB_HOST, RAILWAY_DB_PORT, RAILWAY_DB_DATABASE, '.
         'RAILWAY_DB_USERNAME y RAILWAY_DB_PASSWORD.'
     );

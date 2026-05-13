@@ -2,6 +2,33 @@ import { Link, useForm, router } from "@inertiajs/react";
 import { getProductImage } from "@/Components/Checkout/utils/productImages";
 import styles from "./CartStep.module.css";
 
+function isBaseDollProduct(product = {}) {
+    return product.sku === "DOLL-BASE-001" || product.slug === "base-doll" || product.name === "base_doll";
+}
+
+function isDollProduct(product = {}) {
+    return product.product_type === "doll";
+}
+
+function getProductHref(product = {}) {
+    if (isBaseDollProduct(product)) {
+        return null;
+    }
+
+    if (isDollProduct(product)) {
+        return route("doll.config.test", {
+            tab: "ready",
+            doll: product.slug,
+        });
+    }
+
+    return route("products.show", product.slug);
+}
+
+function getProductDisplayName(product = {}) {
+    return isBaseDollProduct(product) ? "Muñeca Personalizada" : product.name;
+}
+
 function PopularProducts({ popularProducts, addToCart }) {
     return (
         <div className={styles.popularSection}>
@@ -128,12 +155,10 @@ export default function CartStep({ cart, popularProducts = [], isBuyNow = false 
     };
 
     const removeItem = (id) => {
-        if (confirm("¿Estás seguro de eliminar este producto?")) {
-            destroy(route("cart.remove", id), {
-                data: isBuyNow ? { buy_now: 1 } : {},
-                preserveScroll: true,
-            });
-        }
+        destroy(route("cart.remove", id), {
+            data: isBuyNow ? { buy_now: 1 } : {},
+            preserveScroll: true,
+        });
     };
 
     if (!cart.items || cart.items.length === 0) {
@@ -159,43 +184,45 @@ export default function CartStep({ cart, popularProducts = [], isBuyNow = false 
             <div className={styles.itemsWrapper}>
                 <ul className={styles.itemsList}>
                     {cart.items.map((item) => {
-                        const isConfigurable = item.product?.product_type === "configurable";
+                        const productHref = getProductHref(item.product);
+                        const productName = getProductDisplayName(item.product);
+                        const shouldRenderLink = Boolean(productHref);
 
                         return (
                         <li key={item.product_id} className={styles.itemRow}>
                             <div className={styles.itemContent}>
-                                {isConfigurable ? (
+                                {!shouldRenderLink ? (
                                     <div className={styles.itemImageLink}>
                                         <img
                                             src={getProductImage(item.product)}
-                                            alt={item.product.name}
+                                            alt={productName}
                                             className={styles.itemImage}
                                         />
                                     </div>
                                 ) : (
                                     <Link
-                                        href={route("products.show", item.product.slug)}
+                                        href={productHref}
                                         className={styles.itemImageLink}
                                     >
                                         <img
                                             src={getProductImage(item.product)}
-                                            alt={item.product.name}
+                                            alt={productName}
                                             className={styles.itemImage}
                                         />
                                     </Link>
                                 )}
 
                                 <div className={styles.itemInfo}>
-                                    {isConfigurable ? (
+                                    {!shouldRenderLink ? (
                                         <span className={styles.itemName}>
-                                            {item.product.name}
+                                            {productName}
                                         </span>
                                     ) : (
                                         <Link
-                                            href={route("products.show", item.product.slug)}
+                                            href={productHref}
                                             className={styles.itemName}
                                         >
-                                            {item.product.name}
+                                            {productName}
                                         </Link>
                                     )}
 
@@ -221,7 +248,7 @@ export default function CartStep({ cart, popularProducts = [], isBuyNow = false 
                                         onClick={() => removeItem(item.product_id)}
                                         className={styles.removeButton}
                                         disabled={processing}
-                                        aria-label={`Eliminar ${item.product.name} del carrito`}
+                                        aria-label={`Eliminar ${productName} del carrito`}
                                     >
                                         <svg className={styles.iconXs} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" />
@@ -238,7 +265,7 @@ export default function CartStep({ cart, popularProducts = [], isBuyNow = false 
                                         onClick={() => updateQuantity(item.product_id, item.quantity - 1)}
                                         className={styles.quantityButton}
                                         disabled={processing}
-                                        aria-label={`Reducir cantidad de ${item.product.name}`}
+                                        aria-label={`Reducir cantidad de ${productName}`}
                                     >
                                         <svg className={styles.iconSm} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M20 12H4" />
@@ -252,7 +279,7 @@ export default function CartStep({ cart, popularProducts = [], isBuyNow = false 
                                         onClick={() => updateQuantity(item.product_id, item.quantity + 1)}
                                         className={styles.quantityButton}
                                         disabled={processing}
-                                        aria-label={`Aumentar cantidad de ${item.product.name}`}
+                                        aria-label={`Aumentar cantidad de ${productName}`}
                                     >
                                         <svg className={styles.iconSm} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 4v16m8-8H4" />
